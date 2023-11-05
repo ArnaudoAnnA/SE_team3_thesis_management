@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 // import { API } from './API';
 
 import { CustomNavbar, NotFoundPage, userContext } from './components/Utils';
+import { ThesisList } from './components/ThesisList';
 
 function App() {
   return (
@@ -80,13 +81,12 @@ function Header(props) {
 
 /**
  * Home page
- * TODO decide what to show after login
  */
 
 function Home() {
-  return <>
-    <h1>Home</h1>
-  </>
+  return (
+    <ThesisList />
+  )
 }
 
 export default App
