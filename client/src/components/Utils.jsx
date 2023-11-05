@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { Alert, Button, Container, Col, Row, Card, Form, Navbar } from "react-bootstrap";
+import { Alert, Button, Container, Col, Row, Card, Form, Navbar, Nav } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import validator from "validator";
 
@@ -18,40 +18,37 @@ function CustomNavbar(props) {
     const user = useContext(userContext);
     return (
         <>
-            <Navbar sticky="top" expand="lg" className='colorNav1'>
-                <Container>
-                    <Col>
-                        {/* Polito logo */}
-                    </Col>
-                    {/* change date */}
-                </Container>
+            <Navbar sticky="top" expand="lg" className='colorNav1' variant="dark">
+                <Navbar.Brand>
+                    <img src="https://drive.google.com/uc?export=download&id=1HTuSShZT0omPheSlNEMBWKPypY8OeaOY" width="55" height="55" style={{ marginRight: '5px' }} alt="" />
+                    Thesis Management
+                </Navbar.Brand>
             </Navbar>
-            {true ?
-                <Navbar sticky="top" expand="lg" className='colorNav2 mb-3 shadow'>
-                    <Container>
-                        {/* <Col>
-                            <Navbar.Brand><Link to='/' style={{ color: 'black', textDecoration: 'none' }}>
-                                <i className="bi bi-file-earmark-fill" />
-                                {" "}
-                                {props.appName}
-                            </Link></Navbar.Brand>
-                            {user.id ? <Link to='/pages' style={{ color: 'black', textDecoration: 'none', marginLeft: '10px' }}>EDIT PAGES</Link> : ''}
-                            {user.role === 'admin' ? <Link to='/appname' style={{ color: 'black', textDecoration: 'none', marginLeft: '20px' }}>CHANGE NAME</Link> : ''}
-                        </Col>
-                        {user.id ?
-                            <Navbar.Text style={{ color: 'white' }}>
-                                Signed in as: {user.username}
-                                <Link to='/' style={{ textDecoration: 'none', marginLeft: '10px' }} onClick={props.logoutCbk}>LOGOUT</Link>
-                            </Navbar.Text> :
-                            <Link to='/login' style={{ color: 'black', textDecoration: 'none' }}>
-                                LOGIN
-                                {" "}
-                                <i className="bi bi-person-fill" />
-                            </Link>
-                        } */}
-                    </Container>
+            {true ? // TODO change to user.email
+                <Navbar sticky="top" expand="lg" className='colorNav2 mb-3 shadow' collapseOnSelect>
+                    <Navbar.Toggle aria-controls="navbar-nav" />
+                    <Navbar.Collapse>
+                        <Nav>
+                            <Nav.Link as={Link} to={"/"} className="white">Home</Nav.Link>
+                            {true ?  // TODO change to user.role === "professor"
+                                <>
+                                    <Nav.Link as={Link} to={"/"} className="white">Thesis</Nav.Link>
+                                    <Nav.Link as={Link} to={"/"} className="white">Archive</Nav.Link>
+                                    <Nav.Link as={Link} to={"/"} className="white">Applications</Nav.Link>
+
+                                </>
+                                : null}
+                            <Nav.Link as={Link} to={"/"} className="white">Notifications</Nav.Link>
+                        </Nav>
+                    </ Navbar.Collapse>
+                    <div className="ml-auto">
+                        <Nav.Link as={Link} to='/' onClick={props.logoutCbk} className="white">
+                            LOGOUT
+                            <i className="bi bi-box-arrow-right" style={{ marginLeft: '5px', marginRight: '5px' }} />
+                        </Nav.Link>
+                    </div>
                 </Navbar>
-                : ''}
+                : null}
         </>
     );
 }
