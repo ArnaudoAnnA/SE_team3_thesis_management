@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 
 import { CustomNavbar, NotFoundPage, userContext } from './components/Utils';
 import { ThesisList } from './components/ThesisList';
+import { Login } from './components/Login';
 
 function App() {
   return (
@@ -53,7 +54,7 @@ function Main() {
       <Routes>
         <Route path='/' element={<Header logoutCbk={logout} changeDateCbk={changeDate} />}>
           {user.email ? <Route path='' element={<Home />} /> :
-            <Route path='' element={<Home />} />}  {/** TODO change to Login after Login component implemented  */}
+            <Route path='' element={<Login />} />}  {/** TODO change to Login after Login component implemented  */}
           {/** Add here other routes */}
 
         </Route>
