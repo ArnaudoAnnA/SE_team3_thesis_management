@@ -1,42 +1,10 @@
 import "@glideapps/glide-data-grid/dist/index.css";
-import {DataEditor, GridCellKind} from "@glideapps/glide-data-grid";
+import {DataEditor, GridCellKind} from "@glideapps/glide-data-grid"; // https://github.com/glideapps/glide-data-grid/blob/main/README.md
+import { useEffect, useState } from "react";
+import {getAllThesis} from "../API";
 
-//MOC DATA
-const data = [{firstName: 'Giovanni', lastName: 'Malnati'}, {firstName: 'Marco', lastName: 'Torchiano'}];
+ /*-------------- GLOBAL CONSTS -----------------*/
 
-// If fetching data is slow you can use the DataEditor ref to send updates for cells
-// once data is loaded.
-function getData([col, row]) {
-    
-    /*
-        fetch here
-    */
-
-    const person = data[row];
-
-    if (col === 0) {
-        return {
-            kind: GridCellKind.Text,
-            data: person.firstName,
-            allowOverlay: false,
-            displayData: person.firstName,
-        };
-    } else if (col === 1) {
-        return {
-            kind: GridCellKind.Text,
-            data: person.lastName,
-            allowOverlay: false,
-            displayData: person.lastName,
-        };
-    } else {
-        throw new Error();
-    }
-}
-
-
-
-function ThesisList(props)
-{
     // Grid columns may also provide icon, overlayIcon, menu, style, and theme overrides
     const columns = [
         { title: "Title", width: 150 },
@@ -49,9 +17,63 @@ function ThesisList(props)
         //further info in the thesis dedicated page
     ];
 
+/*--------------- GLOBAL VARIABLES ---------------*/
+//let data = [];
+
+/*-----------------------------------------------*/
+
+
+
+
+
+function ThesisList(props)
+{
+
+    /*--------------- STATES ------------------*/
+    const [searchKeyword, setSearchKeyword] = useState('');
+    const [data, setData] = useState([]);
+
+    /*-----------------------------------------*/
+
+    useEffect(()=>
+    {
+        /* TO DO: call a different API basing on the applyied filter */
+        setData(async () => await getAllThesis());
+    }, [searchKeyword]);
+
     return (
-        <DataEditor getCellContent={getData} columns={columns} rows={2} />
-    )
+        <DataEditor getCellContent={getData} columns={columns} rows={data.length} />
+    );
+
+
+    
+    
+    // If fetching data is slow you can use the DataEditor ref to send updates for cells
+    // once data is loaded.
+    function getData([col, row]) {
+
+        const thesis = data[row];
+
+        let prop = columns[col].toLowerCase();
+
+        if (!thesis[prop]) 
+        {
+            console.log("ERROR: Trying to read an undefined prop "+prop+" (row n. "+row+")");
+            return {
+                kind: GridCellKind.Text,
+                data: "Undefined",
+                allowOverlay: false,
+                displayData: "Undefined",
+            };
+        }
+
+        return {
+            kind: GridCellKind.Text, //TO DO: switch on prop to assign proper cell kind
+            data: thesis[prop],
+            allowOverlay: false,
+            displayData: thesis[prop],
+        };
+    }
 }
 
 export { ThesisList };
