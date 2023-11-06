@@ -15,7 +15,8 @@ function App() {
   // API.get_test();
   // API.insert_unique_test(123123)
   API_TEST.get_test_2()
-  API_TEST.delete_test("s306012")
+  // API_TEST.get_test_2()
+  // API_TEST.delete_test("s306012")
   console.log("b")
   return (
     <BrowserRouter>

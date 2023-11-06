@@ -57,8 +57,8 @@ const insert_unique_test = async function test (id) {
 }
 
 const get_test = async function get_test () {
-  const colRef = collection(db, "asd")
-  const whereCond = where("name", "==", "Davide")
+  const colRef = collection(db, "asd") //FROM
+  const whereCond = where("name", "==", "Davide") // WHERE
   //method query(pathReference, cond1, cond2, condN) 
   const q = query(colRef, whereCond);
   
