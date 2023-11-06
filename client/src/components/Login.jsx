@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { Navbar, Button, Form, Table, Alert, FormGroup, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css'
+
 //import API from '../API';
 
 
@@ -69,23 +69,23 @@ function Login(props) {
         
     return (
       
-        <Container>
-         <Navbar.Brand style={{ fontSize: "40px" }}>Politecnico di Torino</Navbar.Brand>
+        <Container style={{display: "flex", flexDirection:"column"}}>
+         <h1>Welcome! Please insert your e-mail and password to login</h1>
        
-        {errorMsg? <Alert variant='danger' onClose={()=>setErrorMsg('')} dismissible>{errorMsg}</Alert> : false }
-        <Form onSubmit={handleSubmit}>
+        {errorMsg? <Alert style={{width:"20vw", marginLeft: "27vw", marginTop: "2vh"}} variant='danger' onClose={()=>setErrorMsg('')} dismissible>{errorMsg}</Alert> : false }
+        <Form onSubmit={handleSubmit} style={{marginLeft: "27vw", marginTop: "5vh" }}>
 
         <Form.Group>
                 <Form.Label>E-mail  </Form.Label>
-                <Form.Control style={{paddingRight: "120px"}}type="text" placeholder="E-mail" name="email" value={email} onChange={ev => setEmail(ev.target.value)} />
+                <Form.Control style={{width:"20vw"}}type="text" placeholder="E-mail" name="email" value={email} onChange={ev => setEmail(ev.target.value)} />
             </Form.Group>
          
 
         <Form.Group controlId="formBasicPassword"  >
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <Form.Control style={{width:"20vw"}} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
             </Form.Group>
-    
+         
    
             <Button type='submit' variant="primary" style={{marginTop: "10px"}}>Login</Button>
             <Button variant='warning' style={{marginTop: "10px"}} >Cancel</Button>
@@ -102,5 +102,5 @@ function Login(props) {
 
 
 
-export default Login;
+export {Login};
 
