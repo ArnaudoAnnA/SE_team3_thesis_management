@@ -6,10 +6,10 @@ import {getAllThesis} from "../API";
  /*-------------- GLOBAL CONSTS -----------------*/
 
     // Grid columns may also provide icon, overlayIcon, menu, style, and theme overrides
-    const columns = [
+    const columns = [   //TO DO: dynamic width of columns
         { title: "Title", width: 150 },
         { title: "Supervisor", width: 150 },
-        { title: "Co-Supervisor", width: 150 },
+        { title: "Co_Supervisor", width: 150 },
         { title: "Type", width: 150 },
         { title: "Groups", width: 150 },
         { title: "Expiration", width: 150 },
@@ -38,8 +38,11 @@ function ThesisList(props)
     useEffect(()=>
     {
         /* TO DO: call a different API basing on the applyied filter */
-        setData(async () => await getAllThesis());
-    }, [searchKeyword]);
+        getAllThesis()
+        .then(d => setData(d))
+        .catch();  // TO DO: define global error state
+
+    }, [searchKeyword /*TO DO: add filters */ ]);
 
     return (
         <DataEditor getCellContent={getData} columns={columns} rows={data.length} />
@@ -54,7 +57,7 @@ function ThesisList(props)
 
         const thesis = data[row];
 
-        let prop = columns[col].toLowerCase();
+        let prop = columns[col].title.toLowerCase();
 
         if (!thesis[prop]) 
         {
