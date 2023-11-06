@@ -3,14 +3,20 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Link, Routes, Route, Outlet, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
-
-// import { API } from './API';
-
+import API from './API.js';
+import API_TEST from './API_TEST.js';
 import { CustomNavbar, NotFoundPage, userContext } from './components/Utils';
 import { ThesisList } from './components/ThesisList';
 import { Login } from './components/Login';
 
 function App() {
+  console.log("a")
+  // API.insert_test();
+  // API.get_test();
+  // API.insert_unique_test(123123)
+  API_TEST.get_test_2()
+  API_TEST.delete_test("s306012")
+  console.log("b")
   return (
     <BrowserRouter>
       <Main />

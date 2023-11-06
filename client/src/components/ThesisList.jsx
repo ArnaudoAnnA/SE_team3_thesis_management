@@ -1,7 +1,7 @@
 import "@glideapps/glide-data-grid/dist/index.css";
 import {DataEditor, GridCellKind} from "@glideapps/glide-data-grid"; // https://github.com/glideapps/glide-data-grid/blob/main/README.md
 import { useEffect, useState } from "react";
-import {getAllThesis} from "../API";
+import {getAllThesis} from "../API_old";
 
  /*-------------- GLOBAL CONSTS -----------------*/
 
