@@ -1,0 +1,1 @@
+These models are the "schemas" of the firebase DB. Firebase is schema-less so we cannot force requirements for fields and documents and we cannot upload custom objects so use this models just as a reference.
