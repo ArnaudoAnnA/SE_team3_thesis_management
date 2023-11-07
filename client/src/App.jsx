@@ -8,6 +8,7 @@ import API_TEST from './API_TEST.js';
 import { CustomNavbar, NotFoundPage, userContext } from './components/Utils';
 import { ThesisList } from './components/ThesisList/ThesisList';
 import { Login } from './components/Login';
+import { InsertProposalForm } from './components/InsertProposalForm.jsx';
 
 function App() {
   console.log("a")
@@ -62,6 +63,8 @@ function Main() {
 
           {user.email ? <Route path='' element={<Home />} /> :
             <Route path='' element={<Login />} />}  {/** TODO change to Login after Login component implemented  */}
+          {/** Add here other routes */}
+          <Route path='/proposal' element={<InsertProposalForm />} />
           
           <Route path='/thesis' element={<ThesisList />} />
 
