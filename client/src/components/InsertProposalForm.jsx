@@ -14,15 +14,16 @@ import { Form, Button,Alert, Container } from 'react-bootstrap';
 function InsertProposalForm(props) {
 
   const [name, setName] = useState('');
+  const [pname, setpName] = useState('');
   const [surname, setSurName] = useState('');
   const [nation, setNation] = useState('')
   const [ID, setID] = useState('')
   const [email, setEmail] = useState('')
   const [gender, setGender] = useState('Male')
   const [degree, setDegree] = useState('')
-  const [password1, setPassword1] = useState('');
-  const [password2, setPassword2] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
+  const [description, setDesc] = useState('')
+  const [title, setTitle] = useState('')
+  const [errorMsg, setErrorMsg] = useState('')
   const options = useMemo(() => countryList().getData(), [])
   const [selectedDate, setSelectedDate] = useState(null);
 
@@ -30,20 +31,25 @@ function InsertProposalForm(props) {
     const newName = event.target.value;
     setName(newName); 
   };
+  const handlePNameChange = (event) => {
+    const newPName = event.target.value;
+    setpName(newPName); 
+  };
   const handleSurNameChange = (event) => {
     const newSurName = event.target.value;
     setSurName(newSurName); 
+  };
+  const handleTitleChange = (event) => {
+    const newTitle = event.target.value;
+    setTitle(newTitle); 
   };
   const handleDateChange = (date) => {
     setSelectedDate(date.$d);
     console.log(date.$d);
   };
-
-  const handleIDChange = (event) => {
-
+ const handleIDChange = (event) => {
     const ID = event.target.value;
     setID(ID);
-
   };
 
   const handleGender = (event) => {
@@ -69,20 +75,6 @@ function InsertProposalForm(props) {
    
   };
 
-  const handlePass1 = (event) => {
-
-    const password1 = event.target.value;
-    setPassword1(password1);
-   
-  };
-
-  const handlePass2 = (event) => {
-
-    const password2 = event.target.value;
-    setPassword2(password2);
-   
-  };
-
   const changeHandler = value => {
 
     setNation(value.label)
@@ -96,10 +88,15 @@ function InsertProposalForm(props) {
     var cognomeRegex = /^[A-Za-z]+$/; // Il cognome deve contenere solo lettere
     var mailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/; // Verifica un formato email semplice
     var idRegex = /^\d+$/; // L'ID deve contenere solo cifre
-    var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/; // La password deve avere almeno 8 caratteri, una maiuscola, una minuscola e un numero
+
 
     if (name === '') {
-      setErrorMsg('Insert a valid ame!');
+      setErrorMsg('Insert a valid name!');
+      return false;
+    }
+
+    if (pname === '') {
+      setErrorMsg('Insert a valid prof.name!');
       return false;
     }
 
@@ -118,15 +115,6 @@ function InsertProposalForm(props) {
       return false;
     }
 
-    if (password1 === '') {
-      setErrorMsg('Insert a password in the first field!');
-      return false;
-    }
-
-    if (password2 === '') {
-      setErrorMsg('Insert a password in the second field!');
-      return false;
-    }
   // Esegui i controlli
   if (!name.match(nomeRegex)) {
     setErrorMsg('Not valid name data!');
@@ -148,15 +136,6 @@ function InsertProposalForm(props) {
     return false;
   }
 
-  if (!password1.match(passwordRegex)) {
-    setErrorMsg('The password is not valid. It must contain at least 8 characters, one uppercase letter, one lowercase letter, and a number.');
-    return false;
-  }
-
-  if (password1 != password2) {
-    setErrorMsg('Please, confirm your password!');
-    return false;
-  }
   // Se tutti i controlli passano, il modulo è valido
 
       return true;
@@ -211,12 +190,30 @@ function InsertProposalForm(props) {
                           </div>
                           <input  style={{borderRadius: "6px"}} name="" class="form-control" placeholder="ID" type="text" value={ID} onChange={handleIDChange}/>
                       </div> 
-                  <div class="form-group input-group"style={{display: "flex" }}>
+                  <div class="form-group input-group"style={{display: "flex"}}>
                     <div class="input-group-prepend" style={{ marginLeft: "auto", marginRight: "auto", marginTop: "2px",  marginBottom: "2px"}}>
-                      <select class="custom-select"  style={{borderRadius: "3px", width: "100px"}}>
-                        <option value={gender} onChange={handleGender}>Male</option>
-                        <option value={gender} onChange={handleGender}>Female</option>
-                      </select>
+                    <div>
+              <label>
+                <input
+                  type="radio"
+                  value="Male"
+                  checked={gender === 'Male'}
+                  onChange={handleGender}
+                />
+                Male
+              </label>
+            </div>
+            <div>
+              <label>
+                <input
+                  type="radio"
+                  value="Female"
+                  checked={gender === 'Female'}
+                  onChange={handleGender}
+                />
+                Female
+              </label>
+            </div>
                     </div>
 
                       </div>
@@ -255,14 +252,32 @@ function InsertProposalForm(props) {
                       </svg>
                           </div>
                           <select class="form-control" style={{borderRadius: "6px"}}>
-                              <option selected=""> Course Degree</option>
+                              <option selected=""> --Course Degree--</option>
                               <option value={degree} onChange={handleDegree}>LM-8</option>
                               <option value={degree} onChange={handleDegree}>LM-32</option>
 
                           </select>
-                      </div> 
+                      </div>
+                    <div class="form-group input-group" style={{ marginTop: "2px", marginBottom: "2px" }}>
+                      <div class="input-group-prepend">
+                        <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight:"1vw"}} width="16" height="16" fill="currentColor" class="bi bi-person-video3" viewBox="0 0 16 16">
+                          <path d="M14 9.5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm-6 5.7c0 .8.8.8.8.8h6.4s.8 0 .8-.8-.8-3.2-4-3.2-4 2.4-4 3.2Z" />
+                          <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h5.243c.122-.326.295-.668.526-1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v7.81c.353.23.656.496.91.783.059-.187.09-.386.09-.593V4a2 2 0 0 0-2-2H2Z" />
+                        </svg>
+                      </div>
+                      <input style={{ borderRadius: "6px" }} name="" class="form-control" placeholder="Professor" type="text" value={pname} onChange={handlePNameChange} />
+                    </div> 
+                    <div class="form-group input-group" style={{ marginTop: "2px", marginBottom: "2px" }}>
+                      <div class="input-group-prepend">
+                        <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight: "1vw" }} width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                          <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                        </svg>
+                      </div>
+                      <input style={{ borderRadius: "6px" }} name="" class="form-control" placeholder="Thesis title" type="text" value={title} onChange={handleTitleChange} />
+                    </div> 
                   <div style={{ display: "flex" }}>
-                  <p style={{ paddingTop: "2px", marginBottom: "-1px", marginLeft: "auto", marginRight: "auto" }}>Enrollment Year</p>
+                  <p style={{ paddingTop: "2px", marginBottom: "-1px", marginLeft: "auto", marginRight: "auto" }}>Enrollment Year/Expiration</p>
                   </div>
                   <div style={{ paddingLeft: "12vw", paddingBottom: "5px", paddingRight: "auto"}}>
                     <LocalizationProvider dateAdapter={AdapterDayjs} >
@@ -273,22 +288,17 @@ function InsertProposalForm(props) {
                 
                     </div>
                       </div> 
-                      <div class="form-group input-group" style={{marginBottom: "2px"}}>
-                          <div class="input-group-prepend">
-                      <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight:"1vw"}} width="16" height="16" fill="currentColor" class="bi bi-key-fill" viewBox="0 0 16 16">
-                        <path d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1 1H6.663a3.5 3.5 0 0 1-3.163 2zM2.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
-                      </svg>
-                          </div>
-                          <input style={{borderRadius: "6px"}} class="form-control" placeholder="Create password" type="password" value={password1} onChange={handlePass1}/>
-                      </div> 
-                      <div class="form-group input-group">
-                          <div class="input-group-prepend">
-                      <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight:"1vw"}} width="16" height="16" fill="currentColor" class="bi bi-key-fill" viewBox="0 0 16 16">
-                        <path d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1 1H6.663a3.5 3.5 0 0 1-3.163 2zM2.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
-                      </svg>
-                          </div>
-                          <input  style={{borderRadius: "6px"}} class="form-control" placeholder="Repeat password" type="password" value={password2} onChange={handlePass2}/>
-                      </div>                                       
+                      <div class="form-group input-group" style={{display: "flex", marginBottom: "2px"}}>
+                      <p style={{ paddingTop: "2px", marginBottom: "1px", marginLeft: "auto", marginRight: "auto" }}>Description</p>
+                        <textarea
+                          style={{fontSize: "15px", width: "60vw", marginLeft: "auto", marginRight: "auto", borderRadius: "1px"}}
+                          value={description}
+                          onChange={(e) => setDesc(e.target.value)}
+                          rows="4"
+                          cols="50"
+                          placeholder="Insert your thesis description.."
+                        />
+                      </div>                                  
                       <div class="form-group" style={{marginTop: "2vh", display: 'flex'}}>
                           <Button style={{marginLeft: "auto", marginRight:"auto",  width: "180px", marginBottom: '10px'}} type="submit" class="btn btn-primary btn-block" onClick={handleSubmit}> Send Proposal  </Button>
                       </div>     
