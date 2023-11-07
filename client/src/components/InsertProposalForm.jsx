@@ -6,7 +6,6 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useState, useMemo } from 'react';
 import Select from 'react-select'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css'
 import countryList from 'react-select-country-list';
 import { Form, Button,Alert, Container } from 'react-bootstrap';
 
@@ -19,7 +18,7 @@ function InsertProposalForm(props) {
   const [nation, setNation] = useState('')
   const [ID, setID] = useState('')
   const [email, setEmail] = useState('')
-  const [gender, setGender] = useState('')
+  const [gender, setGender] = useState('Male')
   const [degree, setDegree] = useState('')
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState('');
@@ -51,6 +50,7 @@ function InsertProposalForm(props) {
 
     const gender = event.target.value;
     setGender(gender);
+    console.log(gender)
    
   };
 
@@ -99,30 +99,30 @@ function InsertProposalForm(props) {
     var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/; // La password deve avere almeno 8 caratteri, una maiuscola, una minuscola e un numero
 
     if (name === '') {
-      setErrorMsg('Insert a Name!');
+      setErrorMsg('Insert a valid ame!');
       return false;
     }
-  
+
     if (surname === '') {
-      setErrorMsg('Insert a surname!');
+      setErrorMsg('Insert a valid surname!');
       return false;
     }
-  
+
     if (email === '') {
-      setErrorMsg('Insert an email!');
+      setErrorMsg('Insert a valid email!');
       return false;
     }
-  
+
     if (ID === '') {
-      setErrorMsg('Insert an ID!');
+      setErrorMsg('Insert a valid ID!');
       return false;
     }
-  
+
     if (password1 === '') {
       setErrorMsg('Insert a password in the first field!');
       return false;
     }
-      
+
     if (password2 === '') {
       setErrorMsg('Insert a password in the second field!');
       return false;
@@ -139,12 +139,12 @@ function InsertProposalForm(props) {
   }
 
   if (!email.match(mailRegex)) {
-    setErrorMsg('Il campo Mail non è un indirizzo email valido.');
+    setErrorMsg('Not valid email address.');
     return false;
   }
 
   if (!ID.match(idRegex)) {
-    setErrorMsg('Il campo ID deve contenere solo numeri.');
+    setErrorMsg('ID contains numbers.');
     return false;
   }
 
@@ -153,17 +153,13 @@ function InsertProposalForm(props) {
     return false;
   }
 
-  if (!password2.match(passwordRegex)) {
-    setErrorMsg('The password is not valid. It must contain at least 8 characters, one uppercase letter, one lowercase letter, and a number.');
-    return false;
-  }
-
   if (password1 != password2) {
-    setErrorMsg('Different Password!');
+    setErrorMsg('Please, confirm your password!');
     return false;
   }
   // Se tutti i controlli passano, il modulo è valido
-  return true;
+
+      return true;
 
 
   };
@@ -181,23 +177,23 @@ function InsertProposalForm(props) {
             {errorMsg}
           </Alert>
         ) : null}
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit} >
            
-            <div class="container">
+            <div class="container" style={{marginBottom: "20px"}}>
     
-                  <div class="card bg-light">
-                  <article  style={{maxWidth: "400px"}}>
+                  <div class="card bg-light" style={{ width: "45vw", marginLeft: "auto",marginRight: "auto" }}>
+                  <article className="proposal-article" style={{maxWidth: "45vw", paddingLeft: "30px", paddingRight: "30px"}}>
                       <h4 class="card-title mt-3 text-center">Insert a thesis proposal</h4>
                       <p class="text-center">Get started with your proposal by inserting your data</p>
          
                       <form>
-                      <div class="form-group input-group">
+                      <div class="form-group input-group" style={{marginTop: "2px", marginBottom: "2px"}}>
                           <div class="input-group-prepend">
                       <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight:"1vw"}} width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
                         <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                       </svg>
                           </div>
-                          <input name="" class="form-control" placeholder="Name" type="text" value={name} onChange={handleNameChange}/>
+                          <input style={{borderRadius: "6px"}} name="" class="form-control" placeholder="Name" type="text" value={name} onChange={handleNameChange}/>
                       </div> 
                       <div class="form-group input-group">
                           <div class="input-group-prepend">
@@ -205,7 +201,7 @@ function InsertProposalForm(props) {
                         <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                       </svg>
                           </div>
-                          <input name="" class="form-control" placeholder="Surname" type="text" value={surname} onChange={handleSurNameChange}/>
+                          <input style={{borderRadius: "6px"}} name="" class="form-control" placeholder="Surname" type="text" value={surname} onChange={handleSurNameChange}/>
                       </div>
                       <div class="form-group input-group">
                           <div class="input-group-prepend">
@@ -213,11 +209,11 @@ function InsertProposalForm(props) {
                         <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                       </svg>
                           </div>
-                          <input name="" class="form-control" placeholder="ID" type="text" value={ID} onChange={handleIDChange}/>
+                          <input  style={{borderRadius: "6px"}} name="" class="form-control" placeholder="ID" type="text" value={ID} onChange={handleIDChange}/>
                       </div> 
-                  <div class="form-group input-group"style={{marginLeft: "10vw", marginTop: "3px", marginBottom: "3px" }}>
-                    <div class="input-group-prepend">
-                      <select class="custom-select" style={{ maxWidth: "120px"}}>
+                  <div class="form-group input-group"style={{display: "flex" }}>
+                    <div class="input-group-prepend" style={{ marginLeft: "auto", marginRight: "auto", marginTop: "2px",  marginBottom: "2px"}}>
+                      <select class="custom-select"  style={{borderRadius: "3px", width: "100px"}}>
                         <option value={gender} onChange={handleGender}>Male</option>
                         <option value={gender} onChange={handleGender}>Female</option>
                       </select>
@@ -232,7 +228,7 @@ function InsertProposalForm(props) {
                       </svg>
                              
                           </div>
-                          <input name="" class="form-control" placeholder="E-Mail" type="text" value={email} onChange={handleEmail}/>
+                          <input style={{borderRadius: "6px"}} name="" class="form-control" placeholder="E-Mail" type="text" value={email} onChange={handleEmail}/>
 
                   </div>
                   <div>
@@ -243,7 +239,7 @@ function InsertProposalForm(props) {
                           <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12.435 12.435 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A19.626 19.626 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a19.587 19.587 0 0 0 1.349-.476l.019-.007.004-.002h.001M14 1.221c-.22.078-.48.167-.766.255-.81.252-1.872.523-2.734.523-.886 0-1.592-.286-2.203-.534l-.008-.003C7.662 1.21 7.139 1 6.5 1c-.669 0-1.606.229-2.415.478A21.294 21.294 0 0 0 3 1.845v6.433c.22-.078.48-.167.766-.255C4.576 7.77 5.638 7.5 6.5 7.5c.847 0 1.548.28 2.158.525l.028.01C9.32 8.29 9.86 8.5 10.5 8.5c.668 0 1.606-.229 2.415-.478A21.317 21.317 0 0 0 14 7.655V1.222z" />
                         </svg>
                         </div>
-                        <div style={{ width: "100px"}}>
+                        <div style={{ width: "55vw", marginTop: "2px", marginBottom: "2px"}}>
                              <Select options={options} onChange={changeHandler}/>
                         </div>
                       </div>
@@ -258,30 +254,32 @@ function InsertProposalForm(props) {
                         <path d="M8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z" />
                       </svg>
                           </div>
-                          <select class="form-control">
+                          <select class="form-control" style={{borderRadius: "6px"}}>
                               <option selected=""> Course Degree</option>
                               <option value={degree} onChange={handleDegree}>LM-8</option>
                               <option value={degree} onChange={handleDegree}>LM-32</option>
 
                           </select>
                       </div> 
-                  <p style={{ paddingTop: "2px", marginBottom: "-1px" }}>Enrollment Year</p>
-                  <div style={{ paddingleft: "1vw", paddingBottom: "5px"}}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <div style={{ display: "flex" }}>
+                  <p style={{ paddingTop: "2px", marginBottom: "-1px", marginLeft: "auto", marginRight: "auto" }}>Enrollment Year</p>
+                  </div>
+                  <div style={{ paddingLeft: "12vw", paddingBottom: "5px", paddingRight: "auto"}}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs} >
                       <DatePicker value={selectedDate}
-                        onChange={handleDateChange} />
+                        onChange={handleDateChange}/>
                     </LocalizationProvider>
                     <div >
                 
                     </div>
                       </div> 
-                      <div class="form-group input-group">
+                      <div class="form-group input-group" style={{marginBottom: "2px"}}>
                           <div class="input-group-prepend">
                       <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight:"1vw"}} width="16" height="16" fill="currentColor" class="bi bi-key-fill" viewBox="0 0 16 16">
                         <path d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1 1H6.663a3.5 3.5 0 0 1-3.163 2zM2.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
                       </svg>
                           </div>
-                          <input class="form-control" placeholder="Create password" type="password" value={password1} onChange={handlePass1}/>
+                          <input style={{borderRadius: "6px"}} class="form-control" placeholder="Create password" type="password" value={password1} onChange={handlePass1}/>
                       </div> 
                       <div class="form-group input-group">
                           <div class="input-group-prepend">
@@ -289,10 +287,10 @@ function InsertProposalForm(props) {
                         <path d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1 1H6.663a3.5 3.5 0 0 1-3.163 2zM2.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
                       </svg>
                           </div>
-                          <input class="form-control" placeholder="Repeat password" type="password" value={password2} onChange={handlePass2}/>
+                          <input  style={{borderRadius: "6px"}} class="form-control" placeholder="Repeat password" type="password" value={password2} onChange={handlePass2}/>
                       </div>                                       
-                      <div class="form-group" style={{marginTop: "1vh"}}>
-                          <Button type="submit" class="btn btn-primary btn-block" onClick={handleSubmit}> Send Proposal  </Button>
+                      <div class="form-group" style={{marginTop: "2vh", display: 'flex'}}>
+                          <Button style={{marginLeft: "auto", marginRight:"auto",  width: "180px", marginBottom: '10px'}} type="submit" class="btn btn-primary btn-block" onClick={handleSubmit}> Send Proposal  </Button>
                       </div>     
                                                                                       
                   </form>
