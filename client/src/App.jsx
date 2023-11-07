@@ -11,12 +11,6 @@ import { Login } from './components/Login';
 
 function App() {
   console.log("a")
-  // API.insert_test();
-  // API.get_test();
-  // API.insert_unique_test(123123)
-  API_TEST.get_test_2()
-  // API_TEST.get_test_2()
-  // API_TEST.delete_test("s306012")
   console.log("b")
   return (
     <BrowserRouter>
@@ -31,6 +25,11 @@ function App() {
  * a BrowserRouter component, giving it the possibility of using the useNavigate hook.
  */
 function Main() {
+  /** SAMPLE CODE
+    * newDoc = NewDocModel{ ... data ...}
+    * API.insert_test(newDoc);
+  */
+
   const [user, setUser] = useState({});
   const [date, setDate] = useState(dayjs().format('YYYY-MM-DD'));
 
