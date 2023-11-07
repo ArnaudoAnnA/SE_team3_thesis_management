@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 // import { API } from './API';
 
 import { CustomNavbar, NotFoundPage, userContext } from './components/Utils';
-import { ThesisList } from './components/ThesisList';
+import { ThesisList } from './components/ThesisList/ThesisList';
 import { Login } from './components/Login';
 
 function App() {
@@ -53,9 +53,11 @@ function Main() {
     <userContext.Provider value={user}>
       <Routes>
         <Route path='/' element={<Header logoutCbk={logout} changeDateCbk={changeDate} />}>
+
           {user.email ? <Route path='' element={<Home />} /> :
             <Route path='' element={<Login />} />}  {/** TODO change to Login after Login component implemented  */}
-          {/** Add here other routes */}
+          
+          <Route path='/thesis' element={<ThesisList />} />
 
         </Route>
         <Route path='*' element={<NotFoundPage />} />
@@ -85,9 +87,7 @@ function Header(props) {
  */
 
 function Home() {
-  return (
-    <ThesisList />
-  )
+  
 }
 
 export default App

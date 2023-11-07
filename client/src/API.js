@@ -37,7 +37,7 @@ function getJson(httpResponsePromise) {
 
   /** Fetch the collection of all thesis without applying filters.<br>
    * 
-   * Returns an object with two properties:
+   * @returns an object with two properties:
    * - ok, contains the json obj in case of success, otherwise null;
    * - err, contains some details in case of error, otherwise null.
   */
@@ -52,4 +52,37 @@ function getJson(httpResponsePromise) {
     return thesis;
   }
 
-  export {getAllThesis};
+    /** Fetch the collection of thesis without applying filters.<br>
+    * It doesn't return all the thesis, but only the ones in the given range of indexes.<br>
+   * 
+   * @param [start, end] : start and end indexes are both included.
+   * 
+   * @returns an object with two properties:
+   * - ok, contains the json obj in case of success, otherwise null;
+   * - err, contains some details in case of error, otherwise null.
+  */
+    async function getThesis([start, end])
+    {
+      /*
+          return await getJson(SERVER_URL+ !!!! NOME API !!!!)
+                      .then(json => {ok: json, err: null})
+                      .catch(err => {ok: null, err: err})
+      */
+  
+      return end < thesis.length ? thesis.slice(start, end+1) : thesis.slice(start, thesis.length);
+    }
+
+    async function getThesisNumber()
+    {
+        /*
+          return await getJson(SERVER_URL+ !!!! NOME API !!!!)
+                      .then(json => {ok: json, err: null})
+                      .catch(err => {ok: null, err: err})
+      */
+
+        //MOC
+        return thesis.length;
+    }
+
+  const API = {getAllThesis, getThesis, getThesisNumber};
+  export default API;
