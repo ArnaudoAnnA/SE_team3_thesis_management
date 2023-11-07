@@ -79,3 +79,5 @@ const applicationsRef = collection(db, "applications");
  }
 
 const API = {getAllThesis, getThesis, getThesisNumber};
+
+export default API;
