@@ -1,5 +1,7 @@
 # Collections
 
+![DB Schema](imgs/db_schema.png)
+
 ## Predefined collections
 
 ### Degrees
