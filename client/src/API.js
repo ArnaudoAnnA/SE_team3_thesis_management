@@ -1,43 +1,37 @@
 "use strict;"
 const SERVER_URL = "http://localhost:3001/api/";
-import {thesis} from './MOCS';
+import {thesis} from './MOCKS';
 
-/**
- * A utility function for parsing the HTTP response.
- * 
- * TO DO: redesign it basing on API.
- */
-function getJson(httpResponsePromise) {
-    // server API always return JSON, in case of error the format is the following { error: <message> } 
-    return new Promise((resolve, reject) => {
-      httpResponsePromise
-        .then((response) => {
-          if (response.ok) {
-           // the server always returns a JSON, even empty {}. Never null or non json, otherwise the method will fail
-           response.json()
-              .then( json => resolve(json) )
-              .catch( err => reject({ error: "Cannot parse server response" }))
-  
-          } else {
-            // analyzing the cause of error
-            response.json()
-              .then(obj => {
-                if(typeof obj.error == 'string') reject(obj);
-                else reject({"error": "Internal Server Error"});
-              }
-                ) // error msg in the response body
-              .catch(err => reject({ error: "Cannot parse server response" })) // something else
-          }
-        })
-        .catch(err => 
-          reject({ error: "Cannot communicate"  })
-        ) // connection error
-    });
-  }
+import { initializeApp } from 'firebase/app';
+import { collection, addDoc, getFirestore, doc, query, getDocs, where, setDoc, deleteDoc} from 'firebase/firestore';
+
+//DO NOT CANCEL
+const firebaseConfig = {
+    apiKey: "AIzaSyCu5cRTSa5Ezg4DNIiKDfLQfQ-kDTHo4iI",
+    authDomain: "thesismanagementg3.firebaseapp.com",
+    projectId: "thesismanagementg3",
+    storageBucket: "thesismanagementg3.appspot.com",
+    messagingSenderId: "30091770849",
+    appId: "1:30091770849:web:ba560e3f3a2a0769c2b0a0"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// IMPORTANT: add ALL API functions in the API object at the end of the file
+
+// COLLECTIONS' REFERENCES
+// example const citiesRef = collection(db, "cities");
+const studentsRef = collection(db, "students");
+const teachersRef = collection(db, "teachers");
+const degreesRef = collection(db, "degrees");
+const careersRef = collection(db, "careers");
+const thesisProposalsRef = collection(db, "thesisProposals");
+const applicationsRef = collection(db, "applications");
 
   /** Fetch the collection of all thesis without applying filters.<br>
    * 
-   * @returns an object with two properties:
+   * Returns an object with two properties:
    * - ok, contains the json obj in case of success, otherwise null;
    * - err, contains some details in case of error, otherwise null.
   */
@@ -52,7 +46,7 @@ function getJson(httpResponsePromise) {
     return thesis;
   }
 
-    /** Fetch the collection of thesis without applying filters.<br>
+ /** Fetch the collection of thesis without applying filters.<br>
     * It doesn't return all the thesis, but only the ones in the given range of indexes.<br>
    * 
    * @param [start, end] : start and end indexes are both included.
@@ -61,28 +55,27 @@ function getJson(httpResponsePromise) {
    * - ok, contains the json obj in case of success, otherwise null;
    * - err, contains some details in case of error, otherwise null.
   */
-    async function getThesis([start, end])
-    {
-      /*
-          return await getJson(SERVER_URL+ !!!! NOME API !!!!)
-                      .then(json => {ok: json, err: null})
-                      .catch(err => {ok: null, err: err})
-      */
-  
-      return end < thesis.length ? thesis.slice(start, end+1) : thesis.slice(start, thesis.length);
-    }
+ async function getThesis([start, end])
+ {
+   /*
+       return await getJson(SERVER_URL+ !!!! NOME API !!!!)
+                   .then(json => {ok: json, err: null})
+                   .catch(err => {ok: null, err: err})
+   */
 
-    async function getThesisNumber()
-    {
-        /*
-          return await getJson(SERVER_URL+ !!!! NOME API !!!!)
-                      .then(json => {ok: json, err: null})
-                      .catch(err => {ok: null, err: err})
-      */
+   return end < thesis.length ? thesis.slice(start, end+1) : thesis.slice(start, thesis.length);
+ }
 
-        //MOC
-        return thesis.length;
-    }
+ async function getThesisNumber()
+ {
+     /*
+       return await getJson(SERVER_URL+ !!!! NOME API !!!!)
+                   .then(json => {ok: json, err: null})
+                   .catch(err => {ok: null, err: err})
+   */
 
-  const API = {getAllThesis, getThesis, getThesisNumber};
-  export default API;
+     //MOC
+     return thesis.length;
+ }
+
+const API = {getAllThesis, getThesis, getThesisNumber};

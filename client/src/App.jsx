@@ -3,14 +3,15 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Link, Routes, Route, Outlet, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
-
-// import { API } from './API';
-
+import API from './API.js';
+import API_TEST from './API_TEST.js';
 import { CustomNavbar, NotFoundPage, userContext } from './components/Utils';
 import { ThesisList } from './components/ThesisList/ThesisList';
 import { Login } from './components/Login';
 
 function App() {
+  console.log("a")
+  console.log("b")
   return (
     <BrowserRouter>
       <Main />
@@ -24,6 +25,11 @@ function App() {
  * a BrowserRouter component, giving it the possibility of using the useNavigate hook.
  */
 function Main() {
+  /** SAMPLE CODE
+    * newDoc = NewDocModel{ ... data ...}
+    * API.insert_test(newDoc);
+  */
+
   const [user, setUser] = useState({});
   const [date, setDate] = useState(dayjs().format('YYYY-MM-DD'));
 
