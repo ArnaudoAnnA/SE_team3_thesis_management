@@ -18,26 +18,21 @@ const db = getFirestore(app);
 
 // COLLECTIONS' REFERENCES
 // example const citiesRef = collection(db, "cities");
-const studentRef = collection(db, "student");
-const teacherRef = collection(db, "teacher");
-const degreeRef = collection(db, "degree");
-const careerRef = collection(db, "career");
+const asdRef = collection(db, "asd");
 
 // Get a list of cities from your database
-const insert_test = async function test () {
-    const obj = {
-      user: "Hello"
-    };
-    const colRef = collection(db, "asd")
-    addDoc(colRef, obj)
-    .then((docRef) => {
-      console.log("Document written with ID: ", docRef.id);
-      return docRef.id;
-    })
-    .catch((error) => {
-      console.error("Error adding document: ", error);
-      return null;
-    });
+const insert_test = async function test (obj, colRef=asdRef) {
+  // validate object
+  
+  addDoc(colRef, obj)
+  .then((docRef) => {
+    console.log("Document written with ID: ", docRef.id);
+    return docRef.id;
+  })
+  .catch((error) => {
+    console.error("Error adding document: ", error);
+    return null;
+  });
 }
 
 const insert_unique_test = async function test (id) {
@@ -102,6 +97,8 @@ const delete_test = async function delete_test (id) {
     return;
   }
 }
+
+
 
 // ADD ALL API FUNCTIONS HERE
 const API_TEST = {

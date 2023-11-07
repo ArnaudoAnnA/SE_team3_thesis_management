@@ -22,6 +22,8 @@ const studentsRef = collection(db, "students");
 const teachersRef = collection(db, "teachers");
 const degreesRef = collection(db, "degrees");
 const careersRef = collection(db, "careers");
+const thesisProposalsRef = collection(db, "thesisProposals");
+const applicationsRef = collection(db, "applications");
 
 // ADD ALL API FUNCTIONS HERE
 const API = {
