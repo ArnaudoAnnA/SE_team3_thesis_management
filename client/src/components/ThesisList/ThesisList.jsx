@@ -12,22 +12,30 @@ import { ThesisTable } from "./ThesisTable";
 function ThesisList(props)
 {
     /*--------------- COSTANTS ------------------*/
-    const entry_per_page = 5;
+    
 
     /*--------------- STATES ------------------*/
-    const [data, setData] = useState([]);
+    //const [entry_per_page, setEntry_per_page] = useState(0);
     const [page, setPage] = useState(1);
-    const [filters, setFilters] = useState({searchKeyword: ""}); /*TO DO: add filters */ 
     const [n_pages, setN_pages] = useState(0);
+    const [data, setData] = useState([]);
+    const [filters, setFilters] = useState({searchKeyWord: ""}); /*TO DO: add filters */ 
 
     /*--------------- VARIABLES ------------------*/
+    let entry_per_page = Math.floor(window.innerHeight / 100);
 
     /*-----------------------------------------*/
+
+    /*
+    useEffect(() => 
+    {
+        setEntry_per_page(Math.floor(window.innerHeight / 60));
+    }, [window.innerHeight]);*/
 
     useEffect(()=>
     {
         /* TO DO: call a different API basing on the applyied filter */
-        API.getThesis(get_index_range_of_page(page, entry_per_page))
+        API.getThesis(filters, get_index_range_of_page(page, entry_per_page))
         .then(d => setData(d))
         .catch();  // TO DO: define global error state
 
@@ -35,7 +43,7 @@ function ThesisList(props)
         .then(n => setN_pages(n/entry_per_page + (n%entry_per_page == 0 ? 0 : 1)))
         .catch();  // TO DO: define global error state
 
-    }, [page, filters]);
+    }, [page, filters, entry_per_page]);
 
     return (
         <>

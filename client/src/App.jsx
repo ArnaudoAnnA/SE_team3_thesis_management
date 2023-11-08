@@ -7,6 +7,7 @@ import API from './API.js';
 import API_TEST from './API_TEST.js';
 import { CustomNavbar, NotFoundPage, userContext } from './components/Utils';
 import { ThesisList } from './components/ThesisList/ThesisList';
+import { ThesisDetails } from './components/ThesisList/ThesisDetails.jsx';
 import { Login } from './components/Login';
 import { InsertProposalForm } from './components/InsertProposalForm.jsx';
 
@@ -67,6 +68,7 @@ function Main() {
           <Route path='/proposal' element={<InsertProposalForm />} />
           
           <Route path='/thesis' element={<ThesisList />} />
+          <Route path='/thesis/:id' element={<ThesisDetails />} />
 
         </Route>
         <Route path='*' element={<NotFoundPage />} />

@@ -55,7 +55,7 @@ const applicationsRef = collection(db, "applications");
    * - ok, contains the json obj in case of success, otherwise null;
    * - err, contains some details in case of error, otherwise null.
   */
- async function getThesis([start, end])
+ async function getThesis(filters, [start, end])
  {
    /*
        return await getJson(SERVER_URL+ !!!! NOME API !!!!)
@@ -63,7 +63,16 @@ const applicationsRef = collection(db, "applications");
                    .catch(err => {ok: null, err: err})
    */
 
-   return end < thesis.length ? thesis.slice(start, end+1) : thesis.slice(start, thesis.length);
+    let thesis_filtered = thesis.filter(
+      t => {
+        let ret = false;
+        for (let prop in t)
+        {
+          if (typeof t[prop] === "string" && t[prop].includes(filters.searchKeyWord)) return true;
+        }
+      });
+
+   return end < thesis_filtered.length ? thesis_filtered.slice(start, end+1) : thesis_filtered.slice(start, thesis_filtered.length);
  }
 
  async function getThesisNumber()
@@ -78,6 +87,18 @@ const applicationsRef = collection(db, "applications");
      return thesis.length;
  }
 
-const API = {getAllThesis, getThesis, getThesisNumber};
+ async function getThesisWithId(id)
+ {
+     /*
+       return await getJson(SERVER_URL+ !!!! NOME API !!!!)
+                   .then(json => {ok: json, err: null})
+                   .catch(err => {ok: null, err: err})
+   */
+
+     //MOC
+     return thesis.find(t => t.id === id);
+ }
+
+const API = {getAllThesis, getThesis, getThesisNumber, getThesisWithId};
 
 export default API;
