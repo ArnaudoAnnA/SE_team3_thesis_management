@@ -12,8 +12,7 @@ import { Login } from './components/Login';
 import { InsertProposalForm } from './components/InsertProposalForm.jsx';
 
 function App() {
-  console.log("a")
-  console.log("b")
+  // DO NOT WRITE HERE, use Main instead
   return (
     <BrowserRouter>
       <Main />
@@ -34,23 +33,23 @@ function Main() {
 
   const [user, setUser] = useState({});
   const [date, setDate] = useState(dayjs().format('YYYY-MM-DD'));
+  useEffect(() => {
+    API.getVirtualDate().then((date) => {
+      console.log("oggi", date);
+      setDate(dayjs(date).format('YYYY-MM-DD'));
+    }
+    ).catch((err) => {
+      console.error(err.error);
+    });
+  }, [date]);
 
-  // useEffect(() => {
-  //   API.getDate().then((date) => {
-  //     setDate(date);
-  //   }
-  //   ).catch((err) => {
-  //     console.error(err.error);
-  //   });
-  // }, [date]);
-
-  const changeDate = (newDate) => {
-    // API.changeDate(newDate).then(() => {
-    //   setDate(newDate);
-    // }).catch((err) => {
-    //   console.error(err.error);
-    // }
-    // );
+  const changeVirtualDate = (newDate) => {
+    API.changeVirtualDate(newDate).then(() => {
+      setDate(newDate);
+    }).catch((err) => {
+      console.error(err.error);
+    }
+    );
   }
 
   const logout = () => {
@@ -60,13 +59,12 @@ function Main() {
   return (
     <userContext.Provider value={user}>
       <Routes>
-        <Route path='/' element={<Header logoutCbk={logout} changeDateCbk={changeDate} />}>
+        <Route path='/' element={<Header logoutCbk={logout} date={date} changeDateCbk={changeVirtualDate} />}>
 
           {user.email ? <Route path='' element={<Home />} /> :
-            <Route path='' element={<Login />} />}  {/** TODO change to Login after Login component implemented  */}
+            <Route path='' element={<Login />} />}
           {/** Add here other routes */}
           <Route path='/proposal' element={<InsertProposalForm />} />
-          
           <Route path='/thesis' element={<ThesisList />} />
           <Route path='/thesis/:id' element={<ThesisDetails />} />
 
@@ -81,6 +79,7 @@ function Main() {
  * Header of the app, containing the navbar
  * 
  * @param props.logoutCbk callback to perform the user logout
+ * @param props.date the setted date
  * @param props.changeDateCbk callback to change the date
  *  
  * @returns 
@@ -88,7 +87,7 @@ function Main() {
 
 function Header(props) {
   return <>
-    <CustomNavbar logoutCbk={props.logoutCbk} changeDate={props.changeDateCbk} />
+    <CustomNavbar logoutCbk={props.logoutCbk} date={props.date} changeDateCbk={props.changeDateCbk} />
     <Outlet />
   </>
 }
@@ -98,7 +97,7 @@ function Header(props) {
  */
 
 function Home() {
-  
+
 }
 
 export default App

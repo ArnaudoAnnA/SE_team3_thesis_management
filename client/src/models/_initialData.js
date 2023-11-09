@@ -7,6 +7,12 @@ import Degree from "./Degree.js";
 
 import dayjs from "dayjs";
 
+export const date = [
+  {
+    date: dayjs("2021-09-01T00:00:00Z").format("YYYY-MM-DD")
+  }
+];
+
 export const students = [
   {
     id: "s123456",
@@ -162,8 +168,9 @@ export const degrees = [
     codDegree: 'EF456GH',
     titleDegree: 'Bachelor of Design in Industrial Design'
   },
-  { codDegree: 'IJ789KL', 
-    titleDegree: 'Bachelor of Architecture' 
+  {
+    codDegree: 'IJ789KL',
+    titleDegree: 'Bachelor of Architecture'
   },
   {
     codDegree: 'MN012OP',
@@ -257,9 +264,8 @@ const generateThesisProposals = () => {
       const title = `Thesis Proposal ${++thesisProposalIndex}`;
       const type = Math.random() < 0.5 ? "academic research" : "stage";
       const description = `Description for Thesis Proposal ${i + 1}`;
-      const requiredKnowledge = `Required knowledge for Thesis Proposal ${
-        i + 1
-      }`;
+      const requiredKnowledge = `Required knowledge for Thesis Proposal ${i + 1
+        }`;
       const level = Math.random() < 0.5 ? "master" : "bachelor";
       const programmes = `Programmes for Thesis Proposal ${i + 1}`;
       const expirationDate = getRandomDate();
@@ -289,14 +295,14 @@ const generateThesisProposals = () => {
 export const thesisProposals = generateThesisProposals();
 
 export const applications = [
-  {"studentId": "s123456", "thesisId": 2, "accepted": true, "curriculum": null, "date": dayjs("2022-08-15T12:30:00Z").toISOString()},
-  {"studentId": "s234567", "thesisId": 7, "accepted": false, "curriculum": null, "date": dayjs("2023-02-20T09:45:00Z").toISOString()},
-  {"studentId": "s345678", "thesisId": 4, "accepted": true, "curriculum": null, "date": dayjs("2022-11-10T15:20:00Z").toISOString()},
-  {"studentId": "s567890", "thesisId": 1, "accepted": false, "curriculum": null, "date": dayjs("2023-05-05T18:10:00Z").toISOString()},
-  {"studentId": "s678901", "thesisId": 8, "accepted": true, "curriculum": null, "date": dayjs("2022-09-30T14:05:00Z").toISOString()},
-  {"studentId": "s678901", "thesisId": 3, "accepted": true, "curriculum": null, "date": dayjs("2022-06-22T10:55:00Z").toISOString()},
-  {"studentId": "s789012", "thesisId": 5, "accepted": false, "curriculum": null, "date": dayjs("2023-01-18T17:35:00Z").toISOString()},
-  {"studentId": "s789012", "thesisId": 0, "accepted": true, "curriculum": null, "date": dayjs("2022-12-05T16:40:00Z").toISOString()},
-  {"studentId": "s901234", "thesisId": 9, "accepted": true, "curriculum": null, "date": dayjs("2022-07-12T13:15:00Z").toISOString()},
-  {"studentId": "s901234", "thesisId": 6, "accepted": false, "curriculum": null, "date": dayjs("2023-03-28T11:25:00Z").toISOString()}
+  { "studentId": "s123456", "thesisId": 2, "accepted": true, "curriculum": null, "date": dayjs("2022-08-15T12:30:00Z").toISOString() },
+  { "studentId": "s234567", "thesisId": 7, "accepted": false, "curriculum": null, "date": dayjs("2023-02-20T09:45:00Z").toISOString() },
+  { "studentId": "s345678", "thesisId": 4, "accepted": true, "curriculum": null, "date": dayjs("2022-11-10T15:20:00Z").toISOString() },
+  { "studentId": "s567890", "thesisId": 1, "accepted": false, "curriculum": null, "date": dayjs("2023-05-05T18:10:00Z").toISOString() },
+  { "studentId": "s678901", "thesisId": 8, "accepted": true, "curriculum": null, "date": dayjs("2022-09-30T14:05:00Z").toISOString() },
+  { "studentId": "s678901", "thesisId": 3, "accepted": true, "curriculum": null, "date": dayjs("2022-06-22T10:55:00Z").toISOString() },
+  { "studentId": "s789012", "thesisId": 5, "accepted": false, "curriculum": null, "date": dayjs("2023-01-18T17:35:00Z").toISOString() },
+  { "studentId": "s789012", "thesisId": 0, "accepted": true, "curriculum": null, "date": dayjs("2022-12-05T16:40:00Z").toISOString() },
+  { "studentId": "s901234", "thesisId": 9, "accepted": true, "curriculum": null, "date": dayjs("2022-07-12T13:15:00Z").toISOString() },
+  { "studentId": "s901234", "thesisId": 6, "accepted": false, "curriculum": null, "date": dayjs("2023-03-28T11:25:00Z").toISOString() }
 ]

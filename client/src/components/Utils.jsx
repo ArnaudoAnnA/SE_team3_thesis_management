@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "react";
 import { Alert, Button, Container, Col, Row, Card, Form, Navbar, Nav } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import validator from "validator";
+import dayjs from "dayjs";
 
 /** Context used to propagate the user object */
 const userContext = createContext();
@@ -9,30 +10,38 @@ const userContext = createContext();
 /**
  * A custom navigation bar at the top of the app.
  * 
- * @param props.user object with all the currently logged in user's info
  * @param props.logoutCbk callback to perform the actual logout
+ * @param props.date the setted date
  * @param props.changeDateCbk callback to change the date
  */
 
 function CustomNavbar(props) {
     const user = useContext(userContext);
+    const [date, setDate] = useState(props.date);
+
+    function handleSubmit(event) {
+        event.preventDefault();
+        props.changeDateCbk(dayjs(date).format('YYYY-MM-DD'));
+    }
     return (
         <>
-            <Navbar sticky="top" expand="lg" className='colorNav1' variant="dark">
+            {/* Top banner with logo and app name */}
+            <Navbar expand="lg" className='bluePoli' variant="dark">
                 <Navbar.Brand>
                     <img src="https://drive.google.com/uc?export=download&id=1HTuSShZT0omPheSlNEMBWKPypY8OeaOY" width="55" height="55" style={{ marginRight: '5px' }} alt="" />
                     Thesis Management
                 </Navbar.Brand>
             </Navbar>
+            {/* App main navbar */}
             {true ? // TODO change to user.email
-                <Navbar sticky="top" expand="lg" className='colorNav2 mb-3 shadow' collapseOnSelect>
+                <Navbar sticky="top" expand="lg" className='orangePoli mb-3 shadow' collapseOnSelect>
                     <Navbar.Toggle aria-controls="navbar-nav" />
                     <Navbar.Collapse>
                         <Nav>
                             <Nav.Link as={Link} to={"/"} className="white">Home</Nav.Link>
                             {true ?  // TODO change to user.role === "professor"
                                 <>
-                                    <Nav.Link as={Link} to={"/"} className="white">Thesis</Nav.Link>
+                                    <Nav.Link as={Link} to={"/thesis"} className="white">Thesis</Nav.Link>
                                     <Nav.Link as={Link} to={"/"} className="white">Archive</Nav.Link>
                                     <Nav.Link as={Link} to={"/"} className="white">Applications</Nav.Link>
 
@@ -49,6 +58,25 @@ function CustomNavbar(props) {
                     </div>
                 </Navbar>
                 : null}
+
+            {/* Virtual clock, just for testing */}
+            <Navbar >
+                <Form onSubmit={handleSubmit}>
+                    <Row>
+                        <Form.Group as={Col}>
+                            <Form.Control
+                                type="date"
+                                onChange={event => { setDate(event.target.value); }} />
+                        </Form.Group>
+                        <Form.Group as={Col}>
+                            <Button className="bluePoli" style={{ border: 'none' }} type="submit" >
+                                Time travel
+                                <img src="https://drive.google.com/uc?export=download&id=1EMkvkiqkf9EoBiiKBo0kv4xgJEMtmytf" width="40" style={{ marginLeft: '5px' }} />
+                            </Button>
+                        </Form.Group>
+                    </Row>
+                </Form>
+            </Navbar>
         </>
     );
 }
