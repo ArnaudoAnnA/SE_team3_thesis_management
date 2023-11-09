@@ -96,7 +96,7 @@ const applicationsRef = collection(db, "applications");
    */
 
      //MOC
-     return thesis.find(t => t.id === id);
+     return thesis.find(t => t.id == id);
  }
 
 const API = {getAllThesis, getThesis, getThesisNumber, getThesisWithId};

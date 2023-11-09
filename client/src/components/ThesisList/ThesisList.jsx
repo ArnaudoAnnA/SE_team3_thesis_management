@@ -26,12 +26,6 @@ function ThesisList(props)
 
     /*-----------------------------------------*/
 
-    /*
-    useEffect(() => 
-    {
-        setEntry_per_page(Math.floor(window.innerHeight / 60));
-    }, [window.innerHeight]);*/
-
     useEffect(()=>
     {
         /* TO DO: call a different API basing on the applyied filter */

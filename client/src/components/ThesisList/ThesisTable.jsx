@@ -34,8 +34,6 @@ function thesis_obj_to_array(obj, columns)
  */
 function row_field_to_link(row_id, field_name, field_content)
 {
-    //TO DO: mark visited links
-    if (field_name == "title") return <Link to={`/thesis/${row_id}`}>{field_content}</Link> 
     // TO DO: add links to professor, group, ...
     
     return field_content;
@@ -50,7 +48,7 @@ function ThesisRow(props)
     let row = thesis_obj_to_array(props.row, props.columns); //ATTENTION: each prop of the object which does not correspond to a column (id included) would not be present in the array called "row"
 
     return (
-        <tr key={props.row.id}>
+        <tr key={props.row.id} onClick={() => navigate(`/thesis/${props.row.id}`)}>
             {
                 row.map((c,i) => <td key={c}>{row_field_to_link(props.row.id, props.columns[i].DBfield, c)}</td>)
             }
@@ -75,7 +73,7 @@ function ThesisTable(props)
 
     return (
         <>
-        <Table responsive>
+        <Table responsive hover>
             <thead>
                 <tr>
                     {
