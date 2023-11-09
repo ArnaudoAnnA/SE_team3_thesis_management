@@ -15,6 +15,7 @@ function InsertProposalForm(props) {
 
   function handleKeyDown(e){
     if(e.key !== 'Enter') return
+    e.preventDefault(); 
     const value = e.target.value
     if(!value.trim()) return
     setTags([...tags, value])
