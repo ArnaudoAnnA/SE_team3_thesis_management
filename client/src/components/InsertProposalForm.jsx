@@ -4,6 +4,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 /*npm install dayjs @mui/x-date-pickers @mui/material @emotion/styled @emotion/react    --save */
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useState, useMemo } from 'react';
+import { useCallback } from 'react';
+import { useDropzone } from 'react-dropzone';
+//import axios from 'axios';
 import Select from 'react-select'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import countryList from 'react-select-country-list';
@@ -81,11 +84,22 @@ function InsertProposalForm(props) {
     console.log(value.label);
   }
 
+  const onDrop = useCallback((acceptedFiles) => {
+    // Invia il file al server
+    /*const file = acceptedFiles[0];
+    const formData = new FormData();
+    formData.append('file', file);
+
+    axios.post('/upload', formData).then((response) => {
+      // Gestisci la risposta dal server se necessario
+      console.log('File caricato con successo:', response.data);
+    });*/
+  }, []);
+
   const handleSubmit = (event) => {
 
     event.preventDefault();
     var nomeRegex = /^[A-Za-z]+$/; // Il nome deve contenere solo lettere
-    var cognomeRegex = /^[A-Za-z]+$/; // Il cognome deve contenere solo lettere
     var mailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/; // Verifica un formato email semplice
     var idRegex = /^\d+$/; // L'ID deve contenere solo cifre
 
@@ -115,14 +129,38 @@ function InsertProposalForm(props) {
       return false;
     }
 
+    if (nation === '') {
+      setErrorMsg('Insert a nationality!');
+      return false;
+    }
+    if (pname === '') {
+      setErrorMsg('Insert a professor!');
+      return false;
+    }
+
+    if (title === '') {
+      setErrorMsg('Insert a professor!');
+      return false;
+    }
+
+    if (description === '') {
+      setErrorMsg('Insert a description!');
+      return false;
+    }
+
   // Esegui i controlli
   if (!name.match(nomeRegex)) {
     setErrorMsg('Not valid name data!');
     return false;
   }
 
-  if (!surname.match(cognomeRegex)) {
+  if (!surname.match(Regex)) {
     setErrorMsg('Not valid surname data!');
+    return false;
+  }
+
+  if (!pname.match(Regex)) {
+    setErrorMsg('Not valid professor name!');
     return false;
   }
 
@@ -143,6 +181,9 @@ function InsertProposalForm(props) {
 
   };
    
+
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
      
       return (
         <Container>
@@ -182,7 +223,7 @@ function InsertProposalForm(props) {
                           </div>
                           <input style={{borderRadius: "6px"}} name="" class="form-control" placeholder="Surname" type="text" value={surname} onChange={handleSurNameChange}/>
                       </div>
-                      <div class="form-group input-group">
+                      <div class="form-group input-group" style={{marginTop: "2px", marginBottom: "2px"}}>
                           <div class="input-group-prepend">
                       <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight:"1vw"}} width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
                         <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
@@ -298,7 +339,13 @@ function InsertProposalForm(props) {
                           cols="50"
                           placeholder="Insert your thesis description.."
                         />
-                      </div>                                  
+                      </div> 
+                      <div>
+                      <div {...getRootProps()} className="dropzone" style={{border: "2px dashed #cccccc", padding: "20px", textAlign: " center", cursor: "pointer", marginTop: "30px"}}>
+                        <input {...getInputProps()} />
+                        <p>Click here to insert your CV here, or drag it.</p>
+                      </div>
+                    </div>                             
                       <div class="form-group" style={{marginTop: "2vh", display: 'flex'}}>
                           <Button style={{marginLeft: "auto", marginRight:"auto",  width: "180px", marginBottom: '10px'}} type="submit" class="btn btn-primary btn-block" onClick={handleSubmit}> Send Proposal  </Button>
                       </div>     
