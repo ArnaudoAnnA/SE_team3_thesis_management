@@ -11,6 +11,8 @@ import { ThesisDetails } from './components/ThesisList/ThesisDetails.jsx';
 import { Login } from './components/Login';
 import { InsertProposalForm } from './components/InsertProposalForm.jsx';
 
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
 function App() {
   // DO NOT WRITE HERE, use Main instead
   return (
@@ -33,6 +35,29 @@ function Main() {
 
   const [user, setUser] = useState({});
   const [date, setDate] = useState(dayjs().format('YYYY-MM-DD'));
+
+  const auth = getAuth();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        try {
+          // console.log("Currently logged")
+          // console.log({email: currentUser.email})
+          setUser({email: currentUser.email})
+          // if (currentUser.emailVerified) {
+          //   const userInfo = await API.getUser(currentUser.email);
+          //   setAuthUser(userInfo);
+          // }
+        } catch (err) {
+          console.log("Not logged")
+          console.log(err)
+        }
+      }
+    })
+  }, [auth]);
+
+
   useEffect(() => {
     API.getVirtualDate().then((date) => {
       console.log("oggi", date);
@@ -54,13 +79,14 @@ function Main() {
 
   const logout = () => {
     // TODO implement logout
+    API.logOut()
+    setUser({})
   }
 
   return (
     <userContext.Provider value={user}>
       <Routes>
         <Route path='/' element={<Header logoutCbk={logout} date={date} changeDateCbk={changeVirtualDate} />}>
-
           {user.email ? <Route path='' element={<Home />} /> :
             <Route path='' element={<Login />} />}
           {/** Add here other routes */}
