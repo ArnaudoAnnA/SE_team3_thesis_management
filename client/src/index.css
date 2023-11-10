@@ -16,14 +16,24 @@ body {
 
 /*BEGINNING OF MEDIA QUERY INSERT PROPOSAL*/
 
-@media only screen and (max-width: 910px) {
+.proposal-article{
 
+  box-shadow: 0 6px 9px rgba(0, 0, 0, 0.545);
+  transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out !important;
+}
+
+@media only screen and (max-width: 1275px) {
+
+  .MuiButtonBase-root{
+
+    margin-right: 1vw !important;
+
+  }
 
   .MuiOutlinedInput-root {
 
     width: 20vw; 
-    height: 8vh;
-
+    padding: 0px !important;
     margin-left: auto;
     margin-right: auto;
     font-size: 13px !important;
@@ -45,11 +55,15 @@ body {
   .MuiOutlinedInput-root {
 
     width: 210px; 
-    height: 4vh;
     padding: 0px; 
     margin-left: auto;
     margin-right: auto;
     font-size: 16px !important;
+
+  }
+  .MuiButtonBase-root{
+
+    margin-right: 1vw !important;
 
   }
 }
@@ -70,13 +84,26 @@ body {
  
   .MuiOutlinedInput-root {
 
-    width: 110px; 
-    height: 4vh;
+    width: 130px; 
+    height: 6vw;
     padding: 0px; 
     margin-left: auto;
     margin-right: auto;
     font-size: 12px !important;
 
+  }
+  .MuiInputBase-input{
+
+    font-size: 10px !important;
+
+
+  }
+
+  .MuiSvgIcon-root{
+
+    width: 5vw !important;
+    height: 5vw !important;
+    padding-left: 2vw !important;
   }
 
   .text-center {
@@ -102,9 +129,9 @@ body {
   }
 
 
-  .btn-primary {
-    width: 100%; 
-    font-size: 9px;
+  #sendpb {
+    width: 50% !important; 
+    font-size: 8px !important;
   }
 }
 
