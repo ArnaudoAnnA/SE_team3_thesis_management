@@ -1,5 +1,5 @@
 
-import {Table} from 'react-bootstrap';
+import {Table, Row} from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowDown, ArrowUp } from 'react-bootstrap-icons';
 
@@ -73,7 +73,7 @@ function ThesisTable(props)
 
     return (
         <>
-        <Table responsive hover overflow>
+        <Table responsive hover style={{minWidth: "700px"}}>
             <thead>
                 <tr>
                     {
