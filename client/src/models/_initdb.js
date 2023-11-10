@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { collection, addDoc, getFirestore, query, limit, getDocs, deleteDoc } from 'firebase/firestore';
-import { applications, degrees, students, careers, teachers, thesisProposals } from './_initialData.js';
+import { applications, degrees, students, careers, teachers, thesisProposals, date } from './_initialData.js';
+import dayjs from 'dayjs';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCu5cRTSa5Ezg4DNIiKDfLQfQ-kDTHo4iI",
@@ -62,6 +63,7 @@ async function deleteQueryBatch(q, resolve) {
 
 
 // Delete all collections
+await deleteCollection(db, "date");
 await deleteCollection(db, "students");
 await deleteCollection(db, "applications");
 await deleteCollection(db, "career");
@@ -70,6 +72,7 @@ await deleteCollection(db, "teachers");
 await deleteCollection(db, "thesisProposals");
 
 // Import data to firestore
+await populateCollection(db, date, 'date');
 await populateCollection(db, students, 'students');
 await populateCollection(db, teachers, 'teachers');
 await populateCollection(db, degrees, 'degrees');
