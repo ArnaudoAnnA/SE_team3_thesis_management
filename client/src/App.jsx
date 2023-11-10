@@ -34,7 +34,7 @@ function Main() {
   */
 
   const [user, setUser] = useState({});
-  const [date, setDate] = useState(dayjs().format('YYYY-MM-DD'));
+  const [date, setDate] = useState(null);
 
   const auth = getAuth();
 
@@ -59,13 +59,14 @@ function Main() {
 
 
   useEffect(() => {
-    API.getVirtualDate().then((date) => {
-      console.log("oggi", date);
-      setDate(dayjs(date).format('YYYY-MM-DD'));
+    if (date === null) {
+      API.getVirtualDate().then((date) => {
+        setDate(dayjs(date).format('YYYY-MM-DD'));
+      }
+      ).catch((err) => {
+        console.error(err.error);
+      });
     }
-    ).catch((err) => {
-      console.error(err.error);
-    });
   }, [date]);
 
   const changeVirtualDate = (newDate) => {
@@ -85,18 +86,21 @@ function Main() {
 
   return (
     <userContext.Provider value={user}>
-      <Routes>
-        <Route path='/' element={<Header logoutCbk={logout} date={date} changeDateCbk={changeVirtualDate} />}>
-          {user.email ? <Route path='' element={<Home />} /> :
-            <Route path='' element={<Login />} />}
-          {/** Add here other routes */}
-          <Route path='/proposal' element={<InsertProposalForm />} />
-          <Route path='/thesis' element={<ThesisList />} />
-          <Route path='/thesis/:id' element={<ThesisDetails />} />
+      {date === null ? null :
+        <Routes>
+          <Route path='/' element={<Header logoutCbk={logout} date={date} changeDateCbk={changeVirtualDate} />}>
 
-        </Route>
-        <Route path='*' element={<NotFoundPage />} />
-      </Routes>
+            {user.email ? <Route path='' element={<Home />} /> :
+              <Route path='' element={<Login />} />}
+            {/** Add here other routes */}
+            <Route path='/proposal' element={<InsertProposalForm />} />
+            <Route path='/thesis' element={<ThesisList />} />
+            <Route path='/thesis/:id' element={<ThesisDetails />} />
+
+          </Route>
+          <Route path='*' element={<NotFoundPage />} />
+        </Routes>
+      }
     </userContext.Provider>
   );
 }

@@ -23,6 +23,7 @@ function Login(props) {
         const e = { email, password };
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
+
         // Form validation
         if (email === '' && password != '') {
             setErrorMsg('Empty E-Mail field!');
@@ -77,12 +78,12 @@ function Login(props) {
     }
 
     return (
-
-        <Container style={{ display: "flex", flexDirection: "column" }}>
-            <h1>Welcome! Please insert your e-mail and password to login</h1>
-
-            {errorMsg ? <Alert style={{ width: "20vw", marginLeft: "27vw", marginTop: "2vh" }} variant='danger' onClose={() => setErrorMsg('')} dismissible>{errorMsg}</Alert> : false}
-            <Form onSubmit={handleSubmit} style={{ marginLeft: "27vw", marginTop: "5vh" }}>
+      
+        <Container style={{display: "flex", flexDirection:"column"}}>
+         <h1 style={{marginLeft: "auto", marginRight: "auto", marginTop: "10px"}}>Welcome! Please insert your e-mail and password to login</h1>
+       
+        {errorMsg? <Alert style={{width:"20vw", marginLeft: "27vw", marginTop: "2vh"}} variant='danger' onClose={()=>setErrorMsg('')} dismissible>{errorMsg}</Alert> : false }
+        <Form onSubmit={handleSubmit} style={{marginLeft: "27vw", marginTop: "5vh" }}>
 
                 <Form.Group>
                     <Form.Label>E-mail  </Form.Label>
@@ -90,15 +91,15 @@ function Login(props) {
                 </Form.Group>
 
 
-                <Form.Group controlId="formBasicPassword"  >
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control style={{ width: "20vw" }} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                </Form.Group>
-
-
-                <Button type='submit' variant="primary" style={{ marginTop: "10px" }} value="login">Login</Button>
-                <Button variant='warning' style={{ marginTop: "10px" }} >Cancel</Button>
-
+        <Form.Group controlId="formBasicPassword"  >
+                <Form.Label>Password</Form.Label>
+                <Form.Control style={{width:"20vw"}} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            </Form.Group>
+         
+ 
+            <Button type='submit' variant="dark" style={{marginTop: "10px"}}>Login</Button>
+            <Button variant='warning' style={{marginTop: "10px"}} >Cancel</Button>
+       
 
             </Form>
 
