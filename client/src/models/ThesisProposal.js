@@ -1,4 +1,4 @@
-export default function ThesisProposal(title, teacherId, type, description, requiredKnowledge, level, programmes, expirationDate, coSupervisors = [], keywords = [], notes = '') {
+export default function ThesisProposal(title, teacherId, type, description, requiredKnowledge, level, programmes, expirationDate, coSupervisors = [], keywords = [], groups = [], notes = '') {
     this.title = title;
     this.teacherId = teacherId;
     this.type = type;
@@ -9,6 +9,7 @@ export default function ThesisProposal(title, teacherId, type, description, requ
     this.expirationDate = expirationDate;
     this.coSupervisors = coSupervisors;
     this.keywords = keywords;
+    this.groups = groups;
     this.notes = notes;
 
     this.parse = function () {
@@ -23,6 +24,7 @@ export default function ThesisProposal(title, teacherId, type, description, requ
             expirationDate: this.expirationDate,
             coSupervisors: this.coSupervisors,
             keywords: this.keywords,
+            groups: this.groups,
             notes: this.notes
         }
     }
