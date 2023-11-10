@@ -5,4 +5,15 @@ export default function Career(id, codCourse, titleCourse, cfu, grade, date) {
     this.cfu = cfu;
     this.grade = grade;
     this.date = date;
+
+    this.parse = function () {
+        return {
+            id: this.id,
+            codCourse: this.codCourse,
+            titleCourse: this.titleCourse,
+            cfu: this.cfu,
+            grade: this.grade,
+            date: this.date
+        }
+    }
 }

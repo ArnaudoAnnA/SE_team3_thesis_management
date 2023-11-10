@@ -11,6 +11,8 @@ import { ThesisDetails } from './components/ThesisList/ThesisDetails.jsx';
 import { Login } from './components/Login';
 import { InsertProposalForm } from './components/InsertProposalForm.jsx';
 
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
 function App() {
   // DO NOT WRITE HERE, use Main instead
   return (
@@ -32,15 +34,39 @@ function Main() {
   */
 
   const [user, setUser] = useState({});
-  const [date, setDate] = useState(dayjs().format('YYYY-MM-DD'));
+  const [date, setDate] = useState(null);
+
+  const auth = getAuth();
+
   useEffect(() => {
-    API.getVirtualDate().then((date) => {
-      console.log("oggi", date);
-      setDate(dayjs(date).format('YYYY-MM-DD'));
+    onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        try {
+          // console.log("Currently logged")
+          // console.log({email: currentUser.email})
+          setUser({email: currentUser.email})
+          // if (currentUser.emailVerified) {
+          //   const userInfo = await API.getUser(currentUser.email);
+          //   setAuthUser(userInfo);
+          // }
+        } catch (err) {
+          console.log("Not logged")
+          console.log(err)
+        }
+      }
+    })
+  }, [auth]);
+
+
+  useEffect(() => {
+    if (date === null) {
+      API.getVirtualDate().then((date) => {
+        setDate(dayjs(date).format('YYYY-MM-DD'));
+      }
+      ).catch((err) => {
+        console.error(err.error);
+      });
     }
-    ).catch((err) => {
-      console.error(err.error);
-    });
   }, [date]);
 
   const changeVirtualDate = (newDate) => {
@@ -54,23 +80,27 @@ function Main() {
 
   const logout = () => {
     // TODO implement logout
+    API.logOut()
+    setUser({})
   }
 
   return (
     <userContext.Provider value={user}>
-      <Routes>
-        <Route path='/' element={<Header logoutCbk={logout} date={date} changeDateCbk={changeVirtualDate} />}>
+      {date === null ? null :
+        <Routes>
+          <Route path='/' element={<Header logoutCbk={logout} date={date} changeDateCbk={changeVirtualDate} />}>
 
-          {user.email ? <Route path='' element={<Home />} /> :
-            <Route path='' element={<Login />} />}
-          {/** Add here other routes */}
-          <Route path='/proposal' element={<InsertProposalForm />} />
-          <Route path='/thesis' element={<ThesisList />} />
-          <Route path='/thesis/:id' element={<ThesisDetails />} />
+            {user.email ? <Route path='' element={<Home />} /> :
+              <Route path='' element={<Login />} />}
+            {/** Add here other routes */}
+            <Route path='/proposal' element={<InsertProposalForm />} />
+            <Route path='/thesis' element={<ThesisList />} />
+            <Route path='/thesis/:id' element={<ThesisDetails />} />
 
-        </Route>
-        <Route path='*' element={<NotFoundPage />} />
-      </Routes>
+          </Route>
+          <Route path='*' element={<NotFoundPage />} />
+        </Routes>
+      }
     </userContext.Provider>
   );
 }

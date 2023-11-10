@@ -4,6 +4,7 @@ import { thesis } from './MOCKS';
 
 import { initializeApp } from 'firebase/app';
 import { collection, addDoc, getFirestore, doc, query, getDocs, where, setDoc, deleteDoc, getDoc, limit } from 'firebase/firestore';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import dayjs from 'dayjs';
 
 //DO NOT CANCEL
@@ -18,6 +19,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+// Initialize Firebase Authentication and get a reference to the service
+const auth = getAuth(app);
 
 // IMPORTANT: add ALL API functions in the API object at the end of the file
 
@@ -120,6 +123,41 @@ const changeVirtualDate = async (date) => {
   await setDoc(doc(db, "date", firstDoc.id), dateData);
 }
 
-const API = { getAllThesis, getThesis, getThesisNumber, getThesisWithId, changeVirtualDate, getVirtualDate };
+const signUp = async(email, password) => {
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredentials) => {
+    console.log(userCredentials)
+    })
+    .catch((error) => {
+    console.log(error)
+    })
+  ;
+  
+}
+
+const logIn = async(email, password) => {
+  await signInWithEmailAndPassword(auth, email, password)
+    .then((userCredentials)=>{
+      console.log(userCredentials)
+      return userCredentials
+    })
+    .catch((error) => {
+      console.log(error)
+      return -1
+    })
+  ;
+}
+
+const logOut = async() => {
+  signOut(auth).then(() => {
+    console.log("signed out")
+  }).catch((error) => {
+    console.log(error)
+  })
+}
+
+const API = { getAllThesis, getThesis, getThesisNumber, getThesisWithId, changeVirtualDate, getVirtualDate,
+  signUp, logIn, logOut      
+};
 
 export default API;

@@ -10,4 +10,20 @@ export default function ThesisProposal(title, teacherId, type, description, requ
     this.coSupervisors = coSupervisors;
     this.keywords = keywords;
     this.notes = notes;
+
+    this.parse = function () {
+        return {
+            title: this.title,
+            teacherId: this.teacherId,
+            type: this.type,
+            description: this.description,
+            requiredKnowledge: this.requiredKnowledge,
+            level: this.level,
+            programmes: this.programmes,
+            expirationDate: this.expirationDate,
+            coSupervisors: this.coSupervisors,
+            keywords: this.keywords,
+            notes: this.notes
+        }
+    }
 }
