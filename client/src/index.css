@@ -13,3 +13,22 @@ body {
 .white {
   color: #ffffff;
 }
+
+/* If the screen size is smaller than 1200px, set the font-size to 12px */
+@media (max-width: 1199.98px) {
+  td {
+    font-size: 10px !important;
+  }
+
+  th {
+    font-size: 10px !important;
+  }
+}
+
+
+/* If the screen size is smaller than 1200px, set the font-size to 12px */
+@media (max-width: 1199.98px) {
+  * {
+    font-size: 12px;
+  }
+}

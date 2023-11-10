@@ -11,7 +11,18 @@ import { ThesisTable } from "./ThesisTable";
 
 function ThesisList(props)
 {
-    /*--------------- COSTANTS ------------------*/
+    /* ------ COSTANTS ------------ */
+    const columns = [   //TO DO: dynamic width of columns
+        { DBfield: "title", title: "Title",  },
+        { DBfield: "supervisor", title: "Supervisor",  },
+        { DBfield: "coSupervisors", title: "Co-Supervisors",  },
+        { DBfield: "type", title: "Type",  },
+        { DBfield: "groups", title: "Groups",  },
+        { DBfield: "expirationDate", title: "Expiration date",  },
+        { DBfield: "level", title: "Level",  },
+        { DBfield: "programmes", title: "Programmes",  }
+        //further info in the thesis dedicated page
+    ];
     
 
     /*--------------- STATES ------------------*/
@@ -19,10 +30,49 @@ function ThesisList(props)
     const [page, setPage] = useState(1);
     const [n_pages, setN_pages] = useState(0);
     const [data, setData] = useState([]);
-    const [filters, setFilters] = useState({searchKeyWord: ""}); /*TO DO: add filters */ 
+    const [filters, setFilters] = useState({orderBy: columns.map(c => Object.assign({}, {field: c.DBfield, mode: "ASC"})) , 
+                                            searchKeyWord: ""}); /*TO DO: add filters */ 
 
     /*--------------- VARIABLES ------------------*/
     let entry_per_page = Math.floor(window.innerHeight / 100);
+
+
+    /*--------------- FUNCTIONS ------------------*/
+
+    /** Add a field to the ones which are currently considered for ordering.
+     * In particular, the field is added at the beginning of the list, so that it will
+     * be the first field in the ORDER BY clause of the db query.
+     * If the field was already present, this method siply moves it into the front of the list.
+     * 
+     * @param {string} field must be present in the columns array
+     * @param {bool} asc if true, the ordering is ascendant, otherwise descendant
+     */
+    function orderBy(field, asc)
+    {
+        if (!columns.find(f => f.DBfield == field)) { console.log(`invalid field passed to ThesisList::orderBy: ${field}`); return; }
+        if (typeof asc != "boolean") {console.log(`ThesisList::orderBy wants the second parameter to be a boolean (the value ${asc} has been passed)`); return;}
+
+        let new_orderBy = [ ...filters.orderBy];
+        let temp_index = new_orderBy.findIndex(o => o.field == field);
+        if (temp_index >= 0) new_orderBy.splice(temp_index, 1);
+        new_orderBy.unshift({field: field, mode: (asc ? "ASC" : "DESC")});
+
+        setFilters(f => Object.assign({}, f, {orderBy: new_orderBy}));
+    }
+
+    /**
+     * @param {string} field must be present in the columns array.
+     * 
+     * @returns "ASC" or "DESC"
+     */
+    function isOrderedBy(field)
+    {
+        if (!columns.find(f => f.DBfield == field)) { console.log(`invalid field passed to ThesisList::isOrderedBy(): ${field}`); return; }
+        let entry = filters.orderBy.find(c => c.field == field);
+        if(!entry) {console.log(`BUG: ThesisList::isOrderedBy() the field ${field} is a valid column, but it is not in the filters.orderBy array`); return;}
+
+        return entry.mode;
+    }
 
     /*-----------------------------------------*/
 
@@ -43,7 +93,7 @@ function ThesisList(props)
         <>
             <Container>
                 <FiltersForm filters={[filters, setFilters]}/>
-                <ThesisTable data={data}/>
+                <ThesisTable columns={columns} data={data} orderBy={orderBy} isOrderedBy={isOrderedBy}/>
                 <TablePagination active={[page, setPage]} n_pages={n_pages}/>
                 
             </Container>

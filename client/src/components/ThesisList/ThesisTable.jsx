@@ -1,6 +1,7 @@
 
 import {Table} from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
+import { ArrowDown, ArrowUp } from 'react-bootstrap-icons';
 
 
 
@@ -56,28 +57,27 @@ function ThesisRow(props)
     )
 }
 
+function InteractiveTh(props)
+{
+    return <th>
+        {props.col.title+"   "}
+        {props.isOrderedBy(props.col.DBfield) == "ASC" ? <ArrowDown onClick={() => props.orderBy(props.col.DBfield, false)} />
+                                                    : <ArrowUp onClick={() => props.orderBy(props.col.DBfield, true)} />} 
+    </th>
+}
+
 
 function ThesisTable(props)
 {
-    /* ------ COSTANTS ------------ */
-    const columns = [   //TO DO: dynamic width of columns
-        { DBfield: "title", title: "Title",  },
-        { DBfield: "supervisor", title: "Supervisor",  },
-        { DBfield: "co_supervisor", title: "Co-Supervisor",  },
-        { DBfield: "type", title: "Type",  },
-        { DBfield: "groups", title: "Groups",  },
-        { DBfield: "expiration", title: "Expiration",  },
-        { DBfield: "level", title: "Level",  }
-        //further info in the thesis dedicated page
-    ];
+    const columns = props.columns;
 
     return (
         <>
-        <Table responsive hover>
+        <Table responsive hover overflow>
             <thead>
                 <tr>
                     {
-                        columns.map( col => <th key={col.title}>{col.title}</th>)
+                        columns.map( col => <InteractiveTh key={col.title} col={col} orderBy={props.orderBy} isOrderedBy={props.isOrderedBy} />)
                     }
                 </tr>
             </thead>
