@@ -3,6 +3,7 @@ import { Alert, Button, Container, Col, Row, Card, Form, Navbar, Nav } from "rea
 import { Link, useNavigate } from "react-router-dom";
 import validator from "validator";
 import dayjs from "dayjs";
+import API from "../API";
 
 /** Context used to propagate the user object */
 const userContext = createContext();
@@ -66,6 +67,7 @@ function CustomNavbar(props) {
                         <Form.Group as={Col}>
                             <Form.Control
                                 type="date"
+                                value={date}
                                 onChange={event => { setDate(event.target.value); }} />
                         </Form.Group>
                         <Form.Group as={Col}>
