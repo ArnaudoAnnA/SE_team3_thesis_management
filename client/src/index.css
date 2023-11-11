@@ -383,6 +383,7 @@ body {
     width: 5vw ; 
     height: 5vw ;
     padding: 3px;
+    font-size: 16px;
   }
 
   .advanced-filters-col
@@ -399,6 +400,7 @@ body {
     width: 2vw ; 
     height: 2vw ;
     padding: 3px;
+    font-size: 18px;
   }
 
   .advanced-filters-col

@@ -99,23 +99,6 @@ async function getThesisWithId(id) {
   return thesis.find(t => t.id == id);
 }
 
-/** 
- * @param {string} DBfield 
- * @returns an array with all the possible values for the given field (appliable only on fields with restricted domain)
- */
-async function getOptionsValuesForField(DBfield)
-{
-  return "Impossible to load data";
-}
-
-/** 
- * @param {string} DBfield 
- * @returns an array with all the possible values for the given field (appliable only on fields with restricted domain)
- */
-async function getOptionsValuesForField(DBfield)
-{
-  return "Impossible to load data";
-}
 
 /**
 * Get the virtual date from the server
@@ -214,7 +197,7 @@ const retrieveCareer = async (studentId) => {
 }
 
 
-const API = { getAllThesis, getThesis, getThesisNumber, getThesisWithId, getOptionsValuesForField, changeVirtualDate, getVirtualDate,
+const API = { getAllThesis, getThesis, getThesisNumber, getThesisWithId, changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser, addApplication, retrieveCareer };
 
 export default API;

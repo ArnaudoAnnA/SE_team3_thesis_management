@@ -61,9 +61,10 @@ function InteractiveTh(props)
 {
     return <th className='align-middle'>
         <Row className='align-middle'>
-            <Col className='col-8'>{props.col.title}</Col>
-            <Col className='col-2 align-middle'>{props.isOrderedBy(props.col.DBfield) == "ASC" ? <ArrowDown className='icons' onClick={() => props.orderBy(props.col.DBfield, false)} />
-                                                    : <ArrowUp className='icons' onClick={() => props.orderBy(props.col.DBfield, true)} />}</Col>
+            <Col className='col-7'>{props.col.title}</Col>
+            <Col className='col-1 align-middle'>{props.isOrderedBy(props.col.DBfield) == "ASC" ? <p className='text-center icons' onClick={() => props.orderBy(props.col.DBfield, false)}>{"↓"}</p>
+                                                    : <p className='text-center icons' onClick={() => props.orderBy(props.col.DBfield, true)}>{"↑"}</p>}
+            </Col>
         </Row> 
     </th>
 }
