@@ -10,6 +10,7 @@ import { ThesisList } from './components/ThesisList/ThesisList';
 import { ThesisDetails } from './components/ThesisList/ThesisDetails.jsx';
 import { Login } from './components/Login';
 import { InsertProposalForm } from './components/InsertProposalForm.jsx';
+import { ApplyForm } from './components/ApplyForm.jsx';
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
@@ -96,6 +97,7 @@ function Main() {
             <Route path='/proposal' element={<InsertProposalForm />} />
             <Route path='/thesis' element={<ThesisList />} />
             <Route path='/thesis/:id' element={<ThesisDetails />} />
+            <Route path='/thesis/:id/apply' element={<ApplyForm />} />
 
           </Route>
           <Route path='*' element={<NotFoundPage />} />
