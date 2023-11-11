@@ -23,7 +23,14 @@ function InsertProposalForm(props) {
     e.preventDefault(); 
     const value = e.target.value
     if(!value.trim()) return
-    if(!tags.includes(value)) setTags([...tags, value])
+    if(!tags.includes(value)) {
+      setTags([...tags, value])
+    }else{
+      setErrorMsg('Keyword already exists.');
+      window.scrollTo(0, 0);
+
+    }
+
     e.target.value = ''
   }
   
@@ -40,11 +47,16 @@ function InsertProposalForm(props) {
   
     if (!value.match(mailRegex)) {
       setErrorMsg('Not a valid email address.');
+      window.scrollTo(0, 0);
       return false;
     }
   
     if (!emailTags.includes(value)) {
       setEmailTags([...emailTags, value]);
+    }else{
+      setErrorMsg('Co-Supervisor already exists.');
+      window.scrollTo(0, 0);
+
     }
   
     e.target.value = '';
@@ -82,47 +94,56 @@ function InsertProposalForm(props) {
    
     if (title === '') {
       setErrorMsg('Insert a valid title!');
+      window.scrollTo(0, 0);
       return false;
     }
 
     if (degree === '') {
       setErrorMsg('Insert a type!');
+      window.scrollTo(0, 0);
       return false;
     }
 
     if (description === '') {
       setErrorMsg('Insert a description!');
+      window.scrollTo(0, 0);
       return false;
     }
 
     if (knowledge === '') {
       setErrorMsg('Insert a knowledge requirment!');
+      window.scrollTo(0, 0);
       return false;
     }
 
     if (level === '') {
       setErrorMsg('Insert a level!');
+      window.scrollTo(0, 0);
       return false;
     }
 
     if (tags.length === 0) {
       setErrorMsg('Insert keywords!');
+      window.scrollTo(0, 0);
       return false;
     }
 
     if (emailTags.length === 0) {
       setErrorMsg('Insert a valid co-supervisor!');
+      window.scrollTo(0, 0);
       return false;
     }
 
 
     if (pname === '') {
       setErrorMsg('Insert programmes!');
+      window.scrollTo(0, 0);
       return false;
     }
 
     if (new dayjs() > selectedDate) {
       setErrorMsg("Date cannot be before today!")
+      window.scrollTo(0, 0);
       setSelectedDate(new dayjs())
     }
   
@@ -130,6 +151,7 @@ function InsertProposalForm(props) {
  
   if (!pname.match(nomeRegex)) {
     setErrorMsg('Not valid programmes name!');
+    window.scrollTo(0, 0);
     return false;
   }
  
@@ -138,19 +160,17 @@ function InsertProposalForm(props) {
  
   // if everything is ok return true but in out case we send the data, console log to check everything is ok
 
-  console.log(`
-  note: ${note}
-  pname: ${pname}
-  level: ${level}
-  knowledge: ${knowledge}
-  email: ${emailTags}
-  degree: ${degree}
-  description: ${description}
-  title: ${title}
-  errorMsg: ${errorMsg} 
-  selectedDate: ${selectedDate}
-
-`);
+    console.log(`
+      note: ${note}
+      pname: ${pname}
+      level: ${level}
+      knowledge: ${knowledge}
+      email: ${emailTags}
+      degree: ${degree}
+      description: ${description}
+      title: ${title}
+      errorMsg: ${errorMsg} 
+      selectedDate: ${selectedDate} `);
 
       return true;
 
@@ -163,11 +183,15 @@ function InsertProposalForm(props) {
         <Container>
         {errorMsg ? (
           <Alert
-            style={{ width: "250px", marginLeft: "auto",marginRight: "auto", marginTop: "2vh" }}
+            style={{ display: "flex", justifyContent: "center", width: "30%", marginLeft: "auto",marginRight: "auto", marginTop: "2vh", paddingLeft: "auto", paddingRight: "auto" }}
             variant="danger"
             onClose={() => setErrorMsg('')}
             dismissible
           >
+              <svg xmlns="http://www.w3.org/2000/svg" style={{margin: "2%"}} width="5%" height="5%" fill="currentColor" class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
+                <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z" />
+                <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z" />
+              </svg>
             {errorMsg}
           </Alert>
         ) : null}
@@ -178,7 +202,7 @@ function InsertProposalForm(props) {
                   <div class="card bg-light cart" style={{ width: "45vw", marginLeft: "auto",marginRight: "auto" }}>
                   <article className="proposal-article" style={{maxWidth: "85vw", paddingLeft: "30px", paddingRight: "30px"}}>
                       <h4 class="card-title mt-3 text-center">Insert a thesis proposal</h4>
-                      <p class="text-center">Get started with your proposal by inserting your data</p>
+                      <p class="text-center" style={{fontStyle: "italic"}}>Get started with your proposal by inserting your data</p>
          
                       <form>
                       <div class="form-group input-group" style={{ marginTop: "2px", marginBottom: "2px" }}>
@@ -204,9 +228,9 @@ function InsertProposalForm(props) {
                           </select>
                       </div>
                       <div class="form-group input-group" style={{display: "flex", marginBottom: "10px"}}>
-                      <p style={{ paddingTop: "2px", marginBottom: "1px", marginLeft: "auto", marginRight: "auto" }}>Description</p>
+                      <p style={{ paddingTop: "2px", marginBottom: "1px", marginLeft: "auto", marginRight: "auto", fontWeight: "300" }}>Description</p>
                         <textarea
-                          style={{fontSize: "15px", width: "60vw", marginLeft: "auto", marginRight: "auto", borderRadius: "1px"}}
+                          style={{fontSize: "15px", width: "60vw", marginLeft: "auto", marginRight: "auto", borderRadius: "1px", fontStyle: "italic", paddingLeft:"5px"}}
                           value={description}
                           onChange={(e) => setDesc(e.target.value)}
                           rows="4"
@@ -292,7 +316,7 @@ function InsertProposalForm(props) {
                       <input style={{ borderRadius: "6px" }} name="" class="form-control" placeholder="Programmes" type="text" value={pname} onChange={ev => setpName(ev.target.value)} />
                     </div>  
                   <div style={{ display: "flex" }}>
-                  <p style={{ paddingTop: "2px", marginBottom: "3px", marginLeft: "auto", marginRight: "auto" }}>Expected Expiration Date (may change)</p>
+                  <p style={{ paddingTop: "2px", marginBottom: "3px", marginLeft: "auto", marginRight: "auto", fontWeight: "300" }}>Expected Expiration Date (may change)</p>
                   </div>
                   <div style={{display: "flex"}}>
                     <div style={{marginLeft: "auto", paddingBottom: "5px", marginRight: "auto"}}>
@@ -302,10 +326,10 @@ function InsertProposalForm(props) {
                     </LocalizationProvider>
                     </div>
                     </div>
-                    <div class="form-group input-group" style={{display: "flex", marginBottom: "2px"}}>
-                      <p style={{ paddingTop: "2px", marginBottom: "1px", marginLeft: "auto", marginRight: "auto" }}>Notes</p>
+                    <div class="form-group input-group" style={{display: "flex", marginBottom: "2px", flexDirection: "column", flexWrap: "wrap"}}>
+                      <p style={{ paddingTop: "2px", marginBottom: "1px", marginLeft: "auto", marginRight: "auto", fontWeight: "300" }}>Notes</p>
                         <textarea
-                          style={{fontSize: "15px", width: "60vw", marginLeft: "auto", marginRight: "auto", borderRadius: "1px"}}
+                          style={{fontSize: "15px", width: "100%", marginLeft: "auto", marginRight: "auto", borderRadius: "1px", fontStyle: "italic", paddingLeft:"5px"}}
                           value={note}
                           onChange={(e) => setNot(e.target.value)}
                           rows="4"
