@@ -219,5 +219,43 @@ body {
   * {
     font-size: 12px;
   }
+
 }
 
+@media (max-width: 999.9px){
+  
+  .icons 
+  {
+    width: 5vw ; 
+    height: 5vw ;
+    padding: 3px;
+  }
+
+  .advanced-filters-col
+  {
+    display: block !important;
+    width: 100% !important;
+  }
+}
+
+@media (min-width: 1000px){
+  
+  .icons 
+  {
+    width: 2vw ; 
+    height: 2vw ;
+    padding: 3px;
+  }
+
+  .advanced-filters-col
+  {
+    flex-grow: 1 !important;
+    flex-shrink: 0 !important;
+    flex-basis: 0% !important; 
+  }
+}
+
+.icons:hover
+  {
+    background-color:lightgrey;
+  }

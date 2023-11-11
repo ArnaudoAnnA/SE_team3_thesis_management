@@ -1,5 +1,5 @@
 
-import {Table, Row} from 'react-bootstrap';
+import {Table, Row, Col} from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowDown, ArrowUp } from 'react-bootstrap-icons';
 
@@ -59,10 +59,12 @@ function ThesisRow(props)
 
 function InteractiveTh(props)
 {
-    return <th>
-        {props.col.title+"   "}
-        {props.isOrderedBy(props.col.DBfield) == "ASC" ? <ArrowDown onClick={() => props.orderBy(props.col.DBfield, false)} />
-                                                    : <ArrowUp onClick={() => props.orderBy(props.col.DBfield, true)} />} 
+    return <th className='align-middle'>
+        <Row className='align-middle'>
+            <Col className='col-8'>{props.col.title}</Col>
+            <Col className='col-2 align-middle'>{props.isOrderedBy(props.col.DBfield) == "ASC" ? <ArrowDown className='icons' onClick={() => props.orderBy(props.col.DBfield, false)} />
+                                                    : <ArrowUp className='icons' onClick={() => props.orderBy(props.col.DBfield, true)} />}</Col>
+        </Row> 
     </th>
 }
 

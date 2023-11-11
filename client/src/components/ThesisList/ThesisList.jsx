@@ -92,7 +92,7 @@ function ThesisList(props)
     return (
         <>
             <Container>
-                <FiltersForm filters={[filters, setFilters]}/>
+                <FiltersForm columns={columns} filters={[filters, setFilters]}/>
                 <ThesisTable columns={columns} data={data} orderBy={orderBy} isOrderedBy={isOrderedBy}/>
                 <TablePagination active={[page, setPage]} n_pages={n_pages}/>
                 
