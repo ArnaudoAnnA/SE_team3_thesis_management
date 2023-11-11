@@ -1,6 +1,6 @@
 class Student{
     constructor(id, surname, name, gender, nationality, email, cod_degree, enrollment_year){
-        this.id = id;
+    this.id = id;
     this.surname = surname;
     this.name = name;
     this.gender = gender;

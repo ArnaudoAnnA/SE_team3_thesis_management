@@ -108,6 +108,7 @@ const getVirtualDate = async () => {
   const dateData = firstDoc.data();
   return dateData.date;
 }
+
 /**
  * Change the date of the virtual clock in the server
  * @param date the new date
@@ -174,8 +175,26 @@ const getUser = async (email) => {
   return user
 }
 
+/**
+ * Add a new application into the server
+ * @param application the application object (look model/Application)
+ * @return null
+ */
+const addApplication = async (application) => {
+  return ;
+}
+
+/**
+ * Retrieve all the career data of a student by his studentId
+ * @param studentId the application object (from model/Application)
+ * @return the career ARRAY (look model/Career)
+ */
+const retrieveCareer = async (studentId) => {
+  return ;
+}
+
+
 const API = { getAllThesis, getThesis, getThesisNumber, getThesisWithId, changeVirtualDate, getVirtualDate,
-  signUp, logIn, logOut, getUser
-};
+  signUp, logIn, logOut, getUser, addApplication, retrieveCareer };
 
 export default API;

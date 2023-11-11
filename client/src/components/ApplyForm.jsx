@@ -4,17 +4,23 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Alert, Card, Button, Badge, Form, Col, Container, Row, Table } from 'react-bootstrap';
 import { useState, useEffect, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 import { useDropzone} from 'react-dropzone';
 import dayjs from 'dayjs';
+
+//Puoi rimuovere appena API funzionano
 import {career} from '../MOCKS';
 
 import API  from '../API';
+import Application from '../models/Application';
 
 
 function ApplyForm(props) {
 
   const [errorMsg, setErrorMsg] = useState('');
   const [file, setFile] = useState();
+  //const [career, setCareer] = useState([]);
+  const {id} = useParams();
 
   const onDrop = useCallback((files) => {
     handleOnChangeFile(files);
@@ -23,10 +29,41 @@ function ApplyForm(props) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({onDrop});
 
   useEffect(() => {
-    //API to call for retrieving all the data about the student
+    /*
+    API.retrieveCareer(props.user.id)
+        .then((career) => {
+            career.sort((a,b) => {
+                if(a.date && b.date){
+                    return a.date.isAfter(b.date);
+                }
+                else if(!b.date)
+                    return -1;
+                else{
+                    return 1;
+                }
+            });
+            setCareer(career);
+        })
+        .catch(e => console.log("Error in ApplyForm/retrieveCareerAPI:" + e))
+    */
+
+    //(and maybe also thesis title and teacher)
   }, []);
 
   const handleSubmit = (event) => {
+    event.preventDefault();
+
+    //Checks
+
+    const application = new Application(props.user.id, id, false, file, props.virtualDate);
+
+    /*
+    API.addApplication(application)
+        .then(() => {
+            //Cosa devo far spuntare??
+        })
+        .catch(e => console.log("Error in ApplyForm/addApplicationAPI:" + e))
+    */
 
   }
 
@@ -43,8 +80,8 @@ function ApplyForm(props) {
   return (
     <Container fluid className="vh-100" >
         {errorMsg ? (
-          <Alert
-            style={{ width: "250px", marginLeft: "auto",marginRight: "auto", marginTop: "2vh" }}
+          <Alert id="applyAlert"
+            style={{marginLeft: "auto",marginRight: "auto", marginTop: "2vh" }}
             variant="danger"
             onClose={() => setErrorMsg('')}
             dismissible
@@ -71,19 +108,19 @@ function ApplyForm(props) {
                 <Col md={5}>
                     <Form.Group className="mb-3">
                         <Form.Label>Name</Form.Label>
-                        <Form.Control disabled type="text" required={true} value={"Salvo"}/>
+                        <Form.Control disabled type="text" required={true} defaultValue={props.user.name}/>
                     </Form.Group>
                 </Col>
                 <Col md={5}>
                     <Form.Group className="mb-3">
                         <Form.Label>Surname</Form.Label>
-                        <Form.Control disabled type="text" required={true} value={"Acquaviva"}/>
+                        <Form.Control disabled type="text" required={true} defaultValue={props.user.surname}/>
                     </Form.Group>
                 </Col>
                 <Col md={2}>
                 <Form.Group className="mb-3">
                         <Form.Label>Gender</Form.Label>
-                        <Form.Control disabled type="text" required={true} value={"Maschio"}/>
+                        <Form.Control disabled type="text" required={true} defaultValue={props.user.gender}/>
                     </Form.Group>
                 </Col>
             </Row>
@@ -91,13 +128,13 @@ function ApplyForm(props) {
                 <Col md={6}>
                     <Form.Group className="mb-3">
                         <Form.Label>Nationality</Form.Label>
-                        <Form.Control disabled type="text" required={true} value={"Italiana"}/>
+                        <Form.Control disabled type="text" required={true} defaultValue={props.user.nationality}/>
                     </Form.Group>
                 </Col>
                 <Col md={6}>
                     <Form.Group className="mb-3">
                         <Form.Label>Email</Form.Label>
-                        <Form.Control disabled type="text" required={true} value={"salvoacquaviva99@gmail.com"}/>
+                        <Form.Control disabled type="text" required={true} defaultValue={props.user.email}/>
                     </Form.Group>
                 </Col>
             </Row>
@@ -155,7 +192,7 @@ function StudentCareer(props) {
             <tbody>
             {
                 props.exams.map((exam) =>
-                <ExamRow key={exam.id} exam={exam}/>
+                    <ExamRow key={"" + exam.id + " - " + exam.codCourse} exam={exam}/>
                 )
             }
             </tbody>
