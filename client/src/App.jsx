@@ -42,13 +42,14 @@ function Main() {
     onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         try {
-          // console.log("Currently logged")
-          // console.log({email: currentUser.email})
-          setUser({email: currentUser.email})
-          // if (currentUser.emailVerified) {
-          //   const userInfo = await API.getUser(currentUser.email);
-          //   setAuthUser(userInfo);
-          // }
+          
+          await API.getUser(currentUser.email).then(userInfo => {
+            // console.log(userInfo)
+            setUser(userInfo)
+            console.log(user.email)
+            console.log(user.role)
+          })
+
         } catch (err) {
           console.log("Not logged")
           console.log(err)

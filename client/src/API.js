@@ -3,7 +3,9 @@
 import { initializeApp } from 'firebase/app';
 import { collection, addDoc, getFirestore, doc, query, getDocs, where, setDoc, deleteDoc, getDoc, limit } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import Student from './models/Student.js'
 import dayjs from 'dayjs';
+import Teacher from './models/Teacher.js';
 
 //DO NOT CANCEL
 const firebaseConfig = {
@@ -133,6 +135,7 @@ const signUp = async(email, password) => {
 const logIn = async(email, password) => {
   await signInWithEmailAndPassword(auth, email, password)
     .then((userCredentials)=>{
+      console.log("API.login")
       console.log(userCredentials)
       return userCredentials
     })
@@ -151,8 +154,28 @@ const logOut = async() => {
   })
 }
 
+const getUser = async (email) => {
+  let user = null
+  const whereCond = where("email", "==", email)
+  const qStudent = query(studentsRef, whereCond)
+  const qTeacher = query(teachersRef, whereCond)
+
+  const studentSnapshot = await getDocs(qStudent)
+  const teacherSnapshot = await getDocs(qTeacher)
+  if(studentSnapshot.docs[0]) {
+    const student = studentSnapshot.docs[0].data()
+    user = new Student(student.id, student.surname, student.name, student.gender, student.nationality, student.email, student.cod_degree, student.enrollment_year)
+  } else {
+    const teacher = teacherSnapshot.docs[0].data()
+    user = new Teacher(teacher.id, teacher.surname, teacher.name, teacher.email, teacher.cod_group, teacher.cod_department)
+  }
+  
+  // console.log(user)
+  return user
+}
+
 const API = { getAllThesis, getThesis, getThesisNumber, getThesisWithId, changeVirtualDate, getVirtualDate,
-  signUp, logIn, logOut      
+  signUp, logIn, logOut, getUser
 };
 
 export default API;

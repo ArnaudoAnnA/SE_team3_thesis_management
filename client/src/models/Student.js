@@ -1,5 +1,6 @@
-export default function Student(id, surname, name, gender, nationality, email, cod_degree, enrollment_year) {
-    this.id = id;
+class Student{
+    constructor(id, surname, name, gender, nationality, email, cod_degree, enrollment_year){
+        this.id = id;
     this.surname = surname;
     this.name = name;
     this.gender = gender;
@@ -7,8 +8,9 @@ export default function Student(id, surname, name, gender, nationality, email, c
     this.email = email;
     this.cod_degree = cod_degree;
     this.enrollment_year = enrollment_year;
-
-    this.parse = function() {
+    this.role = 'student'
+    }
+    parse() {
         return {
             id: this.id,
             surname: this.surname,
@@ -21,3 +23,4 @@ export default function Student(id, surname, name, gender, nationality, email, c
         }
     }
 }
+export default Student

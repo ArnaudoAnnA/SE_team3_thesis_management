@@ -65,8 +65,9 @@ function Login(props) {
             console.log(err);
           }*/
         // console.log("Logged!");
-        API.logIn(email, password).then( (a) => {
-            if(a == null){
+        API.logIn(email, password).then( (credentials) => {
+            console.log("Login.loggati")
+            if(credentials == null){
                 setErrorMsg('E-Mail o/e password errata/i');
                 return
             }
