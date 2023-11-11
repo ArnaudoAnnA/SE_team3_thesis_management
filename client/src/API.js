@@ -17,6 +17,8 @@ const firebaseConfig = {
   appId: "1:30091770849:web:ba560e3f3a2a0769c2b0a0"
 };
 
+const DEBUG = false;
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 // Initialize Firebase Authentication and get a reference to the service
@@ -26,13 +28,13 @@ const auth = getAuth(app);
 
 // COLLECTIONS' REFERENCES
 // example const citiesRef = collection(db, "cities");
-const studentsRef = collection(db, "students");
-const teachersRef = collection(db, "teachers");
-const degreesRef = collection(db, "degrees");
-const careersRef = collection(db, "careers");
-const thesisProposalsRef = collection(db, "thesisProposals");
-const applicationsRef = collection(db, "applications");
-const dateRef = collection(db, "date");
+const studentsRef = DEBUG ? collection(db, "test-students") : collection(db, "students");
+const teachersRef = DEBUG ? collection(db, "test-teachers") :collection(db, "teachers");
+const degreesRef = DEBUG ? collection(db, "test-degrees") :collection(db, "degrees");
+const careersRef = DEBUG ? collection(db, "test-careers") :collection(db, "careers");
+const thesisProposalsRef = DEBUG ? collection(db, "test-thesisProposals") :collection(db, "thesisProposals");
+const applicationsRef = DEBUG ? collection(db, "test-applications") :collection(db, "applications");
+const dateRef = DEBUG ? collection(db, "test-date") :collection(db, "date");
 
 /** Fetch the collection of all thesis without applying filters.<br>
  * 
