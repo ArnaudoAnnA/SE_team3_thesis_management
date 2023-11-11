@@ -1,6 +1,4 @@
 "use strict;"
-const SERVER_URL = "http://localhost:3001/api/";
-import { thesis } from './MOCKS';
 
 import { initializeApp } from 'firebase/app';
 import { collection, addDoc, getFirestore, doc, query, getDocs, where, setDoc, deleteDoc, getDoc, limit } from 'firebase/firestore';
@@ -44,11 +42,12 @@ const dateRef = DEBUG ? collection(db, "test-date") :collection(db, "date");
 */
 async function getAllThesis() {
   /*
+    Get all documents from the thesisProposals collection (empty where condition)
       return await getJson(SERVER_URL+ !!!! NOME API !!!!)
                   .then(json => {ok: json, err: null})
                   .catch(err => {ok: null, err: err})
   */
-
+  
   return thesis;
 }
 
@@ -62,11 +61,6 @@ async function getAllThesis() {
   * - err, contains some details in case of error, otherwise null.
  */
 async function getThesis(filters, [start, end]) {
-  /*
-      return await getJson(SERVER_URL+ !!!! NOME API !!!!)
-                  .then(json => {ok: json, err: null})
-                  .catch(err => {ok: null, err: err})
-  */
 
   let thesis_filtered = thesis.filter(
     t => {
@@ -132,8 +126,7 @@ const signUp = async(email, password) => {
     })
     .catch((error) => {
     console.log(error)
-    })
-  ;
+    });
   
 }
 

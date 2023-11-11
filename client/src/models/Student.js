@@ -7,4 +7,17 @@ export default function Student(id, surname, name, gender, nationality, email, c
     this.email = email;
     this.cod_degree = cod_degree;
     this.enrollment_year = enrollment_year;
+
+    this.parse = function() {
+        return {
+            id: this.id,
+            surname: this.surname,
+            name: this.name,
+            gender: this.gender,
+            nationality: this.nationality,
+            email: this.email,
+            cod_degree: this.cod_degree,
+            enrollment_year: this.enrollment_year
+        }
+    }
 }
