@@ -1,6 +1,6 @@
 import jest from 'jest';
 import dayjs from 'dayjs';
-import API_TEST from '../API_TEST';
+import API_TEST from '../../API_TEST';
 import { collection, addDoc, getFirestore, doc, query, getDocs, where, setDoc, deleteDoc} from 'firebase/firestore';
 
 // TEST COLLECTIONS' REFERENCES

@@ -244,18 +244,28 @@ export const careers = generateCareers();
 
 const generateThesisProposals = () => {
   const teachers = ["d123456", "d234567", "d345678", "d456789", "d567890"];
-  const emailDomains = ["@studenti.polito.it", "@example.com", "@company.com"]; // Possible email domains
+  const randomEmailName = ["john", "alice", "marco", "laura", "david"];
+  const emailDomains = ["@polito.it", "@example.com", "@company.com"]; // Possible email domains
+  const getRandomGroups = () => { 
+    let loops = getRandomInt(1, 3);
+    let groups = [];
+    for (let i = 0; i < loops; i++) {
+      groups.push(`group${getRandomInt(1, 10)}`);
+    }
+    return groups;
+  }
 
   const getRandomInt = (min, max) =>
     Math.floor(Math.random() * (max - min + 1)) + min;
   const getRandomDate = () =>
     dayjs()
-      .year(getRandomInt(2022, 2026))
+      .year(getRandomInt(2020, 2025))
       .month(getRandomInt(0, 11))
       .day(getRandomInt(1, 28));
-  const getRandomEmail = () =>
-    teachers[getRandomInt(0, 4)] + emailDomains[getRandomInt(0, 2)];
-
+  const getRandomEmail = (teacherId) => {
+    let possibleTeachers = teachers.filter((teacher) => teacher !== teacherId);
+    return Math.random() < 0.5 ? possibleTeachers[getRandomInt(0,3)] + '@polito.it' : randomEmailName[getRandomInt(0, 4)] + emailDomains[getRandomInt(0, 2)];
+  }
   const thesisProposals = [];
   let thesisProposalIndex = 0;
 
@@ -269,9 +279,11 @@ const generateThesisProposals = () => {
       const level = Math.random() < 0.5 ? "master" : "bachelor";
       const programmes = `Programmes for Thesis Proposal ${i + 1}`;
       const expirationDate = getRandomDate();
-      const coSupervisors = [getRandomEmail(), getRandomEmail()];
+      const archiveDate = Math.random() < 0.2 ? expirationDate : expirationDate.subtract(getRandomInt(1,6), 'month');
+      const coSupervisors = [getRandomEmail(teacherId), getRandomEmail(teacherId)];
       const keywords = [`keyword${i + 1}`, `tag${i + 1}`];
       const notes = `Additional notes for Thesis Proposal ${i + 1}`;
+      const groups = getRandomGroups();
       thesisProposals.push({
         id: thesisProposalIndex - 1,
         title: title,
@@ -282,8 +294,10 @@ const generateThesisProposals = () => {
         level: level,
         programmes: programmes,
         expirationDate: expirationDate.toISOString(),
+        archiveDate: archiveDate.toISOString(),
         coSupervisors: coSupervisors,
         keywords: keywords,
+        groups: groups,
         notes: notes,
       });
     }

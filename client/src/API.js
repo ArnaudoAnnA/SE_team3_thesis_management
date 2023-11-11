@@ -1,11 +1,13 @@
 "use strict;"
-const SERVER_URL = "http://localhost:3001/api/";
-import { thesis } from './MOCKS';
 
 import { initializeApp } from 'firebase/app';
 import { collection, addDoc, getFirestore, doc, query, getDocs, where, setDoc, deleteDoc, getDoc, limit } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import Student from './models/Student.js'
 import dayjs from 'dayjs';
+import Teacher from './models/Teacher.js';
+
+import { thesis } from './MOCKS';
 
 //DO NOT CANCEL
 const firebaseConfig = {
@@ -17,6 +19,8 @@ const firebaseConfig = {
   appId: "1:30091770849:web:ba560e3f3a2a0769c2b0a0"
 };
 
+const DEBUG = false;
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 // Initialize Firebase Authentication and get a reference to the service
@@ -26,13 +30,13 @@ const auth = getAuth(app);
 
 // COLLECTIONS' REFERENCES
 // example const citiesRef = collection(db, "cities");
-const studentsRef = collection(db, "students");
-const teachersRef = collection(db, "teachers");
-const degreesRef = collection(db, "degrees");
-const careersRef = collection(db, "careers");
-const thesisProposalsRef = collection(db, "thesisProposals");
-const applicationsRef = collection(db, "applications");
-const dateRef = collection(db, "date");
+const studentsRef = DEBUG ? collection(db, "test-students") : collection(db, "students");
+const teachersRef = DEBUG ? collection(db, "test-teachers") :collection(db, "teachers");
+const degreesRef = DEBUG ? collection(db, "test-degrees") :collection(db, "degrees");
+const careersRef = DEBUG ? collection(db, "test-careers") :collection(db, "careers");
+const thesisProposalsRef = DEBUG ? collection(db, "test-thesisProposals") :collection(db, "thesisProposals");
+const applicationsRef = DEBUG ? collection(db, "test-applications") :collection(db, "applications");
+const dateRef = DEBUG ? collection(db, "test-date") :collection(db, "date");
 
 /** Fetch the collection of all thesis without applying filters.<br>
  * 
@@ -42,11 +46,12 @@ const dateRef = collection(db, "date");
 */
 async function getAllThesis() {
   /*
+    Get all documents from the thesisProposals collection (empty where condition)
       return await getJson(SERVER_URL+ !!!! NOME API !!!!)
                   .then(json => {ok: json, err: null})
                   .catch(err => {ok: null, err: err})
   */
-
+  
   return thesis;
 }
 
@@ -60,11 +65,6 @@ async function getAllThesis() {
   * - err, contains some details in case of error, otherwise null.
  */
 async function getThesis(filters, [start, end]) {
-  /*
-      return await getJson(SERVER_URL+ !!!! NOME API !!!!)
-                  .then(json => {ok: json, err: null})
-                  .catch(err => {ok: null, err: err})
-  */
 
   let thesis_filtered = thesis.filter(
     t => {
@@ -108,6 +108,15 @@ async function getOptionsValuesForField(DBfield)
   return "Impossible to load data";
 }
 
+/** 
+ * @param {string} DBfield 
+ * @returns an array with all the possible values for the given field (appliable only on fields with restricted domain)
+ */
+async function getOptionsValuesForField(DBfield)
+{
+  return "Impossible to load data";
+}
+
 /**
 * Get the virtual date from the server
 * @returns virtual date yyyy-mm-dd
@@ -119,6 +128,7 @@ const getVirtualDate = async () => {
   const dateData = firstDoc.data();
   return dateData.date;
 }
+
 /**
  * Change the date of the virtual clock in the server
  * @param date the new date
@@ -139,14 +149,14 @@ const signUp = async(email, password) => {
     })
     .catch((error) => {
     console.log(error)
-    })
-  ;
+    });
   
 }
 
 const logIn = async(email, password) => {
   await signInWithEmailAndPassword(auth, email, password)
     .then((userCredentials)=>{
+      console.log("API.login")
       console.log(userCredentials)
       return userCredentials
     })
@@ -165,8 +175,46 @@ const logOut = async() => {
   })
 }
 
+const getUser = async (email) => {
+  let user = null
+  const whereCond = where("email", "==", email)
+  const qStudent = query(studentsRef, whereCond)
+  const qTeacher = query(teachersRef, whereCond)
+
+  const studentSnapshot = await getDocs(qStudent)
+  const teacherSnapshot = await getDocs(qTeacher)
+  if(studentSnapshot.docs[0]) {
+    const student = studentSnapshot.docs[0].data()
+    user = new Student(student.id, student.surname, student.name, student.gender, student.nationality, student.email, student.cod_degree, student.enrollment_year)
+  } else {
+    const teacher = teacherSnapshot.docs[0].data()
+    user = new Teacher(teacher.id, teacher.surname, teacher.name, teacher.email, teacher.cod_group, teacher.cod_department)
+  }
+  
+  // console.log(user)
+  return user
+}
+
+/**
+ * Add a new application into the server
+ * @param application the application object (look model/Application)
+ * @return null
+ */
+const addApplication = async (application) => {
+  return ;
+}
+
+/**
+ * Retrieve all the career data of a student by his studentId
+ * @param studentId the application object (from model/Application)
+ * @return the career ARRAY (look model/Career)
+ */
+const retrieveCareer = async (studentId) => {
+  return ;
+}
+
+
 const API = { getAllThesis, getThesis, getThesisNumber, getThesisWithId, getOptionsValuesForField, changeVirtualDate, getVirtualDate,
-  signUp, logIn, logOut      
-};
+  signUp, logIn, logOut, getUser, addApplication, retrieveCareer };
 
 export default API;

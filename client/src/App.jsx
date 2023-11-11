@@ -10,6 +10,7 @@ import { ThesisList } from './components/ThesisList/ThesisList';
 import { ThesisDetails } from './components/ThesisList/ThesisDetails.jsx';
 import { Login } from './components/Login';
 import { InsertProposalForm } from './components/InsertProposalForm.jsx';
+import { ApplyForm } from './components/ApplyForm.jsx';
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
@@ -42,13 +43,14 @@ function Main() {
     onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         try {
-          // console.log("Currently logged")
-          // console.log({email: currentUser.email})
-          setUser({email: currentUser.email})
-          // if (currentUser.emailVerified) {
-          //   const userInfo = await API.getUser(currentUser.email);
-          //   setAuthUser(userInfo);
-          // }
+          
+          await API.getUser(currentUser.email).then(userInfo => {
+            // console.log(userInfo)
+            setUser(userInfo)
+            console.log(user.email)
+            console.log(user.role)
+          })
+
         } catch (err) {
           console.log("Not logged")
           console.log(err)
@@ -96,6 +98,7 @@ function Main() {
             <Route path='/proposal' element={<InsertProposalForm />} />
             <Route path='/thesis' element={<ThesisList />} />
             <Route path='/thesis/:id' element={<ThesisDetails />} />
+            <Route path='/thesis/:id/apply' element={<ApplyForm user={user} virtualDate={date}/>} />
 
           </Route>
           <Route path='*' element={<NotFoundPage />} />

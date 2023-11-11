@@ -6,4 +6,14 @@ export default function Application (studentId, thesisId, accepted=false, curric
     this.accepted = accepted;
     this.curriculum = curriculum;
     this.date = date;
+
+    this.parse = function () {
+        return {
+            studentId: this.studentId,
+            thesisId: this.thesisId,
+            accepted: this.accepted,
+            curriculum: this.curriculum,
+            date: this.date
+        }
+    }
 }
