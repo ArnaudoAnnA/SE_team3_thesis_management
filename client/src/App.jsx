@@ -40,24 +40,26 @@ function Main() {
   const auth = getAuth();
 
   useEffect(() => {
-    onAuthStateChanged(auth, async (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       console.log(currentUser)
       if (currentUser) {
         try {
           
-          await API.getUser(currentUser.email).then(userInfo => {
-            // console.log(userInfo)
-            setUser(userInfo)
+          const userInfo = await API.getUser(currentUser.email)
+          // console.log(userInfo)
+          setUser(userInfo)
+          if(user){
             console.log(user.email)
             console.log(user.role)
-          })
-
+          }
         } catch (err) {
           console.log("Not logged")
           console.log(err)
         }
       }
-    })
+    });
+
+    return () => unsubscribe()
   }, [auth]);
 
 

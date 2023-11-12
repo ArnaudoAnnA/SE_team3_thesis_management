@@ -43,6 +43,7 @@ function ThesisDetails(props)
         {
             thesis ? <>
                         <Link to='/thesis'><Button><Arrow90degLeft /></Button></Link>
+                        <Link to={'/thesis/'+thesis.id+'/apply'}><Button>Apply</Button></Link>
                         <hr size={10}/>
                         <h1>{thesis.title}</h1>
                         <h6><i>{thesis.supervisor}</i></h6>

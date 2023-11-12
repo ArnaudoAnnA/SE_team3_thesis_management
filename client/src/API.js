@@ -3,9 +3,11 @@
 import { initializeApp } from 'firebase/app';
 import { collection, addDoc, getFirestore, doc, query, getDocs, where, setDoc, deleteDoc, getDoc, limit } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import Student from './models/Student.js'
+
 import dayjs from 'dayjs';
 import Teacher from './models/Teacher.js';
+import Student from './models/Student.js';
+import Career from './models/Career.js';
 
 import { thesis } from './MOCKS';
 
@@ -31,12 +33,12 @@ const auth = getAuth(app);
 // COLLECTIONS' REFERENCES
 // example const citiesRef = collection(db, "cities");
 const studentsRef = DEBUG ? collection(db, "test-students") : collection(db, "students");
-const teachersRef = DEBUG ? collection(db, "test-teachers") :collection(db, "teachers");
-const degreesRef = DEBUG ? collection(db, "test-degrees") :collection(db, "degrees");
-const careersRef = DEBUG ? collection(db, "test-careers") :collection(db, "careers");
-const thesisProposalsRef = DEBUG ? collection(db, "test-thesisProposals") :collection(db, "thesisProposals");
-const applicationsRef = DEBUG ? collection(db, "test-applications") :collection(db, "applications");
-const dateRef = DEBUG ? collection(db, "test-date") :collection(db, "date");
+const teachersRef = DEBUG ? collection(db, "test-teachers") : collection(db, "teachers");
+const degreesRef = DEBUG ? collection(db, "test-degrees") : collection(db, "degrees");
+const careersRef = DEBUG ? collection(db, "test-career") : collection(db, "career");
+const thesisProposalsRef = DEBUG ? collection(db, "test-thesisProposals") : collection(db, "thesisProposals");
+const applicationsRef = DEBUG ? collection(db, "test-applications") : collection(db, "applications");
+const dateRef = DEBUG ? collection(db, "test-date") : collection(db, "date");
 
 /** Fetch the collection of all thesis without applying filters.<br>
  * 
@@ -51,7 +53,7 @@ async function getAllThesis() {
                   .then(json => {ok: json, err: null})
                   .catch(err => {ok: null, err: err})
   */
-  
+
   return thesis;
 }
 
@@ -125,30 +127,30 @@ const changeVirtualDate = async (date) => {
   await setDoc(doc(db, "date", firstDoc.id), dateData);
 }
 
-const signUp = async(email, password) => {
+const signUp = async (email, password) => {
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredentials) => {
-    console.log(userCredentials)
+      console.log(userCredentials)
     })
     .catch((error) => {
-    console.log(error)
+      console.log(error)
     });
-  
+
 }
 
-const logIn = async(email, password) => {
+const logIn = async (email, password) => {
   await signInWithEmailAndPassword(auth, email, password)
-    .then((userCredentials)=>{
+    .then((userCredentials) => {
       return userCredentials
     })
     .catch((error) => {
       // console.log(error)
       throw error
     })
-  ;
+    ;
 }
 
-const logOut = async() => {
+const logOut = async () => {
   signOut(auth).then(() => {
     console.log("signed out")
   }).catch((error) => {
@@ -164,14 +166,14 @@ const getUser = async (email) => {
 
   const studentSnapshot = await getDocs(qStudent)
   const teacherSnapshot = await getDocs(qTeacher)
-  if(studentSnapshot.docs[0]) {
+  if (studentSnapshot.docs[0]) {
     const student = studentSnapshot.docs[0].data()
     user = new Student(student.id, student.surname, student.name, student.gender, student.nationality, student.email, student.cod_degree, student.enrollment_year)
   } else {
     const teacher = teacherSnapshot.docs[0].data()
     user = new Teacher(teacher.id, teacher.surname, teacher.name, teacher.email, teacher.cod_group, teacher.cod_department)
   }
-  
+
   // console.log(user)
   return user
 }
@@ -182,7 +184,17 @@ const getUser = async (email) => {
  * @return null
  */
 const addApplication = async (application) => {
-  return ;
+  try {
+    addDoc(applicationsRef, application.parse()).then(doc => {
+      console.log(doc.id)
+      console.log("Added application with id:" + doc.id)
+    })
+  } catch (e) {
+    console.log(e)
+    throw (e)
+  }
+
+  return;
 }
 
 /**
@@ -191,7 +203,21 @@ const addApplication = async (application) => {
  * @return the career ARRAY (look model/Career)
  */
 const retrieveCareer = async (studentId) => {
-  return ;
+  console.log("API.retrieveCareer")
+  const whereStudentId = where("id", "==", studentId)
+  const q = query(careersRef, whereStudentId)
+  const careerSnapshot = await getDocs(q)
+  // console.log(careerSnapshot)
+
+  const career = []
+  careerSnapshot.forEach(doc => {
+    const exam = doc.data()
+    // console.log(exam)
+    const obj = new Career(exam.id, exam.codCourse, exam.titleCourse, exam.cfu, exam.grade, exam.date)
+    career.push(obj)
+  })
+  // console.log(career)
+  return career;
 }
 
 /**
@@ -208,11 +234,43 @@ const retrieveCareer = async (studentId) => {
  * 
  */
 const getTitleAndTeacher = async (thesisId) => {
-  return ;
+  console.log("API.getTitleAndTeacher")
+  const whereThesisId = where("id", "==", Number(thesisId))
+  const qThesis = query(thesisProposalsRef, whereThesisId)
+  try {
+    const thesisSnapshot = await getDocs(qThesis)
+    const thesis = thesisSnapshot.docs[0].data()
+    const whereTheacherId = where("id", "==", thesis.teacherId)
+    const qTeacher = query(teachersRef, whereTheacherId)
+    const teacherSnapshot = await getDocs(qTeacher)
+    const teacher = teacherSnapshot.docs[0].data()
+
+    return {
+      title: thesis.title,
+      teacher: {
+        name: teacher.name,
+        surname: teacher.surname
+      }
+    }
+
+
+
+  } catch (e) {
+    console.log(e)
+  }
+
+
+
+
+  return;
 }
 
 
-const API = { getAllThesis, getThesis, getThesisNumber, getThesisWithId, changeVirtualDate, getVirtualDate,
-  signUp, logIn, logOut, getUser, addApplication, retrieveCareer, getTitleAndTeacher };
+const API = {
+  getAllThesis, getThesis, getThesisNumber, getThesisWithId,
+  changeVirtualDate, getVirtualDate,
+  signUp, logIn, logOut, getUser,
+  addApplication, retrieveCareer, getTitleAndTeacher
+};
 
 export default API;

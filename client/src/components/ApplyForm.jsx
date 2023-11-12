@@ -16,12 +16,11 @@ import Application from '../models/Application';
 
 
 function ApplyForm(props) {
-
   const [errorMsg, setErrorMsg] = useState('');
   const [file, setFile] = useState();
-  //const [career, setCareer] = useState([]);
-  //const [title, setTitle] = useState('');
-  //const [taecher, setTeacher] = useState();
+  const [career, setCareer] = useState([]);
+  const [title, setTitle] = useState('');
+  const [teacher, setTeacher] = useState();
   const {id} = useParams();
 
   const onDrop = useCallback((files) => {
@@ -31,48 +30,58 @@ function ApplyForm(props) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({onDrop});
 
   useEffect(() => {
-    /*
-    API.retrieveCareer(props.user.id)
-        .then((career) => {
-            career.sort((a,b) => {
-                if(a.date && b.date){
-                    return a.date.isAfter(b.date);
-                }
-                else if(!b.date)
-                    return -1;
-                else{
-                    return 1;
-                }
-            });
-            setCareer(career);
-        })
-        .catch(e => console.log("Error in ApplyForm/retrieveCareerAPI:" + e))
-    */
-
-    /*
-    API.getTitleAndTeacher(id)
+    async function fetchCareer(){
+        if(props.user.id){
+            await API.retrieveCareer(props.user.id)
+            .then((career) => {
+                // console.log(career)
+                career.sort((a,b) => {
+                    if(a.date && b.date){
+                        return a.date.isAfter(b.date);
+                    }
+                    else if(!b.date)
+                        return -1;
+                    else{
+                        return 1;
+                    }
+                });
+                setCareer(career);
+            })
+            .catch(e => console.log("Error in ApplyForm/retrieveCareerAPI:" + e))
+        }
+        
+    }
+    async function fetchThesisDetails(){
+        API.getTitleAndTeacher(id)
         .then((result) => {
             setTitle(result.title);
             setTeacher(result.teacher);
         })
         .catch(e => console.log("Error in ApplyForm/getTitleAndTeacher:" + e))
-    */
-  }, []);
+    }
+
+    fetchCareer()
+    fetchThesisDetails()
+
+    
+    
+    
+  },[]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     //Checks
-
+    // console.log(id)
     const application = new Application(props.user.id, id, false, file, props.virtualDate);
-
-    /*
+    console.log(application)
+    
     API.addApplication(application)
         .then(() => {
             //Cosa devo far spuntare??
         })
         .catch(e => console.log("Error in ApplyForm/addApplicationAPI:" + e))
-    */
+    
 
   }
 
@@ -100,15 +109,16 @@ function ApplyForm(props) {
         ) : null}
 
         <Row className="text-center mt-3">
-            <h3> {/*title ? title : "Loading..."*/} Thesis title </h3>
+            <h3> {title ? title : "Loading..."} </h3>
         </Row>
         <Row>
             <Col md={8}>
             </Col>
             <Col className='d-flex justify-content-end' md={4}>
                     <p> 
-                        <b>Teacher:</b> <Badge pill bg='secondary'> Surname Name</Badge>
-                        {/*<b>Teacher:</b> <Badge pill bg='secondary'>{teacher ? teacher.surname : "Loading..."} {teacher ? teacher.name : ""}</Badge>*/}
+                        {<>
+                            <b>Teacher:</b> <Badge pill bg='secondary'>{teacher ? teacher.surname : "Loading..."} {teacher ? teacher.name : ""}</Badge>
+                        </>}
                     </p>
             </Col>
         </Row>
@@ -151,7 +161,7 @@ function ApplyForm(props) {
             <Row className="text-center">
                 <Container className='mt-5'>
                     <h5>Student Career</h5>
-                    <StudentCareer exams={career}></StudentCareer>
+                    <StudentCareer exams={career} id={props.user.id}></StudentCareer>
                 </Container>
             </Row>
             <Row className="text-center">
@@ -186,7 +196,7 @@ function ApplyForm(props) {
 }
 
 function StudentCareer(props) {
-
+    // console.log(props.id)
     if (props.exams.length === 0)
         return <p> There are no exams yet :( </p>
     else
@@ -200,7 +210,8 @@ function StudentCareer(props) {
                     </tr>
             </thead>
             <tbody>
-            {
+            {   
+                
                 props.exams.map((exam) =>
                     <ExamRow key={"" + exam.id + " - " + exam.codCourse} exam={exam}/>
                 )
