@@ -66,7 +66,7 @@ function ApplyForm(props) {
     
     
     
-  },[]);
+  },[props.user]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
