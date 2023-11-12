@@ -20,6 +20,8 @@ function ApplyForm(props) {
   const [errorMsg, setErrorMsg] = useState('');
   const [file, setFile] = useState();
   //const [career, setCareer] = useState([]);
+  //const [title, setTitle] = useState('');
+  //const [taecher, setTeacher] = useState();
   const {id} = useParams();
 
   const onDrop = useCallback((files) => {
@@ -47,7 +49,14 @@ function ApplyForm(props) {
         .catch(e => console.log("Error in ApplyForm/retrieveCareerAPI:" + e))
     */
 
-    //(and maybe also thesis title and teacher)
+    /*
+    API.getTitleAndTeacher(id)
+        .then((result) => {
+            setTitle(result.title);
+            setTeacher(result.teacher);
+        })
+        .catch(e => console.log("Error in ApplyForm/getTitleAndTeacher:" + e))
+    */
   }, []);
 
   const handleSubmit = (event) => {
@@ -90,15 +99,16 @@ function ApplyForm(props) {
           </Alert>
         ) : null}
 
-        <Row className="text-center">
-            <h3>Thesis title</h3>
+        <Row className="text-center mt-3">
+            <h3> {/*title ? title : "Loading..."*/} Thesis title </h3>
         </Row>
         <Row>
             <Col md={8}>
             </Col>
             <Col className='d-flex justify-content-end' md={4}>
                     <p> 
-                        <b>Teacher:</b> <Badge pill bg='secondary'>{props.data ? props.data.teacherName : "Loading..."} {props.data ? props.data.teacherSurname : ""}</Badge>
+                        <b>Teacher:</b> <Badge pill bg='secondary'> Surname Name</Badge>
+                        {/*<b>Teacher:</b> <Badge pill bg='secondary'>{teacher ? teacher.surname : "Loading..."} {teacher ? teacher.name : ""}</Badge>*/}
                     </p>
             </Col>
         </Row>

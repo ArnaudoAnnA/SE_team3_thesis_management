@@ -189,15 +189,32 @@ const addApplication = async (application) => {
 
 /**
  * Retrieve all the career data of a student by his studentId
- * @param studentId the application object (from model/Application)
+ * @param studentId the id of the student
  * @return the career ARRAY (look model/Career)
  */
 const retrieveCareer = async (studentId) => {
   return ;
 }
 
+/**
+ * Retrieve the thesis title and relative teacher
+ * @param thesisId the id of the thesis
+ * @return an object having 2 properties:
+ *    {
+ *      title : <string>
+ *      teacher : {
+ *                   name: <string>
+ *                   surname: <string>
+ *                }
+ *    }
+ * 
+ */
+const getTitleAndTeacher = async (thesisId) => {
+  return ;
+}
+
 
 const API = { getAllThesis, getThesis, getThesisNumber, getThesisWithId, changeVirtualDate, getVirtualDate,
-  signUp, logIn, logOut, getUser, addApplication, retrieveCareer };
+  signUp, logIn, logOut, getUser, addApplication, retrieveCareer, getTitleAndTeacher };
 
 export default API;
