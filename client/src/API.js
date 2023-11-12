@@ -139,13 +139,11 @@ const signUp = async(email, password) => {
 const logIn = async(email, password) => {
   await signInWithEmailAndPassword(auth, email, password)
     .then((userCredentials)=>{
-      console.log("API.login")
-      console.log(userCredentials)
       return userCredentials
     })
     .catch((error) => {
-      console.log(error)
-      return -1
+      // console.log(error)
+      throw error
     })
   ;
 }

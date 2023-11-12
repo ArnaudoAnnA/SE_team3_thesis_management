@@ -41,6 +41,7 @@ function Main() {
 
   useEffect(() => {
     onAuthStateChanged(auth, async (currentUser) => {
+      console.log(currentUser)
       if (currentUser) {
         try {
           

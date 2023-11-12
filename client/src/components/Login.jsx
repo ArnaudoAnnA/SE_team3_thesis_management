@@ -17,7 +17,7 @@ function Login(props) {
     const [email, setEmail] = useState('s901234@studenti.polito.it');
     const [password, setPassword] = useState('s901234');
     //const navigate = useNavigate();
-    const handleSubmit = function handleSubmit(event) {
+    const handleSubmit = async function handleSubmit(event) {
         event.preventDefault();
         let valid = true;
         const e = { email, password };
@@ -45,9 +45,7 @@ function Login(props) {
         }
         if (valid) {
             login(email, password)
-            //   loggati(e);
         } else {
-
             console.log("Error");
         }
 
@@ -65,15 +63,11 @@ function Login(props) {
             console.log(err);
           }*/
         // console.log("Logged!");
-        API.logIn(email, password).then( (credentials) => {
-            console.log("Login.loggati")
-            if(credentials == null){
-                setErrorMsg('E-Mail o/e password errata/i');
-                return
-            }
+        await API.logIn(email, password).then( (credentials) => {
             setErrorMsg('');
-            // props.logSuccessfull(user);
-            // navigate("/HomeUserLogged");
+        })
+        .catch((error) => {
+            setErrorMsg('E-Mail o/e password errata/i');
         })
         
     }
