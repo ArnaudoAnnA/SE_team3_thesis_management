@@ -36,6 +36,13 @@ body {
 
 }
 
+.MuiInputBase-root{
+
+  background-color: white !important;
+
+}
+
+
 @media only screen and (max-width: 1275px) {
 
   .MuiButtonBase-root{
@@ -310,7 +317,7 @@ body {
   }
 
 
-  .btn-primary {
+  #sendpb {
     width: 100%; 
     font-size: 9px;
   }
