@@ -84,7 +84,6 @@ function Main() {
   }
 
   const logout = () => {
-    // TODO implement logout
     API.logOut()
     setUser({})
   }

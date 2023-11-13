@@ -34,13 +34,13 @@ function CustomNavbar(props) {
                 </Navbar.Brand>
             </Navbar>
             {/* App main navbar */}
-            {true ? // TODO change to user.email
+            {user.email ?
                 <Navbar sticky="top" expand="lg" className='orangePoli mb-3 shadow' collapseOnSelect>
                     <Navbar.Toggle aria-controls="navbar-nav" />
                     <Navbar.Collapse>
                         <Nav>
                             <Nav.Link as={Link} to={"/"} className="white">Home</Nav.Link>
-                            {true ?  // TODO change to user.role === "professor"
+                            {user.role == 'teacher' ? 
                                 <>
                                     <Nav.Link as={Link} to={"/thesis"} className="white">Thesis</Nav.Link>
                                     <Nav.Link as={Link} to={"/"} className="white">Archive</Nav.Link>
