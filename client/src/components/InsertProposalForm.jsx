@@ -38,6 +38,19 @@ function InsertProposalForm(props) {
     setTags(tags.filter((el, i) => i !== index))
   }
   
+  function handleBlur(e) {
+    const value = e.target.value;
+    if (!value.trim()) return;
+    if (!tags.includes(value)) {
+      setTags([...tags, value]);
+    } else {
+      setErrorMsg('Keyword already exists.');
+      window.scrollTo(0, 0);
+    }
+    e.target.value = '';
+  }
+
+
   function handleMailKeyDown(e) {
     if (e.key !== 'Enter') return;
     e.preventDefault();
@@ -67,6 +80,27 @@ function InsertProposalForm(props) {
   function removeTagMail(index) {
     setEmailTags(emailTags.filter((el, i) => i !== index));
   }
+
+  function handleMailBlur(e) {
+    const value = e.target.value.trim();
+  
+    if (!value) return;
+  
+    if (!value.match(mailRegex)) {
+      setErrorMsg('Not a valid email address.');
+      window.scrollTo(0, 0);
+      return false;
+    }
+  
+    if (!emailTags.includes(value)) {
+      setEmailTags([...emailTags, value]);
+    } else {
+      setErrorMsg('Co-Supervisor already exists.');
+      window.scrollTo(0, 0);
+    }
+  
+    e.target.value = '';
+  }  
 
   const [note, setNot] = useState('');
   const [pname, setpName] = useState('');
@@ -210,7 +244,7 @@ function InsertProposalForm(props) {
                           <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
                         </svg>
                       </div>
-                      <input style={{ borderRadius: "6px" }} name="" className="form-control" placeholder="Thesis title" type="text" value={title} onChange={ev => setTitle(ev.target.value)} />
+                      <input style={{ borderRadius: "6px" }} name="" className="form-control" placeholder="Insert your Thesis title.." type="text" value={title} onChange={ev => setTitle(ev.target.value)} />
                     </div>
                     <div className="form-group input-group" style={{  marginBottom: "2px" }}>
                           <div className="input-group-prepend">
@@ -219,7 +253,7 @@ function InsertProposalForm(props) {
                       </svg>
                           </div>
                           <select className="form-control" style={{borderRadius: "6px"}} value={degree} onChange={ev => setDegree(ev.target.value)}>
-                              <option value=""> --Type--</option>
+                              <option value=""> --Insert Type--</option>
                               <option value="Academic Research" >Academic Research</option>
                               <option value="Stage">Stage</option>
 
@@ -244,7 +278,7 @@ function InsertProposalForm(props) {
                           <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z" />
                         </svg>
                       </div>
-                      <input style={{ borderRadius: "6px" }} name="" className="form-control" placeholder="Required Knowledge" type="text" value={knowledge} onChange={ev => setKnowledge(ev.target.value)} />
+                      <input style={{ borderRadius: "6px" }} name="" className="form-control" placeholder="Insert the Required Knowledge.." type="text" value={knowledge} onChange={ev => setKnowledge(ev.target.value)} />
                     </div>
                       <div className="form-group input-group" style={{ marginTop: '4px'}}>
                           <div className="input-group-prepend">
@@ -253,7 +287,7 @@ function InsertProposalForm(props) {
                         </svg>
                           </div>
                           <select className="form-control" style={{borderRadius: "6px"}} value={level} onChange={ev => setLevel(ev.target.value)}>
-                              <option value=""> --Level--</option>
+                              <option value=""> --Insert Level--</option>
                               <option value= "Master">Master</option>
                               <option value= "Bachelor">Bachelor</option>
 
@@ -274,7 +308,7 @@ function InsertProposalForm(props) {
                         <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight: "1vw" , marginTop: "2% "}} width="16" height="16" fill="currentColor" className="bi bi-file-word-fill" viewBox="0 0 16 16">
                           <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM5.485 4.879l1.036 4.144.997-3.655a.5.5 0 0 1 .964 0l.997 3.655 1.036-4.144a.5.5 0 0 1 .97.242l-1.5 6a.5.5 0 0 1-.967.01L8 7.402l-1.018 3.73a.5.5 0 0 1-.967-.01l-1.5-6a.5.5 0 1 1 .97-.242z" />
                         </svg>
-                        <input onKeyDown={handleKeyDown} style={{ borderRadius: "3px", marginTop: "2px", marginBottom: "2px", borderWidth: "1px", flex: 1 }} type="text" className="form-control" placeholder="Keywords" />
+                        <input onKeyDown={handleKeyDown}     onBlur={handleBlur} style={{ borderRadius: "3px", marginTop: "2px", marginBottom: "2px", borderWidth: "1px", flex: 1 }} type="text" className="form-control" placeholder="Insert Keywords and press Enter.." />
                         </div>
                       </div>
                     </div>
@@ -297,7 +331,7 @@ function InsertProposalForm(props) {
                             <path d="M2 2A2 2 0 0 0 .05 3.555L8 8.414l7.95-4.859A2 2 0 0 0 14 2H2Zm-2 9.8V4.698l5.803 3.546L0 11.801Zm6.761-2.97-6.57 4.026A2 2 0 0 0 2 14h6.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.606-3.446l-.367-.225L8 9.586l-1.239-.757ZM16 9.671V4.697l-5.803 3.546.338.208A4.482 4.482 0 0 1 12.5 8c1.414 0 2.675.652 3.5 1.671Z" />
                             <path d="M15.834 12.244c0 1.168-.577 2.025-1.587 2.025-.503 0-1.002-.228-1.12-.648h-.043c-.118.416-.543.643-1.015.643-.77 0-1.259-.542-1.259-1.434v-.529c0-.844.481-1.4 1.26-1.4.585 0 .87.333.953.63h.03v-.568h.905v2.19c0 .272.18.42.411.42.315 0 .639-.415.639-1.39v-.118c0-1.277-.95-2.326-2.484-2.326h-.04c-1.582 0-2.64 1.067-2.64 2.724v.157c0 1.867 1.237 2.654 2.57 2.654h.045c.507 0 .935-.07 1.18-.18v.731c-.219.1-.643.175-1.237.175h-.044C10.438 16 9 14.82 9 12.646v-.214C9 10.36 10.421 9 12.485 9h.035c2.12 0 3.314 1.43 3.314 3.034v.21Zm-4.04.21v.227c0 .586.227.8.581.8.31 0 .564-.17.564-.743v-.367c0-.516-.275-.708-.572-.708-.346 0-.573.245-.573.791Z" />
                           </svg>
-                          <input style={{ borderRadius: '6px', flex: 1 }} name="" className="form-control" placeholder="Co-Supervisors" type="text" value={email} onKeyDown={handleMailKeyDown} onChange={(ev) => setEmail(ev.target.value)} />
+                          <input style={{ borderRadius: '6px', flex: 1 }} name="" className="form-control" placeholder="Insert Co-Supervisors' mails and press Enter.." type="text" value={email} onKeyDown={handleMailKeyDown}  onBlur={handleMailBlur} onChange={(ev) => setEmail(ev.target.value)} />
                         </div>
                       </div>
                     </div>
