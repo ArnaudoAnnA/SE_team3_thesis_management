@@ -42,7 +42,7 @@ The CSS is responsive and it adapts in the different dimensions of the devices:
 
 ![Screenshot](./screenshots/GalaxyFold_CSS.png)
 ![Screenshot](./screenshots/iPadAir_CSS.png)
-![Screenshot](./screenshots/iPhone12_CSS.png)
+![Screenshot](./screenshots/IPhone12_CSS.png)
 ![Screenshot](./screenshots/Apply_CSS.png)
 
 In the advanced research field the fields change their dimensions in order to give a tidier display:
