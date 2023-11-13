@@ -3,8 +3,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Alert, Card, Button, Badge, Form, Col, Container, Row, Table } from 'react-bootstrap';
-import { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect, useCallback, useContext } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { useDropzone} from 'react-dropzone';
 import dayjs from 'dayjs';
 
@@ -13,6 +13,7 @@ import {career} from '../MOCKS';
 
 import API  from '../API';
 import Application from '../models/Application';
+import { userContext } from "./Utils";
 
 
 function ApplyForm(props) {
@@ -21,6 +22,8 @@ function ApplyForm(props) {
   const [career, setCareer] = useState([]);
   const [title, setTitle] = useState('');
   const [teacher, setTeacher] = useState();
+
+  const user = useContext(userContext);
   const {id} = useParams();
 
   const onDrop = useCallback((files) => {
@@ -31,8 +34,8 @@ function ApplyForm(props) {
 
   useEffect(() => {
     async function fetchCareer(){
-        if(props.user.id){
-            await API.retrieveCareer(props.user.id)
+        if(user.id){
+            await API.retrieveCareer(user.id)
             .then((career) => {
                 // console.log(career)
                 career.sort((a,b) => {
@@ -60,27 +63,29 @@ function ApplyForm(props) {
         .catch(e => console.log("Error in ApplyForm/getTitleAndTeacher:" + e))
     }
 
-    fetchCareer()
-    fetchThesisDetails()
+    fetchCareer();
+    fetchThesisDetails();
+    
+  },[user]);
 
-    
-    
-    
-  },[props.user]);
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     //Checks
-    // console.log(id)
-    const application = new Application(props.user.id, id, false, file, props.virtualDate);
-    console.log(application)
-    
-    API.addApplication(application)
-        .then(() => {
-            //Cosa devo far spuntare??
-        })
-        .catch(e => console.log("Error in ApplyForm/addApplicationAPI:" + e))
+    const app = await API.getApplication(user.id, id);
+
+    if (app) {
+        setErrorMsg ("You can't apply at the same thesis twice");
+    } else {
+        const application = new Application(user.id, id, false, file, props.virtualDate);
+        console.log(application)
+        
+        API.addApplication(application)
+            .then(() => {
+                //Cosa devo far spuntare??
+            })
+            .catch(e => console.log("Error in ApplyForm/addApplicationAPI:" + e))
+    }
     
 
   }
@@ -112,7 +117,10 @@ function ApplyForm(props) {
             <h3> {title ? title : "Loading..."} </h3>
         </Row>
         <Row>
-            <Col md={8}>
+            <Col md={4}>
+                <Link to={`/thesis/${id}`} className="btn btn-primary"> <i className="bi bi-arrow-90deg-left"></i> </Link>
+            </Col>
+            <Col md={4}>
             </Col>
             <Col className='d-flex justify-content-end' md={4}>
                     <p> 
@@ -123,24 +131,24 @@ function ApplyForm(props) {
             </Col>
         </Row>
 
-        <Form onSubmit={handleSubmit} >
+        <Form className="mt-3" onSubmit={handleSubmit} >
             <Row>
                 <Col md={5}>
                     <Form.Group className="mb-3">
                         <Form.Label>Name</Form.Label>
-                        <Form.Control disabled type="text" required={true} defaultValue={props.user.name}/>
+                        <Form.Control disabled type="text" required={true} defaultValue={user.name}/>
                     </Form.Group>
                 </Col>
                 <Col md={5}>
                     <Form.Group className="mb-3">
                         <Form.Label>Surname</Form.Label>
-                        <Form.Control disabled type="text" required={true} defaultValue={props.user.surname}/>
+                        <Form.Control disabled type="text" required={true} defaultValue={user.surname}/>
                     </Form.Group>
                 </Col>
                 <Col md={2}>
                 <Form.Group className="mb-3">
                         <Form.Label>Gender</Form.Label>
-                        <Form.Control disabled type="text" required={true} defaultValue={props.user.gender}/>
+                        <Form.Control disabled type="text" required={true} defaultValue={user.gender}/>
                     </Form.Group>
                 </Col>
             </Row>
@@ -148,20 +156,20 @@ function ApplyForm(props) {
                 <Col md={6}>
                     <Form.Group className="mb-3">
                         <Form.Label>Nationality</Form.Label>
-                        <Form.Control disabled type="text" required={true} defaultValue={props.user.nationality}/>
+                        <Form.Control disabled type="text" required={true} defaultValue={user.nationality}/>
                     </Form.Group>
                 </Col>
                 <Col md={6}>
                     <Form.Group className="mb-3">
                         <Form.Label>Email</Form.Label>
-                        <Form.Control disabled type="text" required={true} defaultValue={props.user.email}/>
+                        <Form.Control disabled type="text" required={true} defaultValue={user.email}/>
                     </Form.Group>
                 </Col>
             </Row>
             <Row className="text-center">
                 <Container className='mt-5'>
                     <h5>Student Career</h5>
-                    <StudentCareer exams={career} id={props.user.id}></StudentCareer>
+                    <StudentCareer exams={career} ></StudentCareer>
                 </Container>
             </Row>
             <Row className="text-center">

@@ -99,8 +99,8 @@ function Main() {
             {/** Add here other routes */}
             <Route path='/proposal' element={<InsertProposalForm />} />
             <Route path='/thesis' element={<ThesisList />} />
-            <Route path='/thesis/:id' element={<ThesisDetails />} />
-            <Route path='/thesis/:id/apply' element={<ApplyForm user={user} virtualDate={date}/>} />
+            <Route path='/thesis/:id' element={<ThesisDetails/>} />
+            <Route path='/thesis/:id/apply' element={<ApplyForm virtualDate={date}/>} />
 
           </Route>
           <Route path='*' element={<NotFoundPage />} />

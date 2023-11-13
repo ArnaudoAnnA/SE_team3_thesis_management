@@ -15,7 +15,7 @@ Data loading works and the student can see a table of proposals:
 
 ![Screenshot](./screenshots/TableProp.png)
 
-At the bottom of the table there are several buttoms that helps to swipe the table in order to see more data. These work well.
+At the bottom of the table there are several buttons that helps to swipe the table in order to see more data. These work well.
 
 ![Screenshot](./screenshots/Button.png)
 
@@ -24,7 +24,7 @@ By clicking in one of the proposals inside the table there's a more complete des
 ![Screenshot](./screenshots/Description.png)
 
 Inside the proposal there's a correct division of data.
-Here the student as the chance to apply by clicking the propriate button.
+Here the student has the chance to apply by clicking the propriate button.
 The CSS works as well as the mobile one (it has been tested by increasing and decreasing the dimension of the screen). 
 By clicking the apply button there's a working redirection in the form in order to send the student application.
 If the students wants to go back there's a specific button that sends back correctly in the table.

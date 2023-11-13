@@ -1,8 +1,9 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {Button, Container, Table} from "react-bootstrap";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import API from '../../API'
 import { Arrow90degLeft } from "react-bootstrap-icons";
+import { userContext } from "../Utils";
 
 
 function object_prop_to_table_row(key, value)
@@ -31,6 +32,7 @@ function ThesisDetails(props)
     const {id} =  useParams();
     const [thesis, setThesis] = useState();
     const navigate = useNavigate();
+    const user = useContext(userContext);
 
     useEffect( () =>
     {
@@ -43,7 +45,7 @@ function ThesisDetails(props)
         {
             thesis ? <>
                         <Link to='/thesis'><Button><Arrow90degLeft /></Button></Link>
-                        <Link to={'/thesis/'+thesis.id+'/apply'}><Button>Apply</Button></Link>
+                        {user.role=='teacher' ? null : <Link to={'/thesis/'+thesis.id+'/apply'}><Button>Apply</Button></Link>}
                         <hr size={10}/>
                         <h1>{thesis.title}</h1>
                         <h6><i>{thesis.supervisor}</i></h6>

@@ -266,11 +266,23 @@ const getTitleAndTeacher = async (thesisId) => {
 }
 
 
+/**
+ * Retrieve the application by the id of the student and the id of the thesis
+ * @param studentId the id of the student
+ * @param thesisId the id of the thesis
+ * @return the application object, null if the object doesn't exist
+ * 
+ */
+
+const getApplication = async (studentId, thesisId) => {
+  return;
+}
+
 const API = {
   getAllThesis, getThesis, getThesisNumber, getThesisWithId,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser,
-  addApplication, retrieveCareer, getTitleAndTeacher,
+  addApplication, retrieveCareer, getTitleAndTeacher, getApplication
 };
 
 export default API;
