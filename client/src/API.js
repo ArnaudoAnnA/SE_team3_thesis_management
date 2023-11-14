@@ -9,7 +9,7 @@ import Teacher from './models/Teacher.js';
 import Student from './models/Student.js';
 import Career from './models/Career.js';
 
-import { thesis } from './MOCKS';
+import { thesis } from './MOCKS.js';
 
 //DO NOT CANCEL
 const firebaseConfig = {
@@ -53,7 +53,7 @@ async function getAllThesis() {
                   .then(json => {ok: json, err: null})
                   .catch(err => {ok: null, err: err})
   */
-
+  
   return thesis;
 }
 
@@ -96,10 +96,33 @@ async function getThesisWithId(id) {
                 .then(json => {ok: json, err: null})
                 .catch(err => {ok: null, err: err})
 */
-
   //MOC
   return thesis.find(t => t.id == id);
 }
+
+const getThesisWithID = async (ID) => {
+  console.log("Testing getThesisWithID")
+
+  //QUERY CONDITIONS
+  const whereCond1 = where("id", "==", Number(ID))
+  const qThesis = query(thesisProposalsRef, whereCond1)
+
+  try {
+    const thesisSnapshot = await getDocs(qThesis)
+    if (!thesisSnapshot.empty) {
+      const thesis = thesisSnapshot.docs[0].data()
+      console.log(thesis);
+      return thesis
+    } else {
+      console.log("Thesis not found");
+      return null; // or handle accordingly if thesis not found
+    }
+  } catch (e) {
+    console.log("Error:", e)
+    return null; // or handle the error accordingly
+  }
+}
+
 
 
 /**
