@@ -22,19 +22,19 @@ describe('testing the insertion of a thesis proposal in the database', () => {
     test('should retrive an error if a teacher is not logged in', async () => {
         const response = await API.insertProposal(thesisProposal);
         expect(response.status).toEqual(401);
+    });
 
-        it('should retrive an error if a student is logged in', async () => {
-            API.logIn("s901234@studenti.polito.it", "s901234")
-            const response = await API.insertProposal(thesisProposal);
-            API.logOut();
-            expect(response.status).toEqual(401);
-        });
+    test('should retrive an error if a student is logged in', async () => {
+        API.logIn("s901234@studenti.polito.it", "s901234")
+        const response = await API.insertProposal(thesisProposal);
+        API.logOut();
+        expect(response.status).toEqual(401);
+    });
 
-        it('should add a thesis proposal to the database', async () => {
-            API.logIn("d345678@studenti.polito.it", "d345678")
-            const response = await API.insertProposal(thesisProposal);
-            API.logOut();
-            expect(response.status).toEqual(200);
-        });
+    test('should add a thesis proposal to the database', async () => {
+        API.logIn("d345678@studenti.polito.it", "d345678")
+        const response = await API.insertProposal(thesisProposal);
+        API.logOut();
+        expect(response.status).toEqual(200);
     });
 });

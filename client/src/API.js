@@ -8,6 +8,10 @@ import dayjs from 'dayjs';
 import Teacher from './models/Teacher.js';
 import Student from './models/Student.js';
 import Career from './models/Career.js';
+import Application from './models/Application.js';
+import ThesisProposal from './models/ThesisProposal.js';
+
+import { thesis } from './MOCKS.js';
 
 //DO NOT CANCEL
 const firebaseConfig = {
@@ -36,7 +40,31 @@ const degreesRef = DEBUG ? collection(db, "test-degrees") : collection(db, "degr
 const careersRef = DEBUG ? collection(db, "test-career") : collection(db, "career");
 const thesisProposalsRef = DEBUG ? collection(db, "test-thesisProposals") : collection(db, "thesisProposals");
 const applicationsRef = DEBUG ? collection(db, "test-applications") : collection(db, "applications");
-const dateRef = DEBUG ? collection(db, "test-date") : collection(db, "date");
+const dateRef =  collection(db, "date");
+
+/**
+ * Return if the user is a student
+ * @param email the email of the user
+ * @return true if the user is a student, false otherwise
+ */
+const isStudent = async (email) => {
+  const whereCond = where("email", "==", email)
+  const q = query(studentsRef, whereCond)
+  const snapshot = await getDocs(q)
+  return snapshot.docs[0] ? true : false
+}
+
+/**
+ * Return if the user is a teacher
+ * @param email the email of the user
+ * @return true if the user is a teacher, false otherwise
+ */
+const isTeacher = async (email) => {
+  const whereCond = where("email", "==", email)
+  const q = query(teachersRef, whereCond)
+  const snapshot = await getDocs(q)
+  return snapshot.docs[0] ? true : false
+}
 
 /** Fetch the collection of all thesis without applying filters.<br>
  * 
@@ -44,15 +72,23 @@ const dateRef = DEBUG ? collection(db, "test-date") : collection(db, "date");
  * - ok, contains the json obj in case of success, otherwise null;
  * - err, contains some details in case of error, otherwise null.
 */
-async function getAllThesis() {
-  /*
-    Get all documents from the thesisProposals collection (empty where condition)
-      return await getJson(SERVER_URL+ !!!! NOME API !!!!)
-                  .then(json => {ok: json, err: null})
-                  .catch(err => {ok: null, err: err})
-  */
-
-  return thesis;
+const getAllThesis = async () => {
+  console.log("Getting all thesis proposals")
+  
+  try {
+    const thesisSnapshot = await getDocs(thesisProposalsRef);
+    
+    const allThesis = [];
+    thesisSnapshot.forEach((doc) => {
+      allThesis.push(doc.data());
+    });
+    
+    console.log(allThesis);
+    return allThesis;
+  } catch (e) {
+    console.log("Error:", e);
+    return null; // or handle the error accordingly
+  }
 }
 
 /** Fetch the collection of thesis without applying filters.<br>
@@ -135,10 +171,33 @@ async function getThesisWithId(id) {
                 .then(json => {ok: json, err: null})
                 .catch(err => {ok: null, err: err})
 */
-
   //MOC
   return thesis.find(t => t.id == id);
 }
+
+const getThesisWithID = async (ID) => {
+  console.log("Testing getThesisWithID")
+
+  //QUERY CONDITIONS
+  const whereCond1 = where("id", "==", Number(ID))
+  const qThesis = query(thesisProposalsRef, whereCond1)
+
+  try {
+    const thesisSnapshot = await getDocs(qThesis)
+    if (!thesisSnapshot.empty) {
+      const thesis = thesisSnapshot.docs[0].data()
+      console.log(thesis);
+      return thesis
+    } else {
+      console.log("Thesis not found");
+      return null; // or handle accordingly if thesis not found
+    }
+  } catch (e) {
+    console.log("Error:", e)
+    return null; // or handle the error accordingly
+  }
+}
+
 
 
 /**
@@ -301,6 +360,19 @@ const getTitleAndTeacher = async (thesisId) => {
 
 
 
+  return;
+}
+
+
+/**
+ * Retrieve the application by the id of the student and the id of the thesis
+ * @param studentId the id of the student
+ * @param thesisId the id of the thesis
+ * @return the application object, null if the object doesn't exist
+ * 
+ */
+
+const getApplication = async (studentId, thesisId) => {
   return;
 }
 
