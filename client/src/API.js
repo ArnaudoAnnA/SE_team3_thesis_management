@@ -1,7 +1,7 @@
 "use strict;"
 
 import { initializeApp } from 'firebase/app';
-import { collection, addDoc, getFirestore, doc, query, getDocs, where, setDoc, deleteDoc, getDoc, limit } from 'firebase/firestore';
+import { collection, addDoc, getFirestore, doc, query, getDocs, where, setDoc, deleteDoc, getDoc, limit, QueryFieldFilterConstraint } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 import dayjs from 'dayjs';
@@ -91,48 +91,73 @@ const getAllThesis = async () => {
   }
 }
 
-/** Fetch the collection of thesis without applying filters.<br>
+/** Fetch the collection of thesis applying specified filters <br>
    * It doesn't return all the thesis, but only the ones in the given range of indexes.<br>
   * 
-  * @param filters : array
+  * @param filters : object containing all possible filters. If not specified or null, all thesis are returned.
+  * 
+  * Filters contains:
+  * - theacherName: name and surname,
+  * - expirationDate: { from: date, to: date }
+  * - level: 'bachelor' | 'master',
+  * - keywords: array of strings,
+  * - type: 'academic research' | 'stage'
+  * 
+  * if some of the properties is not specified, it is not considered in the query.<br>
+  * Expiration date from and to are both inclusive.<br>
   * 
   * @returns an object with two properties:
-  * - ok, contains the json obj in case of success, otherwise null;
-  * - err, contains some details in case of error, otherwise null.
+  * - status, contains the status code of the request;
+  * - err, contains some details in case of error, otherwise null;
+  * - thesis, contains the array of thesis in case of success, otherwise null.
  */
 async function getThesis(filters) {
   if (filters === undefined ) {
     return getAllThesis();
   }
 
-  // value to filter with
-  const validFilters = [
-    'theacherName',
-    'expirationDate',
-    'level',
-    'keywords',
-    'type'
-  ];
-
-  // remove all non permitted filter
-  filters = filters.filter(f => validFilters.includes(f.field));
-  
-
   // build where conditions
-  const whereConditions = filters.map(f => {
-    switch (f.field) {
-      case 'theacherName':
-        return where('teacherName', '==', f.value);
-      case 'expirationDate':
-        return where('expirationDate', f.op, dayjs(f.value).toISOString());
-      case 'level':
-        return where('level', '==', f.value);
-      case 'keywords':
-        return where('keywords', 'array-contains-any', f.value);
-      case 'type':
-        return where('type', '==', f.value);
-    }
-  });
+  let whereConditions = [];
+  if (filters.theacherName != undefined) {
+    let teacherName = filters.theacherName;
+    console.log('Filters by theacher name not implemented yet');
+  }
+
+  if (filters.expirationDate != undefined) {
+    let expirationDate = filters.expirationDate;
+
+    if (dayjs.isDayjs(expirationDate.from))
+      if (expirationDate.from != undefined) {
+        console.log(expirationDate.from.toISOString());
+        whereConditions.push(where('expirationDate', '>=', expirationDate.from.toISOString()));
+      }
+    else 
+      console.error('getThesis: Invalid date format in expirationDate.from');
+    
+    if (dayjs.isDayjs(expirationDate.to))
+      if (expirationDate.to != undefined) {
+        console.log(expirationDate.to.toISOString());
+        whereConditions.push(where('expirationDate', '<=', expirationDate.to.toISOString())); 
+      }
+    else
+      console.error('getThesis: Invalid date format in expirationDate.to');
+  }
+
+  if(filters.level != undefined) {
+    let level = filters.level;
+    whereConditions.push(where('level', '==', level));
+  }
+
+  if(filters.keywords != undefined) {
+    let keywords = filters.keywords;
+    whereConditions.push(where('keywords', 'array-contains-any', keywords));
+  }
+
+  if(filters.type != undefined) {
+    let type = filters.type;
+    whereConditions.push(where('type', '==', type));
+  }
+
   let q = query(thesisProposalsRef, ...whereConditions);
 
   try {
@@ -147,7 +172,7 @@ async function getThesis(filters) {
     if(thesis === undefined) {
       return { status: 404, err: 'No thesis found', thesis: [] };
     }    
-    return { status: 200, err: null, thesis: thesis };
+    return { status: 200, thesis: thesis };
   } catch (error) {
     console.log(error);
     return { status: 500, err: error };
