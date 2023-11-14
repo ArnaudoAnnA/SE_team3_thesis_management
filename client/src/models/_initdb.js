@@ -62,6 +62,8 @@ async function deleteQueryBatch(q, resolve) {
 }
 
 
+/* ---------------------------------------------------------------------- */
+
 // Delete all collections
 await deleteCollection(db, "date");
 await deleteCollection(db, "students");
@@ -79,3 +81,26 @@ await populateCollection(db, degrees, 'degrees');
 await populateCollection(db, careers, 'career');
 await populateCollection(db, applications, 'applications');
 await populateCollection(db, thesisProposals, 'thesisProposals');
+
+/* --------------------------------------------------------------------- */
+
+
+/* Decomment if you want to repopulate the TEST db, commenting the part above */
+
+/*
+// Delete all collections
+await deleteCollection(db, "test-students");
+await deleteCollection(db, "test-applications");
+await deleteCollection(db, "test-career");
+await deleteCollection(db, "test-degrees");
+await deleteCollection(db, "test-teachers");
+await deleteCollection(db, "test-thesisProposals");
+
+// Import data to firestore
+await populateCollection(db, students, 'test-students');
+await populateCollection(db, teachers, 'test-teachers');
+await populateCollection(db, degrees, 'test-degrees');
+await populateCollection(db, careers, 'test-career');
+await populateCollection(db, applications, 'test-applications');
+await populateCollection(db, thesisProposals, 'test-thesisProposals');
+*/
