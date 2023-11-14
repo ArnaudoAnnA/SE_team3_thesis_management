@@ -44,11 +44,11 @@ function Main() {
       console.log(currentUser)
       if (currentUser) {
         try {
-          
+
           const userInfo = await API.getUser(currentUser.email)
           // console.log(userInfo)
           setUser(userInfo)
-          if(user){
+          if (user) {
             console.log(user.email)
             console.log(user.role)
           }
@@ -94,13 +94,14 @@ function Main() {
         <Routes>
           <Route path='/' element={<Header logoutCbk={logout} date={date} changeDateCbk={changeVirtualDate} />}>
 
-            {user.email ? <Route path='' element={<Home />} /> :
+            {user.email ? (user.role === "student" ? <Route path='' element={<SearchBar />} /> :
+              <Route path='' element={<ThesisList />} />) :
               <Route path='' element={<Login />} />}
             {/** Add here other routes */}
             <Route path='/proposal' element={<InsertProposalForm />} />
             <Route path='/thesis' element={<ThesisList />} />
-            <Route path='/thesis/:id' element={<ThesisDetails/>} />
-            <Route path='/thesis/:id/apply' element={<ApplyForm virtualDate={date}/>} />
+            <Route path='/thesis/:id' element={<ThesisDetails />} />
+            <Route path='/thesis/:id/apply' element={<ApplyForm virtualDate={date} />} />
 
           </Route>
           <Route path='*' element={<NotFoundPage />} />
@@ -128,10 +129,10 @@ function Header(props) {
 }
 
 /**
- * Home page
+ * Search bar 
  */
 
-function Home() {
+function SearchBar() {
 
 }
 
