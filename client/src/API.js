@@ -9,8 +9,6 @@ import Teacher from './models/Teacher.js';
 import Student from './models/Student.js';
 import Career from './models/Career.js';
 
-import { thesis } from './MOCKS';
-
 //DO NOT CANCEL
 const firebaseConfig = {
   apiKey: "AIzaSyCu5cRTSa5Ezg4DNIiKDfLQfQ-kDTHo4iI",
@@ -60,23 +58,64 @@ async function getAllThesis() {
 /** Fetch the collection of thesis without applying filters.<br>
    * It doesn't return all the thesis, but only the ones in the given range of indexes.<br>
   * 
-  * @param [start, end] : start and end indexes are both included.
+  * @param filters : array
   * 
   * @returns an object with two properties:
   * - ok, contains the json obj in case of success, otherwise null;
   * - err, contains some details in case of error, otherwise null.
  */
-async function getThesis(filters, [start, end]) {
+async function getThesis(filters) {
+  if (filters === undefined ) {
+    return getAllThesis();
+  }
 
-  let thesis_filtered = thesis.filter(
-    t => {
-      let ret = false;
-      for (let prop in t) {
-        if (typeof t[prop] === "string" && t[prop].includes(filters.searchKeyWord)) return true;
-      }
-    });
+  // value to filter with
+  const validFilters = [
+    'theacherName',
+    'expirationDate',
+    'level',
+    'keywords',
+    'type'
+  ];
 
-  return end < thesis_filtered.length ? thesis_filtered.slice(start, end + 1) : thesis_filtered.slice(start, thesis_filtered.length);
+  // remove all non permitted filter
+  filters = filters.filter(f => validFilters.includes(f.field));
+  
+
+  // build where conditions
+  const whereConditions = filters.map(f => {
+    switch (f.field) {
+      case 'theacherName':
+        return where('teacherName', '==', f.value);
+      case 'expirationDate':
+        return where('expirationDate', f.op, dayjs(f.value).toISOString());
+      case 'level':
+        return where('level', '==', f.value);
+      case 'keywords':
+        return where('keywords', 'array-contains-any', f.value);
+      case 'type':
+        return where('type', '==', f.value);
+    }
+  });
+  let q = query(thesisProposalsRef, ...whereConditions);
+
+  try {
+    let thesis = await getDocs(q).
+      then(snapshot => {
+        let thesis = [];
+        snapshot.forEach(doc => {
+          thesis.push(doc.data());
+        });
+        return thesis;
+      });
+    if(thesis === undefined) {
+      return { status: 404, err: 'No thesis found', thesis: [] };
+    }    
+    return { status: 200, err: null, thesis: thesis };
+  } catch (error) {
+    console.log(error);
+    return { status: 500, err: error };
+  }
 }
 
 async function getThesisNumber() {
@@ -266,23 +305,11 @@ const getTitleAndTeacher = async (thesisId) => {
 }
 
 
-/**
- * Retrieve the application by the id of the student and the id of the thesis
- * @param studentId the id of the student
- * @param thesisId the id of the thesis
- * @return the application object, null if the object doesn't exist
- * 
- */
-
-const getApplication = async (studentId, thesisId) => {
-  return;
-}
-
 const API = {
   getAllThesis, getThesis, getThesisNumber, getThesisWithId,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser,
-  addApplication, retrieveCareer, getTitleAndTeacher, getApplication
+  addApplication, retrieveCareer, getTitleAndTeacher
 };
 
 export default API;
