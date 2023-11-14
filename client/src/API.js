@@ -72,15 +72,23 @@ const isTeacher = async (email) => {
  * - ok, contains the json obj in case of success, otherwise null;
  * - err, contains some details in case of error, otherwise null.
 */
-async function getAllThesis() {
-  /*
-    Get all documents from the thesisProposals collection (empty where condition)
-      return await getJson(SERVER_URL+ !!!! NOME API !!!!)
-                  .then(json => {ok: json, err: null})
-                  .catch(err => {ok: null, err: err})
-  */
+const getAllThesis = async () => {
+  console.log("Getting all thesis proposals")
   
-  return thesis;
+  try {
+    const thesisSnapshot = await getDocs(thesisProposalsRef);
+    
+    const allThesis = [];
+    thesisSnapshot.forEach((doc) => {
+      allThesis.push(doc.data());
+    });
+    
+    console.log(allThesis);
+    return allThesis;
+  } catch (e) {
+    console.log("Error:", e);
+    return null; // or handle the error accordingly
+  }
 }
 
 /** Fetch the collection of thesis without applying filters.<br>
