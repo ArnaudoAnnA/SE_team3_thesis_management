@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 export class Application {
     constructor(studentId, thesisId, accepted = false, curriculum = null, date = dayjs.now()) {
         this.studentId = studentId;
-        this.thesisId = thesisId;
+        this.thesisId = Number(thesisId);
         this.accepted = accepted;
         this.curriculum = curriculum;
         this.date = date;

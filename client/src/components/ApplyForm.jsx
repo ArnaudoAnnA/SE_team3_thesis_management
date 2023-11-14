@@ -73,6 +73,11 @@ function ApplyForm(props) {
 
     //Checks
     const app = await API.getApplication(user.id, id);
+    if((typeof app) == "string"){
+        setErrorMsg(app)
+        return
+    }
+    console.log(app)
 
     if (app) {
         setErrorMsg ("You can't apply at the same thesis twice");
@@ -81,8 +86,9 @@ function ApplyForm(props) {
         console.log(application)
         
         API.addApplication(application)
-            .then(() => {
+            .then((msg) => {
                 //Cosa devo far spuntare??
+                setErrorMsg(msg)
             })
             .catch(e => console.log("Error in ApplyForm/addApplicationAPI:" + e))
     }

@@ -12,6 +12,8 @@ import Application from './models/Application.js';
 import ThesisProposal from './models/ThesisProposal.js';
 
 import { thesis } from './MOCKS.js';
+import StringUtils from './utils/StringUtils.js';
+import CONSTANTS from './utils/Constants.js';
 
 //DO NOT CANCEL
 const firebaseConfig = {
@@ -40,7 +42,7 @@ const degreesRef = DEBUG ? collection(db, "test-degrees") : collection(db, "degr
 const careersRef = DEBUG ? collection(db, "test-career") : collection(db, "career");
 const thesisProposalsRef = DEBUG ? collection(db, "test-thesisProposals") : collection(db, "thesisProposals");
 const applicationsRef = DEBUG ? collection(db, "test-applications") : collection(db, "applications");
-const dateRef =  collection(db, "date");
+const dateRef = collection(db, "date");
 
 /**
  * Return if the user is a student
@@ -74,15 +76,15 @@ const isTeacher = async (email) => {
 */
 const getAllThesis = async () => {
   console.log("Getting all thesis proposals")
-  
+
   try {
     const thesisSnapshot = await getDocs(thesisProposalsRef);
-    
+
     const allThesis = [];
     thesisSnapshot.forEach((doc) => {
       allThesis.push(doc.data());
     });
-    
+
     console.log(allThesis);
     return allThesis;
   } catch (e) {
@@ -307,106 +309,145 @@ const getUser = async (email) => {
  * @return null
  */
 const addApplication = async (application) => {
-  try {
-    addDoc(applicationsRef, application.parse()).then(doc => {
-      console.log(doc.id)
-      console.log("Added application with id:" + doc.id)
+  if (auth.currentUser) {
+    if (StringUtils.checkId(application.studentId, auth.currentUser.email)) {
+      try {
+        addDoc(applicationsRef, application.parse()).then(doc => {
+          console.log(doc.id)
+          console.log("Added application with id:" + doc.id)
+          return "Application sent"
+        })
+      } catch (e) {
+        console.log(e)
+        throw (e)
+      }
+    } else {
+      return CONSTANTS.unauthorized
+    } 
+    return;
+  }
+  else {
+    return CONSTANTS.notLogged
+  }
+}
+
+  /**
+   * Retrieve all the career data of a student by his studentId
+   * @param studentId the id of the student
+   * @return the career ARRAY (look model/Career)
+   */
+  const retrieveCareer = async (studentId) => {
+    console.log("API.retrieveCareer")
+    const whereStudentId = where("id", "==", studentId)
+    const q = query(careersRef, whereStudentId)
+    const careerSnapshot = await getDocs(q)
+    // console.log(careerSnapshot)
+
+    const career = []
+    careerSnapshot.forEach(doc => {
+      const exam = doc.data()
+      // console.log(exam)
+      const obj = new Career(exam.id, exam.codCourse, exam.titleCourse, exam.cfu, exam.grade, exam.date)
+      career.push(obj)
     })
-  } catch (e) {
-    console.log(e)
-    throw (e)
+    // console.log(career)
+    return career;
   }
 
-  return;
-}
+  /**
+   * Retrieve the thesis title and relative teacher
+   * @param thesisId the id of the thesis
+   * @return an object having 2 properties:
+   *    {
+   *      title : <string>
+   *      teacher : {
+   *                   name: <string>
+   *                   surname: <string>
+   *                }
+   *    }
+   * 
+   */
+  const getTitleAndTeacher = async (thesisId) => {
+    console.log("API.getTitleAndTeacher")
+    const whereThesisId = where("id", "==", Number(thesisId))
+    const qThesis = query(thesisProposalsRef, whereThesisId)
+    try {
+      const thesisSnapshot = await getDocs(qThesis)
+      const thesis = thesisSnapshot.docs[0].data()
+      const whereTheacherId = where("id", "==", thesis.teacherId)
+      const qTeacher = query(teachersRef, whereTheacherId)
+      const teacherSnapshot = await getDocs(qTeacher)
+      const teacher = teacherSnapshot.docs[0].data()
 
-/**
- * Retrieve all the career data of a student by his studentId
- * @param studentId the id of the student
- * @return the career ARRAY (look model/Career)
- */
-const retrieveCareer = async (studentId) => {
-  console.log("API.retrieveCareer")
-  const whereStudentId = where("id", "==", studentId)
-  const q = query(careersRef, whereStudentId)
-  const careerSnapshot = await getDocs(q)
-  // console.log(careerSnapshot)
-
-  const career = []
-  careerSnapshot.forEach(doc => {
-    const exam = doc.data()
-    // console.log(exam)
-    const obj = new Career(exam.id, exam.codCourse, exam.titleCourse, exam.cfu, exam.grade, exam.date)
-    career.push(obj)
-  })
-  // console.log(career)
-  return career;
-}
-
-/**
- * Retrieve the thesis title and relative teacher
- * @param thesisId the id of the thesis
- * @return an object having 2 properties:
- *    {
- *      title : <string>
- *      teacher : {
- *                   name: <string>
- *                   surname: <string>
- *                }
- *    }
- * 
- */
-const getTitleAndTeacher = async (thesisId) => {
-  console.log("API.getTitleAndTeacher")
-  const whereThesisId = where("id", "==", Number(thesisId))
-  const qThesis = query(thesisProposalsRef, whereThesisId)
-  try {
-    const thesisSnapshot = await getDocs(qThesis)
-    const thesis = thesisSnapshot.docs[0].data()
-    const whereTheacherId = where("id", "==", thesis.teacherId)
-    const qTeacher = query(teachersRef, whereTheacherId)
-    const teacherSnapshot = await getDocs(qTeacher)
-    const teacher = teacherSnapshot.docs[0].data()
-
-    return {
-      title: thesis.title,
-      teacher: {
-        name: teacher.name,
-        surname: teacher.surname
+      return {
+        title: thesis.title,
+        teacher: {
+          name: teacher.name,
+          surname: teacher.surname
+        }
       }
+
+
+
+    } catch (e) {
+      console.log(e)
     }
 
 
 
-  } catch (e) {
-    console.log(e)
+
+    return;
   }
 
 
+  /**
+   * Retrieve the application by the id of the student and the id of the thesis
+   * @param studentId the id of the student
+   * @param thesisId the id of the thesis
+   * @return the application object, null if the object doesn't exist
+   * 
+   */
+
+  const getApplication = async (studentId, thesisId) => {
+    if (auth.currentUser) {
+      if (StringUtils.checkId(studentId, auth.currentUser.email)) {
+        console.log(studentId)
+        console.log(thesisId)
+        const whereThesisId = where("thesisId", "==", Number(thesisId))
+        const whereStudentId = where("studentId", "==", studentId)
+
+        const qApplication = query(applicationsRef, whereThesisId, whereStudentId)
+        // console.log(qApplication)
+        try {
+          const applicationSnapshot = await getDocs(qApplication)
+          applicationSnapshot.forEach(e => { console.log(e) })
+          if (applicationSnapshot.docs.length > 0) {
+            console.log("there is already a record")
+            const app = applicationSnapshot.docs[0].data()
+            return new Application(app.studentId, app.thesisId, app.accepted, app.curriculum, app.date)
+          }
+          console.log("No records")
+          return null
+        } catch (error) {
+          console.log(e)
+        }
+      } else {
+        return CONSTANTS.unauthorized
+      }
+    } else {
+      return CONSTANTS.notLogged
+    }
 
 
-  return;
-}
+    return;
+  }
 
 
-/**
- * Retrieve the application by the id of the student and the id of the thesis
- * @param studentId the id of the student
- * @param thesisId the id of the thesis
- * @return the application object, null if the object doesn't exist
- * 
- */
+  const API = {
+    getAllThesis, getThesis, getThesisNumber, getThesisWithId,
+    changeVirtualDate, getVirtualDate,
+    signUp, logIn, logOut, getUser,
+    addApplication, retrieveCareer, getTitleAndTeacher, getApplication
+  };
 
-const getApplication = async (studentId, thesisId) => {
-  return;
-}
-
-
-const API = {
-  getAllThesis, getThesis, getThesisNumber, getThesisWithId,
-  changeVirtualDate, getVirtualDate,
-  signUp, logIn, logOut, getUser,
-  addApplication, retrieveCareer, getTitleAndTeacher
-};
-
-export default API;
+  export default API;
