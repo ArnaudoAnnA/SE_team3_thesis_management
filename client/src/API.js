@@ -181,26 +181,18 @@ async function getThesis(filters) {
   }
 }
 
-async function getThesisNumber() {
-  /*
-    return await getJson(SERVER_URL+ !!!! NOME API !!!!)
-                .then(json => {ok: json, err: null})
-                .catch(err => {ok: null, err: err})
-*/
 
-  //MOC
-  return thesis.length;
-}
-
-async function getThesisWithId(id) {
-  /*
-    return await getJson(SERVER_URL+ !!!! NOME API !!!!)
-                .then(json => {ok: json, err: null})
-                .catch(err => {ok: null, err: err})
-*/
-  //MOC
-  return thesis.find(t => t.id == id);
-}
+const getThesisNumber = async () => {
+  try {
+    const querySnapshot = await getDocs(thesisProposalsRef);
+    const numberOfDocs = querySnapshot.size;
+    console.log("Number of thesis:", numberOfDocs);
+    return numberOfDocs;
+  } catch (error) {
+    console.error("Error getting documents: ", error);
+    return null; // or handle the error accordingly
+  }
+};
 
 const getThesisWithID = async (ID) => {
   console.log("Testing getThesisWithID")
@@ -444,10 +436,12 @@ const addApplication = async (application) => {
 
 
   const API = {
-    getAllThesis, getThesis, getThesisNumber, getThesisWithId,
+    getAllThesis, getThesis, getThesisNumber, getThesisWithID,
     changeVirtualDate, getVirtualDate,
     signUp, logIn, logOut, getUser,
     addApplication, retrieveCareer, getTitleAndTeacher, getApplication
   };
 
   export default API;
+
+  getThesisNumber();
