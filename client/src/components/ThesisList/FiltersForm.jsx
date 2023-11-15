@@ -26,8 +26,8 @@ function AdvancedFiltersTable(props)
     <hr size={15}/>
     <h4>{"Advanced filters"}</h4>
     <Row >
-        {props.columns.map(c =><div key={c} className=" m-2 advanced-filters-col"><Row>{c}</Row>
-                                    <Row><ThesisFieldFilterForm filters={props.filters} onChangeFiltersForm={props.onChangeFiltersForm} DBfield={c} /></Row>
+        {props.columns.map(c =><div key={c.title} className=" m-2 advanced-filters-col"><Row>{c.title}</Row>
+                                    <Row><ThesisFieldFilterForm filters={props.filters} onChangeFiltersForm={props.onChangeFiltersForm} DBfield={c.DBfield} /></Row>
                             </div>)}
     </Row>
     </Row>

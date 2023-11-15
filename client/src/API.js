@@ -160,8 +160,8 @@ const changeVirtualDate = async (date) => {
 /** Fetch the collection of all thesis without applying filters.<br>
  * 
  * Returns an object with two properties:
- * - ok, contains the json obj in case of success, otherwise null;
- * - err, contains some details in case of error, otherwise null.
+ * - status;
+ * - thesis, null in case of error.
 */
 const getAllThesis = async () => {
   console.log("Getting all thesis proposals")
@@ -175,7 +175,7 @@ const getAllThesis = async () => {
     });
 
     console.log(allThesis);
-    return allThesis;
+    return { status: 200, thesis: allThesis }
   } catch (e) {
     console.log("Error:", e);
     return null; // or handle the error accordingly

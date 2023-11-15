@@ -15,9 +15,9 @@ function ThesisList(props)
     const columns = [   //TO DO: dynamic width of columns
         { DBfield: "title", title: "Title",  },
         { DBfield: "supervisor", title: "Supervisor",  },
-        { DBfield: "coSupervisors", title: "Co-Supervisors",  },
+        { DBfield: "coSupervisors", title: "Co-Supervisors",  }, //array
         { DBfield: "type", title: "Type",  },
-        { DBfield: "groups", title: "Groups",  },
+        { DBfield: "groups", title: "Groups",  }, //array
         { DBfield: "expirationDate", title: "Expiration date",  },
         { DBfield: "level", title: "Level",  },
         { DBfield: "programmes", title: "Programmes",  }
@@ -120,9 +120,8 @@ function ThesisList(props)
                 {
                     if (ret.status == 200 && ret.thesis.length > 0)
                     {
-                        setColumns(loadColumns(ret.thesis[0]));
                         setThesis(ret.thesis); 
-                        if (!filters.orderBy) resetFilters();
+                        if (!filters || !filters.orderBy) resetFilters();
                         setState(states.ready);
                     } else
                     {

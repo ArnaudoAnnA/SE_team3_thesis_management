@@ -33,9 +33,19 @@ function thesis_obj_to_array(obj, columns)
  * @param {*} field_content
  * @returns a link to the specific item if exists, or the content of the field itself
  */
-function row_field_to_link(row_id, field_name, field_content)
+function row_field_to_td(row_id, field_name, field_content)
 {
     // TO DO: add links to professor, group, ...
+
+    switch (field_name)
+    {
+        case "coSupervisors":
+        case "groups":
+            return <>{field_content.map(e => <p>{e}</p>)}</>
+        break;
+
+
+    }
     
     return field_content;
 }
@@ -46,12 +56,11 @@ function row_field_to_link(row_id, field_name, field_content)
 function ThesisRow(props)
 {
     const navigate = useNavigate();
-    let row = thesis_obj_to_array(props.row, props.columns); //ATTENTION: each prop of the object which does not correspond to a column (id included) would not be present in the array called "row"
 
     return (
         <tr key={props.row.id} onClick={() => navigate(`/thesis/${props.row.id}`)}>
             {
-                row.map((c,i) => <td key={c}>{row_field_to_link(props.row.id, props.columns[i].DBfield, c)}</td>)
+                props.columns.map((c,i) => <td key={c.DBfield}>{row_field_to_td(props.row.id, c.DBfield, props.row[c.DBfield] || " ")}</td>)
             }
         </tr>
     )
@@ -59,14 +68,16 @@ function ThesisRow(props)
 
 function InteractiveTh(props)
 {
-    return <th className='align-middle'>
-        <Row className='align-middle'>
-            <Col className='col-7 icons'><p>{props.col.title + (props.isOrderedBy(props.col.DBfield) == "ASC" ? "↓" : "↑")}</p></Col>
-            {/*<Col className='col-1 align-middle'>{props.isOrderedBy(props.col.DBfield) == "ASC" ? <p className='text-center icons' onClick={() => props.orderBy(props.col.DBfield, false)}>{"↓"}</p>
+    return <th key={props.col.DBfield}><Table borderless>
+        <tbody>
+        <tr>
+            <th>{props.col.title}</th>
+            <th>{props.isOrderedBy(props.col.DBfield) == "ASC" ? <p className='text-center icons' onClick={() => props.orderBy(props.col.DBfield, false)}>{"↓"}</p>
                                                     : <p className='text-center icons' onClick={() => props.orderBy(props.col.DBfield, true)}>{"↑"}</p>}
-                </Col> */}
-        </Row> 
-    </th>
+            </th>
+        </tr> 
+        </tbody>
+    </Table></th>
 }
 
 
