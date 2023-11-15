@@ -398,7 +398,6 @@ const addApplication = async (application) => {
     return;
   }
 
-
   /**
    * Retrieve the application by the id of the student and the id of the thesis
    * @param studentId the id of the student
@@ -439,12 +438,46 @@ const addApplication = async (application) => {
     return;
   }
 
+  /*only for testing purposes*/
+  /**
+   * @return the number of proposals deleted
+   */
+  const removeAllProposals = async () => {
+
+    const q = query(thesisProposalsRef);
+
+    try {
+
+      const qSnapShot = await getDocs(q);
+      const ids = [];
+
+      qSnapShot.forEach(doc => {
+        ids.push(doc.id);
+      });
+
+      const len = ids.length;
+      const collectionName = DEBUG ? "test-thesisProposals" : "thesisProposals";
+
+      ids.forEach(async (id) => {
+        const docRef = doc(db, collectionName, id);
+        await deleteDoc(docRef);
+      })
+
+      console.log(len);
+      return len;
+    } catch (e) {
+      console.log(e)
+    }
+
+  };
+
 
 const API = {
-  getThesis, 
+  getThesis, getAllThesis,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser,
-  addApplication, retrieveCareer, getTitleAndTeacher, getApplication
+  addApplication, retrieveCareer, getTitleAndTeacher, getApplication,
+  removeAllProposals
 };
 
 export default API;
