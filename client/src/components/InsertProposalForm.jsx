@@ -3,18 +3,24 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 /*npm install dayjs @mui/x-date-pickers @mui/material @emotion/styled @emotion/react    --save */
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { useNavigate } from 'react-router';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button,Alert, Container } from 'react-bootstrap';
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2'
 import API from '../API'
+import context from 'react-bootstrap/esm/AccordionContext';
+import { userContext } from './Utils';
 
 
 
 function InsertProposalForm(props) {
 
   var mailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/; // Verify email
+  const user = useContext(userContext);
+  const navigate = useNavigate();
+  console.log()
 
   const successAlert = () => {
     Swal.fire({  
@@ -22,7 +28,7 @@ function InsertProposalForm(props) {
       text: 'You uploaded the thesis proposal.',
       icon: 'success'
     });
-    return true;
+    navigate("/");
   };
   
   const errorAlert = () => {
@@ -229,10 +235,10 @@ function InsertProposalForm(props) {
 
       const predefinedProposalStructure = {   
 
-        archiveDate: null,   
+        archiveDate: "",   
         coSupervisors: emailTags,   
         description: description,   
-        expirationDate: selectedDate,   
+        expirationDate: dayjs(selectedDate).toISOString(),   
         groups: [],   
         id: 0,  
         keywords: tags,   
@@ -240,7 +246,7 @@ function InsertProposalForm(props) {
         notes: note,   
         programmes: pname,   
         requiredKnowledge: knowledge,   
-        teacherId: props.user.id,   
+        teacherId: user.id,   
         title: title,   
         type: degree,   
 

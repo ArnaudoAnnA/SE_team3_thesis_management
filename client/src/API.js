@@ -485,10 +485,10 @@ const addApplication = async (application) => {
 
   //Structure of a correct thesis proposal
 const predefinedProposalStructure = {
-  archiveDate: null,
+  archiveDate: "",
   coSupervisors: [],
   description: "",
-  expirationDate: null,
+  expirationDate: "",
   groups: [],
   id: 0,
   keywords: [],
@@ -502,7 +502,7 @@ const predefinedProposalStructure = {
   };
 
 // Sample data representing a thesis proposal
-const thesisProposalData = {
+/*const thesisProposalData = {
   archiveDate: new Date('2023-12-31'), // Replace with your timestamp
   coSupervisors: ["Supervisor 1", "Supervisor 2"],
   description: "Does it work??",
@@ -517,7 +517,7 @@ const thesisProposalData = {
   teacherId: "d456789", // Replace with your teacher ID
   title: "Thesis Proposal Title",
   type: "Type of thesis", // Replace with your type
-};
+};*/
 
 const insertProposal = async (thesisProposalData) => {
   const validateThesisProposalData = (data) => {
@@ -528,11 +528,14 @@ const insertProposal = async (thesisProposalData) => {
     
       // Check if both objects have the same number of keys
       if (keys1.length !== keys2.length) {
+        console.log("part1")
         return false;
       }
       // Check if all keys in obj1 exist in obj2 and have the same type
       for (const key of keys1) {
         if (!(key in predefinedProposalStructure) || typeof thesisProposalData[key] !== typeof predefinedProposalStructure[key]) {
+          console.log("part2")
+          console.log(key)
           return false;
         }
       }  
@@ -541,6 +544,7 @@ const insertProposal = async (thesisProposalData) => {
     const keys = Object.keys(data);
     for (const key of keys) {
       if (key !== 'notes' && data[key] === null) {
+        console.log("part3")
         return false;
       }
     }
