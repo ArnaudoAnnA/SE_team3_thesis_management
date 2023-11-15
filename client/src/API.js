@@ -69,6 +69,18 @@ const isTeacher = async (email) => {
   return snapshot.docs[0] ? true : false
 }
 
+/**
+ * Return if the user is a teacher
+ * @param id the id of the teacher
+ * @return true if the user is a teacher, false otherwise
+ */
+const isTeacherById = async (id) => {
+  const whereCond = where("id", "==", id)
+  const q = query(teachersRef, whereCond)
+  const snapshot = await getDocs(q)
+  return snapshot.docs[0] ? true : false
+}
+
 
 /*--------------- Authentication APIs -------------------------- */
 const dateRef = DEBUG ? collection(db, "test-date") : collection(db, "date");
@@ -493,7 +505,7 @@ const predefinedProposalStructure = {
 const thesisProposalData = {
   archiveDate: new Date('2023-12-31'), // Replace with your timestamp
   coSupervisors: ["Supervisor 1", "Supervisor 2"],
-  description: "This is the thesis proposal description.",
+  description: "Does it work??",
   expirationDate: new Date('2024-01-31'), // Replace with your timestamp
   groups: ["Group 1", "Group 2"],
   id: 1, // Replace with your ID
@@ -502,9 +514,9 @@ const thesisProposalData = {
   notes: "Additional notes for the proposal.",
   programmes: "Programme name", // Replace with your programme
   requiredKnowledge: "Required knowledge for the proposal.",
-  teacherId: "Teacher123", // Replace with your teacher ID
-  title: "Thesis Proposal Title"
-  //type: "Type of thesis", // Replace with your type
+  teacherId: "d456789", // Replace with your teacher ID
+  title: "Thesis Proposal Title",
+  type: "Type of thesis", // Replace with your type
 };
 
 const insertProposal = async (thesisProposalData) => {
@@ -520,7 +532,7 @@ const insertProposal = async (thesisProposalData) => {
       }
       // Check if all keys in obj1 exist in obj2 and have the same type
       for (const key of keys1) {
-        if (!(key in obj2) || typeof obj1[key] !== typeof obj2[key]) {
+        if (!(key in predefinedProposalStructure) || typeof thesisProposalData[key] !== typeof predefinedProposalStructure[key]) {
           return false;
         }
       }  
@@ -537,6 +549,12 @@ const insertProposal = async (thesisProposalData) => {
 
   if (!validateThesisProposalData(thesisProposalData)) {
     console.log("Validation failed: proposal data doesnt comply with required structure");
+    return null;
+  }
+
+  //Check that the teachers id is an id inside the teachers table
+  if (!isTeacherById(thesisProposalData.id)) {
+    console.log("Validation failed: the proposed teacher is not present in our database");
     return null;
   }
 
@@ -557,5 +575,8 @@ const API = {
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication,
   removeAllProposals, insertProposal
 };
+
+//insertProposal(thesisProposalData);
+
 
 export default API;
