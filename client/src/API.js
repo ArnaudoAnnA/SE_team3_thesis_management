@@ -11,7 +11,6 @@ import Career from './models/Career.js';
 import Application from './models/Application.js';
 import ThesisProposal from './models/ThesisProposal.js';
 
-import { thesis } from './MOCKS.js';
 import StringUtils from './utils/StringUtils.js';
 import CONSTANTS from './utils/Constants.js';
 

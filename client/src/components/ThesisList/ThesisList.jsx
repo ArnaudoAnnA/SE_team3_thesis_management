@@ -28,15 +28,10 @@ function ThesisList(props)
     
 
     /*--------------- STATES ------------------*/
-    //const [entry_per_page, setEntry_per_page] = useState(0);
-    const [page, setPage] = useState(1);
-    const [n_pages, setN_pages] = useState(0);
-    const [data, setData] = useState([]);
+    const [thesis, setThesis] = useState([]);
     const [filters, setFilters] = useState({orderBy: columns.map(c => Object.assign({}, {field: c.DBfield, mode: "ASC"}))});
     const [state, setState] = useState(states.loading);
 
-    /*--------------- VARIABLES ------------------*/
-    let entry_per_page = Math.floor(window.innerHeight / 100);
 
 
     /*--------------- FUNCTIONS ------------------*/
@@ -109,7 +104,18 @@ function ThesisList(props)
         if(state == states.loading)
         {
             API.getThesis(filters)
-            .then(d => {setData(d); setN_pages(d.length / entry_per_page + (d.length % entry_per_page == 0 ? 0 : 1)); setState(states.ready)})
+            .then(ret => 
+                {
+                    if (ret.status == 200)
+                    {
+                        setThesis(ret.thesis); 
+                        setState(states.ready);
+                    } else
+                    {
+                        setState(states.error);
+                    }
+                    
+                })
             .catch(e => setState(states.error));  
         }
         
@@ -122,10 +128,7 @@ function ThesisList(props)
                 <FiltersForm columns={columns} filters={[filters, setFilters, resetFilters, isFiltered]}/>
                 {
                     state == states.ready ? 
-                        <>
-                            <ThesisTable columns={columns} data={data} orderBy={orderBy} isOrderedBy={isOrderedBy}/>
-                            <TablePagination active={[page, setPage]} n_pages={n_pages}/>
-                        </>    
+                    <ThesisTable columns={columns} thesis={thesis} orderBy={orderBy} isOrderedBy={isOrderedBy}/>  
                     :  <Alert>{state}</Alert>
                 }
             </Container>
