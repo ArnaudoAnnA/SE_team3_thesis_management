@@ -180,21 +180,35 @@ const changeVirtualDate = async (date) => {
  * - thesis, null in case of error.
 */
 const getAllThesis = async () => {
-  console.log("Getting all thesis proposals")
 
-  try {
-    const thesisSnapshot = await getDocs(thesisProposalsRef);
+  if (auth.currentUser) {
+    try {
+      if (isTeacher(auth.currentUser.email)) {
+        //TO BE MODIFIED: Showing only his thesis
+        const thesisSnapshot = await getDocs(thesisProposalsRef);
+        const allThesis = [];
+        thesisSnapshot.forEach((doc) => {
+          allThesis.push(doc.data());
+        });
 
-    const allThesis = [];
-    thesisSnapshot.forEach((doc) => {
-      allThesis.push(doc.data());
-    });
+        return { status: 200, thesis: allThesis }
 
-    console.log(allThesis);
-    return { status: 200, thesis: allThesis }
-  } catch (e) {
-    console.log("Error:", e);
-    return null; // or handle the error accordingly
+      } else {
+        //They are a student
+        const thesisSnapshot = await getDocs(thesisProposalsRef);
+        const allThesis = [];
+        thesisSnapshot.forEach((doc) => {
+          allThesis.push(doc.data());
+        });
+
+        return { status: 200, thesis: allThesis }
+      }
+    } catch (e) {
+      console.log("Error:", e);
+      return null; // or handle the error accordingly
+    }
+  } else {
+    return CONSTANTS.notLogged;
   }
 }
 
@@ -219,70 +233,103 @@ const getAllThesis = async () => {
   * - thesis, contains the array of thesis in case of success, otherwise null.
  */
 async function getThesis(filters) {
-  if (filters === undefined) {
-    return getAllThesis();
-  }
+  
+  if (auth.currentUser) {
+  
+    if (filters === undefined ) {
+      return getAllThesis();
+    }
 
-  // build where conditions
-  let whereConditions = [];
-  if (filters.theacherName != undefined) {
-    let teacherName = filters.theacherName;
-    console.log('Filters by theacher name not implemented yet');
-  }
+    // build where conditions
+    let whereConditions = [];
+    if (filters.theacherName != undefined) {
+      let teacherName = filters.theacherName;
+      console.log('Filters by theacher name not implemented yet');
+    }
 
-  if (filters.expirationDate != undefined) {
-    let expirationDate = filters.expirationDate;
+    if (filters.expirationDate != undefined) {
+      let expirationDate = filters.expirationDate;
 
-    if (dayjs.isDayjs(expirationDate.from))
-      if (expirationDate.from != undefined) {
-        console.log(expirationDate.from.toISOString());
-        whereConditions.push(where('expirationDate', '>=', expirationDate.from.toISOString()));
-      }
-      else
+      if (dayjs.isDayjs(expirationDate.from))
+        if (expirationDate.from != undefined) {
+          console.log(expirationDate.from.toISOString());
+          whereConditions.push(where('expirationDate', '>=', expirationDate.from.toISOString()));
+        }
+      else 
         console.error('getThesis: Invalid date format in expirationDate.from');
-
-    if (dayjs.isDayjs(expirationDate.to))
-      if (expirationDate.to != undefined) {
-        console.log(expirationDate.to.toISOString());
-        whereConditions.push(where('expirationDate', '<=', expirationDate.to.toISOString()));
-      }
+      
+      if (dayjs.isDayjs(expirationDate.to))
+        if (expirationDate.to != undefined) {
+          console.log(expirationDate.to.toISOString());
+          whereConditions.push(where('expirationDate', '<=', expirationDate.to.toISOString())); 
+        }
       else
         console.error('getThesis: Invalid date format in expirationDate.to');
-  }
-
-  if (filters.level != undefined) {
-    let level = filters.level;
-    whereConditions.push(where('level', '==', level));
-  }
-
-  if (filters.keywords != undefined) {
-    let keywords = filters.keywords;
-    whereConditions.push(where('keywords', 'array-contains-any', keywords));
-  }
-
-  if (filters.type != undefined) {
-    let type = filters.type;
-    whereConditions.push(where('type', '==', type));
-  }
-
-  let q = query(thesisProposalsRef, ...whereConditions);
-
-  try {
-    let thesis = await getDocs(q).
-      then(snapshot => {
-        let thesis = [];
-        snapshot.forEach(doc => {
-          thesis.push(doc.data());
-        });
-        return thesis;
-      });
-    if (thesis === undefined) {
-      return { status: 404, err: 'No thesis found', thesis: [] };
     }
-    return { status: 200, thesis: thesis };
-  } catch (error) {
-    console.log(error);
-    return { status: 500, err: error };
+
+    if(filters.level != undefined) {
+      let level = filters.level;
+      whereConditions.push(where('level', '==', level));
+    }
+
+    if(filters.keywords != undefined) {
+      let keywords = filters.keywords;
+      whereConditions.push(where('keywords', 'array-contains-any', keywords));
+    }
+
+    if(filters.type != undefined) {
+      let type = filters.type;
+      whereConditions.push(where('type', '==', type));
+    }
+
+    if (isTeacher(auth.currentUser.email)) {
+      //TO BE MODIFIED: Showing only his thesis
+      let q = query(thesisProposalsRef, ...whereConditions);
+
+      try {
+        let thesis = await getDocs(q).
+          then(snapshot => {
+            let thesis = [];
+            snapshot.forEach(doc => {
+              thesis.push(doc.data());
+            });
+            return thesis;
+          });
+        if(thesis === undefined) {
+          return { status: 404, err: 'No thesis found', thesis: [] };
+        }    
+        return { status: 200, thesis: thesis };
+      } catch (error) {
+        console.log(error);
+        return { status: 500, err: error };
+      }
+
+    } else {
+      //they are a student
+      let q = query(thesisProposalsRef, ...whereConditions);
+
+      try {
+        let thesis = await getDocs(q).
+          then(snapshot => {
+            let thesis = [];
+            snapshot.forEach(doc => {
+              thesis.push(doc.data());
+            });
+            return thesis;
+          });
+        //Se non trova tesi, ritorna comunque un array vuoto senza entrare in questo if
+        /*if(thesis === undefined) {
+          return { status: 404, err: 'No thesis found', thesis: [] };
+        } */   
+        return { status: 200, thesis: thesis };
+      } catch (error) {
+        console.log(error);
+        return { status: 500, err: error };
+      }
+
+    }
+  } else {
+    return CONSTANTS.notLogged;
   }
 }
 
@@ -489,10 +536,10 @@ const removeAllProposals = async () => {
 
 //Structure of a correct thesis proposal
 const predefinedProposalStructure = {
-  archiveDate: "",
+  archiveDate: "" /* ATTENTION this must be a string */,
   coSupervisors: [],
   description: "",
-  expirationDate: "",
+  expirationDate: "" /* ATTENTION this must be a string */,
   groups: [],
   id: 0,
   keywords: [],

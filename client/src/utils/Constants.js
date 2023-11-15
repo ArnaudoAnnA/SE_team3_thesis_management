@@ -1,5 +1,5 @@
-const notLogged = "Not Logged"
-const unauthorized = "Unauthorized user"
+const notLogged = {status: 401, message: "Not Logged"}
+const unauthorized = {status: 401, message: "Unauthorized"}
 
 const CONSTANTS = {
     notLogged, unauthorized
