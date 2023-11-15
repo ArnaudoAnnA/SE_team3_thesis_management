@@ -44,6 +44,8 @@ const thesisProposalsRef = DEBUG ? collection(db, "test-thesisProposals") : coll
 const applicationsRef = DEBUG ? collection(db, "test-applications") : collection(db, "applications");
 const dateRef = collection(db, "date");
 
+/*--------------- Utils APIs -------------------------- */
+
 /**
  * Return if the user is a student
  * @param email the email of the user
@@ -67,6 +69,91 @@ const isTeacher = async (email) => {
   const snapshot = await getDocs(q)
   return snapshot.docs[0] ? true : false
 }
+
+
+/*--------------- Authentication APIs -------------------------- */
+
+const signUp = async (email, password) => {
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredentials) => {
+      console.log(userCredentials)
+    })
+    .catch((error) => {
+      console.log(error)
+    });
+
+}
+
+const logIn = async (email, password) => {
+  await signInWithEmailAndPassword(auth, email, password)
+    .then((userCredentials) => {
+      return userCredentials
+    })
+    .catch((error) => {
+      // console.log(error)
+      throw error
+    })
+    ;
+}
+
+const logOut = async () => {
+  signOut(auth).then(() => {
+    console.log("signed out")
+  }).catch((error) => {
+    console.log(error)
+  })
+}
+
+const getUser = async (email) => {
+  let user = null
+  const whereCond = where("email", "==", email)
+  const qStudent = query(studentsRef, whereCond)
+  const qTeacher = query(teachersRef, whereCond)
+
+  const studentSnapshot = await getDocs(qStudent)
+  const teacherSnapshot = await getDocs(qTeacher)
+  if (studentSnapshot.docs[0]) {
+    const student = studentSnapshot.docs[0].data()
+    user = new Student(student.id, student.surname, student.name, student.gender, student.nationality, student.email, student.cod_degree, student.enrollment_year)
+  } else {
+    const teacher = teacherSnapshot.docs[0].data()
+    user = new Teacher(teacher.id, teacher.surname, teacher.name, teacher.email, teacher.cod_group, teacher.cod_department)
+  }
+
+  // console.log(user)
+  return user
+}
+
+
+
+
+/*------------------- APIs -------------------------- */
+
+/**
+* Get the virtual date from the server
+* @returns virtual date yyyy-mm-dd
+*/
+const getVirtualDate = async () => {
+  const q = query(dateRef, limit(1));
+  const snapshot = await getDocs(q);
+  const firstDoc = snapshot.docs[0];
+  const dateData = firstDoc.data();
+  return dateData.date;
+}
+
+/**
+ * Change the date of the virtual clock in the server
+ * @param date the new date
+ */
+const changeVirtualDate = async (date) => {
+  const q = query(dateRef, limit(1));
+  const snapshot = await getDocs(q);
+  const firstDoc = snapshot.docs[0];
+  const dateData = firstDoc.data();
+  dateData.date = date;
+  await setDoc(doc(db, "date", firstDoc.id), dateData);
+}
+
 
 /** Fetch the collection of all thesis without applying filters.<br>
  * 
@@ -181,7 +268,6 @@ async function getThesis(filters) {
   }
 }
 
-
 const getThesisNumber = async () => {
   try {
     const querySnapshot = await getDocs(thesisProposalsRef);
@@ -215,84 +301,6 @@ const getThesisWithID = async (ID) => {
     console.log("Error:", e)
     return null; // or handle the error accordingly
   }
-}
-
-
-
-/**
-* Get the virtual date from the server
-* @returns virtual date yyyy-mm-dd
-*/
-const getVirtualDate = async () => {
-  const q = query(dateRef, limit(1));
-  const snapshot = await getDocs(q);
-  const firstDoc = snapshot.docs[0];
-  const dateData = firstDoc.data();
-  return dateData.date;
-}
-
-/**
- * Change the date of the virtual clock in the server
- * @param date the new date
- */
-const changeVirtualDate = async (date) => {
-  const q = query(dateRef, limit(1));
-  const snapshot = await getDocs(q);
-  const firstDoc = snapshot.docs[0];
-  const dateData = firstDoc.data();
-  dateData.date = date;
-  await setDoc(doc(db, "date", firstDoc.id), dateData);
-}
-
-const signUp = async (email, password) => {
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredentials) => {
-      console.log(userCredentials)
-    })
-    .catch((error) => {
-      console.log(error)
-    });
-
-}
-
-const logIn = async (email, password) => {
-  await signInWithEmailAndPassword(auth, email, password)
-    .then((userCredentials) => {
-      return userCredentials
-    })
-    .catch((error) => {
-      // console.log(error)
-      throw error
-    })
-    ;
-}
-
-const logOut = async () => {
-  signOut(auth).then(() => {
-    console.log("signed out")
-  }).catch((error) => {
-    console.log(error)
-  })
-}
-
-const getUser = async (email) => {
-  let user = null
-  const whereCond = where("email", "==", email)
-  const qStudent = query(studentsRef, whereCond)
-  const qTeacher = query(teachersRef, whereCond)
-
-  const studentSnapshot = await getDocs(qStudent)
-  const teacherSnapshot = await getDocs(qTeacher)
-  if (studentSnapshot.docs[0]) {
-    const student = studentSnapshot.docs[0].data()
-    user = new Student(student.id, student.surname, student.name, student.gender, student.nationality, student.email, student.cod_degree, student.enrollment_year)
-  } else {
-    const teacher = teacherSnapshot.docs[0].data()
-    user = new Teacher(teacher.id, teacher.surname, teacher.name, teacher.email, teacher.cod_group, teacher.cod_department)
-  }
-
-  // console.log(user)
-  return user
 }
 
 /**
@@ -379,14 +387,9 @@ const addApplication = async (application) => {
         }
       }
 
-
-
     } catch (e) {
       console.log(e)
     }
-
-
-
 
     return;
   }
@@ -399,7 +402,6 @@ const addApplication = async (application) => {
    * @return the application object, null if the object doesn't exist
    * 
    */
-
   const getApplication = async (studentId, thesisId) => {
     if (auth.currentUser) {
       if (StringUtils.checkId(studentId, auth.currentUser.email)) {
@@ -429,7 +431,6 @@ const addApplication = async (application) => {
     } else {
       return CONSTANTS.notLogged
     }
-
 
     return;
   }
