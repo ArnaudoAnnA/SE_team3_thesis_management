@@ -203,7 +203,8 @@ const generateCareers = () => {
     "s012345",
   ];
 
-  const courses = ["Engineering", "Architecture", "Design"];
+  const courses = ["Data Science", "Architecture", "Computer Networks", "Information Systems", "Web App 1", 
+                  "Software Engineering 1", "Formal Languages", "System Programming"];
 
   const getRandomInt = (min, max) =>
     Math.floor(Math.random() * (max - min + 1)) + min;
@@ -218,10 +219,10 @@ const generateCareers = () => {
   const careers = [];
 
   studentIDs.forEach((student) => {
-    const numExams = getRandomInt(1, 3);
+    const numExams = 8;
     for (let i = 0; i < numExams; i++) {
-      const id = student + i;
-      const codCourse = courses[getRandomInt(0, 2)];
+      const id = student;
+      const codCourse = courses[i];
       const titleCourse = codCourse + " Course";
       const cfu = [6, 8, 10, 12][getRandomInt(0, 3)];
       const grade = getRandomGrade();

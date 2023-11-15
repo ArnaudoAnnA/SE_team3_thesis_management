@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Link, Routes, Route, Outlet, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Link, Routes, Route, Outlet } from 'react-router-dom';
 import dayjs from 'dayjs';
 import API from './API.js';
 import API_TEST from './API_TEST.js';
@@ -44,11 +44,11 @@ function Main() {
       console.log(currentUser)
       if (currentUser) {
         try {
-          
+
           const userInfo = await API.getUser(currentUser.email)
           // console.log(userInfo)
           setUser(userInfo)
-          if(user){
+          if (user) {
             console.log(user.email)
             console.log(user.role)
           }
@@ -94,13 +94,14 @@ function Main() {
         <Routes>
           <Route path='/' element={<Header logoutCbk={logout} date={date} changeDateCbk={changeVirtualDate} />}>
 
-            {user.email ? <Route path='' element={<Home />} /> :
+            {user.email ? (user.role === "student" ? <Route path='' element={<SearchBar />} /> :
+              <Route path='' element={<ThesisList />} />) :
               <Route path='' element={<Login />} />}
             {/** Add here other routes */}
-            <Route path='/proposal' element={<InsertProposalForm />} />
-            <Route path='/thesis' element={<ThesisList />} />
-            <Route path='/thesis/:id' element={<ThesisDetails/>} />
-            <Route path='/thesis/:id/apply' element={<ApplyForm virtualDate={date}/>} />
+            <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm /> : <NotFoundPage/>) : <Login /> } />
+            <Route path='/thesis' element={user.email ? <ThesisList /> : <Login />} />
+            <Route path='/thesis/:id' element={user.email ? <ThesisDetails /> : <Login />} />
+            <Route path='/thesis/:id/apply' element={user.email ? (user.role === "student" ? <ApplyForm virtualDate={date} /> : <NotFoundPage/>) : <Login />} />
 
           </Route>
           <Route path='*' element={<NotFoundPage />} />
@@ -128,10 +129,10 @@ function Header(props) {
 }
 
 /**
- * Home page
+ * Search bar 
  */
 
-function Home() {
+function SearchBar() {
 
 }
 
