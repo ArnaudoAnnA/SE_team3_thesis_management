@@ -7,12 +7,32 @@ import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button,Alert, Container } from 'react-bootstrap';
 import dayjs from 'dayjs';
+import Swal from 'sweetalert2'
+import API from '../API'
 
 
 
 function InsertProposalForm(props) {
 
   var mailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/; // Verify email
+
+  const successAlert = () => {
+    Swal.fire({  
+      title: 'Finished!',  
+      text: 'You uploaded the thesis proposal.',
+      icon: 'success'
+    });
+    return true;
+  };
+  
+  const errorAlert = () => {
+    Swal.fire({  
+      title: 'Error!',  
+      text: 'Something happened.',
+      icon: 'error'
+    });
+    return false;
+  };
  
 
   const [tags, setTags] = useState([])
@@ -197,6 +217,7 @@ function InsertProposalForm(props) {
     console.log(`
       note: ${note}
       pname: ${pname}
+      keywords: ${tags}
       level: ${level}
       knowledge: ${knowledge}
       email: ${emailTags}
@@ -205,6 +226,32 @@ function InsertProposalForm(props) {
       title: ${title}
       errorMsg: ${errorMsg} 
       selectedDate: ${selectedDate} `);
+
+      const predefinedProposalStructure = {   
+
+        archiveDate: null,   
+        coSupervisors: emailTags,   
+        description: description,   
+        expirationDate: selectedDate,   
+        groups: [],   
+        id: 0,  
+        keywords: tags,   
+        level: level,   
+        notes: note,   
+        programmes: pname,   
+        requiredKnowledge: knowledge,   
+        teacherId: props.user.id,   
+        title: title,   
+        type: degree,   
+
+      };
+
+    
+      API.insertProposal(predefinedProposalStructure)
+      .then(successAlert) 
+      .catch(errorAlert) 
+ 
+
 
       return true;
 
