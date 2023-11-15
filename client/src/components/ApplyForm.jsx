@@ -7,9 +7,7 @@ import { useState, useEffect, useCallback, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useDropzone} from 'react-dropzone';
 import dayjs from 'dayjs';
-
-//Puoi rimuovere appena API funzionano
-import {career} from '../MOCKS';
+import Swal from 'sweetalert2'
 
 import API  from '../API';
 import Application from '../models/Application';
@@ -31,6 +29,24 @@ function ApplyForm(props) {
   }, [])
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({onDrop});
+
+  const successAlert = () => {
+    Swal.fire({  
+      title: 'Finished!',  
+      text: 'Your apply request was sent',
+      icon: 'success'
+    });
+    return true;
+  };
+  
+  const errorAlert = (e) => {
+    Swal.fire({  
+      title: 'Error!',  
+      text: e,
+      icon: 'error'
+    });
+    return false;
+  };
 
   useEffect(() => {
     async function fetchCareer(){
@@ -74,23 +90,20 @@ function ApplyForm(props) {
     //Checks
     const app = await API.getApplication(user.id, id);
     if((typeof app) == "string"){
-        setErrorMsg(app)
-        return
+        errorAlert(app);
+        return;
     }
     console.log(app)
 
     if (app) {
-        setErrorMsg ("You can't apply at the same thesis twice");
+        errorAlert("You can't apply at the same thesis twice");
     } else {
         const application = new Application(user.id, id, false, file, props.virtualDate);
         console.log(application)
         
         API.addApplication(application)
-            .then((msg) => {
-                //Cosa devo far spuntare??
-                setErrorMsg(msg)
-            })
-            .catch(e => console.log("Error in ApplyForm/addApplicationAPI:" + e))
+            .then(() => successAlert())
+            .catch((e) => errorAlert(e))
     }
     
 
