@@ -262,7 +262,7 @@ function InsertProposalForm(props) {
                       <div className="form-group input-group" style={{display: "flex", marginBottom: "10px"}}>
                       <p style={{ paddingTop: "2px", marginBottom: "1px", marginLeft: "auto", marginRight: "auto", fontWeight: "300" }}>Description</p>
                         <textarea
-                          style={{fontSize: "15px", width: "60vw", marginLeft: "auto", marginRight: "auto", borderRadius: "1px", fontStyle: "italic", paddingLeft:"5px"}}
+                          style={{fontSize: "15px", width: "100%", marginLeft: "auto", marginRight: "auto", borderRadius: "1px", fontStyle: "italic", paddingLeft:"5px"}}
                           value={description}
                           onChange={(e) => setDesc(e.target.value)}
                           rows="4"
