@@ -40,33 +40,15 @@ const thesisProposalsRef = DEBUG ? collection(db, "test-thesisProposals") : coll
 const applicationsRef = DEBUG ? collection(db, "test-applications") : collection(db, "applications");
 const dateRef = DEBUG ? collection(db, "test-date") : collection(db, "date");
 
-/** Fetch the collection of all thesis without applying filters.<br>
- * 
- * Returns an object with two properties:
- * - ok, contains the json obj in case of success, otherwise null;
- * - err, contains some details in case of error, otherwise null.
-*/
-async function getAllThesis() {
-  /*
-    Get all documents from the thesisProposals collection (empty where condition)
-      return await getJson(SERVER_URL+ !!!! NOME API !!!!)
-                  .then(json => {ok: json, err: null})
-                  .catch(err => {ok: null, err: err})
-  */
-
-  return thesis;
-}
-
 /** Fetch the collection of thesis without applying filters.<br>
-   * It doesn't return all the thesis, but only the ones in the given range of indexes.<br>
-  * 
-  * @param [start, end] : start and end indexes are both included.
+ * 
+ * @param {object} filters orderby and where clauses.
   * 
   * @returns an object with two properties:
   * - ok, contains the json obj in case of success, otherwise null;
   * - err, contains some details in case of error, otherwise null.
  */
-async function getThesis(filters, [start, end]) {
+async function getThesis(filters) {
 
   let thesis_filtered = thesis.filter(
     t => {
@@ -77,28 +59,6 @@ async function getThesis(filters, [start, end]) {
     });
 
   return end < thesis_filtered.length ? thesis_filtered.slice(start, end + 1) : thesis_filtered.slice(start, thesis_filtered.length);
-}
-
-async function getThesisNumber() {
-  /*
-    return await getJson(SERVER_URL+ !!!! NOME API !!!!)
-                .then(json => {ok: json, err: null})
-                .catch(err => {ok: null, err: err})
-*/
-
-  //MOC
-  return thesis.length;
-}
-
-async function getThesisWithId(id) {
-  /*
-    return await getJson(SERVER_URL+ !!!! NOME API !!!!)
-                .then(json => {ok: json, err: null})
-                .catch(err => {ok: null, err: err})
-*/
-
-  //MOC
-  return thesis.find(t => t.id == id);
 }
 
 
@@ -279,7 +239,7 @@ const getApplication = async (studentId, thesisId) => {
 }
 
 const API = {
-  getAllThesis, getThesis, getThesisNumber, getThesisWithId,
+  getThesis,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser,
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication

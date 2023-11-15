@@ -23,6 +23,8 @@ function ThesisList(props)
         { DBfield: "programmes", title: "Programmes",  }
         //further info in the thesis dedicated page
     ];
+
+    const states = {loading: "Loading...", ready: "", error: "Error"};
     
 
     /*--------------- STATES ------------------*/
@@ -30,8 +32,8 @@ function ThesisList(props)
     const [page, setPage] = useState(1);
     const [n_pages, setN_pages] = useState(0);
     const [data, setData] = useState([]);
-    const [filters, setFilters] = useState({orderBy: columns.map(c => Object.assign({}, {field: c.DBfield, mode: "ASC"})) , 
-                                            searchKeyWord: ""}); /*TO DO: add filters */ 
+    const [filters, setFilters] = useState({orderBy: columns.map(c => Object.assign({}, {field: c.DBfield, mode: "ASC"}))});
+    const [state, setState] = useState(states.loading);
 
     /*--------------- VARIABLES ------------------*/
     let entry_per_page = Math.floor(window.innerHeight / 100);
@@ -74,28 +76,58 @@ function ThesisList(props)
         return entry.mode;
     }
 
+    /** After this function, the filters object is in the initial state.
+     * 
+     */
+    function resetFilters()
+    {
+        setFilters(Object.assign({}, {orderBy: columns.map(c => Object.assign({}, {field: c.DBfield, mode: "ASC"}))}));
+    }
+
+    /**
+     * @returns {bool} true if some filter is applyed. Ordering is excluded.
+     */
+    function isFiltered(f)
+    {
+        for (let prop in f)
+        {
+            if (prop == "orderBy") continue;
+
+            if (f[prop] && f[prop] != "")
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /*-----------------------------------------*/
 
     useEffect(()=>
     {
-        /* TO DO: call a different API basing on the applyied filter */
-        API.getThesis(filters, get_index_range_of_page(page, entry_per_page))
-        .then(d => setData(d))
-        .catch();  // TO DO: define global error state
+        if(state == states.loading)
+        {
+            API.getThesis(filters)
+            .then(d => {setData(d); setN_pages(d.length / entry_per_page + (d.length % entry_per_page == 0 ? 0 : 1)); setState(states.ready)})
+            .catch(e => setState(states.error));  
+        }
+        
 
-        API.getThesisNumber(filters)
-        .then(n => setN_pages(n/entry_per_page + (n%entry_per_page == 0 ? 0 : 1)))
-        .catch();  // TO DO: define global error state
-
-    }, [page, filters, entry_per_page]);
+    }, [state]);
 
     return (
         <>
             <Container>
-                <FiltersForm columns={columns} filters={[filters, setFilters]}/>
-                <ThesisTable columns={columns} data={data} orderBy={orderBy} isOrderedBy={isOrderedBy}/>
-                <TablePagination active={[page, setPage]} n_pages={n_pages}/>
-                
+                <FiltersForm columns={columns} filters={[filters, setFilters, resetFilters, isFiltered]}/>
+                {
+                    state == states.ready ? 
+                        <>
+                            <ThesisTable columns={columns} data={data} orderBy={orderBy} isOrderedBy={isOrderedBy}/>
+                            <TablePagination active={[page, setPage]} n_pages={n_pages}/>
+                        </>    
+                    :  <Alert>{state}</Alert>
+                }
             </Container>
         </>
         

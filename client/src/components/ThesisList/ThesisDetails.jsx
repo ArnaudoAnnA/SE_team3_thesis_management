@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import {Button, Container, Table} from "react-bootstrap";
+import {Button, Container, Table, Col, Row} from "react-bootstrap";
 import { useEffect, useState, useContext } from "react";
 import API from '../../API'
 import { Arrow90degLeft } from "react-bootstrap-icons";
@@ -44,8 +44,11 @@ function ThesisDetails(props)
     return <Container>
         {
             thesis ? <>
-                        <Link to='/thesis'><Button><Arrow90degLeft /></Button></Link>
-                        {user.role=='teacher' ? null : <Link to={'/thesis/'+thesis.id+'/apply'}><Button>Apply</Button></Link>}
+                        <Row>
+                            <Col className="col-1"><Link to='/thesis'><Button><Arrow90degLeft /></Button></Link></Col>
+                            {user.role=='teacher' ? null : <Col className="col-1"><Link to={'/thesis/'+thesis.id+'/apply'}><Button>Apply</Button></Link></Col>}
+                        </Row>
+                        
                         <hr size={10}/>
                         <h1>{thesis.title}</h1>
                         <h6><i>{thesis.supervisor}</i></h6>
