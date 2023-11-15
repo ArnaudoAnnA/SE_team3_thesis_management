@@ -46,20 +46,6 @@ const applicationsRef = DEBUG ? collection(db, "test-applications") : collection
 /*--------------- Utils APIs -------------------------- */
 
 /**
- * Return if the user is a student
- * @param email the email of the user
- * @return true if the user is a student, false otherwise
- */
-const isStudent = async (email) => {
-  const whereCond = where("email", "==", email)
-  const q = query(studentsRef, whereCond)
-  const snapshot = await getDocs(q)
-  if (snapshot.docs[0])
-    return true
-  else return false
-}
-
-/**
  * Return if the user is a teacher
  * @param email the email of the user
  * @return true if the user is a teacher, false otherwise
@@ -68,9 +54,7 @@ const isTeacher = async (email) => {
   const whereCond = where("email", "==", email)
   const q = query(teachersRef, whereCond)
   const snapshot = await getDocs(q)
-  if (snapshot.docs[0])
-    return true
-  else return false
+  return snapshot.docs[0] ? true : false
 }
 
 /**
