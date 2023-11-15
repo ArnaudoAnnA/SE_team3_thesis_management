@@ -471,13 +471,91 @@ const addApplication = async (application) => {
 
   };
 
+  //Structure of a correct thesis proposal
+const predefinedProposalStructure = {
+  archiveDate: null,
+  coSupervisors: [],
+  description: "",
+  expirationDate: null,
+  groups: [],
+  id: 0,
+  keywords: [],
+  level: "",
+  notes: "",
+  programmes: "",
+  requiredKnowledge: "",
+  teacherId: "",
+  title: "",
+  type: "",
+  };
+
+// Sample data representing a thesis proposal
+const thesisProposalData = {
+  archiveDate: new Date('2023-12-31'), // Replace with your timestamp
+  coSupervisors: ["Supervisor 1", "Supervisor 2"],
+  description: "This is the thesis proposal description.",
+  expirationDate: new Date('2024-01-31'), // Replace with your timestamp
+  groups: ["Group 1", "Group 2"],
+  id: 1, // Replace with your ID
+  keywords: ["Keyword 1", "Keyword 2"],
+  level: "Master's", // Replace with your level
+  notes: "Additional notes for the proposal.",
+  programmes: "Programme name", // Replace with your programme
+  requiredKnowledge: "Required knowledge for the proposal.",
+  teacherId: "Teacher123", // Replace with your teacher ID
+  title: "Thesis Proposal Title"
+  //type: "Type of thesis", // Replace with your type
+};
+
+const insertProposal = async (thesisProposalData) => {
+  const validateThesisProposalData = (data) => {
+
+    //Validation that the proposal meets the structure requirements
+    const keys1 = Object.keys(thesisProposalData);
+    const keys2 = Object.keys(predefinedProposalStructure);
+    
+      // Check if both objects have the same number of keys
+      if (keys1.length !== keys2.length) {
+        return false;
+      }
+      // Check if all keys in obj1 exist in obj2 and have the same type
+      for (const key of keys1) {
+        if (!(key in obj2) || typeof obj1[key] !== typeof obj2[key]) {
+          return false;
+        }
+      }  
+
+    //null values validation
+    const keys = Object.keys(data);
+    for (const key of keys) {
+      if (key !== 'notes' && data[key] === null) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  if (!validateThesisProposalData(thesisProposalData)) {
+    console.log("Validation failed: proposal data doesnt comply with required structure");
+    return null;
+  }
+
+  try {
+    const docRef = await addDoc(thesisProposalsRef, thesisProposalData);
+    console.log("Thesis proposal added with ID: ", docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error adding thesis proposal: ", error);
+    return null; // or handle the error accordingly
+  }
+};
 
 const API = {
   getThesis, getAllThesis,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser,
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication,
-  removeAllProposals
+  removeAllProposals, insertProposal
 };
 
 export default API;
