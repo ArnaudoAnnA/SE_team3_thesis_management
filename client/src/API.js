@@ -74,29 +74,6 @@ const isTeacher = async (email) => {
 /*--------------- Authentication APIs -------------------------- */
 const dateRef = DEBUG ? collection(db, "test-date") : collection(db, "date");
 
-/** Fetch the collection of thesis without applying filters.<br>
- * 
- * @param {object} filters orderby and where clauses.
-  * 
-  * @returns an object with two properties:
-  * - ok, contains the json obj in case of success, otherwise null;
-  * - err, contains some details in case of error, otherwise null.
- */
-async function getThesis(filters) {
-
-  let thesis_filtered = thesis.filter(
-    t => {
-      let ret = false;
-      for (let prop in t) {
-        if (typeof t[prop] === "string" && t[prop].includes(filters.searchKeyWord)) return true;
-      }
-    });
-
-  return end < thesis_filtered.length ? thesis_filtered.slice(start, end + 1) : thesis_filtered.slice(start, thesis_filtered.length);
-}
-
-
-
 
 const signUp = async (email, password) => {
   createUserWithEmailAndPassword(auth, email, password)
@@ -180,12 +157,14 @@ const changeVirtualDate = async (date) => {
 }
 
 
+
 /** Fetch the collection of all thesis without applying filters.<br>
  * 
  * Returns an object with two properties:
  * - ok, contains the json obj in case of success, otherwise null;
  * - err, contains some details in case of error, otherwise null.
 */
+/* no more needed
 const getAllThesis = async () => {
   console.log("Getting all thesis proposals")
 
@@ -203,7 +182,7 @@ const getAllThesis = async () => {
     console.log("Error:", e);
     return null; // or handle the error accordingly
   }
-}
+} */
 
 /** Fetch the collection of thesis applying specified filters <br>
    * It doesn't return all the thesis, but only the ones in the given range of indexes.<br>
