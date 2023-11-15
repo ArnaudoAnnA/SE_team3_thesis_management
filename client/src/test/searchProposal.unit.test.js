@@ -3,20 +3,6 @@
 import { describe, expect, test } from '@jest/globals';
 import API from '../API.js';
 
-const thesisProposal = {
-    title: "title",
-    type: "type",
-    description: "description",
-    requiredKnowledge: "requiredKnowledge",
-    level: "level",
-    programmes: ["programme1", "programme2"],
-    expirationDate: "2024-01-01",
-    coSupervisors: ["coSupervisor1", "coSupervisor2"],
-    keywords: ["keyword1", "keyword2"],
-    groups: ["group1", "group2"],
-    notes: "notes"
-};
-
 describe('1: Testing the getAllThesis API', () => {
     test('T1.1: Should retrive an error if a user is not logged in', async () => {
         //ready
@@ -26,21 +12,42 @@ describe('1: Testing the getAllThesis API', () => {
 
     test('T1.2: Should retrive a thesis array with length=0 if there are any thesis', async () => {
         //ready
-        API.logIn("d345678@studenti.polito.it", "d345678");
+        await API.logIn("d345678@studenti.polito.it", "d345678");
         await API.removeAllProposals();
         const response = await API.getAllThesis();
-        API.logOut();
+        await API.logOut();
         expect(response.status).toBe(200);
         expect(response.body.data).toHaveLength(0);
     });
 
     test('T1.3: Should retrive a thesis array with length=1 if there is only 1 thesis', async () => {
-        //Wait for insertProposal development paying attention if it returns the thesisId
-        API.logIn("d345678@studenti.polito.it", "d345678");
+        //ready
+        await API.logIn("d345678@studenti.polito.it", "d345678");
+
+        const user = await API.getUser("d345678@studenti.polito.it");
+        
         await API.removeAllProposals();
-        const proposalID = await API.insertProposal(thesisProposal);
+
+        const thesisProposal = {
+            archiveDate: new Date('2023-12-31'), // Replace with your timestamp
+            coSupervisors: ["Supervisor 1", "Supervisor 2"],
+            description: "UnitTest",
+            expirationDate: new Date('2024-01-31'), // Replace with your timestamp
+            groups: ["Group 1", "Group 2"],
+            id: 25,
+            keywords: ["Keyword 1", "Keyword 2"],
+            level: "Master's",
+            notes: "Additional notes for the proposal.",
+            programmes: "Programme name",
+            requiredKnowledge: "Required knowledge for the proposal.",
+            teacherId: user.id,
+            title: "Unit Test Proposal",
+            type: "Type of thesis", // Replace with your type
+        };
+
+        await API.insertProposal(thesisProposal);
         const response = await API.getAllThesis();
-        API.logOut();
+        await API.logOut();
         expect(response.status).toBe(200);
         expect(response.body.data).toHaveLength(1);
     });
