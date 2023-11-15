@@ -163,7 +163,6 @@ const changeVirtualDate = async (date) => {
  * - ok, contains the json obj in case of success, otherwise null;
  * - err, contains some details in case of error, otherwise null.
 */
-/* no more needed
 const getAllThesis = async () => {
   console.log("Getting all thesis proposals")
 
@@ -181,7 +180,7 @@ const getAllThesis = async () => {
     console.log("Error:", e);
     return null; // or handle the error accordingly
   }
-} */
+}
 
 /** Fetch the collection of thesis applying specified filters <br>
    * It doesn't return all the thesis, but only the ones in the given range of indexes.<br>

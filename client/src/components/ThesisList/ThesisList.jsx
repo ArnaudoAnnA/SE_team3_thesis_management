@@ -29,12 +29,24 @@ function ThesisList(props)
 
     /*--------------- STATES ------------------*/
     const [thesis, setThesis] = useState([]);
-    const [filters, setFilters] = useState({orderBy: columns.map(c => Object.assign({}, {field: c.DBfield, mode: "ASC"}))});
+    const [filters, setFilters] = useState();
     const [state, setState] = useState(states.loading);
 
 
 
     /*--------------- FUNCTIONS ------------------*/
+
+    /** 
+     * @param {object} thesis object given as an example.
+     * 
+     * @returns {array} columns corresponding to the property of the given object. 
+     */
+    function loadColumns(thesis)
+    {
+        let ret = [];
+        for (let prop in thesis) {ret.push(prop);}
+        return ret;
+    }
 
     /** Add a field to the ones which are currently considered for ordering.
      * In particular, the field is added at the beginning of the list, so that it will
@@ -106,9 +118,11 @@ function ThesisList(props)
             API.getThesis(filters)
             .then(ret => 
                 {
-                    if (ret.status == 200)
+                    if (ret.status == 200 && ret.thesis.length > 0)
                     {
+                        setColumns(loadColumns(ret.thesis[0]));
                         setThesis(ret.thesis); 
+                        if (!filters.orderBy) resetFilters();
                         setState(states.ready);
                     } else
                     {
