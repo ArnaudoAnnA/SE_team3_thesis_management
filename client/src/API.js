@@ -196,7 +196,7 @@ const getAllThesis = async () => {
   }
 }
 
-/** Fetch the collection of thesis applying specified filters <br>
+/** Fetch the collection of ACTIVE thesis applying specified filters <br>
    * It doesn't return all the thesis, but only the ones in the given range of indexes.<br>
   * 
   * @param filters : object containing all possible filters. If not specified or null, all thesis are returned.
@@ -207,6 +207,7 @@ const getAllThesis = async () => {
   * - level: 'bachelor' | 'master',
   * - keywords: array of strings,
   * - type: 'academic research' | 'stage'
+  * - coSupervisors: string
   * 
   * if some of the properties is not specified, it is not considered in the query.<br>
   * Expiration date from and to are both inclusive.<br>
@@ -217,36 +218,46 @@ const getAllThesis = async () => {
   * - thesis, contains the array of thesis in case of success, otherwise null.
  */
 async function getThesis(filters) {
-  
   if (auth.currentUser) {
-  
-    if (filters === undefined ) {
-      return getAllThesis();
+    let whereConditions = [];
+    
+    if(filters == undefined) { 
+      filters = {};
     }
 
     // build where conditions
-    let whereConditions = [];
-    if (filters.theacherName != undefined) {
-      let teacherName = filters.theacherName;
-      console.log('Filters by theacher name not implemented yet');
+    let teacher;
+    if (filters.supervisor != undefined) {
+      let teacherName = filters.supervisor;
+      let [name, surname] = teacherName.split(' ');
+      let teacherQuery = query(teachersRef, where('name', '==', name), where('surname', '==', surname));
+      
+      let teacherSnap = await getDocs(teacherQuery);
+      teacher = teacherSnap.docs[0].data();
+
+      if(teacher != undefined)
+        whereConditions.push(where('teacherId', '==', teacher.id));
+    }
+
+    if (filters.coSupervisors != undefined) {
+      let coSupervisors = filters.coSupervisors;
+      whereConditions.push(where('coSupervisors', 'array-contains-any', coSupervisors));
     }
 
     if (filters.expirationDate != undefined) {
       let expirationDate = filters.expirationDate;
 
-      if (dayjs.isDayjs(expirationDate.from))
-        if (expirationDate.from != undefined) {
-          console.log(expirationDate.from.toISOString());
-          whereConditions.push(where('expirationDate', '>=', expirationDate.from.toISOString()));
-        }
+      if (expirationDate.from != undefined) {
+        let date = dayjs(expirationDate.from);
+        whereConditions.push(where('expirationDate', '>=', date.toISOString()));
+      }
       else 
         console.error('getThesis: Invalid date format in expirationDate.from');
       
-      if (dayjs.isDayjs(expirationDate.to))
-        if (expirationDate.to != undefined) {
-          console.log(expirationDate.to.toISOString());
-          whereConditions.push(where('expirationDate', '<=', expirationDate.to.toISOString())); 
-        }
+      if (expirationDate.to != undefined) {
+        let date = dayjs(expirationDate.to);
+        whereConditions.push(where('expirationDate', '<=', date.toISOString())); 
+      }
       else
         console.error('getThesis: Invalid date format in expirationDate.to');
     }
@@ -266,52 +277,41 @@ async function getThesis(filters) {
       whereConditions.push(where('type', '==', type));
     }
 
+    // add the condition to show only active thesis
+    whereConditions.push(where('archiveDate', '>=', await getVirtualDate()));
+
+    let showAll = true
     if (isTeacher(auth.currentUser.email)) {
-      //TO BE MODIFIED: Showing only his thesis
+      
+      // TO DO: Showing only his thesis
+      // showAll = false;
+    } 
+
+    if (showAll) {    // either is a student or a teacher that wants to see all thesis
+      //show all active thesis given the filters
       let q = query(thesisProposalsRef, ...whereConditions);
 
       try {
+        let teachersSnap = await getDocs(teachersRef);
+        let teachers = teachersSnap.docs.map(doc => doc.data());
         let thesis = await getDocs(q).
-          then(snapshot => {
+          then(async snapshot => {
             let thesis = [];
             snapshot.forEach(doc => {
-              thesis.push(doc.data());
+              let t = doc.data();
+              let teacher = teachers.find(teacher => teacher.id == t.teacherId);
+              t.supervisor = teacher.name + ' ' + teacher.surname;
+              thesis.push(t);
             });
+
             return thesis;
           });
-        if(thesis === undefined) {
-          return { status: 404, err: 'No thesis found', thesis: [] };
-        }    
         return { status: 200, thesis: thesis };
       } catch (error) {
         console.log(error);
         return { status: 500, err: error };
       }
-
-    } else {
-      //they are a student
-      let q = query(thesisProposalsRef, ...whereConditions);
-
-      try {
-        let thesis = await getDocs(q).
-          then(snapshot => {
-            let thesis = [];
-            snapshot.forEach(doc => {
-              thesis.push(doc.data());
-            });
-            return thesis;
-          });
-        //Se non trova tesi, ritorna comunque un array vuoto senza entrare in questo if
-        /*if(thesis === undefined) {
-          return { status: 404, err: 'No thesis found', thesis: [] };
-        } */   
-        return { status: 200, thesis: thesis };
-      } catch (error) {
-        console.log(error);
-        return { status: 500, err: error };
-      }
-
-    }
+  }
   } else {
     return CONSTANTS.notLogged;
   }
