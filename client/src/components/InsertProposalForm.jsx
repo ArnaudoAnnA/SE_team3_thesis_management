@@ -5,8 +5,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form, Button,Alert, Container } from 'react-bootstrap';
+import { Form, Button,Alert, Container, Row, Col } from 'react-bootstrap';
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2'
 import API from '../API'
@@ -283,6 +284,13 @@ function InsertProposalForm(props) {
             {errorMsg}
           </Alert>
         ) : null}
+        <Row className="my-3">
+          <Col md={4}>
+            <Link to={`/thesis`} className="btn blueButton btn-lg"> <i className="bi bi-arrow-90deg-left white"></i> </Link>
+          </Col>
+          <Col md={8}>
+          </Col>
+        </Row>
         <Form onSubmit={handleSubmit} >
            
             <div className="container" style={{marginBottom: "20px"}}>

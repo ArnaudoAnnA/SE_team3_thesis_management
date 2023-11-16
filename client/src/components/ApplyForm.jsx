@@ -137,7 +137,7 @@ function ApplyForm(props) {
         </Row>
         <Row>
             <Col md={4}>
-                <Link to={`/thesis/${id}`} className="btn btn-primary"> <i className="bi bi-arrow-90deg-left"></i> </Link>
+                <Link to={`/thesis/${id}`} className="btn blueButton"> <i className="bi bi-arrow-90deg-left white"></i> </Link>
             </Col>
             <Col md={4}>
             </Col>
@@ -213,7 +213,7 @@ function ApplyForm(props) {
             </Row>
             <Row>
                 <Container className='d-flex justify-content-center mt-5'>
-                    <Button className="mb-3" variant="blueButton" type="submit"> Send your application </Button>   
+                    <Button className="mb-3 blueButton" type="submit"> Send your application </Button>   
                 </Container>
             </Row>
          </Form>
