@@ -9,6 +9,14 @@ This manual testing will be done as the following:
 - Screenshot of the search bar with wrong data highlighted
 - Conclusions
 
+# Authentication 
+
+This component should be accessible only by logged user so we are going to try to access it using both the teacher and student accounts. By trying to reach it it appears:
+
+![Screenshot](./screenshots/errror404.png)
+
+After the login we can proceed to test the functionality.
+
 # Functionality Testing
 
 Data loading works and the student can see a table of proposals:
