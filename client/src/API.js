@@ -3,6 +3,7 @@
 import { initializeApp } from 'firebase/app';
 import { collection, addDoc, getFirestore, doc, query, getDocs, where, setDoc, deleteDoc, getDoc, limit, QueryFieldFilterConstraint } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { getStorage, ref, uploadBytes} from "firebase/storage";
 
 import dayjs from 'dayjs';
 import Teacher from './models/Teacher.js';
@@ -30,6 +31,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 // Initialize Firebase Authentication and get a reference to the service
 const auth = getAuth(app);
+// Initialize Cloud Storage and get a reference to the service
+const storage = getStorage(app); 
 
 // IMPORTANT: add ALL API functions in the API object at the end of the file
 
@@ -42,6 +45,9 @@ const careersRef = DEBUG ? collection(db, "test-career") : collection(db, "caree
 const thesisProposalsRef = DEBUG ? collection(db, "test-thesisProposals") : collection(db, "thesisProposals");
 const applicationsRef = DEBUG ? collection(db, "test-applications") : collection(db, "applications");
 const dateRef = collection(db, "date");
+
+const storageCurriculums = "curriculums/"
+
 
 /*--------------- Utils APIs -------------------------- */
 
@@ -359,10 +365,18 @@ const getThesisWithID = async (ID) => {
  * @return null
  */
 const addApplication = async (application) => {
+  console.log(application.curriculum)
   if (auth.currentUser) {
     if (StringUtils.checkId(application.studentId, auth.currentUser.email)) {
       try {
-        addDoc(applicationsRef, application.parse()).then(doc => {
+        let fileRef
+        if(application.curriculum){
+          fileRef = ref(storage, StringUtils.createApplicationPath(storageCurriculums, application.studentId, application.thesisId, application.curriculum.name) )
+          await uploadBytes(fileRef, application.file)
+        }
+        
+        console.log(application.parse(fileRef? fileRef.fullPath : null))
+        addDoc(applicationsRef, application.parse(fileRef? fileRef.fullPath : null )).then(doc => {
           console.log(doc.id)
           console.log("Added application with id:" + doc.id)
           return "Application sent"

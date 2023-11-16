@@ -18,6 +18,15 @@ export class Application {
             date: this.date
         };
     };
+    parse(filePath){
+        return {
+            studentId: this.studentId,
+            thesisId: this.thesisId,
+            accepted: this.accepted,
+            curriculum: filePath,
+            date: this.date
+        };
+    }
 }
 
 export default Application;
