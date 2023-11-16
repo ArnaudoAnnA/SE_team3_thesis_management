@@ -41,7 +41,8 @@ function row_field_to_td(row_id, field_name, field_content)
     {
         case "coSupervisors":
         case "groups":
-            return <>{field_content.map(e => <p>{e}</p>)}</>
+            let counter = 0;
+            return <>{field_content.map(e => <p key={counter++}>{e}</p>)}</>
         break;
 
 

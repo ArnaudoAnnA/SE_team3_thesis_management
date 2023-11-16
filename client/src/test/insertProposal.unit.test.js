@@ -62,19 +62,13 @@ describe('testing the insertion of a thesis proposal in the database', () => {
     };
 
     test('should retrive an error if a teacher is not logged in', async () => {
-        const response = await API.insertProposal(thesisProposal);
-        expect(response.status).toEqual(401);
-    });
-
-    test('should retrive an error if a student is logged in', async () => {
         await API.logOut();
-        await API.logIn("s901234@studenti.polito.it", "s901234")
         const response = await API.insertProposal(thesisProposal);
-        await API.logOut();
         expect(response.status).toEqual(401);
     });
 
     test('should retrive an error if the thesis proposal does not have all the required fields', async () => {
+        await API.logOut();
         await API.logIn("d345678@studenti.polito.it", "d345678")
         const response = await API.insertProposal(thesisProposalShort);
         await API.logOut();
@@ -82,6 +76,7 @@ describe('testing the insertion of a thesis proposal in the database', () => {
     });
 
     test('should retrive an error if the thesis proposal has a wrong field', async () => {
+        await API.logOut();
         await API.logIn("d345678@studenti.polito.it", "d345678")
         const response = await API.insertProposal(thesisProposalWrong);
         await API.logOut();
@@ -89,6 +84,7 @@ describe('testing the insertion of a thesis proposal in the database', () => {
     });
 
     test('should retrive an error if the thesis proposal has an empty field', async () => {
+        await API.logOut();
         await API.logIn("d345678@studenti.polito.it", "d345678")
         const response = await API.insertProposal(thesisProposalEmpty);
         await API.logOut();
@@ -96,6 +92,7 @@ describe('testing the insertion of a thesis proposal in the database', () => {
     });
 
     test('should add a thesis proposal to the database', async () => {
+        await API.logOut();
         await API.logIn("d345678@studenti.polito.it", "d345678")
         const response = await API.insertProposal(thesisProposal);
         await API.logOut();

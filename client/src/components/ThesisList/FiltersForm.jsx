@@ -1,10 +1,11 @@
 
 import {Row, Col, Button, Form, Table} from "react-bootstrap";
 import { Search, Filter } from "react-bootstrap-icons";
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 
 import API from "../../API";
+import contextState from "./contextState";
 
 function ThesisFieldFilterForm(props)
 {
@@ -39,6 +40,7 @@ function FiltersForm(props)
 {
     let [filters, setFilters, resetFilters, isFiltered] = props.filters;
     const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+    const ctxState = useContext(contextState);
 
     /* --------- FUNCTIONS ------------------- */
     function onChangeFiltersForm(event)
@@ -56,11 +58,11 @@ function FiltersForm(props)
     return (
         <>
         <Row className="mb-3 justify-content-around">
-            <Col className="col-10"><Form.Control value={props.filters.searchKeyWord} id='searchKeyWord' type="text" placeholder="Search..." onChange={(event) => onChangeFiltersForm(event)} /></Col>
+            <Col className="col-10"><Form.Control value={props.filters.searchKeyWord || ""} id='searchKeyWord' type="text" placeholder="Search..." onChange={(event) => onChangeFiltersForm(event)} /></Col>
             <Col><Row>
-                <Col className="col-3 hover-zoom"><Search className="flexible_icons icons" onClick={(event) => loadAllFilters()}/></Col>
+                <Col className="col-3 hover-zoom"><Search className="flexible_icons icons" onClick={() => ctxState.setState(ctxState.states.loading)}/></Col>
                 <Col className="col-3 hover-zoom"><Filter className="flexible_icons icons" onClick={() => setShowAdvancedFilters(s => !s)}/></Col>
-                <Col className="col-3"><Button className="blueButton" disabled={isFiltered()} onClick={() => resetFilters()}>Reset</Button></Col>
+                <Col className="col-3"><Button className="blueButton" disabled={!isFiltered()} onClick={() => resetFilters()}>Reset</Button></Col>
             </Row></Col>
         </Row>
         <Row>
