@@ -23,9 +23,6 @@ Data loading works and the student can see a table of proposals:
 
 ![Screenshot](./screenshots/TableProp.png)
 
-At the bottom of the table there are several buttons that helps to swipe the table in order to see more data. These work well.
-
-![Screenshot](./screenshots/Button.png)
 
 By clicking in one of the proposals inside the table there's a more complete description.
 
@@ -37,7 +34,17 @@ The CSS works as well as the mobile one (it has been tested by increasing and de
 By clicking the apply button there's a working redirection in the form in order to send the student application.
 If the students wants to go back there's a specific button that sends back correctly in the table.
 
+# Search and Filtering
 
+There's a chance to search with a propriate bar or by an advanced filter mode with a lot of fields.
+
+![Screenshot](./screenshots/search_bar.png)
+
+If an advanced research is performed, the result appears correctly on the screen:
+
+![Screenshot](./screenshots/rossi.png)
+
+If something it's not present there is an appropriate message in the screen.
 
 # Mobile CSS Testing
 
