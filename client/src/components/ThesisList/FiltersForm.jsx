@@ -16,7 +16,6 @@ function ThesisFieldFilterForm(props)
                         <Col><Form.Label>From:</Form.Label><Form.Control value={props.filters.expirationDate.from} id={"expirationDateFrom"} type="date" onChange={(event) => onChangeFiltersForm(event)}/></Col>
                         <Col><Form.Label>To:</Form.Label><Form.Control value={props.filters.expirationDate.to} id={"expirationDateFrom"} type="date" onChange={(event) => onChangeFiltersForm(event)}/></Col>
                 </>;
-
         default:
             return <Form.Control value={props.filters[props.DBfield]} id={props.DBfield} type="text" onChange={(event) => props.onChangeFiltersForm(event)}/>;
     }
