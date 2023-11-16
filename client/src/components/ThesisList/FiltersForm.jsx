@@ -12,8 +12,10 @@ function ThesisFieldFilterForm(props)
     switch(props.DBfield)
     {
         case "expirationDate":
-            return <Form.Control value={props.filters[props.DBfield]} id={props.DBfield} type="date" onChange={(event) => onChangeFiltersForm(event)}/>;
-
+            return <>
+                        <Col><Form.Label>From:</Form.Label><Form.Control value={props.filters.expirationDate.from} id={"expirationDateFrom"} type="date" onChange={(event) => onChangeFiltersForm(event)}/></Col>
+                        <Col><Form.Label>To:</Form.Label><Form.Control value={props.filters.expirationDate.to} id={"expirationDateFrom"} type="date" onChange={(event) => onChangeFiltersForm(event)}/></Col>
+                </>;
         default:
             return <Form.Control value={props.filters[props.DBfield]} id={props.DBfield} type="text" onChange={(event) => props.onChangeFiltersForm(event)}/>;
     }
@@ -46,7 +48,17 @@ function FiltersForm(props)
     function onChangeFiltersForm(event)
     {
         setFilters(f => {
-                            f[event.target.id] = event.target.value;
+                            if (event.target.id == "expirationDateFrom")
+                            {
+                                f.expirationDate.from = event.target.value;
+                            }else if (event.target.id == "expirationDateTo")
+                            {
+                                f.expirationDate.to = event.target.value;
+                            }else
+                            {
+                                f[event.target.id] = event.target.value;
+                            }
+                            
                             //setFiltersActive(isFiltered(f));
                             return Object.assign({}, f);
         });
@@ -58,7 +70,7 @@ function FiltersForm(props)
     return (
         <>
         <Row className="mb-3 justify-content-around">
-            <Col className="col-10"><Form.Control value={props.filters.searchKeyWord || ""} id='searchKeyWord' type="text" placeholder="Search..." onChange={(event) => onChangeFiltersForm(event)} /></Col>
+            <Col className="col-10"><Form.Control value={props.filters.searchKeyWord} id='searchKeyWord' type="text" placeholder="Search..." onChange={(event) => onChangeFiltersForm(event)} /></Col>
             <Col><Row>
                 <Col className="col-3 hover-zoom"><Search className="flexible_icons icons" onClick={() => ctxState.setState(ctxState.states.loading)}/></Col>
                 <Col className="col-3 hover-zoom"><Filter className="flexible_icons icons" onClick={() => setShowAdvancedFilters(s => !s)}/></Col>

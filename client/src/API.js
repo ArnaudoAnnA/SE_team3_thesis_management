@@ -232,7 +232,7 @@ async function getThesis(filters) {
 
     // build where conditions
     let teacher;
-    if (filters.supervisor != undefined) {
+    if (filters.supervisor) {
       let teacherName = filters.supervisor;
       let [name, surname] = teacherName.split(' ');
       let teacherQuery = query(teachersRef, where('name', '==', name), where('surname', '==', surname));
@@ -240,44 +240,39 @@ async function getThesis(filters) {
       let teacherSnap = await getDocs(teacherQuery);
       teacher = teacherSnap.docs[0].data();
 
-      if(teacher != undefined)
+      if(teacher)
         whereConditions.push(where('teacherId', '==', teacher.id));
     }
 
-    if (filters.coSupervisors != undefined) {
+    if (filters.coSupervisors) {
       let coSupervisors = filters.coSupervisors;
       whereConditions.push(where('coSupervisors', 'array-contains-any', coSupervisors));
     }
 
-    if (filters.expirationDate != undefined) {
+    if (filters.expirationDate) {
       let expirationDate = filters.expirationDate;
 
-      if (expirationDate.from != undefined) {
+      if (expirationDate.from) {
         let date = dayjs(expirationDate.from);
         whereConditions.push(where('expirationDate', '>=', date.toISOString()));
       }
-      else 
-        console.error('getThesis: Invalid date format in expirationDate.from');
       
-      if (expirationDate.to != undefined) {
+      if (expirationDate.to) {
         let date = dayjs(expirationDate.to);
         whereConditions.push(where('expirationDate', '<=', date.toISOString())); 
       }
-      else
-        console.error('getThesis: Invalid date format in expirationDate.to');
     }
-
-    if(filters.level != undefined) {
+    if(filters.level) {
       let level = filters.level;
       whereConditions.push(where('level', '==', level));
     }
 
-    if(filters.keywords != undefined) {
+    if(filters.keywords) {
       let keywords = filters.keywords;
       whereConditions.push(where('keywords', 'array-contains-any', keywords));
     }
 
-    if(filters.type != undefined) {
+    if(filters.type) {
       let type = filters.type;
       whereConditions.push(where('type', '==', type));
     }

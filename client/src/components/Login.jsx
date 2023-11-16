@@ -67,7 +67,7 @@ function Login(props) {
             setErrorMsg('');
         })
         .catch((error) => {
-            setErrorMsg('E-Mail o/e password errata/i');
+            setErrorMsg('Wrong E-Mail or Password');
         })
         
     }
@@ -79,7 +79,7 @@ function Login(props) {
        
         {errorMsg? <Alert style={{width:"30%", marginLeft: "auto", marginTop: "3%", marginRight: "auto", textAlign: "center"}} variant='danger' onClose={()=>setErrorMsg('')} dismissible>{errorMsg}</Alert> : false }
         
-        <Form onSubmit={handleSubmit} style={{display: "flex", flexDirection: "column", marginLeft: "auto", marginRight: "auto", marginTop: "2%", width:"30%"}}>
+        <Form onSubmit={handleSubmit} style={{display: "flex", flexDirection: "column", marginLeft: "auto", marginRight: "auto", marginTop: "4%", width:"50%",  backgroundColor: "#F7F7F7", borderRadius: "5px", boxShadow: "0px 5px 30px 2px rgba(0, 0, 0, 0.3)", padding: "2% 4%"}}>
         
                 <Form.Group>
                     <Form.Label>E-mail  </Form.Label>

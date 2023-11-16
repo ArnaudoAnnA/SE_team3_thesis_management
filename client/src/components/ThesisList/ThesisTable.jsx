@@ -69,13 +69,20 @@ function ThesisRow(props)
 
 function InteractiveTh(props)
 {
+    let orderable = true;
+    if (props.col.DBfield == "coSupervisors" || props.col.DBfield == "groups") orderable = false;
+
     return <th key={props.col.DBfield}><Table borderless>
         <tbody>
         <tr>
             <th>{props.col.title}</th>
-            <th>{props.isOrderedBy(props.col.DBfield) == "ASC" ? <p className='text-center icons' onClick={() => props.orderBy(props.col.DBfield, false)}>{"↓"}</p>
+            {
+                orderable ?
+                <th>{props.isOrderedBy(props.col.DBfield) == "ASC" ? <p className='text-center icons' onClick={() => props.orderBy(props.col.DBfield, false)}>{"↓"}</p>
                                                     : <p className='text-center icons' onClick={() => props.orderBy(props.col.DBfield, true)}>{"↑"}</p>}
-            </th>
+                </th>
+                : ""
+            }
         </tr> 
         </tbody>
     </Table></th>
@@ -85,6 +92,7 @@ function InteractiveTh(props)
 function ThesisTable(props)
 {
     const columns = props.columns;
+    let key = 0;
 
     return (
         <>
@@ -99,7 +107,7 @@ function ThesisTable(props)
 
             <tbody>
                 {
-                    props.thesis.map(r => <ThesisRow key={r.id} row={r} columns={columns}/>)
+                    props.thesis.map(r => <ThesisRow key={key++} row={r} columns={columns}/>)
                 }
             </tbody>
         </Table>
