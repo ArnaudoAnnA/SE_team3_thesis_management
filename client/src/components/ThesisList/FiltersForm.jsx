@@ -54,6 +54,9 @@ function FiltersForm(props)
                             }else if (event.target.id == "expirationDateTo")
                             {
                                 f.expirationDate.to = event.target.value;
+                            }else if(event.target.id == "coSupervisors")
+                            {
+                                f.coSupervisors = [event.target.value];
                             }else
                             {
                                 f[event.target.id] = event.target.value;

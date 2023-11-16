@@ -95,7 +95,7 @@ function Main() {
         <Routes>
           <Route path='/' element={<Header logoutCbk={logout} date={date} changeDateCbk={changeVirtualDate} />}>
 
-            {user.email ? <Route path='' element={<Home />} /> :
+            {user.email ? <Route path='' element={<Home date={date}/>} /> :
               <Route path='' element={<Login />} />}
             {/** Add here other routes */}
             <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm /> : <NotFoundPage />) : <Login />} />
@@ -132,10 +132,10 @@ function Header(props) {
  * Search bar 
  */
 
-function Home() {
+function Home(props) {
   const user = useContext(userContext);
   return (<>
-    <ThesisList />
+    <ThesisList date={props.date}/>
     {user.role === "teacher" ?
       <Button as={Link} to='/proposal' className="floating-button orangeButton">
         New Proposal

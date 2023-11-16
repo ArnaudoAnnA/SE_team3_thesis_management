@@ -152,7 +152,7 @@ function ThesisList(props)
         }
         
 
-    }, [state]);
+    }, [state, props.date]);
 
     return (
         <contextState.Provider value={{state: state, setState: setState, states: states}}>
