@@ -16,7 +16,7 @@ function ThesisList(props)
     /* ------ COSTANTS ------------ */
     const columns = [   //TO DO: dynamic width of columns
         { DBfield: "title", title: "Title",  },
-        { DBfield: "theacherName", title: "Teacher",  },
+        { DBfield: "supervisor", title: "Supervisor",  },
         { DBfield: "coSupervisors", title: "Co-Supervisors",  }, //array
         { DBfield: "type", title: "Type",  },
         { DBfield: "groups", title: "Groups",  }, //array
@@ -61,9 +61,8 @@ function ThesisList(props)
      */
     function orderBy(field, asc)
     {
-        setThesis(t => t.sort((a, b) => a-b));
+        setThesis(t => {t.sort((a, b) => asc ? a-b : b-a); return t;});
 
-        /*
         if (!columns.find(f => f.DBfield == field)) { console.log(`invalid field passed to ThesisList::orderBy: ${field}`); return; }
         if (typeof asc != "boolean") {console.log(`ThesisList::orderBy wants the second parameter to be a boolean (the value ${asc} has been passed)`); return;}
 
@@ -72,8 +71,7 @@ function ThesisList(props)
         if (temp_index >= 0) new_orderBy.splice(temp_index, 1);
         new_orderBy.unshift({field: field, mode: (asc ? "ASC" : "DESC")});
 
-        setOrderbyArray(f => Object.assign({}, f, {orderBy: new_orderBy}));
-        */
+        setOrderbyArray(new_orderBy);
     }
 
     /**
@@ -96,6 +94,7 @@ function ThesisList(props)
     function resetFilters()
     {
         setFilters(getEmptyFilters());
+        setState(states.loading);
     }
 
     function getEmptyFilters()

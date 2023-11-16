@@ -244,7 +244,7 @@ async function getThesis(filters) {
         whereConditions.push(where('teacherId', '==', teacher.id));
     }
 
-    if (filters.coSupervisors) {
+    if (filters.coSupervisors && filters.coSupervisors.length > 0) {
       let coSupervisors = filters.coSupervisors;
       whereConditions.push(where('coSupervisors', 'array-contains-any', coSupervisors));
     }
@@ -267,7 +267,7 @@ async function getThesis(filters) {
       whereConditions.push(where('level', '==', level));
     }
 
-    if(filters.keywords) {
+    if(filters.keywords && filters.keywords.length > 0) {
       let keywords = filters.keywords;
       whereConditions.push(where('keywords', 'array-contains-any', keywords));
     }

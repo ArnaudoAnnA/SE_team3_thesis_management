@@ -2,6 +2,7 @@
 import {Table, Row, Col} from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowDown, ArrowUp } from 'react-bootstrap-icons';
+import dayjs from 'dayjs';
 
 
 
@@ -45,6 +46,9 @@ function row_field_to_td(row_id, field_name, field_content)
             return <>{field_content.map(e => <p key={counter++}>{e}</p>)}</>
         break;
 
+        case "expirationDate":
+            return dayjs(field_content).format('DD/MM/YYYY');
+        break;
 
     }
     
