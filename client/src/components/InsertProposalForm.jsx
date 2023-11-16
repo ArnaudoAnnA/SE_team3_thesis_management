@@ -207,6 +207,7 @@ function InsertProposalForm(props) {
       setErrorMsg("Date cannot be before today!")
       window.scrollTo(0, 0);
       setSelectedDate(new dayjs())
+      return false;
     }
   
   // Esegui i controlli
@@ -270,6 +271,13 @@ function InsertProposalForm(props) {
      
       return (
         <Container>
+          <Row className="my-3">
+            <Col md={5} className="ml-2">
+              <Link to={`/`} className="btn blueButton btn-lg"> <i className="bi bi-arrow-90deg-left white"></i> </Link>
+            </Col>
+            <Col md={8}>
+            </Col>
+          </Row>
         {errorMsg ? (
           <Alert
             style={{ display: "flex", justifyContent: "center", width: "30%", marginLeft: "auto",marginRight: "auto", marginTop: "2vh", paddingLeft: "auto", paddingRight: "auto" }}
@@ -284,13 +292,6 @@ function InsertProposalForm(props) {
             {errorMsg}
           </Alert>
         ) : null}
-        <Row className="my-3">
-          <Col md={4}>
-            <Link to={`/`} className="btn blueButton btn-lg"> <i className="bi bi-arrow-90deg-left white"></i> </Link>
-          </Col>
-          <Col md={8}>
-          </Col>
-        </Row>
         <Form onSubmit={handleSubmit} >
            
             <div className="container" style={{marginBottom: "20px"}}>
@@ -418,10 +419,13 @@ function InsertProposalForm(props) {
                   </div>
                   <div style={{display: "flex"}}>
                     <div style={{marginLeft: "auto", paddingBottom: "5px", marginRight: "auto"}}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs} >
-                      <DatePicker value={selectedDate} 
-                        onChange={ev => setSelectedDate(ev.target.value)}/>
-                    </LocalizationProvider>
+                      <LocalizationProvider dateAdapter={AdapterDayjs} >
+                        <DatePicker value={selectedDate}
+                          onChange={(newDate) => {
+                            setSelectedDate(newDate);
+                            console.log('Nuova data:', newDate);
+                          }} />
+                      </LocalizationProvider>
                     </div>
                     </div>
                     <div className="form-group input-group" style={{display: "flex", marginBottom: "2px", flexDirection: "column", flexWrap: "wrap"}}>
