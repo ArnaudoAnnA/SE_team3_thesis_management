@@ -16,7 +16,7 @@ function ThesisList(props)
     /* ------ COSTANTS ------------ */
     const columns = [   //TO DO: dynamic width of columns
         { DBfield: "title", title: "Title",  },
-        { DBfield: "supervisor", title: "Supervisor",  },
+        { DBfield: "theacherName", title: "Teacher",  },
         { DBfield: "coSupervisors", title: "Co-Supervisors",  }, //array
         { DBfield: "type", title: "Type",  },
         { DBfield: "groups", title: "Groups",  }, //array
@@ -31,7 +31,8 @@ function ThesisList(props)
 
     /*--------------- STATES ------------------*/
     const [thesis, setThesis] = useState([]);
-    const [filters, setFilters] = useState(Object.assign({}, {orderBy: columns.map(c => Object.assign({}, {field: c.DBfield, mode: "ASC"}))}));
+    const [filters, setFilters] = useState(getEmptyFilters());
+    const [orderByArray, setOrderbyArray] = useState(columns.map(c => Object.assign({}, {field: c.DBfield, mode: "ASC"})));
     const [state, setState] = useState(states.loading);
 
 
@@ -60,15 +61,19 @@ function ThesisList(props)
      */
     function orderBy(field, asc)
     {
+        setThesis(t => t.sort((a, b) => a-b));
+
+        /*
         if (!columns.find(f => f.DBfield == field)) { console.log(`invalid field passed to ThesisList::orderBy: ${field}`); return; }
         if (typeof asc != "boolean") {console.log(`ThesisList::orderBy wants the second parameter to be a boolean (the value ${asc} has been passed)`); return;}
 
-        let new_orderBy = [ ...filters.orderBy];
+        let new_orderBy = [ ...orderByArray];
         let temp_index = new_orderBy.findIndex(o => o.field == field);
         if (temp_index >= 0) new_orderBy.splice(temp_index, 1);
         new_orderBy.unshift({field: field, mode: (asc ? "ASC" : "DESC")});
 
-        setFilters(f => Object.assign({}, f, {orderBy: new_orderBy}));
+        setOrderbyArray(f => Object.assign({}, f, {orderBy: new_orderBy}));
+        */
     }
 
     /**
@@ -79,8 +84,8 @@ function ThesisList(props)
     function isOrderedBy(field)
     {
         if (!columns.find(f => f.DBfield == field)) { console.log(`invalid field passed to ThesisList::isOrderedBy(): ${field}`); return; }
-        let entry = filters.orderBy.find(c => c.field == field);
-        if(!entry) {console.log(`BUG: ThesisList::isOrderedBy() the field ${field} is a valid column, but it is not in the filters.orderBy array`); return;}
+        let entry = orderByArray.find(c => c.field == field);
+        if(!entry) {console.log(`BUG: ThesisList::isOrderedBy() the field ${field} is a valid column, but it is not in the orderByArray array`); return;}
 
         return entry.mode;
     }
@@ -90,7 +95,21 @@ function ThesisList(props)
      */
     function resetFilters()
     {
-        setFilters(Object.assign({}, {orderBy: columns.map(c => Object.assign({}, {field: c.DBfield, mode: "ASC"}))}));
+        setFilters(getEmptyFilters());
+    }
+
+    function getEmptyFilters()
+    {
+        return {
+            expirationDate: {to: "", from: ""},
+            title: "",
+            teacherName: "",
+            coSupervisors: [],
+            type: "",
+            groups: [],
+            level: "",
+            programmes: ""
+        }
     }
 
     /**
