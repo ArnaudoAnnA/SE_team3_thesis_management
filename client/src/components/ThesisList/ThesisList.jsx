@@ -5,6 +5,8 @@ import API from '../../API';
 import { FiltersForm } from "./FiltersForm";
 import { ThesisTable } from "./ThesisTable";
 
+import contextState from "./contextState";
+
 
 
 
@@ -29,7 +31,7 @@ function ThesisList(props)
 
     /*--------------- STATES ------------------*/
     const [thesis, setThesis] = useState([]);
-    const [filters, setFilters] = useState();
+    const [filters, setFilters] = useState(Object.assign({}, {orderBy: columns.map(c => Object.assign({}, {field: c.DBfield, mode: "ASC"}))}));
     const [state, setState] = useState(states.loading);
 
 
@@ -94,13 +96,13 @@ function ThesisList(props)
     /**
      * @returns {bool} true if some filter is applyed. Ordering is excluded.
      */
-    function isFiltered(f)
+    function isFiltered()
     {
-        for (let prop in f)
+        for (let prop in filters)
         {
             if (prop == "orderBy") continue;
 
-            if (f[prop] && f[prop] != "")
+            if (filters[prop] && filters[prop] != "")
             {
                 return true;
             }
@@ -121,7 +123,6 @@ function ThesisList(props)
                     if (ret.status == 200 && ret.thesis.length > 0)
                     {
                         setThesis(ret.thesis); 
-                        if (!filters || !filters.orderBy) resetFilters();
                         setState(states.ready);
                     } else
                     {
@@ -136,16 +137,15 @@ function ThesisList(props)
     }, [state]);
 
     return (
-        <>
+        <contextState.Provider value={{state: state, setState: setState, states: states}}>
             <Container>
-                <FiltersForm columns={columns} filters={[filters, setFilters, resetFilters, isFiltered]}/>
-                {
-                    state == states.ready ? 
-                    <ThesisTable columns={columns} thesis={thesis} orderBy={orderBy} isOrderedBy={isOrderedBy}/>  
+                { state == states.ready ? 
+                    <><FiltersForm columns={columns} filters={[filters, setFilters, resetFilters, isFiltered]}/>
+                    <ThesisTable columns={columns} thesis={thesis} orderBy={orderBy} isOrderedBy={isOrderedBy}/></>  
                     :  <Alert>{state}</Alert>
                 }
             </Container>
-        </>
+        </contextState.Provider>
         
     )
 }
