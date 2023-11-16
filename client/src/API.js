@@ -262,6 +262,7 @@ async function getThesis(filters) {
         whereConditions.push(where('expirationDate', '<=', date.toISOString())); 
       }
     }
+
     if(filters.level) {
       let level = filters.level;
       whereConditions.push(where('level', '==', level));
@@ -278,7 +279,8 @@ async function getThesis(filters) {
     }
 
     // add the condition to show only active thesis
-    whereConditions.push(where('archiveDate', '>=', await getVirtualDate()));
+    if(filters.expirationDate.to == '' && filters.expirationDate.from == '')
+      whereConditions.push(where('archiveDate', '>=', await getVirtualDate()));
 
     let showAll = true
     if (isTeacher(auth.currentUser.email)) {
