@@ -3,6 +3,7 @@ import {Table, Row, Col} from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowDown, ArrowUp } from 'react-bootstrap-icons';
 import dayjs from 'dayjs';
+import {useState} from 'react';
 
 
 
@@ -47,7 +48,7 @@ function row_field_to_td(row_id, field_name, field_content)
         break;
 
         case "expirationDate":
-            return dayjs(field_content).format('DD/MM/YYYY');
+            return dayjs(field_content).format('YYYY/MM/DD');
         break;
 
     }
@@ -76,16 +77,21 @@ function InteractiveTh(props)
     let orderable = true;
     if (props.col.DBfield == "coSupervisors" || props.col.DBfield == "groups") orderable = false;
 
+    let [asc, setAsc] = useState(true);
+
+
+    function ToggleArrow()
+    {
+        return asc ? <th className='text-center icons' onClick={() => {setAsc(false); props.orderBy(props.col.DBfield, false);}}>{"↓"}</th>
+                    : <th className='text-center icons' onClick={() => {setAsc(true); props.orderBy(props.col.DBfield, true); }}>{"↑"}</th>;
+    }
+
     return <th key={props.col.DBfield}><Table borderless>
         <tbody>
         <tr>
             <th>{props.col.title}</th>
             {
-                orderable ?
-                <th>{props.isOrderedBy(props.col.DBfield) == "ASC" ? <p className='text-center icons' onClick={() => props.orderBy(props.col.DBfield, false)}>{"↓"}</p>
-                                                    : <p className='text-center icons' onClick={() => props.orderBy(props.col.DBfield, true)}>{"↑"}</p>}
-                </th>
-                : ""
+                orderable ? <ToggleArrow/> : <th></th>
             }
         </tr> 
         </tbody>
@@ -96,7 +102,13 @@ function InteractiveTh(props)
 function ThesisTable(props)
 {
     const columns = props.columns;
+    const [thesis, setThesis] = useState(props.thesis);
     let key = 0;
+
+    function orderBy(field, asc)
+    {
+        setThesis(t => {t.sort((a, b) => asc ? a[field].localeCompare(b[field]) : b[field].localeCompare(a[field])); return [...t]; });
+    }
 
     return (
         <>
@@ -104,14 +116,14 @@ function ThesisTable(props)
             <thead>
                 <tr>
                     {
-                        columns.map( col => <InteractiveTh key={col.title} col={col} orderBy={props.orderBy} isOrderedBy={props.isOrderedBy} />)
+                        columns.map( col => <InteractiveTh key={col.title} col={col} orderBy={orderBy}/>)
                     }
                 </tr>
             </thead>
 
             <tbody>
                 {
-                    props.thesis.map(r => <ThesisRow key={key++} row={r} columns={columns}/>)
+                    thesis.map(r => <ThesisRow key={key++} row={r} columns={columns}/>)
                 }
             </tbody>
         </Table>
