@@ -426,7 +426,7 @@ function InsertProposalForm(props) {
                    
                                                        
                       <div className="form-group" style={{marginTop: "2vh", display: 'flex'}}>
-                          <Button id="sendpb" style={{marginLeft: "auto", marginRight:"auto",  width: "150px", marginBottom: '10px'}} type="submit" className="btn btn-primary btn-block" onClick={handleSubmit}> Upload Proposal  </Button>
+                          <Button id="sendpb" style={{marginLeft: "auto", marginRight:"auto",  width: "150px", marginBottom: '10px'}} type="submit" className="blueButton" onClick={handleSubmit}> Upload Proposal  </Button>
                       </div>     
                                                                                       
                   </article>

@@ -213,7 +213,7 @@ function ApplyForm(props) {
             </Row>
             <Row>
                 <Container className='d-flex justify-content-center mt-5'>
-                    <Button className="mb-3" variant="primary" type="submit"> Send your application </Button>   
+                    <Button className="mb-3" variant="blueButton" type="submit"> Send your application </Button>   
                 </Container>
             </Row>
          </Form>

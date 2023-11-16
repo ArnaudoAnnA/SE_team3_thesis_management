@@ -93,8 +93,8 @@ function Login(props) {
             </Form.Group>
          
             <div style={{display: "flex", flexDirection: "row"}}>
-            <Button type='submit' variant="dark" style={{marginLeft: "auto", marginRight:"auto", marginTop: "10px", width:"45%"}}>Login</Button>
-            <Button variant='warning' style={{marginLeft: "auto", marginRight:"auto", marginTop: "10px", width:"45%"}} >Cancel</Button>
+            <Button type='submit' className='blueButton' style={{marginLeft: "auto", marginRight:"auto", marginTop: "10px", width:"45%"}}>Login</Button>
+            {/* <Button variant='warning' style={{marginLeft: "auto", marginRight:"auto", marginTop: "10px", width:"45%"}} >Cancel</Button> */}
             </div>
 
             </Form>

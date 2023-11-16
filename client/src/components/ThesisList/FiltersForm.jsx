@@ -60,7 +60,7 @@ function FiltersForm(props)
             <Col><Row>
                 <Col className="col-3 hover-zoom"><Search className="flexible_icons icons" onClick={(event) => loadAllFilters()}/></Col>
                 <Col className="col-3 hover-zoom"><Filter className="flexible_icons icons" onClick={() => setShowAdvancedFilters(s => !s)}/></Col>
-                <Col className="col-3"><Button disabled={isFiltered()} onClick={() => resetFilters()}>Reset</Button></Col>
+                <Col className="col-3"><Button className="blueButton" disabled={isFiltered()} onClick={() => resetFilters()}>Reset</Button></Col>
             </Row></Col>
         </Row>
         <Row>
