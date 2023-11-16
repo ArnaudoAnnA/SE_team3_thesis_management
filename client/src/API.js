@@ -330,8 +330,8 @@ const getThesisNumber = async () => {
   }
 }; */
 
-/* no more needeed
-const getThesisWithID = async (ID) => {
+
+const getThesisWithId = async (ID) => {
   console.log("Testing getThesisWithID")
 
   //QUERY CONDITIONS
@@ -352,7 +352,7 @@ const getThesisWithID = async (ID) => {
     console.log("Error:", e)
     return null; // or handle the error accordingly
   }
-} */
+} 
 
 /**
  * Add a new application into the server
@@ -620,7 +620,7 @@ const insertProposal = async (thesisProposalData) => {
 };
 
 const API = {
-  getThesis, getAllThesis,
+  getThesis, getAllThesis, getThesisWithId,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser,
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication,

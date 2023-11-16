@@ -39,7 +39,7 @@ function ThesisDetails(props)
         API.getThesisWithId(id)
         .then(t => setThesis(t))
         .catch(); //TO DO: define error state
-    })
+    }, []);
 
     return <Container>
         {
