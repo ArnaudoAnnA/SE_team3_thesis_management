@@ -19,10 +19,15 @@ const userContext = createContext();
 function CustomNavbar(props) {
     const user = useContext(userContext);
     const [date, setDate] = useState(props.date);
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
     function handleSubmit(event) {
         event.preventDefault();
         props.changeDateCbk(dayjs(date).format('YYYY-MM-DD'));
+        setShowConfirmation(true);
+        setTimeout(() => {
+            setShowConfirmation(false);
+        }, 1000);
     }
     return (
         <>
@@ -77,6 +82,9 @@ function CustomNavbar(props) {
                             </Form.Group>
                         </Row>
                     </Form>
+                    {showConfirmation && (
+                            <span style={{ marginLeft: '10px', color: 'black' }}>Date changed</span>
+                    )}
                 </Navbar>
                 : null}
         </>
