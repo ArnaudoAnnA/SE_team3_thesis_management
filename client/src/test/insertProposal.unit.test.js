@@ -6,6 +6,32 @@ import API from '../API.js';
 describe('testing the insertion of a thesis proposal in the database', () => {
 
     const thesisProposal = {
+        archiveDate: "",
+        coSupervisors: ["coSupervisor1", "coSupervisor2"],
+        description: "description",
+        expirationDate: "2024-01-01",
+        groups: ["group1", "group2"],
+        id: 123456789,
+        keywords: ["keyword1", "keyword2"],
+        level: "Bachelor",
+        notes: "some notes",
+        programmes: "programme",
+        requiredKnowledge: "requiredKnowledge",
+        teacherId: "d345678",
+        title: "title",
+        type: "type",
+    };
+
+    const thesisProposalShort = {
+        title: "title",
+        type: "type",
+        description: "description",
+        requiredKnowledge: "requiredKnowledge",
+        level: "level",
+        programmes: ["programme1", "programme2"],
+    };
+
+    const thesisProposalWrong = {
         title: "title",
         type: "type",
         description: "description",
@@ -16,25 +42,63 @@ describe('testing the insertion of a thesis proposal in the database', () => {
         coSupervisors: ["coSupervisor1", "coSupervisor2"],
         keywords: ["keyword1", "keyword2"],
         groups: ["group1", "group2"],
-        notes: "notes"
+        notes: "notes",
+        wrongField: "wrongField"
+    };
+
+    const thesisProposalEmpty = {
+        title: "",
+        type: "type",
+        description: "description",
+        requiredKnowledge: "requiredKnowledge",
+        level: "level",
+        programmes: ["programme1", "programme2"],
+        expirationDate: "2024-01-01",
+        coSupervisors: ["coSupervisor1", "coSupervisor2"],
+        keywords: ["keyword1", "keyword2"],
+        groups: ["group1", "group2"],
+        notes: "notes",
+        wrongField: "wrongField"
     };
 
     test('should retrive an error if a teacher is not logged in', async () => {
+        await API.logOut();
         const response = await API.insertProposal(thesisProposal);
         expect(response.status).toEqual(401);
     });
 
-    test('should retrive an error if a student is logged in', async () => {
-        API.logIn("s901234@studenti.polito.it", "s901234")
-        const response = await API.insertProposal(thesisProposal);
-        API.logOut();
-        expect(response.status).toEqual(401);
+    test('should retrive an error if the thesis proposal does not have all the required fields', async () => {
+        await API.logOut();
+        await API.logIn("d345678@studenti.polito.it", "d345678")
+        const response = await API.insertProposal(thesisProposalShort);
+        await API.logOut();
+        expect(response).toEqual(400);
+    });
+
+    test('should retrive an error if the thesis proposal has a wrong field', async () => {
+        await API.logOut();
+        await API.logIn("d345678@studenti.polito.it", "d345678")
+        const response = await API.insertProposal(thesisProposalWrong);
+        await API.logOut();
+        expect(response).toEqual(400);
+    });
+
+    test('should retrive an error if the thesis proposal has an empty field', async () => {
+        await API.logOut();
+        await API.logIn("d345678@studenti.polito.it", "d345678")
+        const response = await API.insertProposal(thesisProposalEmpty);
+        await API.logOut();
+        expect(response).toEqual(400);
     });
 
     test('should add a thesis proposal to the database', async () => {
-        API.logIn("d345678@studenti.polito.it", "d345678")
+        await API.logOut();
+        await API.logIn("d345678@studenti.polito.it", "d345678")
         const response = await API.insertProposal(thesisProposal);
-        API.logOut();
+        await API.logOut();
         expect(response.status).toEqual(200);
     });
+
+
+
 });

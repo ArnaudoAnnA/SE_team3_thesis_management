@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { BrowserRouter, Link, Routes, Route, Outlet } from 'react-router-dom';
 import dayjs from 'dayjs';
 import API from './API.js';
@@ -13,6 +13,7 @@ import { InsertProposalForm } from './components/InsertProposalForm.jsx';
 import { ApplyForm } from './components/ApplyForm.jsx';
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { Button } from 'react-bootstrap';
 
 function App() {
   // DO NOT WRITE HERE, use Main instead
@@ -94,14 +95,13 @@ function Main() {
         <Routes>
           <Route path='/' element={<Header logoutCbk={logout} date={date} changeDateCbk={changeVirtualDate} />}>
 
-            {user.email ? (user.role === "student" ? <Route path='' element={<SearchBar />} /> :
-              <Route path='' element={<ThesisList />} />) :
+            {user.email ? <Route path='' element={<Home />} /> :
               <Route path='' element={<Login />} />}
             {/** Add here other routes */}
-            <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm /> : <NotFoundPage/>) : <Login /> } />
-            <Route path='/thesis' element={user.email ? <ThesisList /> : <Login />} />
+            <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm /> : <NotFoundPage />) : <Login />} />
+            {/*<Route path='/thesis' element={user.email ? <ThesisList /> : <Login />} /> */}
             <Route path='/thesis/:id' element={user.email ? <ThesisDetails /> : <Login />} />
-            <Route path='/thesis/:id/apply' element={user.email ? (user.role === "student" ? <ApplyForm virtualDate={date} /> : <NotFoundPage/>) : <Login />} />
+            <Route path='/thesis/:id/apply' element={user.email ? (user.role === "student" ? <ApplyForm virtualDate={date} /> : <NotFoundPage />) : <Login />} />
 
           </Route>
           <Route path='*' element={<NotFoundPage />} />
@@ -132,7 +132,16 @@ function Header(props) {
  * Search bar 
  */
 
-function SearchBar() {
+function Home() {
+  const user = useContext(userContext);
+  return (<>
+    <ThesisList />
+    {user.role === "teacher" ?
+      <Button as={Link} to='/proposal' className="floating-button orangeButton">
+        New Proposal
+      </Button>
+      : ""}
+  </>);
 
 }
 

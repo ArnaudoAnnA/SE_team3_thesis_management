@@ -74,29 +74,31 @@ function Login(props) {
 
     return (
       
-        <Container style={{display: "flex", flexDirection:"column"}}>
+        <Container style={{display: "flex", flexDirection: "column"}}>
          <h1 style={{marginLeft: "auto", marginRight: "auto", marginTop: "10px"}}>Welcome! Please insert your e-mail and password to login</h1>
        
-        {errorMsg? <Alert style={{width:"20vw", marginLeft: "27vw", marginTop: "2vh"}} variant='danger' onClose={()=>setErrorMsg('')} dismissible>{errorMsg}</Alert> : false }
-        <Form onSubmit={handleSubmit} style={{marginLeft: "27vw", marginTop: "5vh" }}>
-
+        {errorMsg? <Alert style={{width:"30%", marginLeft: "auto", marginTop: "3%", marginRight: "auto", textAlign: "center"}} variant='danger' onClose={()=>setErrorMsg('')} dismissible>{errorMsg}</Alert> : false }
+        
+        <Form onSubmit={handleSubmit} style={{display: "flex", flexDirection: "column", marginLeft: "auto", marginRight: "auto", marginTop: "2%", width:"30%"}}>
+        
                 <Form.Group>
                     <Form.Label>E-mail  </Form.Label>
-                    <Form.Control style={{ width: "20vw" }} type="text" placeholder="E-mail" name="email" value={email} onChange={ev => setEmail(ev.target.value)} />
+                    <Form.Control style={{ width: "100%" }} type="text" placeholder="E-mail" name="email" value={email} onChange={ev => setEmail(ev.target.value)} />
                 </Form.Group>
 
 
         <Form.Group controlId="formBasicPassword"  >
                 <Form.Label>Password</Form.Label>
-                <Form.Control style={{width:"20vw"}} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <Form.Control style={{width:"100%"}} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
             </Form.Group>
          
- 
-            <Button type='submit' variant="dark" style={{marginTop: "10px"}}>Login</Button>
-            <Button variant='warning' style={{marginTop: "10px"}} >Cancel</Button>
-       
+            <div style={{display: "flex", flexDirection: "row"}}>
+            <Button type='submit' className='blueButton' style={{marginLeft: "auto", marginRight:"auto", marginTop: "10px", width:"45%"}}>Login</Button>
+            {/* <Button variant='warning' style={{marginLeft: "auto", marginRight:"auto", marginTop: "10px", width:"45%"}} >Cancel</Button> */}
+            </div>
 
             </Form>
+
 
         </Container>
     );

@@ -45,8 +45,8 @@ function ThesisDetails(props)
         {
             thesis ? <>
                         <Row>
-                            <Col className="col-1"><Link to='/thesis'><Button><Arrow90degLeft /></Button></Link></Col>
-                            {user.role=='teacher' ? null : <Col className="col-1"><Link to={'/thesis/'+thesis.id+'/apply'}><Button>Apply</Button></Link></Col>}
+                            <Col className="col-1"><Link to='/thesis'><Button className="blueButton"><Arrow90degLeft /></Button></Link></Col>
+                            {user.role=='teacher' ? null : <Col className="col-1"><Link to={'/thesis/'+thesis.id+'/apply'}><Button className="blueButton">Apply</Button></Link></Col>}
                         </Row>
                         
                         <hr size={10}/>
