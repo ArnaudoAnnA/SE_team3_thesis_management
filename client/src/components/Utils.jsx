@@ -40,12 +40,10 @@ function CustomNavbar(props) {
                     <Navbar.Collapse>
                         <Nav>
                             <Nav.Link as={Link} to={"/"} className="white" href='/'>Home</Nav.Link>
-                            {user.role == 'teacher' ? 
+                            {user.role == 'teacher' ?
                                 <>
-                                    <Nav.Link as={Link} to={"/thesis"} className="white" href='/thesis'>Thesis</Nav.Link>
                                     <Nav.Link as={Link} to={"/archive"} className="white" href='/archive'>Archive</Nav.Link>
                                     <Nav.Link as={Link} to={"/applications"} className="white" href='/applications'>Applications</Nav.Link>
-
                                 </>
                                 : null}
                             <Nav.Link as={Link} to={"/notifications"} className="white" href='/notifications'>Notifications</Nav.Link>
@@ -61,24 +59,26 @@ function CustomNavbar(props) {
                 : null}
 
             {/* Virtual clock, just for testing */}
-            <Navbar >
-                <Form onSubmit={handleSubmit}>
-                    <Row>
-                        <Form.Group as={Col}>
-                            <Form.Control
-                                type="date"
-                                value={date}
-                                onChange={event => { setDate(event.target.value); }} />
-                        </Form.Group>
-                        <Form.Group as={Col}>
-                            <Button className="blueButton" type="submit" >
-                                Time travel
-                                <img src="https://drive.google.com/uc?export=download&id=1EMkvkiqkf9EoBiiKBo0kv4xgJEMtmytf" width="40" style={{ marginLeft: '5px' }} />
-                            </Button>
-                        </Form.Group>
-                    </Row>
-                </Form>
-            </Navbar>
+            {user.email ?
+                <Navbar >
+                    <Form onSubmit={handleSubmit}>
+                        <Row>
+                            <Form.Group as={Col}>
+                                <Form.Control
+                                    type="date"
+                                    value={date}
+                                    onChange={event => { setDate(event.target.value); }} />
+                            </Form.Group>
+                            <Form.Group as={Col}>
+                                <Button className="blueButton" type="submit" >
+                                    Time travel
+                                    <img src="https://drive.google.com/uc?export=download&id=1EMkvkiqkf9EoBiiKBo0kv4xgJEMtmytf" width="40" style={{ marginLeft: '5px' }} />
+                                </Button>
+                            </Form.Group>
+                        </Row>
+                    </Form>
+                </Navbar>
+                : null}
         </>
     );
 }

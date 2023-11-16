@@ -41,7 +41,7 @@ const degreesRef = DEBUG ? collection(db, "test-degrees") : collection(db, "degr
 const careersRef = DEBUG ? collection(db, "test-career") : collection(db, "career");
 const thesisProposalsRef = DEBUG ? collection(db, "test-thesisProposals") : collection(db, "thesisProposals");
 const applicationsRef = DEBUG ? collection(db, "test-applications") : collection(db, "applications");
-//const dateRef = collection(db, "date");   commented after merge
+const dateRef = collection(db, "date");
 
 /*--------------- Utils APIs -------------------------- */
 
@@ -71,7 +71,6 @@ const isTeacherById = async (id) => {
 
 
 /*--------------- Authentication APIs -------------------------- */
-const dateRef = DEBUG ? collection(db, "test-date") : collection(db, "date");
 
 
 const signUp = async (email, password) => {

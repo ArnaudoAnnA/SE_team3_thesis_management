@@ -135,13 +135,12 @@ function Header(props) {
 function Home() {
   const user = useContext(userContext);
   return (<>
+    <ThesisList />
     {user.role === "teacher" ?
-      (<>
-        <Button as={Link} to='/proposal' className="floating-button orangeButton">
-          New Proposal
-        </Button>
-        <ThesisList />
-      </>) : ""}
+      <Button as={Link} to='/proposal' className="floating-button orangeButton">
+        New Proposal
+      </Button>
+      : ""}
   </>);
 
 }
