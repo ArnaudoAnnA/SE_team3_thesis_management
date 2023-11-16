@@ -5,13 +5,12 @@ import API from '../API.js';
 
 describe('1: Testing the getAllThesis API', () => {
     test('T1.1: Should retrive an error if a user is not logged in', async () => {
-
+        await API.logOut();
         const response = await API.getAllThesis();
         expect(response.status).toBe(401);
     });
 
     test('T1.2: Should retrive a thesis array with length=0 if there are any thesis', async () => {
-
         await API.logIn("d345678@studenti.polito.it", "d345678");
         await API.removeAllProposals();
         const response = await API.getAllThesis();
@@ -21,7 +20,6 @@ describe('1: Testing the getAllThesis API', () => {
     });
 
     test('T1.3: Should retrive a thesis array with length=1 if there is only 1 thesis', async () => {
-
         await API.logIn("d345678@studenti.polito.it", "d345678");
 
         const user = await API.getUser("d345678@studenti.polito.it");
@@ -58,16 +56,15 @@ describe('1: Testing the getAllThesis API', () => {
 describe('2: Testing the getThesis API', () => {
     //teacherName still missing
     test('T2.1: Should retrive an error if a user is not logged in', async () => {
-
+        await API.logOut();
         const response = await API.getThesis({type: "myType"});
         expect(response.status).toBe(401);
     });
 
     test('T2.2: Should retrive a thesis array with length=0 if there are any thesis', async () => {
- 
         await API.logIn("d345678@studenti.polito.it", "d345678");
         await API.removeAllProposals();
-        const response = await API.getThesis({type: "myType"});
+        const response = await API.getThesis({type : "myType"});
         await API.logOut();
         expect(response.status).toBe(200);
         expect(response.thesis).toHaveLength(0);
