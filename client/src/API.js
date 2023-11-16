@@ -360,7 +360,7 @@ const getThesisWithID = async (ID) => {
  * @return null
  */
 const addApplication = async (application) => {
-  console.log(application.curriculum)
+  //console.log(application.curriculum)
   if (auth.currentUser) {
     if (StringUtils.checkId(application.studentId, auth.currentUser.email)) {
       try {

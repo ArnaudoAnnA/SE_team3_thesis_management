@@ -37,7 +37,8 @@ The CSS is responsive and it adapts in the different dimensions of the devices:
 ### iPhone 12
 ![Screenshot](./screenshots_insert/iphone_12_pro.png)
 
-# Correct proposal insertion
+# Functionality tests
+## Correct proposal insertion
 
 In this test we are going to try and insert a new valid thesis proposal
 
@@ -49,22 +50,22 @@ The thesis is uploaded correctly and can be seen among the other ones.
 ![Screenshot](./screenshots_insert/correct2.png)
 ![Screenshot](./screenshots_insert/correct3.png)
 
-# Invalid fields testing
+## Invalid fields testing
 
 In this test we are going to try inserting thesis with wrong values in the corresponding fields.
-### Empty fields
+## Empty fields
 
 ![Screenshot](./screenshots_insert/emptytitle.png)
 
 Results: the page doesn't upload any proposal and notifies the user with the corresponding alert on the empty field
 
-### Wrong email format on supervisors
+## Wrong email format on supervisors
 
 ![Screenshot](./screenshots_insert/email.png)
 
 Results: the page notifies the user to enter a valid email address
 
-### Expected expiration date before current date
+## Expected expiration date before current date
 
 ![Screenshot](./screenshots_insert/date.png)
 
@@ -72,16 +73,14 @@ Results: in this case, the thesis is uploaded, but the page ignores the user inp
 
 ![Screenshot](./screenshots_insert/date2.png)
 
-### Duplicated keywords
+## Duplicated keywords
 
 ![Screenshot](./screenshots_insert/keyword.png)
 
 Results: the page correctly notifies the user that keyword has already been introduced and avoids making duplicates. However, infinite keywords can be introduced, which may be something to avoid.
 
-### Duplicated co-supervisors
+## Duplicated co-supervisors
 
 ![Screenshot](./screenshots_insert/cosupervisors.png)
 
 Results: same behaviour as the previous test.
-
-
