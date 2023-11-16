@@ -59,11 +59,11 @@ Unsupported formats get rejected and the user is notified about it with a red wa
 - TXT
 ![Screenshot](./screenshots_apply/txt.png)
 
-## Getting back to thesis list
+## Getting back to thesis details
 
-In this test we are going to test the back arrow button to go back to the proposal list.
+In this test we are going to test the back arrow button to go back to the proposal details.
 
-Results: after pressing the button, a blank page is shown.
+Results:
 
 - Before pressing the button
 ![Screenshot](./screenshots_apply/back1.png)
