@@ -37,20 +37,20 @@ sections:
 
 | Story  | # Tasks | Points | Hours est. | Hours actual |
 |--------|---------|--------|------------|--------------|
-| _#0_   |        |    -   |          |       |
-| _#1_   |        |       |           |        |
-| _#2_   |        |       |          |            |
-| _#3_   |        |       |          |             |
+| _#0_   |     13   |    -   |    97h      |  99h 20m     |
+| _#1_   |     4   |    5   |      12h 30m     |    15h 20m    |
+| _#2_   |    6    |    5   |      22h    |      33h 25m      |
+| _#3_   |    4    |    2   |     8h    |       9h 40m      |
 
 - _#0_ corresponds to 
-- _#1_ : 
-- _#2_ : 
-- _#3_ : 
+- _#1_ : Insert proposal
+- _#2_ : Search proposal
+- _#3_ : Apply for proposal
 
 > place technical tasks corresponding to story `#0` and leave out story points (not applicable in this case)
 
-- Estimated Hours per task average: 
-- Actual Hours per task average: 
+- Estimated Hours per task average: 5h
+- Actual Hours per task average: 6h
 - Estimated Hours Standard deviation: 
 - Actual Hours Standard deviation: 
 
