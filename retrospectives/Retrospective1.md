@@ -14,19 +14,20 @@ sections:
 
 - Number of stories committed vs. done
 
- 
+ 3/5
 
 - Total points committed vs. done
 
-
+10/14
 
 - Nr of hours planned vs. spent (as a team)
 
-
+92h 15m / 110h 30m
 
 **Remember** a story is done ONLY if it fits the Definition of Done:
  
 - Unit Tests passing
+- Manual FE testing
 - Code review completed
 - Code present on VCS
 - End-to-End tests performed
@@ -37,24 +38,24 @@ sections:
 
 | Story  | # Tasks | Points | Hours est. | Hours actual |
 |--------|---------|--------|------------|--------------|
-| _#0_   |     13   |    -   |    97h      |  99h 20m     |
-| _#1_   |     4   |    5   |      12h 30m     |    15h 20m    |
-| _#2_   |    6    |    5   |      22h    |      33h 25m      |
-| _#3_   |    4    |    2   |     8h    |       9h 40m      |
+| _#0_   |     13   |    -   |   49h 45m    |   52h   |
+| _#1_   |     4   |    3   |     12h 30m    |   15h 20m   |
+| _#2_   |    6    |    5   |     22h    |   33h 50m        |
+| _#3_   |    4    |    2   |     8h    |      9h 40m     |
 
-- _#0_ corresponds to 
+- _#0_ corresponds to initial setups and meetings
 - _#1_ : Insert proposal
 - _#2_ : Search proposal
 - _#3_ : Apply for proposal
 
 > place technical tasks corresponding to story `#0` and leave out story points (not applicable in this case)
 
-- Estimated Hours per task average: 5h
-- Actual Hours per task average: 6h
-- Estimated Hours Standard deviation: 
-- Actual Hours Standard deviation: 
+- Estimated Hours per task average: 3h 25m
+- Actual Hours per task average: 4h 05m
+- Estimated Hours Standard deviation: to calculate
+- Actual Hours Standard deviation: to calculate
 
-- Total task estimation error ratio [(sum of total hours estimation / sum of total hours spent) - 1]: 
+- Total task estimation error ratio [(sum of total hours estimation / sum of total hours spent) - 1]: 5535m / 6630 = |-0,165| = 16%
 
   
 ## QUALITY MEASURES 
