@@ -102,7 +102,8 @@ We have still to improve our managing of manual testing.
 - Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)
 
 1. have a meeting between peoples in charge of the same story before starting developing (1h30 it's enough): the objective is pre-defining the interfaces, methods and APIs' signatures;
-2. establish a deadline inside the sprint and try to have the code ready for that date, so then we can focus on testing.
+2. establish a deadline inside the sprint and try to have the code ready for that date, so then we can focus on testing;
+3. Manual drawing of GUI before starting developing.
 
 - One thing you are proud of as a Team!!
 
