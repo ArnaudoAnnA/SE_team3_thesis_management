@@ -76,19 +76,29 @@ sections:
 ## ASSESSMENT
 
 - What caused your errors in estimation (if any)?
+We understimated the learning curve for Firebase and the use of several JS libraries.
+We also understimated the time needed for coordinating front end teams and back end ones.
 
 
 - What lessons did you learn (both positive and negative) in this sprint?
+First lesson: we have to improve our definition of interfaces between front end and back end;
+Second lesson: we need more comunication and more team work during developing.
 
 
 - Which improvement goals set in the previous retrospective were you able to achieve? 
+In previous retrospecive we fixed two things to be improved, and we managed to achieve bot goals (throught their are still to be further improved):
+1. manage tests (in particolar manual tests) with more attention;
+2. define in a more detailed way the roles in the team (= who is in charge of what).
 
   
 - Which ones you were not able to achieve? Why?
+We have still to improve our managing of manual testing.
 
 
 - Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)
 
-  > Propose one or two
+1. have a meeting between peoples in charge of the same story before starting developing (1h30 it's enough): the objective is pre-defining the interfaces, methods and APIs' signatures;
+2. establish a deadline inside the sprint and try to have the code ready for that date, so then we can focus on testing.
 
 - One thing you are proud of as a Team!!
+Even if we have incountered several obstacles in this sprint, we never argued: we helped each other to reach the finale goal.
