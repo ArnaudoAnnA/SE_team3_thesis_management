@@ -38,7 +38,7 @@ sections:
 
 | Story  | # Tasks | Points | Hours est. | Hours actual |
 |--------|---------|--------|------------|--------------|
-| _#0_   |     13   |    -   |   49h 45m    |   51h40m  |
+| _#0_   |     13   |    -   |   49h 45m    |   51h 40m  |
 | _#1_   |     4   |    3   |     12h 30m    |   15h 20m   |
 | _#2_   |    6    |    5   |     22h    |   33h 50m        |
 | _#3_   |    4    |    2   |     8h    |      9h 40m     |
@@ -52,8 +52,8 @@ sections:
 
 - Estimated Hours per task average: 3h 25m
 - Actual Hours per task average: 4h 05m
-- Estimated Hours Standard deviation: 16h12m
-- Actual Hours Standard deviation: 16h36m
+- Estimated Hours Standard deviation: 16h 12m
+- Actual Hours Standard deviation: 16h 36m
 
 - Total task estimation error ratio [(sum of total hours estimation / sum of total hours spent) - 1]: 5535m / 6630 = |-0,165| = 16%
 
@@ -61,17 +61,15 @@ sections:
 ## QUALITY MEASURES 
 
 - Unit Testing:
-  - Total hours estimated: 22h
-  - Total hours spent: 18h30m
-  - Nr of automated unit test cases: 
-  - Coverage (if available):
+  - Total hours estimated: 11h
+  - Total hours spent: 11h 10m 
+  - Nr of automated unit test cases: 3
 - E2E testing:
-  - Total hours estimated: 
-  - Total hours spent: 
+  - Total hours estimated: 9h 
+  - Total hours spent: 5h 20m
 - Code review 
-  - Total hours estimated: 
-  - Total hours spent: 
-  
+  - Total hours estimated: 2h
+  - Total hours spent: 2h
 
 
 ## ASSESSMENT
