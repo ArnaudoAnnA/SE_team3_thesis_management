@@ -238,7 +238,7 @@ function InsertProposalForm(props) {
 
       const predefinedProposalStructure = {   
 
-        archiveDate: "",   
+        archiveDate: dayjs(selectedDate).toISOString(),   
         coSupervisors: emailTags,   
         description: description,   
         expirationDate: dayjs(selectedDate).toISOString(),   
