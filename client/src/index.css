@@ -48,6 +48,62 @@ body {
   cursor: pointer;
 }
 
+.MuiAutocomplete-root{
+
+  flex: 1 1 auto !important; 
+  border: 1px solid rgba(0, 0, 0, 0.42) !important;
+  border-radius: 6px !important;
+  color: #999 !important;  /* Colore del testo del placeholder */
+  padding-left: 8px;
+  background-color: white !important;
+
+}
+.MuiAutocomplete-input {
+
+  font-size: 12px;
+  border-bottom: none !important;
+
+
+}
+
+.css-l4u8b9-MuiInputBase-root-MuiInput-root:before {
+  border-bottom: 0px !important;
+
+} 
+.css-l4u8b9-MuiInputBase-root-MuiInput-root:after {
+  border-bottom: 0px !important;
+
+} 
+.MuiAutocomplete-input::placeholder{
+
+  color: #000000 !important;  /* Colore del testo del placeholder */
+  font-style: initial !important;
+  font-family: 'Helvetica Neue', sans-serif; 
+  font-size: 15px !important;
+  background-color: white !important;
+
+
+
+}
+.MuiFormControl-root{
+  width: 99% !important;
+  border-radius: 6px !important;
+
+
+}
+
+.MuiInput-underline{
+  border-bottom: 0px !important;
+  height: 10% !important;
+  border-radius: 6px !important;
+  width: 101% !important;
+  font-family: inherit !important;
+  font-weight: 400px !important;
+
+
+}
+
+
 
 /*BEGINNING OF MEDIA QUERY INSERT PROPOSAL*/
 
@@ -72,6 +128,20 @@ body {
 
 }
 
+@media only screen and (max-width: 1270px) {
+  .MuiAutocomplete-input::placeholder{
+
+    color: #000000 !important;  /* Colore del testo del placeholder */
+    font-style: initial !important;
+    font-family: 'Helvetica Neue', sans-serif; 
+    font-size: 12px !important;
+    font-weight: 540 !important;
+
+  
+  
+  
+  }
+}
 
 @media only screen and (max-width: 1275px) {
 
@@ -79,6 +149,26 @@ body {
 
     margin-right: 1vw !important;
 
+  }
+  .MuiAutocomplete-input::placeholder{
+
+    color: #000000 !important;  /* Colore del testo del placeholder */
+    font-style: initial !important;
+    font-family: 'Helvetica Neue', sans-serif; 
+    font-size: 12px !important;
+    font-weight: 540 !important;
+
+  
+  
+  
+  }
+
+  .MuiAutocomplete-root{
+
+    flex: 1 1 auto !important; 
+
+  
+  
   }
   
   .bi-exclamation-triangle{
@@ -120,6 +210,18 @@ body {
   article {
     max-width: 190px; 
   }
+  .MuiAutocomplete-input::placeholder{
+
+    color: #000000 !important;  /* Colore del testo del placeholder */
+    font-style: initial !important;
+    font-family: 'Helvetica Neue', sans-serif; 
+    font-size: 12px !important;
+    font-weight: 540 !important;
+
+  
+  
+  
+  }
   .MuiOutlinedInput-root {
 
     width: 210px; 
@@ -140,6 +242,12 @@ body {
     width: 30% !important;
 
   }
+  .MuiAutocomplete-root{
+
+    flex: 1 1 auto !important; 
+  
+  
+  }
 
 }
 
@@ -148,6 +256,18 @@ body {
 
   .card.bg-light {
     width: 75vw !important;
+  }
+  .MuiAutocomplete-input::placeholder{
+
+    color: #000000 !important;  /* Colore del testo del placeholder */
+    font-style: initial !important;
+    font-family: 'Helvetica Neue', sans-serif; 
+    font-size: 12px !important;
+    font-weight: 540 !important;
+
+  
+  
+  
   }
   
   article {
@@ -160,6 +280,13 @@ body {
 
     width: 50% !important;
 
+  }
+
+  .MuiAutocomplete-root{
+
+    flex: 1 1 auto !important; 
+  
+  
   }
 
  
@@ -234,6 +361,26 @@ body {
 
   }
 
+  .MuiAutocomplete-input::placeholder{
+
+    color: #000000 !important;  /* Colore del testo del placeholder */
+    font-style: initial !important;
+    font-family: 'Helvetica Neue', sans-serif; 
+    font-size: 12px !important;
+    font-weight: 540 !important;
+
+  
+  
+  
+  }
+
+  .MuiAutocomplete-root{
+
+    flex: 1 1 auto !important; 
+  
+  
+  }
+
   .bi-exclamation-triangle{
 
     width: 10px;
@@ -257,6 +404,13 @@ body {
 
   .card.bg-light {
     width: 75vw !important;
+  }
+  
+  .MuiAutocomplete-root{
+
+    flex: 1 1 auto !important; 
+  
+  
   }
 
   article {
@@ -302,6 +456,13 @@ body {
 
   }
 
+  .MuiAutocomplete-root{
+
+    flex: 1 1 auto !important; 
+  
+  
+  }
+
   .card.bg-light {
     width: 75vw !important;
   }
@@ -321,6 +482,7 @@ body {
     margin-left: auto;
     margin-right: auto;
     font-size: 12px !important;
+
 
   }
 
@@ -372,6 +534,13 @@ body {
     margin-right: auto;
     font-size: 10px !important;
 
+  }
+
+  .MuiAutocomplete-root{
+
+    flex: 1 1 auto !important; 
+  
+  
   }
 
   
