@@ -35,7 +35,6 @@ function ThesisList(props)
     const [state, setState] = useState(states.loading);
 
 
-
     /*--------------- FUNCTIONS ------------------*/
 
     /** 
@@ -113,6 +112,11 @@ function ThesisList(props)
         
 
     }, [state]);
+
+    useEffect(()=>
+    {
+        setState(states.loading); 
+    }, [props.date]);
 
     return (
         <contextState.Provider value={{state: state, setState: setState, states: states}}>
