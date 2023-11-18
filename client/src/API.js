@@ -343,7 +343,11 @@ const getThesisWithId = async (ID) => {
   try {
     const thesisSnapshot = await getDocs(qThesis)
     if (!thesisSnapshot.empty) {
-      const thesis = thesisSnapshot.docs[0].data()
+      const thesis = thesisSnapshot.docs[0].data();
+      let teachersSnap = await getDocs(teachersRef);
+      let teachers = teachersSnap.docs.map(doc => doc.data());
+      let teacher = teachers.find(t => t.id == thesis.teacherId);
+      thesis.supervisor = teacher.name + ' ' + teacher.surname;
       console.log(thesis);
       return thesis
     } else {
