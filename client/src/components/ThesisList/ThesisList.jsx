@@ -79,9 +79,17 @@ function ThesisList(props)
     {
         for (let prop in filters)
         {
-            if (filters[prop] && filters[prop] != "")
+            if (prop == "expirationDate" && (filters[prop].from != "" || filters[prop].to != ""))
             {
                 return true;
+            }
+            if (filters[prop] && typeof(filters[prop]) == "string"  && filters[prop] != "")
+            {
+                return true;
+            }
+            if (filters[prop] && Array.isArray(filters[prop]))
+            {
+                if(filters[prop].find(v => {if(v && v!="") return true})) return true;
             }
         }
 
