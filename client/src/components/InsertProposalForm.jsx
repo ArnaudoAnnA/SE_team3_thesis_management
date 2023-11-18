@@ -10,6 +10,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button,Alert, Container, Row, Col } from 'react-bootstrap';
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2'
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 import API from '../API'
 import context from 'react-bootstrap/esm/AccordionContext';
 import { userContext } from './Utils';
@@ -21,7 +23,12 @@ function InsertProposalForm(props) {
   var mailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/; // Verify email
   const user = useContext(userContext);
   const navigate = useNavigate();
-  console.log()
+  const types = [
+    { value: 'Academic Research', label: 'Academic Research' },
+    { value: 'Stage', label: 'Stage' },
+  ];
+
+
 
   const successAlert = () => {
     Swal.fire({  
@@ -140,6 +147,7 @@ function InsertProposalForm(props) {
   const [title, setTitle] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const [selectedDate, setSelectedDate] = useState(new dayjs());
+
  
   useEffect(() => {
     const now = dayjs();
@@ -309,19 +317,26 @@ function InsertProposalForm(props) {
                       </div>
                       <input style={{ borderRadius: "6px" }} name="" className="form-control" placeholder="Insert your Thesis title.." type="text" value={title} onChange={ev => setTitle(ev.target.value)} />
                     </div>
-                    <div className="form-group input-group" style={{  marginBottom: "2px" }}>
+                    <div className="form-group input-group" style={{  marginBottom: "2px", display: "flex", flexDirection: "row", position: "relative",alignItems: "stretch", flexWrap: "wrap",  }}>
                           <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Thesis type">
                       <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight:"1vw"}} width="16" height="16" fill="currentColor" className="bi bi-book-fill" viewBox="0 0 16 16">
                         <path d="M8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z" />
                       </svg>
                           </div>
-                          <select className="form-control" style={{borderRadius: "6px"}} value={degree} onChange={ev => setDegree(ev.target.value)}>
-                              <option value=""> --Insert Type--</option>
-                              <option value="Academic Research" >Academic Research</option>
-                              <option value="Stage">Stage</option>
-
-                          </select>
-                      </div>
+                    <Autocomplete
+                      options={types}
+                      freeSolo
+                      onChange={(ev) => {
+                        setDegree(ev.target.value);
+                        console.log(ev.target.value);
+                      }}
+                      onBlur={(ev) => {
+                        setDegree(ev.target.value);
+                        console.log(ev.target.value);
+                      }}
+                      renderInput={(params) => <TextField {...params} placeholder="Insert The Type.." variant="standard"   style={{ paddingLeft: "2px", borderRadius: "6px", width: '100%', fontSize: "12px"}}/>}
+                    />
+                      </div>                 
                       <div className="form-group input-group" style={{display: "flex", marginBottom: "10px"}}>
                       <p style={{ paddingTop: "2px", marginBottom: "1px", marginLeft: "auto", marginRight: "auto", fontWeight: "300" }}>Description</p>
                         <textarea
@@ -406,13 +421,13 @@ function InsertProposalForm(props) {
 
 
                     <div className="form-group input-group" style={{ marginTop: "4px", marginBottom: "2px" }}>
-                      <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Programmes">
+                      <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Cds/Programmes">
                         <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight:"1vw"}} width="16" height="16" fill="currentColor" className="bi bi-person-video3" viewBox="0 0 16 16">
                           <path d="M14 9.5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm-6 5.7c0 .8.8.8.8.8h6.4s.8 0 .8-.8-.8-3.2-4-3.2-4 2.4-4 3.2Z" />
                           <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h5.243c.122-.326.295-.668.526-1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v7.81c.353.23.656.496.91.783.059-.187.09-.386.09-.593V4a2 2 0 0 0-2-2H2Z" />
                         </svg>
                       </div>
-                      <input style={{ borderRadius: "6px" }} name="" className="form-control" placeholder="Programmes" type="text" value={pname} onChange={ev => setpName(ev.target.value)} />
+                      <input style={{ borderRadius: "6px" }} name="" className="form-control" placeholder="Cds/Programmes" type="text" value={pname} onChange={ev => setpName(ev.target.value)} />
                     </div>  
                   <div style={{ display: "flex" }}>
                   <p style={{ paddingTop: "2px", marginBottom: "3px", marginLeft: "auto", marginRight: "auto", fontWeight: "300" }}>Expected Expiration Date (may change)</p>
