@@ -51,18 +51,22 @@ body {
 .MuiAutocomplete-root{
 
   flex: 1 1 auto !important; 
-  border: 1px solid rgba(0, 0, 0, 0.42) !important;
+  border: 1px solid rgba(125, 123, 123, 0.42) !important;
   border-radius: 6px !important;
   color: #999 !important;  /* Colore del testo del placeholder */
-  padding-left: 8px;
+  padding-left: 10px !important;
   background-color: white !important;
 
 }
+.MuiAutocomplete-root:active {
+  border-color:#86b7fe;
+  outline:0;
+  border-radius: 6px !important;;
+  box-shadow:0 0 0 .25rem rgba(13,110,253,.25)
+}
 .MuiAutocomplete-input {
 
-  font-size: 12px;
   border-bottom: none !important;
-
 
 }
 
@@ -76,13 +80,14 @@ body {
 } 
 .MuiAutocomplete-input::placeholder{
 
-  color: #000000 !important;  /* Colore del testo del placeholder */
-  font-style: initial !important;
-  font-family: 'Helvetica Neue', sans-serif; 
-  font-size: 15px !important;
+  color: rgba(0, 0, 0, 1) !important;  /* Colore del testo del placeholder */
+  font-style: inherit !important;
+  font-family:  "Segoe UI","Roboto","Helvetica Neue","Noto Sans","Liberation Sans",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji" !important; 
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  letter-spacing: none !important;
   background-color: white !important;
-
-
+  padding-left: 1px !important;
 
 }
 .MuiFormControl-root{
@@ -132,10 +137,9 @@ body {
   .MuiAutocomplete-input::placeholder{
 
     color: #000000 !important;  /* Colore del testo del placeholder */
-    font-style: initial !important;
-    font-family: 'Helvetica Neue', sans-serif; 
-    font-size: 12px !important;
-    font-weight: 540 !important;
+    font-size: 1rem !important;
+    padding-left: none !important;
+
 
   
   
@@ -153,10 +157,8 @@ body {
   .MuiAutocomplete-input::placeholder{
 
     color: #000000 !important;  /* Colore del testo del placeholder */
-    font-style: initial !important;
-    font-family: 'Helvetica Neue', sans-serif; 
-    font-size: 12px !important;
-    font-weight: 540 !important;
+    font-size: 1rem !important;
+    padding-left: none !important;
 
   
   
@@ -213,12 +215,8 @@ body {
   .MuiAutocomplete-input::placeholder{
 
     color: #000000 !important;  /* Colore del testo del placeholder */
-    font-style: initial !important;
-    font-family: 'Helvetica Neue', sans-serif; 
-    font-size: 12px !important;
-    font-weight: 540 !important;
-
-  
+    font-size: 1rem !important;
+    padding-left: none !important;  
   
   
   }
@@ -260,10 +258,9 @@ body {
   .MuiAutocomplete-input::placeholder{
 
     color: #000000 !important;  /* Colore del testo del placeholder */
-    font-style: initial !important;
-    font-family: 'Helvetica Neue', sans-serif; 
-    font-size: 12px !important;
-    font-weight: 540 !important;
+    font-size: 1rem !important;
+    padding-left: none !important;
+
 
   
   
@@ -364,10 +361,9 @@ body {
   .MuiAutocomplete-input::placeholder{
 
     color: #000000 !important;  /* Colore del testo del placeholder */
-    font-style: initial !important;
-    font-family: 'Helvetica Neue', sans-serif; 
-    font-size: 12px !important;
-    font-weight: 540 !important;
+    font-size: 1rem !important;
+    padding-left: none !important;
+   
 
   
   

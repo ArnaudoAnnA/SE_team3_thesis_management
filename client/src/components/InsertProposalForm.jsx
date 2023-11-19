@@ -334,13 +334,13 @@ function InsertProposalForm(props) {
                         setDegree(ev.target.value);
                         console.log(ev.target.value);
                       }}
-                      renderInput={(params) => <TextField {...params} placeholder="Insert The Type.." variant="standard"   style={{ paddingLeft: "2px", borderRadius: "6px", width: '100%', fontSize: "12px"}}/>}
+                      renderInput={(params) => <TextField {...params} placeholder="Insert the Type.." variant="standard"   style={{ paddingLeft: "2px", borderRadius: "6px", width: '100%', fontSize: "12px"}}/>}
                     />
                       </div>                 
                       <div className="form-group input-group" style={{display: "flex", marginBottom: "10px"}}>
-                      <p style={{ paddingTop: "2px", marginBottom: "1px", marginLeft: "auto", marginRight: "auto", fontWeight: "300" }}>Description</p>
+                      <p style={{ paddingTop: "2px", marginBottom: "1px", marginLeft: "auto", marginRight: "auto", fontWeight: "300"}}>Description</p>
                         <textarea
-                          style={{fontSize: "15px", width: "100%", marginLeft: "auto", marginRight: "auto", borderRadius: "1px", fontStyle: "italic", paddingLeft:"5px"}}
+                          style={{fontSize: "15px", width: "100%", marginLeft: "auto", marginRight: "auto", borderRadius: "3px", fontStyle: "italic", paddingLeft:"5px", borderColor: "rgba(165, 165, 165, 0.42)"}}
                           value={description}
                           onChange={(e) => setDesc(e.target.value)}
                           rows="4"
@@ -446,7 +446,7 @@ function InsertProposalForm(props) {
                     <div className="form-group input-group" style={{display: "flex", marginBottom: "2px", flexDirection: "column", flexWrap: "wrap"}}>
                       <p style={{ paddingTop: "2px", marginBottom: "1px", marginLeft: "auto", marginRight: "auto", fontWeight: "300" }}>Notes</p>
                         <textarea
-                          style={{fontSize: "15px", width: "100%", marginLeft: "auto", marginRight: "auto", borderRadius: "1px", fontStyle: "italic", paddingLeft:"5px"}}
+                          style={{fontSize: "15px", width: "100%", marginLeft: "auto", marginRight: "auto", borderRadius: "3px", fontStyle: "italic", paddingLeft:"5px", borderColor: "rgba(165, 165, 165, 0.42)"}}
                           value={note}
                           onChange={(e) => setNot(e.target.value)}
                           rows="4"
