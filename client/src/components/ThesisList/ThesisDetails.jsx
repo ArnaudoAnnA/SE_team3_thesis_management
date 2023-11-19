@@ -70,7 +70,7 @@ function ThesisDetails(props)
                         <h1>{thesis.title}</h1>
                         <h6><i>{thesis.supervisor}</i></h6>
                         <hr />
-                        <Table className="" size="sm">
+                        <Table className="" >
                             <tbody>
                                 {FIELDS.map(f => <tr><th>{f.title}</th><td>{object_prop_to_td(f.DBfield, thesis[f.DBfield])}</td></tr>)}
                             </tbody>

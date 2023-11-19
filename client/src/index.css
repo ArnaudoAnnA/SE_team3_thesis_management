@@ -586,7 +586,7 @@ body {
 
 }
 
-@media (max-width: 999.9px){
+@media (max-width: 799.9px){
   
   .icons 
   {
@@ -603,7 +603,7 @@ body {
   }
 }
 
-@media (min-width: 1000px){
+@media (min-width: 800px){
   
   .icons 
   {
