@@ -319,7 +319,6 @@ async function getThesis(filters) {
   }
 }
 
-/* no more needed
 const getThesisNumber = async () => {
   try {
     const querySnapshot = await getDocs(thesisProposalsRef);
@@ -330,7 +329,7 @@ const getThesisNumber = async () => {
     console.error("Error getting documents: ", error);
     return null; // or handle the error accordingly
   }
-}; */
+}; 
 
 
 const getThesisWithId = async (ID) => {
@@ -626,7 +625,7 @@ const insertProposal = async (thesisProposalData) => {
 };
 
 const API = {
-  getThesis, getAllThesis, getThesisWithId,
+  getThesis, getAllThesis, getThesisWithId, getThesisNumber,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser,
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication,
