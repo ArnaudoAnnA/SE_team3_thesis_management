@@ -217,12 +217,16 @@ const getAllThesis = async () => {
   * if some of the properties is not specified, it is not considered in the query.<br>
   * Expiration date from and to are both inclusive.<br>
   * 
+  * @param {int} start the index of the first thesis to be included.
+  * 
+  * @param {int} end the index of the last thesis to be included.
+  * 
   * @returns an object with two properties:
   * - status, contains the status code of the request;
   * - err, contains some details in case of error, otherwise null;
   * - thesis, contains the array of thesis in case of success, otherwise null.
  */
-async function getThesis(filters) {
+async function getThesis(filters, start, end) {
   if (auth.currentUser) {
     let whereConditions = [];
     
