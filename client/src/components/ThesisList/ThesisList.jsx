@@ -14,7 +14,7 @@ import contextState from "./contextState";
 function ThesisList(props)
 {
     /* ------ COSTANTS ------------ */
-    const columns = [   //TO DO: dynamic width of columns
+    const COLUMNS = [   //TO DO: dynamic width of columns
         { DBfield: "title", title: "Title",  },
         { DBfield: "supervisor", title: "Supervisor",  },
         { DBfield: "coSupervisors", title: "Co-Supervisors",  }, //array
@@ -26,14 +26,16 @@ function ThesisList(props)
         //further info in the thesis dedicated page
     ];
 
-    const states = {loading: "Loading...", ready: "", error: "Error"};
+    const STATES = {loading: "Loading...", ready: "", error: "Error"};
     
 
     /*--------------- STATES ------------------*/
     const [thesis, setThesis] = useState([]);
     const [filters, setFilters] = useState(getEmptyFiltersObject());
-    const [state, setState] = useState(states.loading);
-
+    const [state, setState] = useState(STATES.loading);
+    const [page, setPage] = useState(1); //ATTENTION: pages numeration starts from 1
+    const [entry_per_page, setEntry_per_page] = useState(0);
+    const [nPages, setNPages] = useState(0);
 
     /*--------------- FUNCTIONS ------------------*/
 
@@ -55,7 +57,7 @@ function ThesisList(props)
     function resetFilters()
     {
         setFilters(getEmptyFiltersObject());
-        setState(states.loading);
+        setState(STATES.loading);
     }
 
     function getEmptyFiltersObject()
@@ -100,22 +102,23 @@ function ThesisList(props)
 
     useEffect(()=>
     {
-        if(state == states.loading)
+        if(state == STATES.loading)
         {
-            API.getThesis(filters)
+            let [start, end] = get_index_range_of_page(page);
+            API.getThesis(filters, start, end)
             .then(ret => 
                 {
                     if (ret.status == 200 && ret.thesis.length > 0)
                     {
                         setThesis(ret.thesis); 
-                        setState(states.ready);
+                        setState(STATES.ready);
                     } else
                     {
-                        setState(states.error);
+                        setState(STATES.error);
                     }
                     
                 })
-            .catch(e => setState(states.error));  
+            .catch(e => setState(STATES.error));  
         }
         
 
@@ -123,15 +126,27 @@ function ThesisList(props)
 
     useEffect(()=>
     {
-        setState(states.loading); 
-    }, [props.date]);
+        setState(STATES.loading); 
+    }, [props.date, entry_per_page]);
+
+    useEffect(() =>
+    {
+        let new_epp = window.innerHeight / 100;
+        setEntry_per_page( new_epp ) ;
+
+        API.getThesisNumber()
+        .then(n => setNPages(n/new_epp + (n%new_epp == 0 ? 0 : 1)))
+        .catch(e => {console.log(e); setState(STATES.error);})
+        
+    });
 
     return (
-        <contextState.Provider value={{state: state, setState: setState, states: states}}>
+        <contextState.Provider value={{state: state, setState: setState, states: STATES}}>
             <Container>
-                { state == states.ready ? 
-                    <><FiltersForm columns={columns} filters={[filters, setFilters, resetFilters, isFiltered]}/>
-                    <ThesisTable columns={columns} thesis={thesis}/></>  
+                { state == STATES.ready ? 
+                    <><FiltersForm columns={COLUMNS} filters={[filters, setFilters, resetFilters, isFiltered]}/>
+                    <ThesisTable columns={COLUMNS} thesis={thesis}/>
+                    <TablePagination active={[page, setPage]} nPages={nPages}/></>  
                     :  <Alert>{state}</Alert>
                 }
             </Container>
@@ -143,10 +158,10 @@ function ThesisList(props)
 function TablePagination(props)
 {
     let [active, setActive] = props.active;
-    let n_pages = props.n_pages;
+    let nPages = props.nPages;
     let items = [];
 
-    for (let number = 1; number <= n_pages; number++) {
+    for (let number = 1; number <= nPages; number++) {
         items.push(
             <Pagination.Item key={number} active={number === active} onClick={event => setActive(event.target.innerText)}>
                 {number}

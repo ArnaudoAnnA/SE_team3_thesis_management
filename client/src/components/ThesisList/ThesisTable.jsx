@@ -44,7 +44,7 @@ function row_field_to_td(row_id, field_name, field_content)
         case "coSupervisors":
         case "groups":
             let counter = 0;
-            return <>{field_content.map(e => <p key={counter++}>{e}</p>)}</>
+            return <>{field_content.map(e => <div key={counter++}>{e}</div>)}</>
         break;
 
         case "expirationDate":

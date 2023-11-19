@@ -128,7 +128,32 @@ const getUser = async (email) => {
 
   // console.log(user)
   return user
-}
+};
+
+/**
++ * Return the group of the teacher
++ * @param email the email of the teacher
++ * @return the teachers group, null if theres not a teacher
++ */
+const getGroups = async (email) => {
+  const whereCond = where("email", "==", email)
+  const q = query(teachersRef, whereCond)
+  const snapshot = await getDocs(q)
+  return snapshot.docs[0] ? snapshot.docs[0].data().cod_group : null
+  }
+  
+  /**
+  + * Return the group of the teacher
+  + * @param id the id of the teacher
+  + * @return the teachers group, null if theres not a teacher
+  + */
+const getGroupsById = async (id) => {
+  const whereCond = where("id", "==", id)
+  const q = query(teachersRef, whereCond)
+  const snapshot = await getDocs(q)
+  return snapshot.docs[0] ? snapshot.docs[0].data().cod_group : null
+};
+  
 
 
 
@@ -217,12 +242,16 @@ const getAllThesis = async () => {
   * if some of the properties is not specified, it is not considered in the query.<br>
   * Expiration date from and to are both inclusive.<br>
   * 
+  * @param {int} start the index of the first thesis to be included.
+  * 
+  * @param {int} end the index of the last thesis to be included.
+  * 
   * @returns an object with two properties:
   * - status, contains the status code of the request;
   * - err, contains some details in case of error, otherwise null;
   * - thesis, contains the array of thesis in case of success, otherwise null.
  */
-async function getThesis(filters) {
+async function getThesis(filters, start, end) {
   if (auth.currentUser) {
     let whereConditions = [];
     
@@ -319,7 +348,6 @@ async function getThesis(filters) {
   }
 }
 
-/* no more needed
 const getThesisNumber = async () => {
   try {
     const querySnapshot = await getDocs(thesisProposalsRef);
@@ -330,7 +358,7 @@ const getThesisNumber = async () => {
     console.error("Error getting documents: ", error);
     return null; // or handle the error accordingly
   }
-}; */
+}; 
 
 
 const getThesisWithId = async (ID) => {
@@ -343,7 +371,11 @@ const getThesisWithId = async (ID) => {
   try {
     const thesisSnapshot = await getDocs(qThesis)
     if (!thesisSnapshot.empty) {
-      const thesis = thesisSnapshot.docs[0].data()
+      const thesis = thesisSnapshot.docs[0].data();
+      let teachersSnap = await getDocs(teachersRef);
+      let teachers = teachersSnap.docs.map(doc => doc.data());
+      let teacher = teachers.find(t => t.id == thesis.teacherId);
+      thesis.supervisor = teacher.name + ' ' + teacher.surname;
       console.log(thesis);
       return thesis
     } else {
@@ -565,6 +597,7 @@ const predefinedProposalStructure = {
 };*/
 
 const insertProposal = async (thesisProposalData) => {
+  console.log("Logged teacher =",+ auth.currentUser.email);
   if (!auth.currentUser) return { status: 401, err: "User not logged in" };
   if (!isTeacher(auth.currentUser.email)) return { status: 401, err: "User is not a teacher" };
 
@@ -612,6 +645,21 @@ const insertProposal = async (thesisProposalData) => {
   }
 
   try {
+    //first we get the groups from the teacher and the supervisors
+    var groupsAux = [];
+    const userGroups = await getGroupsById(thesisProposalData.teacherId);
+    groupsAux.push(userGroups);
+
+    for (const cs in thesisProposalData.coSupervisors){
+      const g = await getGroups(thesisProposalData.coSupervisors[cs]);
+      if(g){groupsAux.push(g)};
+    }
+   
+    console.log("Found groups: "+ groupsAux);
+
+    //We update the thesisProposalData with the obtained groups and calculated id
+    thesisProposalData.groups = groupsAux;
+    thesisProposalData.id = await getThesisNumber()+1;
     const docRef = await addDoc(thesisProposalsRef, thesisProposalData);
     console.log("Thesis proposal added with ID: ", docRef.id);
     return { status: 200, id: docRef.id };
@@ -622,7 +670,7 @@ const insertProposal = async (thesisProposalData) => {
 };
 
 const API = {
-  getThesis, getAllThesis, getThesisWithId,
+  getThesis, getAllThesis, getThesisWithId, getThesisNumber,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser,
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication,

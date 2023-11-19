@@ -4,24 +4,24 @@ import { useEffect, useState, useContext } from "react";
 import API from '../../API'
 import { Arrow90degLeft } from "react-bootstrap-icons";
 import { userContext } from "../Utils";
+import dayjs from "dayjs";
 
 
-function object_prop_to_table_row(key, value)
+function object_prop_to_td(key, value)
 {
     let ret;
     switch(key)
     {
-        case "id":
-        case "description":
-        case "notes":
-        case "title":
-        case "supervisor":
-        break;
+        case "expirationDate":
+            return dayjs(value).format("YYYY/MM/DD");
 
+        case "coSupervisors":
+        case "groups":
+            let key = 0;
+            return value.map(e => <div key={key++}>{e}</div>);
         
-
         default:
-            ret = <tr key={key}><th>{key}</th><td>{value}</td></tr>
+            return value;
     }
 
     return ret;
@@ -29,10 +29,27 @@ function object_prop_to_table_row(key, value)
 
 function ThesisDetails(props)
 {
+    /*-------- COSTANTS --------------- */
     const {id} =  useParams();
-    const [thesis, setThesis] = useState();
-    const navigate = useNavigate();
+    const FIELDS = [
+        {DBfield: "expirationDate", title: "Exipiration date"},
+        {DBfield: "coSupervisors", title: "Co-supervisors"},
+        {DBfield: "programmes", title: "Programmes"},
+        {DBfield: "groups", title: "Groups"},
+        {DBfield: "type", title: "Type"},
+        {DBfield: "level", title: "Level"},
+        {DBfield: "requiredKnowledge", title: "Required knowledges"},
+    ]
+
+
+    /* ------ STATES ----------------- */
+    const [thesis, setThesis] = useState(props.thesis);
+
+    /* ------ CONTEXTS ----------------- */ 
     const user = useContext(userContext);
+
+    /* --------------------------------- */
+
 
     useEffect( () =>
     {
@@ -53,9 +70,9 @@ function ThesisDetails(props)
                         <h1>{thesis.title}</h1>
                         <h6><i>{thesis.supervisor}</i></h6>
                         <hr />
-                        <Table className="" size="sm" borderless>
+                        <Table className="" >
                             <tbody>
-                                {Object.entries(thesis).map(([key, value]) => object_prop_to_table_row(key, value))}
+                                {FIELDS.map(f => <tr><th>{f.title}</th><td>{object_prop_to_td(f.DBfield, thesis[f.DBfield])}</td></tr>)}
                             </tbody>
                         </Table>
                         <hr />

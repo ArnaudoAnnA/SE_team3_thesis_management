@@ -564,12 +564,16 @@ body {
 
 /* If the screen size is smaller than 1200px, set the font-size to 12px */
 @media (max-width: 1199.98px) {
+  td > * {
+    font-size: 10px !important;
+  }
+
   td {
-    font-size: 8px !important;
+    font-size: 10px !important;
   }
 
   th {
-    font-size: 8px !important;
+    font-size: 10px !important;
   }
 
   * {
@@ -578,7 +582,7 @@ body {
 
 }
 
-@media (max-width: 999.9px){
+@media (max-width: 799.9px){
   
   .icons 
   {
@@ -595,7 +599,7 @@ body {
   }
 }
 
-@media (min-width: 1000px){
+@media (min-width: 800px){
   
   .icons 
   {
