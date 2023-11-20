@@ -506,7 +506,7 @@ const getApplication = async (studentId, thesisId) => {
       // console.log(qApplication)
       try {
         const applicationSnapshot = await getDocs(qApplication)
-        applicationSnapshot.forEach(e => { console.log(e) })
+        //applicationSnapshot.forEach(e => { console.log(e) })
         if (applicationSnapshot.docs.length > 0) {
           console.log("there is already a record")
           const app = applicationSnapshot.docs[0].data()

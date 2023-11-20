@@ -99,7 +99,6 @@ function Main() {
               <Route path='' element={<Login />} />}
             {/** Add here other routes */}
             <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm /> : <NotFoundPage />) : <Login />} />
-            {/*<Route path='/thesis' element={user.email ? <ThesisList /> : <Login />} /> */}
             <Route path='/thesis/:id' element={user.email ? <ThesisDetails /> : <Login />} />
             <Route path='/thesis/:id/apply' element={user.email ? (user.role === "student" ? <ApplyForm virtualDate={date} /> : <NotFoundPage />) : <Login />} />
 
