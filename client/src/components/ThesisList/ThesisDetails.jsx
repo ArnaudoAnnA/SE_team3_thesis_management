@@ -44,6 +44,7 @@ function ThesisDetails(props)
 
     /* ------ STATES ----------------- */
     const [thesis, setThesis] = useState(props.thesis);
+    const [appliedTwice, setAppliedTwice] = useState(false);
 
     /* ------ CONTEXTS ----------------- */ 
     const user = useContext(userContext);
@@ -56,6 +57,23 @@ function ThesisDetails(props)
         API.getThesisWithId(id)
         .then(t => setThesis(t))
         .catch(); //TO DO: define error state
+
+        async function checkApplyTwice() {
+            const app = await API.getApplication(user.id, id);
+            if((typeof app) == "string"){
+                //unauthorized or notLogged
+                errorAlert(app);
+                return;
+            }
+            
+            if (app) {
+                setAppliedTwice(true);
+            } else {
+                setAppliedTwice(false);
+            }
+        }
+
+        checkApplyTwice();
     }, []);
 
     return <Container>
@@ -63,7 +81,28 @@ function ThesisDetails(props)
             thesis ? <>
                         <Row>
                             <Col className="col-1"><Link to='/'><Button className="blueButton"><Arrow90degLeft /></Button></Link></Col>
-                            {user.role=='teacher' ? null : <Col className="col-1"><Link to={'/thesis/'+thesis.id+'/apply'}><Button className="blueButton">Apply</Button></Link></Col>}
+                            {user.role=='teacher' ? null : <>
+                                    <Col className="col-7"></Col>
+                                    <Col className="col-4 d-flex justify-content-end">
+                                        { appliedTwice ? 
+                                            <Row>
+                                                <Row>
+                                                    <Col className="d-flex justify-content-end">
+                                                        <h5 style={{color: "red", textDecoration: "underline"}}>
+                                                            You are already applied for this thesis
+                                                        </h5>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col className="d-flex justify-content-end">
+                                                        <Link to={'/thesis/'+thesis.id+'/apply'} onClick={ (event) => event.preventDefault() }><Button className="blueButton" disabled>Apply</Button></Link>
+                                                    </Col>
+                                                </Row>
+                                            </Row> :
+                                            <Link to={'/thesis/'+thesis.id+'/apply'}><Button className="blueButton">Apply</Button></Link>
+                                        }
+                                    </Col>
+                                </>}
                         </Row>
                         
                         <hr size={10}/>
