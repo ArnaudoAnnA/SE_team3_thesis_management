@@ -144,7 +144,7 @@ function ThesisList(props)
         <contextState.Provider value={{state: state, setState: setState, states: STATES}}>
             <Container>
                 { state == STATES.ready ? 
-                    <><FiltersForm columns={COLUMNS} filters={[filters, setFilters, resetFilters, isFiltered]}/>
+                    <><FiltersForm filters={[filters, setFilters, resetFilters, isFiltered]}/>
                     <ThesisTable columns={COLUMNS} thesis={thesis}/>
                     <TablePagination active={[page, setPage]} nPages={nPages}/></>  
                     :  <Alert>{state}</Alert>
