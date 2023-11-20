@@ -74,10 +74,10 @@ function FiltersForm(props)
         <>
         <Row className="mb-3 justify-content-around">
             <Col className="col-xl-9 col-lg-9 col-md-9 col-s-7 col-xs-5"><Form.Control value={props.filters.searchKeyWord} id='searchKeyWord' type="text" placeholder="Search..." onChange={(event) => onChangeFiltersForm(event)} /></Col>
-            <Col><Table className="bg-transparent" borderless><tbody><tr>
-                <td className="col-3 hover-zoom"><Search className="flexible_icons icons" onClick={() => ctxState.setState(ctxState.states.loading)}/></td>
-                <td className="col-3 hover-zoom"><Filter className="flexible_icons icons" onClick={() => setShowAdvancedFilters(s => !s)}/></td>
-                <td className="col-3"><Button className="blueButton" disabled={!isFiltered()} onClick={() => resetFilters()}>Reset</Button></td>
+            <Col><Table borderless><tbody><tr>
+                <td style={{backgroundColor: "#fff0"}} className="col-3 hover-zoom"><Search className="flexible_icons icons" onClick={() => ctxState.setState(ctxState.states.loading)}/></td>
+                <td style={{backgroundColor: "#fff0"}} className="col-3 hover-zoom"><Filter className="flexible_icons icons" onClick={() => setShowAdvancedFilters(s => !s)}/></td>
+                <td style={{backgroundColor: "#fff0"}} className="col-3"><Button className="blueButton" disabled={!isFiltered()} onClick={() => resetFilters()}>Reset</Button></td>
             </tr></tbody></Table></Col>
         </Row>
         <Row>
