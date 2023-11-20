@@ -1,7 +1,7 @@
 "use strict;"
 
 import { initializeApp } from 'firebase/app';
-import { collection, addDoc, getFirestore, doc, query, getDocs, where, setDoc, deleteDoc, getDoc, limit, QueryFieldFilterConstraint } from 'firebase/firestore';
+import { collection, addDoc, getFirestore, doc, query, getDocs, where, setDoc, deleteDoc, getDoc, limit, QueryFieldFilterConstraint, startAfter } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { getStorage, ref, uploadBytes} from "firebase/storage";
 
@@ -201,6 +201,82 @@ const getAllThesis = async () => {
   }
 }
 
+/* getThesis and correlated functions */
+
+/**
+ * Build the where conditions for the query
+ * @param filters the filters object
+ * @returns an array of where conditions
+ */
+const getThesisBuildWhereConditions = async (filters) => {
+  let whereConditions = [];
+    
+  if(filters === undefined) { 
+    filters = {};
+  }
+  
+  let teacher;
+  if (filters.supervisor) {
+    let teacherName = filters.supervisor;
+    let [name, surname] = teacherName.split(' ');
+    let teacherQuery = query(teachersRef, where('name', '==', name), where('surname', '==', surname));
+    
+    let teacherSnap = await getDocs(teacherQuery);
+    teacher = teacherSnap.docs[0].data();
+
+    if(teacher)
+      whereConditions.push(where('teacherId', '==', teacher.id));
+  }
+
+  if (filters.coSupervisors && filters.coSupervisors.length > 0) {
+    let coSupervisors = filters.coSupervisors;
+    whereConditions.push(where('coSupervisors', 'array-contains-any', coSupervisors));
+  }
+
+  if (filters.expirationDate) {
+    let expirationDate = filters.expirationDate;
+
+    if (expirationDate.from) {
+      let date = dayjs(expirationDate.from);
+      whereConditions.push(where('expirationDate', '>=', date.toISOString()));
+    }
+    
+    if (expirationDate.to) {
+      let date = dayjs(expirationDate.to);
+      whereConditions.push(where('expirationDate', '<=', date.toISOString())); 
+    }
+  }
+
+  if(filters.level) {
+    let level = filters.level;
+    whereConditions.push(where('level', '==', level));
+  }
+
+  if(filters.keywords && filters.keywords.length > 0) {
+    let keywords = filters.keywords;
+    whereConditions.push(where('keywords', 'array-contains-any', keywords));
+  }
+
+  if(filters.type) {
+    let type = filters.type;
+    whereConditions.push(where('type', '==', type));
+  }
+
+  if(filters.title) {
+    console.log("Filter on title not implemented yet");
+  }
+
+  if(filters.groups) {
+    console.log("Filter on groups not implemented yet");
+  }
+
+  if(filters.programmes) {
+    console.log("Filter on programmes not implemented yet");
+  }
+
+  return whereConditions;
+}
+
 /** Fetch the collection of ACTIVE thesis applying specified filters <br>
    * It doesn't return all the thesis, but only the ones in the given range of indexes.<br>
   * 
@@ -226,100 +302,48 @@ const getAllThesis = async () => {
   * - err, contains some details in case of error, otherwise null;
   * - thesis, contains the array of thesis in case of success, otherwise null.
  */
-async function getThesis(filters, start, end) {
-  if (auth.currentUser) {
-    let whereConditions = [];
-    
-    if(filters == undefined) { 
-      filters = {};
-    }
 
-    // build where conditions
-    let teacher;
-    if (filters.supervisor) {
-      let teacherName = filters.supervisor;
-      let [name, surname] = teacherName.split(' ');
-      let teacherQuery = query(teachersRef, where('name', '==', name), where('surname', '==', surname));
-      
-      let teacherSnap = await getDocs(teacherQuery);
-      teacher = teacherSnap.docs[0].data();
+let lastThesisProposal;
+let hasQueryChanged = true;
 
-      if(teacher)
-        whereConditions.push(where('teacherId', '==', teacher.id));
-    }
-
-    if (filters.coSupervisors && filters.coSupervisors.length > 0) {
-      let coSupervisors = filters.coSupervisors;
-      whereConditions.push(where('coSupervisors', 'array-contains-any', coSupervisors));
-    }
-
-    if (filters.expirationDate) {
-      let expirationDate = filters.expirationDate;
-
-      if (expirationDate.from) {
-        let date = dayjs(expirationDate.from);
-        whereConditions.push(where('expirationDate', '>=', date.toISOString()));
-      }
-      
-      if (expirationDate.to) {
-        let date = dayjs(expirationDate.to);
-        whereConditions.push(where('expirationDate', '<=', date.toISOString())); 
-      }
-    }
-
-    if(filters.level) {
-      let level = filters.level;
-      whereConditions.push(where('level', '==', level));
-    }
-
-    if(filters.keywords && filters.keywords.length > 0) {
-      let keywords = filters.keywords;
-      whereConditions.push(where('keywords', 'array-contains-any', keywords));
-    }
-
-    if(filters.type) {
-      let type = filters.type;
-      whereConditions.push(where('type', '==', type));
-    }
-
-    // add the condition to show only active thesis
-    if(filters.expirationDate.to == '' && filters.expirationDate.from == '')
-      whereConditions.push(where('archiveDate', '>=', await getVirtualDate()));
-
-    let showAll = true
-    if (isTeacher(auth.currentUser.email)) {
-      
-      // TO DO: Showing only his thesis
-      // showAll = false;
-    } 
-
-    if (showAll) {    // either is a student or a teacher that wants to see all thesis
-      //show all active thesis given the filters
-      let q = query(thesisProposalsRef, ...whereConditions);
-
-      try {
-        let teachersSnap = await getDocs(teachersRef);
-        let teachers = teachersSnap.docs.map(doc => doc.data());
-        let thesis = await getDocs(q).
-          then(async snapshot => {
-            let thesis = [];
-            snapshot.forEach(doc => {
-              let t = doc.data();
-              let teacher = teachers.find(teacher => teacher.id == t.teacherId);
-              t.supervisor = teacher.name + ' ' + teacher.surname;
-              thesis.push(t);
-            });
-
-            return thesis;
-          });
-        return { status: 200, thesis: thesis };
-      } catch (error) {
-        console.log(error);
-        return { status: 500, err: error };
-      }
-  }
-  } else {
+const getThesis = async (filters, start, end) => {
+  if (!auth.currentUser) {
     return CONSTANTS.notLogged;
+  }
+
+  // add filters to the query
+  let whereConditions = await getThesisBuildWhereConditions(filters);
+  
+  if (await isTeacher(auth.currentUser.email)) {
+    let thisTeacherId = await getDocs(query(teachersRef, where('email', '==', auth.currentUser.email))).then(snap => snap.docs[0].data().id);
+    whereConditions.push(where('teacherId', '==', thisTeacherId));
+  }
+  
+  // show only active thesis
+  if(filters.expirationDate.to == '' && filters.expirationDate.from == '')
+    whereConditions.push(where('archiveDate', '>=', await getVirtualDate()));
+
+  let q = query(thesisProposalsRef, ...whereConditions);
+  
+  try {
+    let teachersSnap = await getDocs(teachersRef);
+    let teachers = teachersSnap.docs.map(doc => doc.data());
+    let thesis = await getDocs(q)
+      .then(async snapshot => {
+        let proposals = [];
+
+        snapshot.forEach(doc => {
+          let proposal = doc.data();
+          let teacher = teachers.find(teacher => teacher.id == proposal.teacherId);
+          proposal.supervisor = teacher.name + ' ' + teacher.surname;
+          proposals.push(proposal);
+        });
+        return proposals;
+      });
+    return { status: 200, thesis: thesis };
+  } catch (error) {
+    console.log(error);
+    return { status: 500, err: error };
   }
 }
 
@@ -327,7 +351,7 @@ const getThesisNumber = async () => {
   try {
     const querySnapshot = await getDocs(thesisProposalsRef);
     const numberOfDocs = querySnapshot.size;
-    console.log("Number of thesis:", numberOfDocs);
+    //console.log("Number of thesis:", numberOfDocs);
     return numberOfDocs;
   } catch (error) {
     console.error("Error getting documents: ", error);
