@@ -128,7 +128,32 @@ const getUser = async (email) => {
 
   // console.log(user)
   return user
-}
+};
+
+/**
++ * Return the group of the teacher
++ * @param email the email of the teacher
++ * @return the teachers group, null if theres not a teacher
++ */
+const getGroups = async (email) => {
+  const whereCond = where("email", "==", email)
+  const q = query(teachersRef, whereCond)
+  const snapshot = await getDocs(q)
+  return snapshot.docs[0] ? snapshot.docs[0].data().cod_group : null
+  }
+  
+  /**
+  + * Return the group of the teacher
+  + * @param id the id of the teacher
+  + * @return the teachers group, null if theres not a teacher
+  + */
+const getGroupsById = async (id) => {
+  const whereCond = where("id", "==", id)
+  const q = query(teachersRef, whereCond)
+  const snapshot = await getDocs(q)
+  return snapshot.docs[0] ? snapshot.docs[0].data().cod_group : null
+};
+  
 
 
 
@@ -505,7 +530,7 @@ const getApplication = async (studentId, thesisId) => {
       // console.log(qApplication)
       try {
         const applicationSnapshot = await getDocs(qApplication)
-        applicationSnapshot.forEach(e => { console.log(e) })
+        //applicationSnapshot.forEach(e => { console.log(e) })
         if (applicationSnapshot.docs.length > 0) {
           console.log("there is already a record")
           const app = applicationSnapshot.docs[0].data()
@@ -596,6 +621,7 @@ const predefinedProposalStructure = {
 };*/
 
 const insertProposal = async (thesisProposalData) => {
+  console.log("Logged teacher =",+ auth.currentUser.email);
   if (!auth.currentUser) return { status: 401, err: "User not logged in" };
   if (!isTeacher(auth.currentUser.email)) return { status: 401, err: "User is not a teacher" };
 
@@ -643,6 +669,21 @@ const insertProposal = async (thesisProposalData) => {
   }
 
   try {
+    //first we get the groups from the teacher and the supervisors
+    var groupsAux = [];
+    const userGroups = await getGroupsById(thesisProposalData.teacherId);
+    groupsAux.push(userGroups);
+
+    for (const cs in thesisProposalData.coSupervisors){
+      const g = await getGroups(thesisProposalData.coSupervisors[cs]);
+      if(g){groupsAux.push(g)};
+    }
+   
+    console.log("Found groups: "+ groupsAux);
+
+    //We update the thesisProposalData with the obtained groups and calculated id
+    thesisProposalData.groups = groupsAux;
+    thesisProposalData.id = await getThesisNumber()+1;
     const docRef = await addDoc(thesisProposalsRef, thesisProposalData);
     console.log("Thesis proposal added with ID: ", docRef.id);
     return { status: 200, id: docRef.id };
