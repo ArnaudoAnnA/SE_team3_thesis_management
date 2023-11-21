@@ -471,6 +471,20 @@ const retrieveCareer = async (studentId) => {
   return career;
 }
 
+/** Retrive the list of applications of all the thesis of a theacher.
+ * 
+ * @param {int} professorId 
+ * @param {bool} state possible values: [null (pending), true (accepted), false (rejected)]
+ * 
+ * @returns {{status: code, applications: [{id: , studentID: , thesisTitle: }, ...]}}
+ * Possible values for status: [200 (ok), 500 (internal server error), 404 (not found)].
+ * Possible values for applications [array (in case of success), null (in case of error)]
+ */
+const getApplications = (professorId, state) =>
+{
+
+}
+
 /**
  * Retrieve the thesis title and relative teacher
  * @param thesisId the id of the thesis
@@ -551,6 +565,39 @@ const getApplication = async (studentId, thesisId) => {
   return;
 }
 
+/** API similar to getApplication, but returns data organized in  a different way.
+ * 
+ * @param {int} id 
+ * 
+ * @returns {{status: code, 
+ *            bool_cvExists: , 
+ *            application: {studentName: , 
+ *                          carreer: [{codCourse: , 
+ *                                    titleCourse: , 
+ *                                    grade: , 
+ *                                    date: , 
+ *                                    cfu: }, ...]
+ *          }}}
+ * 
+ * Possible values for status: [200 (ok), 500 (internal server error), 404 (not found)].
+ * Application is null in case of error.
+ */
+const getApplicationDetails = (id) =>
+{
+
+}
+
+/**
+ * 
+ * @param {int} id of the application.
+ * 
+ * @returns {{status: code, url: }} (which will trigger the download of the cv file)
+ */
+const getCVOfApplication = (id) =>
+{
+
+} 
+
 /*only for testing purposes*/
 /**
  * @return the number of proposals deleted
@@ -623,7 +670,7 @@ const predefinedProposalStructure = {
 const insertProposal = async (thesisProposalData) => {
   console.log("Logged teacher =",+ auth.currentUser.email);
   if (!auth.currentUser) return { status: 401, err: "User not logged in" };
-  if (!isTeacher(auth.currentUser.email)) return { status: 401, err: "User is not a teacher" };
+  if (!(await isTeacher(auth.currentUser.email))) return { status: 401, err: "User is not a teacher" };
 
 
   const validateThesisProposalData = (data) => {
@@ -697,7 +744,7 @@ const API = {
   getThesis, getAllThesis, getThesisWithId, getThesisNumber,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser,
-  addApplication, retrieveCareer, getTitleAndTeacher, getApplication,
+  addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplications, getApplicationDetails, getCVOfApplication,
   removeAllProposals, insertProposal
 };
 

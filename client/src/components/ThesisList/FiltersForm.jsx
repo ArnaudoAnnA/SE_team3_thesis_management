@@ -2,6 +2,7 @@
 import {Row, Col, Button, Form, Table} from "react-bootstrap";
 import { Search, Filter } from "react-bootstrap-icons";
 import { useState, useContext } from "react";
+import { userContext } from "../Utils";
 
 
 import API from "../../API";
@@ -24,12 +25,26 @@ function ThesisFieldFilterForm(props)
 
 function AdvancedFiltersTable(props)
 {
+    const user = useContext(userContext);
+    let is_std = user.role === "student"; //used only to make following code shorter
+
+    let form_fields = [];
+        form_fields.push({ DBfield: "title", title: "Title",  });
+        if(is_std) form_fields.push({ DBfield: "supervisor", title: "Supervisor",  });
+        form_fields.push({ DBfield: "coSupervisors", title: "Co-Supervisors",  }); //array
+        form_fields.push({ DBfield: "type", title: "Type",  });
+        form_fields.push({ DBfield: "groups", title: "Groups",  }); //array
+        form_fields.push({ DBfield: "expirationDate", title: "Expiration date",  });
+        form_fields.push({ DBfield: "level", title: "Level",  });
+        if (!is_std) form_fields.push({ DBfield: "programmes", title: "Programmes",  });
+
+
     return <>
     <Row className="bg-light">
     <hr size={15}/>
     <h4>{"Advanced filters"}</h4>
     <Row >
-        {props.columns.map(c =><div key={c.title} className=" m-2 advanced-filters-col"><Row>{c.title}</Row>
+        {form_fields.map(c =><div key={c.title} className=" m-2 advanced-filters-col"><Row>{c.title}</Row>
                                     <Row><ThesisFieldFilterForm filters={props.filters} onChangeFiltersForm={props.onChangeFiltersForm} DBfield={c.DBfield} /></Row>
                             </div>)}
     </Row>
@@ -74,14 +89,14 @@ function FiltersForm(props)
         <>
         <Row className="mb-3 justify-content-around">
             <Col className="col-xl-9 col-lg-9 col-md-9 col-s-7 col-xs-5"><Form.Control value={props.filters.searchKeyWord} id='searchKeyWord' type="text" placeholder="Search..." onChange={(event) => onChangeFiltersForm(event)} /></Col>
-            <Col><Table className="bg-transparent" borderless><tbody><tr>
-                <td className="col-3 hover-zoom"><Search className="flexible_icons icons" onClick={() => ctxState.setState(ctxState.states.loading)}/></td>
-                <td className="col-3 hover-zoom"><Filter className="flexible_icons icons" onClick={() => setShowAdvancedFilters(s => !s)}/></td>
-                <td className="col-3"><Button className="blueButton" disabled={!isFiltered()} onClick={() => resetFilters()}>Reset</Button></td>
+            <Col><Table borderless><tbody><tr>
+                <td style={{backgroundColor: "#fff0"}} className="col-3 hover-zoom"><Search className="flexible_icons icons" onClick={() => ctxState.setState(ctxState.states.loading)}/></td>
+                <td style={{backgroundColor: "#fff0"}} className="col-3 hover-zoom"><Filter className="flexible_icons icons" onClick={() => setShowAdvancedFilters(s => !s)}/></td>
+                <td style={{backgroundColor: "#fff0"}} className="col-3"><Button className="blueButton" disabled={!isFiltered()} onClick={() => resetFilters()}>Reset</Button></td>
             </tr></tbody></Table></Col>
         </Row>
         <Row>
-            {showAdvancedFilters ? <AdvancedFiltersTable columns={props.columns} filters={filters} onChangeFiltersForm={onChangeFiltersForm}/>
+            {showAdvancedFilters ? <AdvancedFiltersTable filters={filters} onChangeFiltersForm={onChangeFiltersForm}/>
                 : ""}
         </Row>
         </>
