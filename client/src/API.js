@@ -320,13 +320,15 @@ const getThesisBuildWhereConditions = async (filters) => {
   * 
   * @param {[{DBfield: "title", mode: "ASC"}, ...]} orderBy
   * 
+  * @param {int} lastThesisID undefined in case this is a new query
+  * 
   * @returns an object with two properties:
   * - status, contains the status code of the request;
   * - err, contains some details in case of error, otherwise null;
   * - thesis, contains the array of thesis in case of success, otherwise null.
  */
 
-const getThesis = async (filters, orderBy, isNewQuery, lastThesisID, entry_per_page) => {
+const getThesis = async (filters, orderBy, lastThesisID, entry_per_page) => {
   if (!auth.currentUser) {
     return CONSTANTS.notLogged;
   }

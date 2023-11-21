@@ -6,6 +6,7 @@ import { FiltersForm } from "./FiltersForm";
 import { ThesisTable } from "./ThesisTable";
 
 import contextState from "./contextState";
+import { orderBy } from "lodash";
 
 
 
@@ -104,8 +105,8 @@ function ThesisList(props)
     {
         if(state == STATES.loading)
         {
-            let [start, end] = get_index_range_of_page(page);
-            API.getThesis(filters, start, end)
+            
+            API.getThesis(filters, orderBy, lastThesisID, entry_per_page)
             .then(ret => 
                 {
                     if (ret.status == 200)
