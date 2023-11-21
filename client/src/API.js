@@ -670,7 +670,7 @@ const predefinedProposalStructure = {
 const insertProposal = async (thesisProposalData) => {
   console.log("Logged teacher =",+ auth.currentUser.email);
   if (!auth.currentUser) return { status: 401, err: "User not logged in" };
-  if (!isTeacher(auth.currentUser.email)) return { status: 401, err: "User is not a teacher" };
+  if (!(await isTeacher(auth.currentUser.email))) return { status: 401, err: "User is not a teacher" };
 
 
   const validateThesisProposalData = (data) => {
