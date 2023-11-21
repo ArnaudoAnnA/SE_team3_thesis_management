@@ -108,7 +108,7 @@ function ThesisList(props)
             API.getThesis(filters, start, end)
             .then(ret => 
                 {
-                    if (ret.status == 200 && ret.thesis.length > 0)
+                    if (ret.status == 200)
                     {
                         setThesis(ret.thesis); 
                         setState(STATES.ready);
