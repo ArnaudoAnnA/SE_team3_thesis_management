@@ -67,6 +67,14 @@ describe('testing the insertion of a thesis proposal in the database', () => {
         expect(response.status).toEqual(401);
     });
 
+    test('should retrive an error if a student is logged in', async () => {
+        await API.logOut();
+        await API.logIn("s901234@studenti.polito.it", "s901234");
+        const response = await API.insertProposal(thesisProposal);
+        await API.logOut();
+        expect(response.status).toEqual(401);
+    });
+
     test('should retrive an error if the thesis proposal does not have all the required fields', async () => {
         await API.logOut();
         await API.logIn("d345678@studenti.polito.it", "d345678")
