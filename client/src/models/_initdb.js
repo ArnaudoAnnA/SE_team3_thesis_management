@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { collection, addDoc, getFirestore, query, limit, getDocs, deleteDoc } from 'firebase/firestore';
-import { applications, degrees, students, careers, teachers, thesisProposals, date } from './_initialData.js';
+import { applications, degrees, students, careers, teachers, thesisProposals, date } from './initial_data/_initialData';
 import dayjs from 'dayjs';
 
 const firebaseConfig = {
