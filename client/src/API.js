@@ -318,9 +318,9 @@ const getThesisBuildWhereConditions = async (filters) => {
   * if some of the properties is not specified, it is not considered in the query.<br>
   * Expiration date from and to are both inclusive.<br>
   * 
-  * @param {int} start the index of the first thesis to be included.
+  * @param {[{DBfield: "title", mode: "ASC"}, ...]} orderBy
   * 
-  * @param {int} end the index of the last thesis to be included.
+  * @param {int} lastThesisID undefined in case this is a new query
   * 
   * @returns an object with two properties:
   * - status, contains the status code of the request;
@@ -328,10 +328,7 @@ const getThesisBuildWhereConditions = async (filters) => {
   * - thesis, contains the array of thesis in case of success, otherwise null.
  */
 
-let lastThesisProposal;
-let hasQueryChanged = true;
-
-const getThesis = async (filters, start, end) => {
+const getThesis = async (filters, orderBy, lastThesisID, entry_per_page) => {
   if (!auth.currentUser) {
     return CONSTANTS.notLogged;
   }
