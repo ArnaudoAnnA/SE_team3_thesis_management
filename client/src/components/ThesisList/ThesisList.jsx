@@ -28,11 +28,28 @@ function ThesisList(props)
     ];
 
     const STATES = {loading: "Loading...", ready: "", error: "Error"};
+
+    const DEFAULT_FILTERS =  {
+        expirationDate: {to: "", from: ""},
+        title: "",
+        teacherName: "",
+        coSupervisors: [],
+        type: "",
+        groups: [],
+        level: "",
+        programmes: ""
+    };
+
+    const DEFAULT_ORDERBY = COLUMNS.map(c => {return {DBfield: c.DBfield, mode: "ASC"}; });
     
 
     /*--------------- STATES ------------------*/
     const [thesis, setThesis] = useState([]);
-    const [filters, setFilters] = useState(getEmptyFiltersObject());
+    const [filters, setFilters] = useState(DEFAULT_FILTERS);
+    const [old_filters, setOld_filters] = useState();
+    const [orderBy, setOrderBy] = useState(DEFAULT_ORDERBY);
+    const [old_orderBy, setOld_orderBy] = useState();
+
     const [state, setState] = useState(STATES.loading);
     const [page, setPage] = useState(1); //ATTENTION: pages numeration starts from 1
     const [entry_per_page, setEntry_per_page] = useState(0);
@@ -40,39 +57,12 @@ function ThesisList(props)
 
     /*--------------- FUNCTIONS ------------------*/
 
-    /** 
-     * @param {object} thesis object given as an example.
-     * 
-     * @returns {array} columns corresponding to the property of the given object. 
-     */
-    function loadColumns(thesis)
-    {
-        let ret = [];
-        for (let prop in thesis) {ret.push(prop);}
-        return ret;
-    }
-
-    /** After this function, the filters object is in the initial state.
-     * 
+    /** After this function, the filters object is in the initial state. 
      */
     function resetFilters()
     {
-        setFilters(getEmptyFiltersObject());
+        setFilters(Object.assign({}, DEFAULT_FILTERS));
         setState(STATES.loading);
-    }
-
-    function getEmptyFiltersObject()
-    {
-        return {
-            expirationDate: {to: "", from: ""},
-            title: "",
-            teacherName: "",
-            coSupervisors: [],
-            type: "",
-            groups: [],
-            level: "",
-            programmes: ""
-        }
     }
 
     /**
@@ -99,19 +89,53 @@ function ThesisList(props)
         return false;
     }
 
+    function isQueryChanged()
+    {
+        if (!old_filters || !old_orderBy) return true;
+
+        return !(old_filters.toString() === filters.toString() && old_orderBy.toString() === orderBy.toString());
+
+        /*
+        for (let [f1, i] of old_orderBy)
+        {
+            let f2 = orderBy[i];
+
+        }
+
+        for (let prop in old_filters)
+        {
+            if( (old_filters[prop] && !filters[prop]) || (old_filters[prop] && !filters[prop])) return true;
+            if (typeof old_filters[prop] == "string")
+            {
+                if (old_filters[prop] != filters[prop]) return true;
+            }else if(Array.isArray(old_filters[prop]))
+            {
+                for (let [v, i] of old_filters[prop])
+                {
+                    if(v != filters[i]) return true;
+                }
+            }else
+            {
+                console.log(`ERROR: (isQueryChanged()) invalid type of filters.${prop}`);
+            }
+        }*/
+    }
+
     /*-----------------------------------------*/
 
     useEffect(()=>
     {
         if(state == STATES.loading)
         {
-            
+            let lastThesisID = isQueryChanged() ? undefined : ( thesis[entry_per_page-1] || thesis[-1] );
             API.getThesis(filters, orderBy, lastThesisID, entry_per_page)
             .then(ret => 
                 {
                     if (ret.status == 200)
                     {
-                        setThesis(ret.thesis); 
+                        setOld_filters({...filters});
+                        setOld_orderBy({...orderBy});
+                        setThesis(ret.thesis);
                         setState(STATES.ready);
                     } else
                     {
@@ -127,8 +151,8 @@ function ThesisList(props)
 
     useEffect(()=>
     {
-        setState(STATES.loading); 
-    }, [props.date, entry_per_page]);
+        if(state != STATES.loading) setState(STATES.loading); 
+    }, [props.date, entry_per_page, orderBy]);
 
     useEffect(() =>
     {

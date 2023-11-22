@@ -291,11 +291,11 @@ const getThesisBuildWhereConditions = async (filters) => {
     console.log("Filter on title not implemented yet");
   }
 
-  if(filters.groups) {
+  if(filters.groups && filters.groups.length > 0) {
     console.log("Filter on groups not implemented yet");
   }
 
-  if(filters.programmes) {
+  if(filters.programmes && filters.programmes.length > 0) {
     console.log("Filter on programmes not implemented yet");
   }
 
