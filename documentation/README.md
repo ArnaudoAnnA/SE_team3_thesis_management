@@ -36,3 +36,8 @@ Is also possible to downlaod the image from docker hub with the following comman
 ```bash
 docker pull pucciorenzo/se2-thesismanagement-g3
 ```
+And run with:
+
+```bash
+docker run -p 5173:5173 --name client pucciorenzo/se2-thesismanagement-g3
+```
