@@ -79,16 +79,25 @@ export const buildWhereConditions = async (filters) => {
   return whereConditions;
 };
 
-export const composeOrderByQuery = (orderByArray, whereConditionsFields) => {
-  console.log(whereConditionsFields)
+/**
+ * Order all the thesis given an array of orderBy conditions.
+ * @param thesis the thesis to order
+ * @param {[{DBfield: "title", mode: "ASC"}, ...]} orderByArray the array of orderBy conditions
+ */ 
 
-  let orderByConditions = [];
+export const orderThesis = (thesis, orderByField) => {
+  thesis.sort((a, b) => {
+    const field = orderByField.DBfield;
+    const mode = orderByField.mode === "ASC" ? 1 : -1;
 
-  if (orderByArray) {
-    orderByArray.forEach((ob) => {
-      orderByConditions.push(orderBy(ob.field, ob.direction));
-    });
-  }
+    if (a[field] < b[field]) {
+      return -1 * mode;
+    }
+    if (a[field] > b[field]) {
+      return 1 * mode;
+    }
+    return 0;
+  });
 
-  return orderByConditions;
-}
+  return thesis;
+};
