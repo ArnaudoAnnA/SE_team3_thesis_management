@@ -67,6 +67,7 @@ function Login(props) {
             setErrorMsg('');
         })
         .catch((error) => {
+            console.log(error)
             setErrorMsg('Wrong E-Mail or Password');
         })
         
@@ -94,12 +95,13 @@ function Login(props) {
          
             <div style={{display: "flex", flexDirection: "row"}}>
             <Button type='submit' className='blueButton' style={{marginLeft: "auto", marginRight:"auto", marginTop: "10px", width:"45%"}}>Login</Button>
+            
             {/* <Button variant='warning' style={{marginLeft: "auto", marginRight:"auto", marginTop: "10px", width:"45%"}} >Cancel</Button> */}
             </div>
 
             </Form>
 
-
+            <Button className='orangeButton' style={{marginLeft: "auto", marginRight:"auto", marginTop: "10px", width:"45%"}} onClick={API.loginWithSaml}>Login with SAML</Button>
         </Container>
     );
 
