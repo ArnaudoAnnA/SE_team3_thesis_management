@@ -93,23 +93,25 @@ const signUp = async (email, password) => {
 }
 
 const logIn = async (email, password) => {
-  signInWithPopup(auth, provider)
+  await signInWithEmailAndPassword(auth, email, password)
+    .then((userCredentials) => {
+      console.log(userCredentials)
+      return userCredentials
+    })
+    .catch((error) => {
+      // console.log(error)
+      throw error
+    })
+    ;
+}
+const loginWithSaml = () => {
+  signInWithRedirect(auth, provider)
   .then(result => {
-    console.log(result)
+    console.log(result.user.email)
   })
   .catch(e => {
     console.log(e)
   })
-  
-  // await signInWithEmailAndPassword(auth, email, password)
-  //   .then((userCredentials) => {
-  //     return userCredentials
-  //   })
-  //   .catch((error) => {
-  //     // console.log(error)
-  //     throw error
-  //   })
-  //   ;
 }
 
 const logOut = async () => {
@@ -773,7 +775,7 @@ const API = {
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser,
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplications, getApplicationDetails, getCVOfApplication,
-  removeAllProposals, insertProposal
+  removeAllProposals, insertProposal, loginWithSaml
 };
 
 //insertProposal(thesisProposalData);
