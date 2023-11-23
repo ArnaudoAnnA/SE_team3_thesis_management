@@ -389,7 +389,7 @@ const getThesisNumber = async (filters) => {
       .then(async snapshot => {
         return snapshot.size;
       });
-    return { status: 200, thesis: n };
+    return { status: 200, number: n };
 
     /*
     const querySnapshot = await getDocs(thesisProposalsRef);

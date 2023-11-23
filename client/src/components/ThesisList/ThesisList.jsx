@@ -94,6 +94,8 @@ function ThesisList(props)
         return false;
     }
 
+    
+
     function isQueryChanged()
     {
         if (!old_filters || !old_orderBy) return true;
@@ -140,8 +142,8 @@ function ThesisList(props)
                         setThesis(ret.thesis);
                         setState(STATES.ready);
 
-                        API.getThesisNumber()
-                        .then(ret => {if(ret.status == 200) setThesisNumber(n); else setState(STATES.error);})
+                        API.getThesisNumber(filters)
+                        .then(ret2 => {if(ret2.status == 200) setThesisNumber(ret2.number); else setState(STATES.error);})
                         .catch(e => {console.log(e); setState(STATES.error);});
                     } else
                     {
@@ -193,6 +195,7 @@ function ThesisList(props)
                 { (state == STATES.ready || state == STATES.show_more) ? 
                     <>
                         <FiltersForm filters={[filters, setFilters, resetFilters, isFiltered]}/>
+                        <p>Number of items: {thesisNumber}</p>
                         <ThesisTable columns={COLUMNS} thesis={thesis}/>
                         {
                             <Row className="justify-content-center"><Col className="col-2 justify-content-center">
