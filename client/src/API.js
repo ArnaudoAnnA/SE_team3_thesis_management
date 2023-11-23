@@ -95,7 +95,7 @@ const signUp = async (email, password) => {
 const logIn = async (email, password) => {
   signInWithPopup(auth, provider)
   .then(result => {
-    console.log(result)
+    console.log(result.user.email)
   })
   .catch(e => {
     console.log(e)
