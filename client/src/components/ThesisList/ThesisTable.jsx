@@ -77,13 +77,13 @@ function InteractiveTh(props)
     let orderable = true;
     if (props.col.DBfield == "coSupervisors" || props.col.DBfield == "groups") orderable = false;
 
-    let [asc, setAsc] = useState(true);
-
+    let temp = props.orderBy.find(i => i.DBfield == props.col.DBfield);
+    let asc = temp.mode == "ASC" ? true : false;
 
     function ToggleArrow()
     {
-        return asc ? <th className='text-center icons' onClick={() => {setAsc(false); props.orderBy(props.col.DBfield, false);}}>{"↓"}</th>
-                    : <th className='text-center icons' onClick={() => {setAsc(true); props.orderBy(props.col.DBfield, true); }}>{"↑"}</th>;
+        return asc ? <th className='text-center icons' onClick={() => {props.orderByField(props.col.DBfield, false);}}>{"↓"}</th>
+                    : <th className='text-center icons' onClick={() => { props.orderByField(props.col.DBfield, true); }}>{"↑"}</th>;
     }
 
     return <th key={props.col.DBfield}><Table borderless>
@@ -105,10 +105,6 @@ function ThesisTable(props)
     const [thesis, setThesis] = useState(props.thesis);
     let key = 0;
 
-    function orderBy(field, asc)
-    {
-        setThesis(t => {t.sort((a, b) => asc ? a[field].localeCompare(b[field]) : b[field].localeCompare(a[field])); return [...t]; });
-    }
 
     return (
         <>
@@ -116,7 +112,7 @@ function ThesisTable(props)
             <thead>
                 <tr>
                     {
-                        columns.map( col => <InteractiveTh key={col.title} col={col} orderBy={orderBy}/>)
+                        columns.map( col => <InteractiveTh key={col.title} col={col} orderBy={props.orderBy} orderByField={props.orderByField}/>)
                     }
                 </tr>
             </thead>
