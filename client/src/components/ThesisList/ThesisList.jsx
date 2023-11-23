@@ -1,9 +1,10 @@
 import { Pagination } from "react-bootstrap";
 import { useEffect, useState } from "react";
-import {Alert, Container} from 'react-bootstrap';
+import {Alert, Container, Row, Col, Button} from 'react-bootstrap';
 import API from '../../API';
 import { FiltersForm } from "./FiltersForm";
 import { ThesisTable } from "./ThesisTable";
+import ClipLoader from "react-spinners/ClipLoader";
 
 import contextState from "./contextState";
 import { orderBy } from "lodash";
@@ -27,7 +28,7 @@ function ThesisList(props)
         //further info in the thesis dedicated page
     ];
 
-    const STATES = {loading: "Loading...", ready: "", error: "Error"};
+    const STATES = {loading: "Loading...", ready: "", error: "Error", show_more: "Fetching..."};
 
     const DEFAULT_FILTERS =  {
         expirationDate: {to: "", from: ""},
@@ -41,19 +42,23 @@ function ThesisList(props)
     };
 
     const DEFAULT_ORDERBY = COLUMNS.map(c => {return {DBfield: c.DBfield, mode: "ASC"}; });
+
+    const ENTRIES_PER_PAGE = window.innerHeight /100;
     
 
     /*--------------- STATES ------------------*/
     const [thesis, setThesis] = useState([]);
     const [filters, setFilters] = useState(DEFAULT_FILTERS);
-    const [old_filters, setOld_filters] = useState();
+    //const [old_filters, setOld_filters] = useState();
     const [orderBy, setOrderBy] = useState(DEFAULT_ORDERBY);
-    const [old_orderBy, setOld_orderBy] = useState();
+    //const [old_orderBy, setOld_orderBy] = useState();
 
     const [state, setState] = useState(STATES.loading);
-    const [page, setPage] = useState(1); //ATTENTION: pages numeration starts from 1
-    const [entry_per_page, setEntry_per_page] = useState(0);
-    const [nPages, setNPages] = useState(0);
+    //const [page, setPage] = useState(0); //ATTENTION: pages numeration starts from 1
+    //const [old_page, setOld_page] = useState();
+    //const [entry_per_page, setEntry_per_page] = useState(0);
+    //const [nPages, setNPages] = useState(0);
+    const [thesisNumber, setThesisNumber] = useState(0);
 
     /*--------------- FUNCTIONS ------------------*/
 
@@ -93,7 +98,7 @@ function ThesisList(props)
     {
         if (!old_filters || !old_orderBy) return true;
 
-        return !(old_filters.toString() === filters.toString() && old_orderBy.toString() === orderBy.toString());
+        return (old_filters.toString() != filters.toString() || old_orderBy.toString() != orderBy.toString() || page != old_page);
 
         /*
         for (let [f1, i] of old_orderBy)
@@ -127,16 +132,17 @@ function ThesisList(props)
     {
         if(state == STATES.loading)
         {
-            let lastThesisID = isQueryChanged() ? undefined : ( thesis[entry_per_page-1] || thesis[-1] );
-            API.getThesis(filters, orderBy, lastThesisID, entry_per_page)
+            API.getThesis(filters, orderBy, undefined, ENTRIES_PER_PAGE)
             .then(ret => 
                 {
                     if (ret.status == 200)
                     {
-                        setOld_filters({...filters});
-                        setOld_orderBy({...orderBy});
                         setThesis(ret.thesis);
                         setState(STATES.ready);
+
+                        API.getThesisNumber()
+                        .then(ret => {if(ret.status == 200) setThesisNumber(n); else setState(STATES.error);})
+                        .catch(e => {console.log(e); setState(STATES.error);});
                     } else
                     {
                         setState(STATES.error);
@@ -144,6 +150,21 @@ function ThesisList(props)
                     
                 })
             .catch(e => setState(STATES.error));  
+        }else if (state == STATES.show_more)
+        {
+            API.getThesis(filters, orderBy, thesis[thesis.length -1].id, ENTRIES_PER_PAGE)
+            .then(ret => 
+                {
+                    if (ret.status == 200)
+                    {
+                        thesis.push(ret.thesis);
+                        setThesis([...thesis]);
+                    } else
+                    {
+                        setState(STATES.error);
+                    }
+                })
+            .catch(e => {console.log(e); setState(STATES.error);})
         }
         
 
@@ -152,8 +173,9 @@ function ThesisList(props)
     useEffect(()=>
     {
         if(state != STATES.loading) setState(STATES.loading); 
-    }, [props.date, entry_per_page, orderBy]);
+    }, [props.date, orderBy]);
 
+    /*
     useEffect(() =>
     {
         let new_epp = window.innerHeight / 100;
@@ -162,16 +184,27 @@ function ThesisList(props)
         API.getThesisNumber()
         .then(n => setNPages(n/new_epp + (n%new_epp == 0 ? 0 : 1)))
         .catch(e => {console.log(e); setState(STATES.error);})
-        
-    });
+    
+    });*/
 
     return (
         <contextState.Provider value={{state: state, setState: setState, states: STATES}}>
             <Container>
-                { state == STATES.ready ? 
-                    <><FiltersForm filters={[filters, setFilters, resetFilters, isFiltered]}/>
-                    <ThesisTable columns={COLUMNS} thesis={thesis}/>
-                    <TablePagination active={[page, setPage]} nPages={nPages}/></>  
+                { (state == STATES.ready || state == STATES.show_more) ? 
+                    <>
+                        <FiltersForm filters={[filters, setFilters, resetFilters, isFiltered]}/>
+                        <ThesisTable columns={COLUMNS} thesis={thesis}/>
+                        {
+                            <Row className="justify-content-center"><Col className="col-2 justify-content-center">
+                            {
+                                state == STATES.show_more ? 
+                                    <ClipLoader />
+                                : (thesis.length < thesisNumber ? <Button onClick={() => setState(STATES.show_more)}>Show More</Button> : "")
+                            }
+                            </Col></Row>
+                            
+                        }  
+                    </>
                     :  <Alert>{state}</Alert>
                 }
             </Container>
@@ -202,7 +235,7 @@ function TablePagination(props)
 /* ---------- UTILITY FUNCTIONS -------- */
 function get_index_range_of_page(page, entry_per_page)
 {
-    return [(page-1)*entry_per_page, page*entry_per_page -1];
+    return [(page)*entry_per_page, (page+1)*entry_per_page -1];
 }
 
 export { ThesisList };

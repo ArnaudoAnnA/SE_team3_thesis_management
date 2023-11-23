@@ -369,15 +369,36 @@ const getThesis = async (filters, orderBy, lastThesisID, entry_per_page) => {
   }
 }
 
-const getThesisNumber = async () => {
+const getThesisNumber = async (filters) => {
   try {
+    // add filters to the query
+    let whereConditions = await getThesisBuildWhereConditions(filters);
+    
+    if (await isTeacher(auth.currentUser.email)) {
+      let thisTeacherId = await getDocs(query(teachersRef, where('email', '==', auth.currentUser.email))).then(snap => snap.docs[0].data().id);
+      whereConditions.push(where('teacherId', '==', thisTeacherId));
+    }
+    
+    // show only active thesis
+    if(filters.expirationDate.to == '' && filters.expirationDate.from == '')
+      whereConditions.push(where('archiveDate', '>=', await getVirtualDate()));
+
+    let q = query(thesisProposalsRef, ...whereConditions);
+
+    let n = await getDocs(q)
+      .then(async snapshot => {
+        return snapshot.size;
+      });
+    return { status: 200, thesis: n };
+
+    /*
     const querySnapshot = await getDocs(thesisProposalsRef);
     const numberOfDocs = querySnapshot.size;
     //console.log("Number of thesis:", numberOfDocs);
-    return numberOfDocs;
+    return numberOfDocs;*/
   } catch (error) {
     console.error("Error getting documents: ", error);
-    return null; // or handle the error accordingly
+    return {status: 500};
   }
 }; 
 
