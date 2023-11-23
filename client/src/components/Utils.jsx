@@ -51,14 +51,14 @@ function CustomNavbar(props) {
                     <Navbar.Toggle aria-controls="navbar-nav" />
                     <Navbar.Collapse>
                         <Nav>
-                            <Nav.Link as={Link} to={"/"} className="white" href='/'>Home</Nav.Link>
-                            <Nav.Link as={Link} to={"/applications"} className="white" href='/applications'>Applications</Nav.Link>
+                            <Nav.Link as={Link} to={"/"} className="customLink" href='/'>Home</Nav.Link>
+                            <Nav.Link as={Link} to={"/applications"} className="customLink" href='/applications'>Applications</Nav.Link>
                             {user.role == 'teacher' ?
                                 <>
-                                    <Nav.Link as={Link} to={"/archive"} className="white" href='/archive'>Archive</Nav.Link>
+                                    <Nav.Link as={Link} to={"/archive"} className="customLink" href='/archive'>Archive</Nav.Link>
                                 </>
                                 : null}
-                            <Nav.Link as={Link} to={"/notifications"} className="white" href='/notifications'>Notifications</Nav.Link>
+                            <Nav.Link as={Link} to={"/notifications"} className="customLink" href='/notifications'>Notifications</Nav.Link>
                         </Nav>
                     </ Navbar.Collapse>
                     <div style={{marginRight: "80px"}}>
