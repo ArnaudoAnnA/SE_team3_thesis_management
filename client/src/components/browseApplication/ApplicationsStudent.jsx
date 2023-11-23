@@ -4,8 +4,8 @@ import { useDropzone} from 'react-dropzone';
 import Application from '../models/Application';
 import { userContext } from "./Utils";
 */
-import { Alert, Card, Button, Badge, Form, Col, Container, Row, Table, Tabs, Tab } from 'react-bootstrap';
-import { useParams, Link } from 'react-router-dom';
+import { Alert, Card, Button, Nav, Form, Col, Container, Row, Table, Tabs, Tab } from 'react-bootstrap';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useEffect, useContext } from 'react';
@@ -123,7 +123,8 @@ function ApplicationsStudent(props) {
     return (
         <div className='mx-5'>
             <Tabs
-                className="mt-3"
+                variant="pills"
+                className="mt-3 tabElem"
                 justify
                 activeKey={key}
                 onSelect={(k) => setKey(k)}
@@ -157,15 +158,17 @@ function AppCard(props) {
         return dayJsDate ? dayJsDate.format(format) : '';
     }
 
+    const location = useLocation();
+
     return (
-        <Card className="text-center mt-3">
+        <Card className="text-center mt-3 mx-5 appCard">
             <Card.Header className="text-end">{props.app.teacherName} {props.app.teacherSurname}</Card.Header>
             <Card.Body>
                 <Card.Title>{props.app.thesisTitle}</Card.Title>
                 <Card.Text>
                     {props.app.thesisDescription}
                 </Card.Text>
-                <Link to={`/thesis/${props.app.thesisId}`} className="btn blueButton"> <span className='white'> See details &nbsp; </span> <i class="bi bi-search white"></i> </Link>
+                <Link to={`/thesis/${props.app.thesisId}`} className="btn blueButton" state={{nextpage: location.pathname}}> <span className='white'> See details &nbsp; </span> <i className="bi bi-search white"></i> </Link>
             </Card.Body>
             <Card.Footer className="text-muted text-end">Application Date: {formatWatchDate(dayjs(props.app.date), 'MMMM D, YYYY')}</Card.Footer>
         </Card>

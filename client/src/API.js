@@ -1,7 +1,7 @@
 "use strict;"
 
 import { initializeApp } from 'firebase/app';
-import { collection, addDoc, getFirestore, doc, query, getDocs, where, setDoc, deleteDoc, getDoc, limit, QueryFieldFilterConstraint, startAfter } from 'firebase/firestore';
+import { collection, addDoc, getFirestore, doc, query, getDocs, where, setDoc, deleteDoc, getDoc, limit, QueryFieldFilterConstraint, startAfter, orderBy } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { getStorage, ref, uploadBytes} from "firebase/storage";
 import { SAMLAuthProvider } from "firebase/auth";
@@ -16,6 +16,8 @@ import ThesisProposal from './models/ThesisProposal.js';
 
 import StringUtils from './utils/StringUtils.js';
 import CONSTANTS from './utils/Constants.js';
+
+import { buildWhereConditions, orderThesis } from './utils/getThesisUtils.js';
 
 //DO NOT CANCEL
 const firebaseConfig = {
@@ -238,82 +240,6 @@ const getAllThesis = async () => {
   }
 }
 
-/* getThesis and correlated functions */
-
-/**
- * Build the where conditions for the query
- * @param filters the filters object
- * @returns an array of where conditions
- */
-const getThesisBuildWhereConditions = async (filters) => {
-  let whereConditions = [];
-    
-  if(filters === undefined) { 
-    filters = {};
-  }
-  
-  let teacher;
-  if (filters.supervisor) {
-    let teacherName = filters.supervisor;
-    let [name, surname] = teacherName.split(' ');
-    let teacherQuery = query(teachersRef, where('name', '==', name), where('surname', '==', surname));
-    
-    let teacherSnap = await getDocs(teacherQuery);
-    teacher = teacherSnap.docs[0].data();
-
-    if(teacher)
-      whereConditions.push(where('teacherId', '==', teacher.id));
-  }
-
-  if (filters.coSupervisors && filters.coSupervisors.length > 0) {
-    let coSupervisors = filters.coSupervisors;
-    whereConditions.push(where('coSupervisors', 'array-contains-any', coSupervisors));
-  }
-
-  if (filters.expirationDate) {
-    let expirationDate = filters.expirationDate;
-
-    if (expirationDate.from) {
-      let date = dayjs(expirationDate.from);
-      whereConditions.push(where('expirationDate', '>=', date.toISOString()));
-    }
-    
-    if (expirationDate.to) {
-      let date = dayjs(expirationDate.to);
-      whereConditions.push(where('expirationDate', '<=', date.toISOString())); 
-    }
-  }
-
-  if(filters.level) {
-    let level = filters.level;
-    whereConditions.push(where('level', '==', level));
-  }
-
-  if(filters.keywords && filters.keywords.length > 0) {
-    let keywords = filters.keywords;
-    whereConditions.push(where('keywords', 'array-contains-any', keywords));
-  }
-
-  if(filters.type) {
-    let type = filters.type;
-    whereConditions.push(where('type', '==', type));
-  }
-
-  if(filters.title) {
-    console.log("Filter on title not implemented yet");
-  }
-
-  if(filters.groups && filters.groups.length > 0) {
-    console.log("Filter on groups not implemented yet");
-  }
-
-  if(filters.programmes) {
-    console.log("Filter on programmes not implemented yet");
-  }
-
-  return whereConditions;
-}
-
 /** Fetch the collection of ACTIVE thesis applying specified filters <br>
    * It doesn't return all the thesis, but only the ones in the given range of indexes.<br>
   * 
@@ -330,7 +256,7 @@ const getThesisBuildWhereConditions = async (filters) => {
   * if some of the properties is not specified, it is not considered in the query.<br>
   * Expiration date from and to are both inclusive.<br>
   * 
-  * @param {[{DBfield: "title", mode: "ASC"}, ...]} orderBy
+  * @param {[{DBfield: "title", mode: "ASC"}, ...]} orderByArray
   * 
   * @param {int} lastThesisID undefined in case this is a new query
   * 
@@ -340,51 +266,91 @@ const getThesisBuildWhereConditions = async (filters) => {
   * - thesis, contains the array of thesis in case of success, otherwise null.
  */
 
-const getThesis = async (filters, orderBy, lastThesisID, entry_per_page) => {
+const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) => {
   if (!auth.currentUser) {
     return CONSTANTS.notLogged;
   }
 
-  // add filters to the query
-  let whereConditions = await getThesisBuildWhereConditions(filters);
-  
-  if (await isTeacher(auth.currentUser.email)) {
-    let thisTeacherId = await getDocs(query(teachersRef, where('email', '==', auth.currentUser.email))).then(snap => snap.docs[0].data().id);
-    whereConditions.push(where('teacherId', '==', thisTeacherId));
-  }
-  
-  // show only active thesis
-  if(filters.expirationDate.to == '' && filters.expirationDate.from == '')
-    whereConditions.push(where('archiveDate', '>=', await getVirtualDate()));
-
-  let q = query(thesisProposalsRef, ...whereConditions);
-  
   try {
-    let teachersSnap = await getDocs(teachersRef);
-    let teachers = teachersSnap.docs.map(doc => doc.data());
-    let thesis = await getDocs(q)
-      .then(async snapshot => {
-        let proposals = [];
+    // add filters to the query
+    let whereConditions = await buildWhereConditions(filters);
 
-        snapshot.forEach(doc => {
-          let proposal = doc.data();
-          let teacher = teachers.find(teacher => teacher.id == proposal.teacherId);
-          proposal.supervisor = teacher.name + ' ' + teacher.surname;
-          proposals.push(proposal);
-        });
-        return proposals;
+    // if the user is a teacher, show only his thesis
+    if (await isTeacher(auth.currentUser.email)) {
+      let thisTeacherId = await getDocs(
+        query(teachersRef, where("email", "==", auth.currentUser.email))
+      ).then((snap) => snap.docs[0].data().id);
+      whereConditions.push(where("teacherId", "==", thisTeacherId));
+    }
+
+    // show only active thesis
+    if (filters.expirationDate.to == "" && filters.expirationDate.from == "")
+      whereConditions.push(where("archiveDate", ">=", await getVirtualDate()));
+    else if (filters.expirationDate.from !== ''){
+      expirationDateFrom = dayjs(filters.expirationDateFrom);
+      archiveDate = dayjs(await getVirtualDate());
+      if(expirationDateFrom.isBefore(archiveDate))
+        whereConditions.push(where("archiveDate", ">=", await getVirtualDate()));
+    }
+
+    // compose and run the query
+    let q = query(
+      thesisProposalsRef,
+      ...whereConditions
+    );
+
+/*   if(lastThesisID !== undefined) {
+    let lastThesis = await getDocs(query(thesisProposalsRef, where('id', '==', lastThesisID))).then(snap => snap.docs[0].data());
+    q = query(q, orderByQuery, startAfter(lastThesis[orderBy[0].DBfield]));
+  }
+
+  if(entry_per_page != 0 && entry_per_page !== undefined)
+    q = query(q, limit(entry_per_page)); */
+
+    let teachersSnap = await getDocs(teachersRef);
+    let teachers = teachersSnap.docs.map((doc) => doc.data());
+
+    let thesis = await getDocs(q).then(async (snapshot) => {
+      let proposals = [];
+
+      snapshot.forEach((doc) => {
+        let proposal = doc.data();
+        let teacher = teachers.find(
+          (teacher) => teacher.id == proposal.teacherId
+        );
+        proposal.supervisor = teacher.name + " " + teacher.surname;
+        proposals.push(proposal);
       });
-    return { status: 200, thesis: thesis };
+      return proposals;
+    });
+
+    // order the thesis
+    orderByArray.slice().reverse().forEach((orderBy) => {
+      thesis = orderThesis(thesis, orderBy);
+    });
+
+    // page the thesis
+    let index; 
+    if (lastThesisID !== undefined)
+      index = thesis.findIndex(proposal => proposal.id === lastThesisID);
+    else 
+      index = -1;
+
+    // If the ID is not found, index will be -1
+    let page = [];
+    page = thesis.slice(index + 1, index + entry_per_page);
+
+    return { status: 200, thesis: page };
   } catch (error) {
     console.log(error);
     return { status: 500, err: error };
   }
-}
+};
 
 const getThesisNumber = async (filters) => {
   try {
     // add filters to the query
-    let whereConditions = await getThesisBuildWhereConditions(filters);
+    let whereConditions = await buildWhereConditions(filters);
     
     if (await isTeacher(auth.currentUser.email)) {
       let thisTeacherId = await getDocs(query(teachersRef, where('email', '==', auth.currentUser.email))).then(snap => snap.docs[0].data().id);
