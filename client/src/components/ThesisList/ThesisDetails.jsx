@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
 import { Button, Container, Table, Col, Row } from "react-bootstrap";
 import { useEffect, useState, useContext } from "react";
 import API from '../../API'
@@ -46,6 +46,11 @@ function ThesisDetails(props) {
     /* ------ CONTEXTS ----------------- */
     const user = useContext(userContext);
 
+    /* ------ NAVIGATE ----------------- */
+    const navigate = useNavigate();
+    const location = useLocation();
+    const nextpage = location.state?.nextpage || '/';
+
     /* --------------------------------- */
 
 
@@ -76,7 +81,7 @@ function ThesisDetails(props) {
         {
             thesis ? <>
                 <Row>
-                    <Col className="col-1"><Link to='/'><Button className="blueButton"><Arrow90degLeft /></Button></Link></Col>
+                    <Col className="col-1"><Button className="blueButton" onClick={() => navigate(nextpage)}><Arrow90degLeft /></Button></Col>
                     {user.role == 'teacher' ? null : <>
                         <Col className="col-7"></Col>
                         <Col className="col-4 d-flex justify-content-end">
