@@ -5,117 +5,39 @@ import Application from '../models/Application';
 import { userContext } from "./Utils";
 */
 import { Alert, Card, Button, Nav, Form, Col, Container, Row, Table, Tabs, Tab } from 'react-bootstrap';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useEffect, useContext } from 'react';
 import API  from '../../API';
+import { userContext } from "../Utils";
 import dayjs from 'dayjs';
 
 function ApplicationsStudent(props) {
 
-  /*const [errorMsg, setErrorMsg] = useState('');
-  const [file, setFile] = useState();
-  const [career, setCareer] = useState([]);
-  const [title, setTitle] = useState('');
-  const [teacher, setTeacher] = useState();
-
-  const user = useContext(userContext);
-  const {id} = useParams();
-  */
-    const mockApp = [
-        {
-          "studentId": "s789012",
-          "accepted": true,
-          "date": "2022-12-05T16:40:00.000Z",
-          "thesisId": 0,
-          "curriculum": null,
-          "thesisTitle": "Instrumenting Kubernetes 5G services with eBPF probes",
-          "thesisDescription": "Description for Thesis Proposal 1",
-          "teacherName": "John",
-          "teacherSurname": "Smith"
-        },
-        {
-            "studentId": "s789012",
-            "accepted": true,
-            "date": "2022-12-05T16:40:00.000Z",
-            "thesisId": 1,
-            "curriculum": null,
-            "thesisTitle": "Instrumenting Kubernetes 5G services with eBPF probes",
-            "thesisDescription": "Description for Thesis Proposal 1",
-            "teacherName": "John",
-            "teacherSurname": "Smith"
-        },
-        {
-            "studentId": "s789012",
-            "accepted": true,
-            "date": "2022-12-05T16:40:00.000Z",
-            "thesisId": 2,
-            "curriculum": null,
-            "thesisTitle": "Instrumenting Kubernetes 5G services with eBPF probes",
-            "thesisDescription": "Description for Thesis Proposal 1",
-            "teacherName": "John",
-            "teacherSurname": "Smith"
-        },
-        {
-            "studentId": "s789012",
-            "accepted": true,
-            "date": "2022-12-05T16:40:00.000Z",
-            "thesisId": 3,
-            "curriculum": null,
-            "thesisTitle": "Instrumenting Kubernetes 5G services with eBPF probes",
-            "thesisDescription": "Description for Thesis Proposal 1",
-            "teacherName": "John",
-            "teacherSurname": "Smith"
-        },
-      ];
+    const user = useContext(userContext);
 
     const [key, setKey] = useState('Pending');
-    const [applications, setApplications] = useState(mockApp);
+    const [applications, setApplications] = useState([]);
 
     useEffect(() => {
 
-        /*async function fetchCareer(){
+        async function fetchApplicationsByState(state){
             if(user.id){
-                await API.retrieveCareer(user.id)
-                .then((career) => {
-                    // console.log(career)
-                    career.sort((a,b) => {
-                        if(a.date && b.date){
-                            return a.date.isAfter(b.date);
-                        }
-                        else if(!b.date)
-                            return -1;
-                        else{
-                            return 1;
-                        }
-                    });
-                    setCareer(career);
+                await API.getApplicationsByState(state)
+                .then((applications) => {
+                    setApplications(applications);
                 })
-                .catch(e => console.log("Error in ApplyForm/retrieveCareerAPI:" + e))
+                .catch(e => console.log("Error in ApplicationsStudent/getApplicationsByState:" + e))
             }
-            
         }
-        async function fetchThesisDetails(){
-            API.getTitleAndTeacher(id)
-            .then((result) => {
-                setTitle(result.title);
-                setTeacher(result.teacher);
-            })
-            .catch(e => console.log("Error in ApplyForm/getTitleAndTeacher:" + e))
-        } */
-
-        async function fetchPendingApp(){}
-        async function fetchAcceptedApp(){}
-        async function fetchRejectedApp(){}
-
 
         if (key=="Pending") {
-            fetchPendingApp();
+            fetchApplicationsByState("Pending");
         } else if (key=="Accepted") {
-            fetchAcceptedApp();
+            fetchApplicationsByState("Accepted");
         } else {
-            fetchRejectedApp();
+            fetchApplicationsByState("Rejected");
         }
         
     },[key]);
