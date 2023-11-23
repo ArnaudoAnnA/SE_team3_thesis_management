@@ -15,6 +15,8 @@ import ThesisProposal from './models/ThesisProposal.js';
 import StringUtils from './utils/StringUtils.js';
 import CONSTANTS from './utils/Constants.js';
 
+import { buildWhereConditions, composeOrderByQuery } from './utils/getThesisUtils.js';
+
 //DO NOT CANCEL
 const firebaseConfig = {
   apiKey: "AIzaSyCu5cRTSa5Ezg4DNIiKDfLQfQ-kDTHo4iI",
@@ -226,82 +228,6 @@ const getAllThesis = async () => {
   }
 }
 
-/* getThesis and correlated functions */
-
-/**
- * Build the where conditions for the query
- * @param filters the filters object
- * @returns an array of where conditions
- */
-const getThesisBuildWhereConditions = async (filters) => {
-  let whereConditions = [];
-    
-  if(filters === undefined) { 
-    filters = {};
-  }
-  
-  let teacher;
-  if (filters.supervisor) {
-    let teacherName = filters.supervisor;
-    let [name, surname] = teacherName.split(' ');
-    let teacherQuery = query(teachersRef, where('name', '==', name), where('surname', '==', surname));
-    
-    let teacherSnap = await getDocs(teacherQuery);
-    teacher = teacherSnap.docs[0].data();
-
-    if(teacher)
-      whereConditions.push(where('teacherId', '==', teacher.id));
-  }
-
-  if (filters.coSupervisors && filters.coSupervisors.length > 0) {
-    let coSupervisors = filters.coSupervisors;
-    whereConditions.push(where('coSupervisors', 'array-contains-any', coSupervisors));
-  }
-
-  if (filters.expirationDate) {
-    let expirationDate = filters.expirationDate;
-
-    if (expirationDate.from) {
-      let date = dayjs(expirationDate.from);
-      whereConditions.push(where('expirationDate', '>=', date.toISOString()));
-    }
-    
-    if (expirationDate.to) {
-      let date = dayjs(expirationDate.to);
-      whereConditions.push(where('expirationDate', '<=', date.toISOString())); 
-    }
-  }
-
-  if(filters.level) {
-    let level = filters.level;
-    whereConditions.push(where('level', '==', level));
-  }
-
-  if(filters.keywords && filters.keywords.length > 0) {
-    let keywords = filters.keywords;
-    whereConditions.push(where('keywords', 'array-contains-any', keywords));
-  }
-
-  if(filters.type) {
-    let type = filters.type;
-    whereConditions.push(where('type', '==', type));
-  }
-
-  if(filters.title) {
-    console.log("Filter on title not implemented yet");
-  }
-
-  if(filters.groups && filters.groups.length > 0) {
-    console.log("Filter on groups not implemented yet");
-  }
-
-  if(filters.programmes) {
-    console.log("Filter on programmes not implemented yet");
-  }
-
-  return whereConditions;
-}
-
 /** Fetch the collection of ACTIVE thesis applying specified filters <br>
    * It doesn't return all the thesis, but only the ones in the given range of indexes.<br>
   * 
@@ -334,8 +260,10 @@ const getThesis = async (filters, orderBy, lastThesisID, entry_per_page) => {
   }
 
   // add filters to the query
-  let whereConditions = await getThesisBuildWhereConditions(filters);
+  let whereConditions = await buildWhereConditions(filters);
+  let orderByQuery = composeOrderByQuery(orderBy, whereConditions.map(cond => cond._field.segments[0]));
   
+  // if the user is a teacher, show only his thesis
   if (await isTeacher(auth.currentUser.email)) {
     let thisTeacherId = await getDocs(query(teachersRef, where('email', '==', auth.currentUser.email))).then(snap => snap.docs[0].data().id);
     whereConditions.push(where('teacherId', '==', thisTeacherId));
@@ -345,11 +273,21 @@ const getThesis = async (filters, orderBy, lastThesisID, entry_per_page) => {
   if(filters.expirationDate.to == '' && filters.expirationDate.from == '')
     whereConditions.push(where('archiveDate', '>=', await getVirtualDate()));
 
+  // compose and run teh query
   let q = query(thesisProposalsRef, ...whereConditions);
   
+/*   if(lastThesisID !== undefined) {
+    let lastThesis = await getDocs(query(thesisProposalsRef, where('id', '==', lastThesisID))).then(snap => snap.docs[0].data());
+    q = query(q, orderByQuery, startAfter(lastThesis[orderBy[0].DBfield]));
+  }
+
+  if(entry_per_page != 0 && entry_per_page !== undefined)
+    q = query(q, limit(entry_per_page)); */
+
   try {
     let teachersSnap = await getDocs(teachersRef);
     let teachers = teachersSnap.docs.map(doc => doc.data());
+
     let thesis = await getDocs(q)
       .then(async snapshot => {
         let proposals = [];
