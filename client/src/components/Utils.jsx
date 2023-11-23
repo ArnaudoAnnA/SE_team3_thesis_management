@@ -32,7 +32,7 @@ function CustomNavbar(props) {
 
     const navDropdownTitle = (  <>
                                     <Row> <div className="d-flex justify-content-center"> <i className="bi bi-person-circle"></i> </div></Row>
-                                    <Row className="d-flex justify-content-left"> <span style={{fontSize: "12px"}}> {`${user.name} ${user.surname}`} </span></Row>
+                                    <Row className="d-flex justify-content-left"> <span style={{fontSize: "12px"}}> {`${user.name} ${user.surname}, ${user.id}`} </span></Row>
                                 </>
                             );
 

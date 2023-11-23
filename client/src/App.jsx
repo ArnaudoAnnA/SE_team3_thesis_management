@@ -6,14 +6,17 @@ import dayjs from 'dayjs';
 import API from './API.js';
 import API_TEST from './API_TEST.js';
 import { CustomNavbar, NotFoundPage, userContext } from './components/Utils';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { Button } from 'react-bootstrap';
+
 import { ThesisList } from './components/ThesisList/ThesisList';
 import { ThesisDetails } from './components/ThesisList/ThesisDetails.jsx';
 import { Login } from './components/Login';
 import { InsertProposalForm } from './components/InsertProposalForm.jsx';
 import { ApplyForm } from './components/ApplyForm.jsx';
 import { BrowseForm } from './components/browseApplication/BrowseForm.jsx';
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { Button } from 'react-bootstrap';
+import { ApplicationsStudent } from './components/browseApplication/ApplicationsStudent.jsx';
+
 
 function App() {
   // DO NOT WRITE HERE, use Main instead
@@ -99,9 +102,10 @@ function Main() {
               <Route path='' element={<Login />} />}
             {/** Add here other routes */}
             <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm /> : <NotFoundPage />) : <Login />} />
-            <Route path='/browse' element={user.email ? (user.role === "teacher" ? <BrowseForm /> : <NotFoundPage />) : <Login />} />
             <Route path='/thesis/:id' element={user.email ? <ThesisDetails /> : <Login />} />
             <Route path='/thesis/:id/apply' element={user.email ? (user.role === "student" ? <ApplyForm virtualDate={date} /> : <NotFoundPage />) : <Login />} />
+            <Route path='/applications' element={user.email ? (user.role === "teacher" ? <NotFoundPage /> : <ApplicationsStudent />) : <Login />} />
+            <Route path='/browse' element={user.email ? (user.role === "teacher" ? <BrowseForm /> : <NotFoundPage />) : <Login />} />
 
           </Route>
           <Route path='*' element={<NotFoundPage />} />
