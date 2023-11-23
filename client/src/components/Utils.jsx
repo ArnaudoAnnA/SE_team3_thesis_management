@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { Alert, Button, Container, Col, Row, Card, Form, Navbar, Nav } from "react-bootstrap";
+import { Alert, Button, Container, Col, Row, Card, Form, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import validator from "validator";
 import dayjs from "dayjs";
@@ -29,6 +29,13 @@ function CustomNavbar(props) {
             setShowConfirmation(false);
         }, 1000);
     }
+
+    const navDropdownTitle = (  <>
+                                    <Row> <div className="d-flex justify-content-center"> <i className="bi bi-person-circle"></i> </div></Row>
+                                    <Row className="d-flex justify-content-left"> <span style={{fontSize: "12px"}}> {`${user.name} ${user.surname}`} </span></Row>
+                                </>
+                            );
+
     return (
         <>
             {/* Top banner with logo and app name */}
@@ -45,20 +52,22 @@ function CustomNavbar(props) {
                     <Navbar.Collapse>
                         <Nav>
                             <Nav.Link as={Link} to={"/"} className="white" href='/'>Home</Nav.Link>
+                            <Nav.Link as={Link} to={"/applications"} className="white" href='/applications'>Applications</Nav.Link>
                             {user.role == 'teacher' ?
                                 <>
                                     <Nav.Link as={Link} to={"/archive"} className="white" href='/archive'>Archive</Nav.Link>
-                                    <Nav.Link as={Link} to={"/applications"} className="white" href='/applications'>Applications</Nav.Link>
                                 </>
                                 : null}
                             <Nav.Link as={Link} to={"/notifications"} className="white" href='/notifications'>Notifications</Nav.Link>
                         </Nav>
                     </ Navbar.Collapse>
-                    <div className="ml-auto">
-                        <Nav.Link as={Link} to='/' onClick={props.logoutCbk} className="white">
-                            LOGOUT
-                            <i className="bi bi-box-arrow-right" style={{ marginLeft: '5px', marginRight: '5px' }} />
-                        </Nav.Link>
+                    <div style={{marginRight: "80px"}}>
+                        <NavDropdown title={navDropdownTitle} className="white" id="basic-nav-dropdown">
+                            <NavDropdown.Item as={Link} to='/' onClick={props.logoutCbk}>
+                                <i className="bi bi-box-arrow-right" style={{ marginLeft: '5px', marginRight: '5px' }} />
+                                LOGOUT
+                            </NavDropdown.Item>
+                        </NavDropdown>
                     </div>
                 </Navbar>
                 : null}
