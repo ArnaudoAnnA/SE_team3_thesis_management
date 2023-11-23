@@ -94,6 +94,12 @@ function ThesisList(props)
         return false;
     }
 
+    function orderByField(DBfield, asc)
+    {
+        orderBy.filter(e => e.DBfield != DBfield);
+        orderBy.unshift({DBfield: DBfield, mode: asc ? "ASC" : "DESC"});
+        setOrderBy([...orderBy]);
+    }
     
 
     function isQueryChanged()
@@ -196,7 +202,7 @@ function ThesisList(props)
                     <>
                         <FiltersForm filters={[filters, setFilters, resetFilters, isFiltered]}/>
                         <p>Number of items: {thesisNumber}</p>
-                        <ThesisTable columns={COLUMNS} thesis={thesis}/>
+                        <ThesisTable columns={COLUMNS} thesis={thesis} orderBy={orderBy} orderByField={orderByField}/>
                         {
                             <Row className="justify-content-center"><Col className="col-2 justify-content-center">
                             {

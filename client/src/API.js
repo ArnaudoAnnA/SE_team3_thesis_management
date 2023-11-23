@@ -4,6 +4,8 @@ import { initializeApp } from 'firebase/app';
 import { collection, addDoc, getFirestore, doc, query, getDocs, where, setDoc, deleteDoc, getDoc, limit, QueryFieldFilterConstraint, startAfter } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { getStorage, ref, uploadBytes} from "firebase/storage";
+import { SAMLAuthProvider } from "firebase/auth";
+import { signInWithRedirect, getRedirectResult, signInWithPopup } from "firebase/auth";
 
 import dayjs from 'dayjs';
 import Teacher from './models/Teacher.js';
@@ -35,7 +37,7 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 // Initialize Cloud Storage and get a reference to the service
 const storage = getStorage(app); 
-
+const provider = new SAMLAuthProvider('saml.auth0-thesis-management');
 // IMPORTANT: add ALL API functions in the API object at the end of the file
 
 // COLLECTIONS' REFERENCES
@@ -95,6 +97,7 @@ const signUp = async (email, password) => {
 const logIn = async (email, password) => {
   await signInWithEmailAndPassword(auth, email, password)
     .then((userCredentials) => {
+      console.log(userCredentials)
       return userCredentials
     })
     .catch((error) => {
@@ -102,6 +105,15 @@ const logIn = async (email, password) => {
       throw error
     })
     ;
+}
+const loginWithSaml = () => {
+  signInWithRedirect(auth, provider)
+  .then(result => {
+    console.log(result.user.email)
+  })
+  .catch(e => {
+    console.log(e)
+  })
 }
 
 const logOut = async () => {
@@ -701,7 +713,7 @@ const API = {
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser,
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplications, getApplicationDetails, getCVOfApplication,
-  removeAllProposals, insertProposal
+  removeAllProposals, insertProposal, loginWithSaml
 };
 
 //insertProposal(thesisProposalData);
