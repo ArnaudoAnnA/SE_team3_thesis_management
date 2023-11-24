@@ -467,6 +467,14 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
   }
 };
 
+/**
+ * 
+ */
+const getValuesForField = (DBfield) =>
+{
+  return ["mock!!!!"];
+}
+
 const getThesisNumber = async () => {
   try {
     console.log("Getting thesis number: " + thesisCache.length);
@@ -891,7 +899,7 @@ const insertProposal = async (thesisProposalData) => {
 };
 
 const API = {
-  getThesis, getAllThesis, getThesisWithId, getThesisNumber,
+  getThesis, getAllThesis, getThesisWithId, getThesisNumber, getValuesForField,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser,
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplications, getApplicationDetails, getCVOfApplication,

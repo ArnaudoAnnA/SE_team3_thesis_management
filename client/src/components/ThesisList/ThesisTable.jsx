@@ -39,18 +39,13 @@ function row_field_to_td(row_id, field_name, field_content)
 {
     // TO DO: add links to professor, group, ...
 
-    switch (field_name)
+    
+    if (field_name == "expirationDate") return dayjs(field_content).format('YYYY/MM/DD');
+
+    if (Array.isArray(field_content)) 
     {
-        case "coSupervisors":
-        case "groups":
-            let counter = 0;
-            return <>{field_content.map(e => <div key={counter++}>{e}</div>)}</>
-        break;
-
-        case "expirationDate":
-            return dayjs(field_content).format('YYYY/MM/DD');
-        break;
-
+        let counter = 0;
+        return <>{field_content.map(e => <div key={counter++}>{e}</div>)}</>
     }
     
     return field_content;

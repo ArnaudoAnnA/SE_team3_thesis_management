@@ -3,6 +3,8 @@ import {Row, Col, Button, Form, Table} from "react-bootstrap";
 import { Search, Filter } from "react-bootstrap-icons";
 import { useState, useContext } from "react";
 import { userContext } from "../Utils";
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 
 
 import API from "../../API";
@@ -10,15 +12,26 @@ import contextState from "./contextState";
 
 function ThesisFieldFilterForm(props)
 {
+
     switch(props.DBfield)
     {
         case "expirationDate":
             return <>
-                        <Col><Form.Label>From:</Form.Label><Form.Control defaultValue={props.filters.expirationDate.from} id={"expirationDateFrom"} type="date" onChange={(event) => props.onChangeFiltersForm(event)}/></Col>
-                        <Col><Form.Label>To:</Form.Label><Form.Control defaultValue={props.filters.expirationDate.to} id={"expirationDateTo"} type="date" onChange={(event) => props.onChangeFiltersForm(event)}/></Col>
+                        <Col><Form.Label>From:</Form.Label><Form.Control defaultValue={props.filters.expirationDate.from} id={"expirationDateFrom"} type="date" onChange={(event) => props.onChangeFiltersForm(DBfield, event.target.value)}/></Col>
+                        <Col><Form.Label>To:</Form.Label><Form.Control defaultValue={props.filters.expirationDate.to} id={"expirationDateTo"} type="date" onChange={(event) => props.onChangeFiltersForm(DBfield, event.target.value)}/></Col>
                 </>;
         default:
-            return <Form.Control defaultValue={props.filters[props.DBfield]} id={props.DBfield} type="text" onChange={(event) => props.onChangeFiltersForm(event)}/>;
+            return <Autocomplete
+            options={API.getValuesForField(props.DBfield)}
+            freeSolo
+            onChange={(event) => {
+                props.onChangeFiltersForm(props.DBfield, event.target.value);
+            }}
+            onBlur={(event) => {
+                props.onChangeFiltersForm(props.DBfield, event.target.value);
+            }}
+            renderInput={(params) => <TextField {...params} variant="standard"   style={{ paddingLeft: "2px", borderRadius: "6px", width: '100%', fontSize: "12px"}}/>}
+          />//<Form.Control defaultValue={props.filters[props.DBfield]} id={props.DBfield} type="text" onChange={(event) => props.onChangeFiltersForm(event)}/>;
     }
 }
 
@@ -59,21 +72,21 @@ function FiltersForm(props)
     const ctxState = useContext(contextState);
 
     /* --------- FUNCTIONS ------------------- */
-    function onChangeFiltersForm(event)
+    function onChangeFiltersForm(id, value)
     {
         setFilters(f => {
-                            if (event.target.id == "expirationDateFrom")
+                            if (id == "expirationDateFrom")
                             {
-                                f.expirationDate.from = event.target.value;
-                            }else if (event.target.id == "expirationDateTo")
+                                f.expirationDate.from = value;
+                            }else if (id == "expirationDateTo")
                             {
-                                f.expirationDate.to = event.target.value;
-                            }else if(event.target.id == "coSupervisors")
+                                f.expirationDate.to = value;
+                            }else if(id == "coSupervisors")
                             {
-                                f.coSupervisors = [event.target.value];
+                                f.coSupervisors = [value];
                             }else
                             {
-                                f[event.target.id] = event.target.value;
+                                f[id] = value;
                             }
                             
                             //setFiltersActive(isFiltered(f));

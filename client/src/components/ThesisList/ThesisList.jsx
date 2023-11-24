@@ -43,7 +43,7 @@ function ThesisList(props)
 
     const DEFAULT_ORDERBY = COLUMNS.map(c => {return {DBfield: c.DBfield, mode: "ASC"}; });
 
-    const ENTRIES_PER_PAGE = window.innerHeight /100;
+    const ENTRIES_PER_PAGE = Math.floor(window.innerHeight /100);
     
 
     /*--------------- STATES ------------------*/
@@ -165,8 +165,9 @@ function ThesisList(props)
                 {
                     if (ret.status == 200)
                     {
-                        thesis.push(ret.thesis);
+                        thesis.push(...ret.thesis);
                         setThesis([...thesis]);
+                        setState(STATES.ready);
                     } else
                     {
                         setState(STATES.error);
