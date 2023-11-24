@@ -90,7 +90,7 @@ const students =[
     "email": "s123456@studenti.polito.it"
   },
   {
-    "cod_degree": "EF456GH",
+    "cod_degree": "AB123CD",
     "name": "Simone",
     "id": "s901234",
     "gender": "Male",
