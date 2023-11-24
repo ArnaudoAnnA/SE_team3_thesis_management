@@ -459,7 +459,7 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
     let page = [];
 
     page = thesis.slice(index + 1, index + 4);
-    console.log(page);
+    console.log(page.map(p => p.id));
     return { status: 200, thesis: page };
   } catch (error) {
     console.log(error);
@@ -468,11 +468,23 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
 };
 
 /**
- * 
+ * Get the values of a specific field from all the thesis proposals.
+ * @param {string} DBfield The field of the DB to get the values from
+ * @returns {Array} Prints the values of the field
  */
-const getValuesForField = (DBfield) =>
-{
-  return ["mock!!!!"];
+const getValuesForField = (DBfield) => {
+  const values = [];
+  thesisCache.forEach(proposal => {
+    let value = proposal[DBfield];
+    if (Array.isArray(value))
+      value.forEach(v => {
+        if (!values.includes(v))
+          values.push(v);
+      });
+    else if (!values.includes(value))
+      values.push(value);
+  })
+  return values;
 }
 
 const getThesisNumber = async () => {
