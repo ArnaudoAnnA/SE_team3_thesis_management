@@ -250,7 +250,7 @@ const getAllThesis = async () => {
   }
 }
 
-// ---------------------GET THESIS -----------------------------
+//---------------------GET THESIS -----------------------------
 
 /**
  * Build the where conditions for the query
@@ -273,32 +273,16 @@ const buildWhereConditions = async (filters) => {
       where("name", "==", name),
       where("surname", "==", surname)
     );
-
     let teacherSnap = await getDocs(teacherQuery);
     teacher = teacherSnap.docs[0].data();
 
     if (teacher) whereConditions.push(where("teacherId", "==", teacher.id));
+    console.log(whereConditions);
   }
 
   if (filters.coSupervisors && filters.coSupervisors.length > 0) {
     let coSupervisors = filters.coSupervisors;
-    whereConditions.push(
-      where("coSupervisors", "array-contains-any", coSupervisors)
-    );
-  }
-
-  if (filters.expirationDate) {
-    let expirationDate = filters.expirationDate;
-
-    if (expirationDate.from) {
-      let date = dayjs(expirationDate.from);
-      whereConditions.push(where("expirationDate", ">=", date.toISOString()));
-    }
-
-    if (expirationDate.to) {
-      let date = dayjs(expirationDate.to);
-      whereConditions.push(where("expirationDate", "<=", date.toISOString()));
-    }
+    whereConditions.push(where("coSupervisors", "array-contains-any", coSupervisors));
   }
 
   if (filters.level) {
@@ -316,16 +300,9 @@ const buildWhereConditions = async (filters) => {
     whereConditions.push(where("type", "==", type));
   }
 
-  if (filters.title) {
-    console.log("Filter on title not implemented yet");
-  }
-
   if (filters.groups && filters.groups.length > 0) {
-    console.log("Filter on groups not implemented yet");
-  }
-
-  if (filters.programmes) {
-    console.log("Filter on programmes not implemented yet");
+    let group = filters.groups;
+    whereConditions.push(where("groups", "array-contains-any", [group]));
   }
 
   return whereConditions;
@@ -360,8 +337,6 @@ const orderThesis = (thesis, orderByField) => {
  */
 const isFiltersEmpty = (filters) => {
   if (filters === undefined) return true;
-
-  console.log("Checking if filter is empty")
   let empty = true;
   Object.keys(filters).forEach((key) => {
     if (Array.isArray(filters[key])) {
@@ -379,6 +354,40 @@ const isFiltersEmpty = (filters) => {
 
   return empty;
 };
+
+/**
+ * Get the values of a specific field from all the thesis proposals.
+ * @param {string} DBfield The field of the DB to get the values from
+ * @returns {Array} Prints the values of the field
+ */
+const getValuesForField = (DBfield) => {
+  try {
+    if (FILTER_FORM_VALUES === undefined) 
+      return [""];
+    return FILTER_FORM_VALUES[DBfield];
+  } catch (error) {
+    console.log(error);
+    return [""];
+  }
+}
+
+const setValuesForField = (DBfield) => {
+  const values = [];
+  THESIS_CACHE.forEach(proposal => {
+    let value = proposal[DBfield];
+    if (Array.isArray(value))
+      value.forEach(v => {
+        if (!values.includes(v))
+          values.push(v);
+      });
+    else if (!values.includes(value))
+      values.push(value);
+  })
+  return values;
+}
+
+let THESIS_CACHE = [];
+let FILTER_FORM_VALUES = undefined;
 
 /** Fetch the collection of ACTIVE thesis applying specified filters <br>
    * It doesn't return all the thesis, but only the ones in the given range of indexes.<br>
@@ -405,9 +414,6 @@ const isFiltersEmpty = (filters) => {
   * - err, contains some details in case of error, otherwise null;
   * - thesis, contains the array of thesis in case of success, otherwise null.
  */
-
-let thesisCache = [];
-
 const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) => {
   try {
     if (!auth.currentUser) {
@@ -418,8 +424,7 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
 
     if (lastThesisID === undefined) {
       // add filters to the query
-      let whereConditions = [];
-
+      let whereConditions = await buildWhereConditions(filters);
       // if the user is a teacher, show only his thesis
       if (await isTeacher(auth.currentUser.email)) {
         let thisTeacherId = await getDocs(
@@ -428,29 +433,18 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
         whereConditions.push(where("teacherId", "==", thisTeacherId));
       } else if (await isStudent(auth.currentUser.email)) {
         // if the user is a student, show only thesis of his degree
-        let studentCodDegree = await getDocs(
-          query(studentsRef, where("email", "==", auth.currentUser.email))
-        ).then((snap) => snap.docs[0].data().cod_degree);
-        let titleDegree = await getDocs(
-          query(degreesRef, where("codDegree", "==", studentCodDegree))
-        ).then((snap) => snap.docs[0].data().titleDegree);
-        whereConditions.push(where("programmes", "==", titleDegree));
+        // let studentCodDegree = await getDocs(
+        //   query(studentsRef, where("email", "==", auth.currentUser.email))
+        // ).then((snap) => snap.docs[0].data().cod_degree);
+        // let titleDegree = await getDocs(
+        //   query(degreesRef, where("codDegree", "==", studentCodDegree))
+        // ).then((snap) => snap.docs[0].data().titleDegree);
+        // whereConditions.push(where("programmes", "==", titleDegree));
       }
 
       // show only active thesis
-      if (filters.expirationDate.to == "" && filters.expirationDate.from == "")
-        whereConditions.push(
-          where("archiveDate", ">=", await getVirtualDate())
-        );
-      else if (filters.expirationDate.from !== "") {
-        expirationDateFrom = dayjs(filters.expirationDateFrom);
-        archiveDate = dayjs(await getVirtualDate());
-        if (expirationDateFrom.isBefore(archiveDate))
-          whereConditions.push(
-            where("archiveDate", ">=", await getVirtualDate())
-          );
-      }
-
+      whereConditions.push(where("archiveDate", ">=", await getVirtualDate()));
+      
       // compose the query
       let q = query(thesisProposalsRef, ...whereConditions);
 
@@ -474,32 +468,34 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
 
       // order the thesis
       if (thesis.length != 0) {
-        orderByArray
-          .slice()
-          .reverse()
+        orderByArray.slice().reverse()
           .forEach((orderBy) => {
             thesis = orderThesis(thesis, orderBy);
           });
       }
 
       // update the current snapshot
+      THESIS_CACHE = thesis;
+
       if (isFiltersEmpty(filters)) {
-        console.log("Updating thesis cache");
-        thesisCache = thesis;
-      } else {
-        console.log("Not updating thesis cache");
-        console.log(filters);
+        let formValues = {};
+        Object.keys(filters).forEach( (key) => {
+          if (key === 'teacherName')
+            formValues['supervisor'] = setValuesForField('supervisor');
+          else if(key !== 'expirationDate' && key !== 'programmes' && key !== 'title')
+            formValues['' + key] = setValuesForField(key)
+        });
+        FILTER_FORM_VALUES = formValues;
       }
     }
     // page the thesis
     else
-      index = thesisCache.findIndex((proposal) => proposal.id === lastThesisID);
+      index = THESIS_CACHE.findIndex((proposal) => proposal.id === lastThesisID);
 
     // If the ID is not found, index will be -1
     let page = [];
 
-    page = thesisCache.slice(index + 1, index + entry_per_page);
-    console.log(page.map((p) => p.id));
+    page = THESIS_CACHE.slice(index + 1, index + entry_per_page);
     return { status: 200, thesis: page };
   } catch (error) {
     console.log(error);
@@ -507,30 +503,9 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
   }
 };
 
-/**
- * Get the values of a specific field from all the thesis proposals.
- * @param {string} DBfield The field of the DB to get the values from
- * @returns {Array} Prints the values of the field
- */
-const getValuesForField = (DBfield) => {
-  const values = [];
-  thesisCache.forEach(proposal => {
-    let value = proposal[DBfield];
-    if (Array.isArray(value))
-      value.forEach(v => {
-        if (!values.includes(v))
-          values.push(v);
-      });
-    else if (!values.includes(value))
-      values.push(value);
-  })
-  return values;
-}
-
 const getThesisNumber = async () => {
   try {
-    console.log("Getting thesis number: " + thesisCache.length);
-    return {status: 200, number: thesisCache.length};
+    return {status: 200, number: THESIS_CACHE.length};
   }
   catch (error) {
     console.log(error);
