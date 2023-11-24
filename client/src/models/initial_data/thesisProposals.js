@@ -1,7 +1,7 @@
 const thesisProposals = [
   {
     "title": "Instrumenting Kubernetes 5G services with eBPF probes",
-    "coSupervisors": ["david@example.com", "d567890@studenti.polito.it"],
+    "coSupervisors": ["david@example.com", "d567890@polito.it"],
     "description": "Description for Thesis Proposal 1",
     "programmes": "Master of Design in Graphic Design",
     "keywords": ["keyword1", "tag1"],
@@ -16,7 +16,7 @@ const thesisProposals = [
     "type": "academic research"
   },
   {
-    "coSupervisors": ["d345678@studenti.polito.it", "alice@company.com"],
+    "coSupervisors": ["d345678@polito.it", "alice@company.com"],
     "level": "master",
     "type": "academic research",
     "archiveDate": "2022-06-28T14:15:06.474Z",
@@ -34,7 +34,7 @@ const thesisProposals = [
   {
     "keywords": ["keyword1", "tag1"],
     "description": "Description for Thesis Proposal 1",
-    "coSupervisors": ["laura@studenti.polito.it", "d123456@studenti.polito.it"],
+    "coSupervisors": ["laura@polito.it", "d123456@polito.it"],
     "level": "master",
     "groups": ["FM", "SOFTENG"],
     "requiredKnowledge": "Required knowledge for Thesis Proposal 1",
@@ -69,7 +69,7 @@ const thesisProposals = [
     "id": 4,
     "description": "Description for Thesis Proposal 1",
     "requiredKnowledge": "Required knowledge for Thesis Proposal 1",
-    "coSupervisors": ["d567890@studenti.polito.it", "laura@example.com"],
+    "coSupervisors": ["d567890@polito.it", "laura@example.com"],
     "keywords": ["keyword1", "tag1"],
     "teacherId": "d345678",
     "type": "stage",
@@ -83,7 +83,7 @@ const thesisProposals = [
     "description": "Description for Thesis Proposal 2",
     "programmes": "Master of Engineering in Civil Engineering",
     "expirationDate": "2025-09-28T14:15:06.474Z",
-    "coSupervisors": ["d234567@studenti.polito.it", "david@company.com"],
+    "coSupervisors": ["d234567@polito.it", "david@company.com"],
     "notes": "Additional notes for Thesis Proposal 2",
     "keywords": ["keyword2", "tag2"],
     "title": "Utilizing Machine Learning Techniques for Predictive Maintenance of Metallurgical Equipment",
@@ -104,7 +104,7 @@ const thesisProposals = [
     "expirationDate": "2025-07-19T14:15:06.474Z",
     "keywords": ["keyword1", "tag1"],
     "level": "bachelor",
-    "coSupervisors": ["d123456@studenti.polito.it", "marco@studenti.polito.it"],
+    "coSupervisors": ["d123456@polito.it", "marco@polito.it"],
     "id": 6,
     "title": "Enhancing Software Quality Through Automated Testing and Continuous Integration",
     "notes": "Additional notes for Thesis Proposal 1",
@@ -125,7 +125,7 @@ const thesisProposals = [
     "notes": "Additional notes for Thesis Proposal 2",
     "level": "master",
     "expirationDate": "2022-11-29T15:15:06.474Z",
-    "coSupervisors": ["d345678@studenti.polito.it", "laura@studenti.polito.it"]
+    "coSupervisors": ["d345678@polito.it", "laura@polito.it"]
   },
   {
     "type": "academic research",
@@ -135,8 +135,8 @@ const thesisProposals = [
     "teacherId": "d567890",
     "archiveDate": "2022-07-26T14:15:06.474Z",
     "coSupervisors": [
-      "d234567@studenti.polito.it",
-      "d345678@studenti.polito.it"
+      "d234567@polito.it",
+      "d345678@polito.it"
     ],
     "level": "master",
     "keywords": ["keyword1", "tag1"],
@@ -161,8 +161,8 @@ const thesisProposals = [
     "title": "Formal Methods for Software Specification and Verification: Ensuring System Correctness and Reliability",
     "teacherId": "d567890",
     "coSupervisors": [
-      "d123456@studenti.polito.it",
-      "d123456@studenti.polito.it"
+      "d123456@polito.it",
+      "d123456@polito.it"
     ]
   },
   {
@@ -172,7 +172,7 @@ const thesisProposals = [
     "id": 25,
     "keywords": ["Reply"],
     "expirationDate": "2024-05-20T07:17:35.131Z",
-    "coSupervisors": ["s123456@studenti.polito.it"],
+    "coSupervisors": ["s123456@polito.it"],
     "notes": "",
     "description": "Tesi in azienda",
     "type": "Stage",
