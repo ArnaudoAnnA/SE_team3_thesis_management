@@ -24,7 +24,7 @@ function ApplicationsStudent(props) {
 
         async function fetchApplicationsByState(state){
             if(user.id){
-                await API.getApplicationsByState(state)
+                API.getApplicationsByState(state)
                 .then((applications) => {
                     setApplications(applications);
                 })
