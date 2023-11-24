@@ -826,7 +826,7 @@ const predefinedProposalStructure = {
 };*/
 
 const insertProposal = async (thesisProposalData) => {
-  console.log("Logged teacher =",+ auth.currentUser.email);
+  console.log("Logged teacher = "+ auth.currentUser.email);
   if (!auth.currentUser) return { status: 401, err: "User not logged in" };
   if (!(await isTeacher(auth.currentUser.email))) return { status: 401, err: "User is not a teacher" };
 
@@ -888,7 +888,7 @@ const insertProposal = async (thesisProposalData) => {
 
     //We update the thesisProposalData with the obtained groups and calculated id
     thesisProposalData.groups = groupsAux;
-    thesisProposalData.id = await getThesisNumber()+1;
+    thesisProposalData.id = (await getThesisNumber()).number+1;
     const docRef = await addDoc(thesisProposalsRef, thesisProposalData);
     console.log("Thesis proposal added with ID: ", docRef.id);
     return { status: 200, id: docRef.id };
