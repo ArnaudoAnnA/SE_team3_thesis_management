@@ -29,7 +29,6 @@ function AdvancedFiltersTable(props)
     let is_std = user.role === "student"; //used only to make following code shorter
 
     let form_fields = [];
-        form_fields.push({ DBfield: "title", title: "Title",  });
         if(is_std) form_fields.push({ DBfield: "supervisor", title: "Supervisor",  });
         form_fields.push({ DBfield: "coSupervisors", title: "Co-Supervisors",  }); //array
         form_fields.push({ DBfield: "type", title: "Type",  });
@@ -88,7 +87,7 @@ function FiltersForm(props)
     return (
         <>
         <Row className="mb-3 justify-content-around">
-            <Col className="col-xl-9 col-lg-9 col-md-9 col-s-7 col-xs-5"><Form.Control value={props.filters.searchKeyWord} id='searchKeyWord' type="text" placeholder="Search..." onChange={(event) => onChangeFiltersForm(event)} /></Col>
+            <Col className="col-xl-9 col-lg-9 col-md-9 col-s-7 col-xs-5"><Form.Control value={props.filters.title} id='title' type="text" placeholder="Search title..." onChange={(event) => onChangeFiltersForm(event)} /></Col>
             <Col><Table borderless><tbody><tr>
                 <td style={{backgroundColor: "#fff0"}} className="col-3 hover-zoom"><Search className="flexible_icons icons" onClick={() => ctxState.setState(ctxState.states.loading)}/></td>
                 <td style={{backgroundColor: "#fff0"}} className="col-3 hover-zoom"><Filter className="flexible_icons icons" onClick={() => setShowAdvancedFilters(s => !s)}/></td>

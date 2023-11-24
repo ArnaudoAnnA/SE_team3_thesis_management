@@ -66,6 +66,18 @@ const isTeacher = async (email) => {
 }
 
 /**
+ * Return if the user is a student
+ * @param email the email of the user
+ * @return true if the user is a student, false otherwise
+ */
+const isStudent = async (email) => {
+  const whereCond = where("email", "==", email)
+  const q = query(studentsRef, whereCond)
+  const snapshot = await getDocs(q)
+  return snapshot.docs[0] ? true : false
+}
+
+/**
  * Return if the user is a teacher
  * @param id the id of the teacher
  * @return true if the user is a teacher, false otherwise
@@ -666,6 +678,62 @@ const getApplication = async (studentId, thesisId) => {
   return;
 }
 
+/**
+ * Retrieve the applications of the student by the applications' state
+ * @param state the state of applications you are searching for
+ * @return the applications' array
+ * 
+ */
+const getApplicationsByState = async (state) => {
+  if (auth.currentUser) {
+    if (await isStudent(auth.currentUser.email)) {
+      
+      const stateValue = null;
+
+      if (state==="Accepted") {
+        stateValue = true;
+      } else if (state==="Rejected") {
+        stateValue = false;
+      }
+
+      /*const mockApp = [
+          {
+            "studentId": "s789012",
+            "accepted": true,
+            "date": "2022-12-05T16:40:00.000Z",
+            "thesisId": 0,
+            "curriculum": null,
+            "thesisTitle": "Instrumenting Kubernetes 5G services with eBPF probes",
+            "thesisDescription": "Description for Thesis Proposal 1",
+            "teacherName": "John",
+            "teacherSurname": "Smith"
+          },
+          {
+              "studentId": "s789012",
+              "accepted": true,
+              "date": "2022-12-05T16:40:00.000Z",
+              "thesisId": 1,
+              "curriculum": null,
+              "thesisTitle": "Instrumenting Kubernetes 5G services with eBPF probes",
+              "thesisDescription": "Description for Thesis Proposal 1",
+              "teacherName": "John",
+              "teacherSurname": "Smith"
+          }];*/
+
+      //SELECT
+      //FROM
+      //WHERE studentId=auth.currentUser.id accepted=stateValue
+
+
+    } else {
+      return CONSTANTS.unauthorized;
+    }
+  } else {
+    return CONSTANTS.notLogged;
+  }
+
+}
+
 /** API similar to getApplication, but returns data organized in  a different way.
  * 
  * @param {int} id 
@@ -846,7 +914,8 @@ const API = {
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser,
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplications, getApplicationDetails, getCVOfApplication,
-  removeAllProposals, insertProposal, loginWithSaml
+  removeAllProposals, insertProposal, loginWithSaml,
+  getApplicationsByState
 };
 
 //insertProposal(thesisProposalData);

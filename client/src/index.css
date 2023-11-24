@@ -140,6 +140,7 @@ body {
 {
   background-color: blue !important;
   color: white !important;
+  border-bottom: 5px solid lightblue;
 }
 
 .tabElem > li:nth-child(2) > button:active,
@@ -148,14 +149,16 @@ body {
 {
   background-color: green !important;
   color: white !important;
+  border-bottom: 5px solid greenyellow;
 }
 
 .tabElem > li:last-child > button:active,
 .tabElem > li:last-child > button:focus,
 .tabElem > li:last-child .active
 {
-  background-color: red !important;
+  background-color: rgb(192, 4, 4) !important;
   color: white !important;
+  border-bottom: 5px solid orangered;
 }
 
 /*BEGINNING OF MEDIA QUERY INSERT PROPOSAL*/
