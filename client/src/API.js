@@ -217,38 +217,38 @@ const changeVirtualDate = async (date) => {
  * - status;
  * - thesis, null in case of error.
 */
-const getAllThesis = async () => {
+// const getAllThesis = async () => {
 
-  if (auth.currentUser) {
-    try {
-      if (isTeacher(auth.currentUser.email)) {
-        //TO BE MODIFIED: Showing only his thesis
-        const thesisSnapshot = await getDocs(thesisProposalsRef);
-        const allThesis = [];
-        thesisSnapshot.forEach((doc) => {
-          allThesis.push(doc.data());
-        });
+//   if (auth.currentUser) {
+//     try {
+//       if (isTeacher(auth.currentUser.email)) {
+//         //TO BE MODIFIED: Showing only his thesis
+//         const thesisSnapshot = await getDocs(thesisProposalsRef);
+//         const allThesis = [];
+//         thesisSnapshot.forEach((doc) => {
+//           allThesis.push(doc.data());
+//         });
 
-        return { status: 200, thesis: allThesis }
+//         return { status: 200, thesis: allThesis }
 
-      } else {
-        //They are a student
-        const thesisSnapshot = await getDocs(thesisProposalsRef);
-        const allThesis = [];
-        thesisSnapshot.forEach((doc) => {
-          allThesis.push(doc.data());
-        });
+//       } else {
+//         //They are a student
+//         const thesisSnapshot = await getDocs(thesisProposalsRef);
+//         const allThesis = [];
+//         thesisSnapshot.forEach((doc) => {
+//           allThesis.push(doc.data());
+//         });
 
-        return { status: 200, thesis: allThesis }
-      }
-    } catch (e) {
-      console.log("Error:", e);
-      return null; // or handle the error accordingly
-    }
-  } else {
-    return CONSTANTS.notLogged;
-  }
-}
+//         return { status: 200, thesis: allThesis }
+//       }
+//     } catch (e) {
+//       console.log("Error:", e);
+//       return null; // or handle the error accordingly
+//     }
+//   } else {
+//     return CONSTANTS.notLogged;
+//   }
+// }
 
 // ---------------------GET THESIS -----------------------------
 
@@ -540,7 +540,6 @@ const getThesisNumber = async () => {
 
 
 const getThesisWithId = async (ID) => {
-  console.log("Testing getThesisWithID")
 
   //QUERY CONDITIONS
   const whereCond1 = where("id", "==", Number(ID))
@@ -554,7 +553,7 @@ const getThesisWithId = async (ID) => {
       let teachers = teachersSnap.docs.map(doc => doc.data());
       let teacher = teachers.find(t => t.id == thesis.teacherId);
       thesis.supervisor = teacher.name + ' ' + teacher.surname;
-      console.log(thesis);
+      //console.log(thesis);
       return thesis
     } else {
       console.log("Thesis not found");
@@ -728,8 +727,10 @@ const getApplication = async (studentId, thesisId) => {
 const getApplicationsByState = async (state) => {
   if (auth.currentUser) {
     if (await isStudent(auth.currentUser.email)) {
+
+      const user = await API.getUser(auth.currentUser.email);
       
-      const stateValue = null;
+      let stateValue = null;
 
       if (state==="Accepted") {
         stateValue = true;
@@ -737,34 +738,47 @@ const getApplicationsByState = async (state) => {
         stateValue = false;
       }
 
-      /*const mockApp = [
-          {
-            "studentId": "s789012",
-            "accepted": true,
-            "date": "2022-12-05T16:40:00.000Z",
-            "thesisId": 0,
-            "curriculum": null,
-            "thesisTitle": "Instrumenting Kubernetes 5G services with eBPF probes",
-            "thesisDescription": "Description for Thesis Proposal 1",
-            "teacherName": "John",
-            "teacherSurname": "Smith"
-          },
-          {
-              "studentId": "s789012",
-              "accepted": true,
-              "date": "2022-12-05T16:40:00.000Z",
-              "thesisId": 1,
-              "curriculum": null,
-              "thesisTitle": "Instrumenting Kubernetes 5G services with eBPF probes",
-              "thesisDescription": "Description for Thesis Proposal 1",
-              "teacherName": "John",
-              "teacherSurname": "Smith"
-          }];*/
+      //SELECT A.studentId, A.accepted, A.date, A.thesisId, P.title, P.description, T.name, T.surname
+      //FROM applications A, teachers T, thesisProposals P
+      //WHERE join && A.studentId=user.id && A.accepted=stateValue
 
-      //SELECT
-      //FROM
-      //WHERE studentId=auth.currentUser.id accepted=stateValue
+      const whereStudentId = where("studentId", "==", user.id);
+      const whereAccepted = where("accepted", "==", stateValue);
 
+      const qApplication = query(applicationsRef, whereStudentId, whereAccepted);
+
+      let applicationsArray = [];
+
+      try {
+        const applicationsSnapshot = await getDocs(qApplication)
+        const applications = applicationsSnapshot.docs;
+        for (let i=0; i<applications.length; i++) {
+        
+          const thesis = await API.getThesisWithId(applications[i].data().thesisId);
+          const whereTeacherId = where("id", "==", thesis.teacherId);
+          const qTeacher = query(teachersRef, whereTeacherId);
+          const teacherSnapshot = await getDocs(qTeacher);
+          const returnedObject = {
+            "studentId": applications[i].data().studentId,
+            "accepted": applications[i].data().accepted,
+            "date": applications[i].data().date,
+            "thesisId": applications[i].data().thesisId,
+            "thesisTitle": thesis.title,
+            "thesisDescription": thesis.description,
+            "teacherName": teacherSnapshot.docs[0].data().name,
+            "teacherSurname": teacherSnapshot.docs[0].data().surname
+          }
+
+          applicationsArray.push(returnedObject);
+          
+        }
+
+        console.log("Chiamata Api per " + state + " con risultato: " + applicationsArray);
+        return applicationsArray;
+
+      } catch (error) {
+        console.log(error);
+      }
 
     } else {
       return CONSTANTS.unauthorized;
@@ -951,7 +965,7 @@ const insertProposal = async (thesisProposalData) => {
 };
 
 const API = {
-  getThesis, getAllThesis, getThesisWithId, getThesisNumber, getValuesForField,
+  getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser,
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplications, getApplicationDetails, getCVOfApplication,
@@ -959,7 +973,15 @@ const API = {
   getApplicationsByState
 };
 
-//insertProposal(thesisProposalData);
-
-
 export default API;
+
+/*
+console.log("Rejected:");
+await getApplicationsByState("Rejected", "s901234"); //3
+
+console.log("Accepted:");
+await getApplicationsByState("Accepted", "s901234"); //1
+
+console.log("Pending:");
+await getApplicationsByState("Pending", "s901234"); //0
+*/
