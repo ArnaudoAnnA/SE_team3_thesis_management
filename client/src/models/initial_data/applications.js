@@ -1,4 +1,4 @@
-[
+const applications = [
   {
     "studentId": "s789012",
     "accepted": true,
@@ -83,4 +83,5 @@
     "curriculum": "curriculums/s901234_1/Carta d'identità.pdf",
     "thesisId": 1
   }
-]
+];
+export default applications;

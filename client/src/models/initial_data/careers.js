@@ -1,4 +1,4 @@
-[
+const careers = [
   {
     "titleCourse": "Information Systems Course",
     "cfu": 8,
@@ -640,3 +640,5 @@
     "cfu": 12
   }
 ]
+
+export default careers;

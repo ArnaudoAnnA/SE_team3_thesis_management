@@ -1,4 +1,4 @@
-[
+const degrees = [
   {
     "codDegree": "MN012OP",
     "titleDegree": "Master of Engineering in Civil Engineering"
@@ -20,3 +20,5 @@
     "titleDegree": "Master of Design in Graphic Design"
   }
 ]
+
+export default degrees;

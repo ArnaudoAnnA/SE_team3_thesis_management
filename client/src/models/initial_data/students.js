@@ -1,10 +1,10 @@
-[
+const students =[
   {
     "email": "s345678@studenti.polito.it",
     "enrollment_year": "2023",
     "surname": "Ricci",
     "nationality": "Italian",
-    "cod_degree": "IJ789KL",
+    "cod_degree": "QR345ST",
     "id": "s345678",
     "name": "Luca",
     "gender": "Male"
@@ -17,7 +17,7 @@
     "name": "Alessia",
     "gender": "Female",
     "nationality": "Italian",
-    "cod_degree": "UV678WX"
+    "cod_degree": "QR345ST"
   },
   {
     "name": "Valentina",
@@ -33,7 +33,7 @@
     "email": "s234567@studenti.polito.it",
     "name": "Francesca",
     "surname": "Bianchi",
-    "cod_degree": "EF456GH",
+    "cod_degree": "AB123CD",
     "enrollment_year": "2021",
     "nationality": "Italian",
     "id": "s234567",
@@ -46,11 +46,11 @@
     "id": "s567890",
     "surname": "Ferrari",
     "enrollment_year": "2022",
-    "cod_degree": "QR345ST",
+    "cod_degree": "IJ789KL",
     "email": "s567890@studenti.polito.it"
   },
   {
-    "cod_degree": "KL890MN",
+    "cod_degree": "IJ789KL",
     "id": "s012345",
     "nationality": "Italian",
     "gender": "Female",
@@ -61,7 +61,7 @@
   },
   {
     "enrollment_year": "2023",
-    "cod_degree": "YZ901AB",
+    "cod_degree": "IJ789KL",
     "gender": "Male",
     "nationality": "Italian",
     "name": "Roberto",
@@ -72,7 +72,7 @@
   {
     "id": "s890123",
     "surname": "Gallo",
-    "cod_degree": "CD234EF",
+    "cod_degree": "EF456GH",
     "nationality": "Italian",
     "email": "s890123@studenti.polito.it",
     "gender": "Female",
@@ -90,7 +90,7 @@
     "email": "s123456@studenti.polito.it"
   },
   {
-    "cod_degree": "GH567IJ",
+    "cod_degree": "EF456GH",
     "name": "Simone",
     "id": "s901234",
     "gender": "Male",
@@ -100,3 +100,5 @@
     "enrollment_year": "2022"
   }
 ]
+
+export default students;
