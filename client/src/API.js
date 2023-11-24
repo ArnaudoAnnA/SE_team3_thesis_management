@@ -381,6 +381,8 @@ export const orderThesis = (thesis, orderByField) => {
   * - thesis, contains the array of thesis in case of success, otherwise null.
  */
 
+let thesisCache = [];
+
 const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) => {
   if (!auth.currentUser) {
     return CONSTANTS.notLogged;
@@ -408,26 +410,19 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
         whereConditions.push(where("archiveDate", ">=", await getVirtualDate()));
     }
 
-    // compose and run the query
+    // compose the query
     let q = query(
       thesisProposalsRef,
       ...whereConditions
     );
 
-/*   if(lastThesisID !== undefined) {
-    let lastThesis = await getDocs(query(thesisProposalsRef, where('id', '==', lastThesisID))).then(snap => snap.docs[0].data());
-    q = query(q, orderByQuery, startAfter(lastThesis[orderBy[0].DBfield]));
-  }
-
-  if(entry_per_page != 0 && entry_per_page !== undefined)
-    q = query(q, limit(entry_per_page)); */
-
+    // prepare teacher array for name and surname
     let teachersSnap = await getDocs(teachersRef);
     let teachers = teachersSnap.docs.map((doc) => doc.data());
 
+    //run the query
     let thesis = await getDocs(q).then(async (snapshot) => {
       let proposals = [];
-
       snapshot.forEach((doc) => {
         let proposal = doc.data();
         let teacher = teachers.find(
@@ -439,12 +434,19 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
       return proposals;
     });
 
-    if (thesis.length == 0) return { status: 200, thesis: [] };
+    // nothing found
+    if (thesis.length == 0) {
+      thesisCache = [];
+      return { status: 200, thesis: [] };
+    }
 
     // order the thesis
     orderByArray.slice().reverse().forEach((orderBy) => {
       thesis = orderThesis(thesis, orderBy);
     });
+
+    // update the current snapshot
+    thesisCache = thesis;
 
     // page the thesis
     let index; 
@@ -455,8 +457,9 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
 
     // If the ID is not found, index will be -1
     let page = [];
-    page = thesis.slice(index + 1, index + entry_per_page);
 
+    page = thesis.slice(index + 1, index + 4);
+    console.log(page);
     return { status: 200, thesis: page };
   } catch (error) {
     console.log(error);
@@ -464,37 +467,15 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
   }
 };
 
-const getThesisNumber = async (filters) => {
+const getThesisNumber = async () => {
   try {
-    // add filters to the query
-    let whereConditions = await buildWhereConditions(filters);
-    
-    if (await isTeacher(auth.currentUser.email)) {
-      let thisTeacherId = await getDocs(query(teachersRef, where('email', '==', auth.currentUser.email))).then(snap => snap.docs[0].data().id);
-      whereConditions.push(where('teacherId', '==', thisTeacherId));
-    }
-    
-    // show only active thesis
-    if(filters.expirationDate.to == '' && filters.expirationDate.from == '')
-      whereConditions.push(where('archiveDate', '>=', await getVirtualDate()));
-
-    let q = query(thesisProposalsRef, ...whereConditions);
-
-    let n = await getDocs(q)
-      .then(async snapshot => {
-        return snapshot.size;
-      });
-    return { status: 200, number: n };
-
-    /*
-    const querySnapshot = await getDocs(thesisProposalsRef);
-    const numberOfDocs = querySnapshot.size;
-    //console.log("Number of thesis:", numberOfDocs);
-    return numberOfDocs;*/
-  } catch (error) {
-    console.error("Error getting documents: ", error);
-    return {status: 500};
+    console.log("Getting thesis number: " + thesisCache.length);
+    return {status: 200, number: thesisCache.length};
   }
+  catch (error) {
+    console.log(error);
+    return { status: 500, err: error };
+  } 
 }; 
 
 
