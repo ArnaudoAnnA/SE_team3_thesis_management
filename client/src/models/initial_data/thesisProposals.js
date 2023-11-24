@@ -1,74 +1,47 @@
-[
+const thesisProposals = [
   {
     "title": "Instrumenting Kubernetes 5G services with eBPF probes",
-    "coSupervisors": [
-      "david@example.com",
-      "d567890@studenti.polito.it"
-    ],
+    "coSupervisors": ["david@example.com", "d567890@studenti.polito.it"],
     "description": "Description for Thesis Proposal 1",
-    "programmes": "Programmes for Thesis Proposal 1",
-    "keywords": [
-      "keyword1",
-      "tag1"
-    ],
+    "programmes": "Master of Design in Graphic Design",
+    "keywords": ["keyword1", "tag1"],
     "level": "master",
     "id": 0,
     "archiveDate": "2025-08-24T14:15:06.473Z",
     "teacherId": "d123456",
     "notes": "Additional notes for Thesis Proposal 1",
     "expirationDate": "2025-09-24T14:15:06.473Z",
-    "groups": [
-      "SOFTENG - Software Engineering",
-      "FM - Formal Methods"
-    ],
+    "groups": ["SOFTENG", "FM"],
     "requiredKnowledge": "Required knowledge for Thesis Proposal 1",
     "type": "academic research"
   },
   {
-    "coSupervisors": [
-      "d345678@studenti.polito.it",
-      "alice@company.com"
-    ],
+    "coSupervisors": ["d345678@studenti.polito.it", "alice@company.com"],
     "level": "master",
     "type": "academic research",
     "archiveDate": "2022-06-28T14:15:06.474Z",
     "requiredKnowledge": "Required knowledge for Thesis Proposal 2",
     "notes": "Additional notes for Thesis Proposal 2",
-    "keywords": [
-      "keyword2",
-      "tag2"
-    ],
+    "keywords": ["keyword2", "tag2"],
     "expirationDate": "2022-06-28T14:15:06.474Z",
     "teacherId": "d123456",
     "description": "Description for Thesis Proposal 2",
-    "programmes": "Programmes for Thesis Proposal 2",
+    "programmes": "Master of Engineering in Civil Engineering",
     "title": "Sviluppo e containerizzazione di microservizi di monitoraggio e analisi dei consumi energetici su cluster Kubernetes",
     "id": 1,
-    "groups": [
-      "SOFTENG - Software Engineering",
-      "METENG - Ingegneria Metallurgica"
-    ]
+    "groups": ["SOFTENG", "METENG"]
   },
   {
-    "keywords": [
-      "keyword1",
-      "tag1"
-    ],
+    "keywords": ["keyword1", "tag1"],
     "description": "Description for Thesis Proposal 1",
-    "coSupervisors": [
-      "laura@studenti.polito.it",
-      "d123456@studenti.polito.it"
-    ],
+    "coSupervisors": ["laura@studenti.polito.it", "d123456@studenti.polito.it"],
     "level": "master",
-    "groups": [
-      "FM - Formal Methods",
-      "SOFTENG - Software Engineering"
-    ],
+    "groups": ["FM", "SOFTENG"],
     "requiredKnowledge": "Required knowledge for Thesis Proposal 1",
     "teacherId": "d234567",
     "title": "Endless scalability of CPU-hungry applications across multiple federated clusters (Liqo/Aruba)",
     "type": "academic research",
-    "programmes": "Programmes for Thesis Proposal 1",
+    "programmes": "Bachelor of Engineering in Electrical Engineering",
     "notes": "Additional notes for Thesis Proposal 1",
     "expirationDate": "2024-08-04T14:15:06.474Z",
     "archiveDate": "2024-02-04T15:15:06.474Z",
@@ -76,126 +49,83 @@
   },
   {
     "type": "stage",
-    "keywords": [
-      "keyword2",
-      "tag2"
-    ],
+    "keywords": ["keyword2", "tag2"],
     "id": 3,
-    "coSupervisors": [
-      "marco@company.com",
-      "alice@example.com"
-    ],
+    "coSupervisors": ["marco@company.com", "alice@example.com"],
     "level": "bachelor",
     "description": "Description for Thesis Proposal 2",
-    "groups": [
-      "FM - Formal Methods"
-    ],
+    "groups": ["FM"],
     "expirationDate": "2024-01-28T15:15:06.474Z",
     "notes": "Additional notes for Thesis Proposal 2",
     "teacherId": "d234567",
     "requiredKnowledge": "Required knowledge for Thesis Proposal 2",
     "title": "Formal Verification of Safety-Critical Software Systems Using Model Checking Techniques",
-    "programmes": "Programmes for Thesis Proposal 2",
+    "programmes": "Bachelor of Architecture",
     "archiveDate": "2023-08-28T14:15:06.474Z"
   },
   {
     "level": "master",
-    "groups": [
-      "METENG - Ingegneria Metallurgica",
-      "FM - Formal Methods"
-    ],
+    "groups": ["METENG", "FM"],
     "id": 4,
     "description": "Description for Thesis Proposal 1",
     "requiredKnowledge": "Required knowledge for Thesis Proposal 1",
-    "coSupervisors": [
-      "d567890@studenti.polito.it",
-      "laura@example.com"
-    ],
-    "keywords": [
-      "keyword1",
-      "tag1"
-    ],
+    "coSupervisors": ["d567890@studenti.polito.it", "laura@example.com"],
+    "keywords": ["keyword1", "tag1"],
     "teacherId": "d345678",
     "type": "stage",
     "notes": "Additional notes for Thesis Proposal 1",
     "title": "Automatic and Optimal Configuration of Secure Communications in Virtualized Networks",
     "archiveDate": "2019-12-05T15:15:06.474Z",
-    "programmes": "Programmes for Thesis Proposal 1",
+    "programmes": "Master of Design in Graphic Design",
     "expirationDate": "2020-06-05T14:15:06.474Z"
   },
   {
     "description": "Description for Thesis Proposal 2",
-    "programmes": "Programmes for Thesis Proposal 2",
+    "programmes": "Master of Engineering in Civil Engineering",
     "expirationDate": "2025-09-28T14:15:06.474Z",
-    "coSupervisors": [
-      "d234567@studenti.polito.it",
-      "david@company.com"
-    ],
+    "coSupervisors": ["d234567@studenti.polito.it", "david@company.com"],
     "notes": "Additional notes for Thesis Proposal 2",
-    "keywords": [
-      "keyword2",
-      "tag2"
-    ],
+    "keywords": ["keyword2", "tag2"],
     "title": "Utilizing Machine Learning Techniques for Predictive Maintenance of Metallurgical Equipment",
     "requiredKnowledge": "Required knowledge for Thesis Proposal 2",
     "level": "master",
     "archiveDate": "2025-06-28T14:15:06.474Z",
     "id": 5,
     "teacherId": "d345678",
-    "groups": [
-      "METENG - Ingegneria Metallurgica",
-      "FM - Formal Methods"
-    ],
+    "groups": ["METENG", "FM"],
     "type": "academic research"
   },
   {
     "teacherId": "d456789",
     "requiredKnowledge": "Required knowledge for Thesis Proposal 1",
     "description": "Description for Thesis Proposal 1",
-    "groups": [
-      "SOFTENG - Software Engineering"
-    ],
+    "groups": ["SOFTENG"],
     "archiveDate": "2025-04-19T14:15:06.474Z",
     "expirationDate": "2025-07-19T14:15:06.474Z",
-    "keywords": [
-      "keyword1",
-      "tag1"
-    ],
+    "keywords": ["keyword1", "tag1"],
     "level": "bachelor",
-    "coSupervisors": [
-      "d123456@studenti.polito.it",
-      "marco@studenti.polito.it"
-    ],
+    "coSupervisors": ["d123456@studenti.polito.it", "marco@studenti.polito.it"],
     "id": 6,
     "title": "Enhancing Software Quality Through Automated Testing and Continuous Integration",
     "notes": "Additional notes for Thesis Proposal 1",
-    "programmes": "Programmes for Thesis Proposal 1",
+    "programmes": "Bachelor of Engineering in Electrical Engineering",
     "type": "academic research"
   },
   {
     "description": "Description for Thesis Proposal 2",
-    "programmes": "Programmes for Thesis Proposal 2",
+    "programmes": "Bachelor of Architecture",
     "teacherId": "d456789",
     "title": "Definizione dell’infrastruttura di comunicazione e computing per l’operatività di droni/rover su Marte (POLITO/PIC4SER)",
     "archiveDate": "2022-10-29T14:15:06.474Z",
-    "groups": [
-      "SOFTENG - Software Engineering",
-      "METENG - Ingegneria Metallurgica"
-    ],
+    "groups": ["SOFTENG", "METENG"],
     "id": 7,
     "type": "academic research",
     "requiredKnowledge": "Required knowledge for Thesis Proposal 2",
-    "keywords": [
-      "keyword2",
-      "tag2"
-    ],
+    "keywords": ["keyword2", "tag2"],
     "notes": "Additional notes for Thesis Proposal 2",
     "level": "master",
     "expirationDate": "2022-11-29T15:15:06.474Z",
-    "coSupervisors": [
-      "d345678@studenti.polito.it",
-      "laura@studenti.polito.it"
-    ]
+    "coSupervisors": ["d345678@studenti.polito.it", "laura@studenti.polito.it"]
   },
   {
     "type": "academic research",
@@ -209,37 +139,25 @@
       "d345678@studenti.polito.it"
     ],
     "level": "master",
-    "keywords": [
-      "keyword1",
-      "tag1"
-    ],
+    "keywords": ["keyword1", "tag1"],
     "description": "Description for Thesis Proposal 1",
-    "programmes": "Programmes for Thesis Proposal 1",
-    "groups": [
-      "FM - Formal Methods",
-      "METENG - Ingegneria Metallurgica"
-    ],
+    "programmes": "Bachelor of Engineering in Electrical Engineering",
+    "groups": ["FM", "METENG"],
     "notes": "Additional notes for Thesis Proposal 1",
     "requiredKnowledge": "Required knowledge for Thesis Proposal 1"
   },
   {
     "expirationDate": "2025-10-08T14:15:06.475Z",
-    "keywords": [
-      "keyword2",
-      "tag2"
-    ],
+    "keywords": ["keyword2", "tag2"],
     "level": "master",
     "description": "Description for Thesis Proposal 2",
     "archiveDate": "2025-09-08T14:15:06.475Z",
     "id": 9,
-    "groups": [
-      "FM - Formal Methods",
-      "SOFTENG - Software Engineering"
-    ],
+    "groups": ["FM", "SOFTENG"],
     "type": "stage",
     "notes": "Additional notes for Thesis Proposal 2",
     "requiredKnowledge": "Required knowledge for Thesis Proposal 2",
-    "programmes": "Programmes for Thesis Proposal 2",
+    "programmes": "Bachelor of Engineering in Electrical Engineering",
     "title": "Formal Methods for Software Specification and Verification: Ensuring System Correctness and Reliability",
     "teacherId": "d567890",
     "coSupervisors": [
@@ -249,24 +167,20 @@
   },
   {
     "title": "Reply: Investigation of AI-Powered Robotics for Automated Manufacturing Processes",
-    "groups": [
-      "METENG - Ingegneria Metallurgica"
-    ],
+    "groups": ["METENG"],
     "requiredKnowledge": "Web App1",
     "id": 25,
-    "keywords": [
-      "Reply"
-    ],
+    "keywords": ["Reply"],
     "expirationDate": "2024-05-20T07:17:35.131Z",
-    "coSupervisors": [
-      "s123456@studenti.polito.it"
-    ],
+    "coSupervisors": ["s123456@studenti.polito.it"],
     "notes": "",
     "description": "Tesi in azienda",
     "type": "Stage",
     "archiveDate": "2024-05-20T07:17:35.131Z",
-    "programmes": "InformaticEngineering",
+    "programmes": "Bachelor of Architecture",
     "teacherId": "d345678",
     "level": "Master"
   }
 ]
+
+export default thesisProposals;

@@ -1,9 +1,9 @@
-import applications from "/application.json";
-import students from "/student.json";
-import teachers from "/teacher.json";
-import careers from "/career.json";
-import thesisProposals from "/thesisProposal.json";
-import degrees from "/degree.json";
+import app from "./applications.js";
+import studs from "./students.js";
+import teachs from "./teachers.js";
+import cars from "./careers.js";
+import thesis from "./thesisProposals.js";
+import degs from "./degrees.js";
 
 import dayjs from "dayjs";
 
@@ -13,9 +13,9 @@ export const date = [
   }
 ];
 
-export const applications = applications;
-export const students = students;
-export const teachers = teachers;
-export const careers = careers;
-export const thesisProposals = thesisProposals;
-export const degrees = degrees;
+export const applications = app;
+export const students = studs;
+export const teachers = teachs;
+export const careers = cars;
+export const thesisProposals = thesis;
+export const degrees = degs;
