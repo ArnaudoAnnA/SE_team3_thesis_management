@@ -22,13 +22,14 @@ function ThesisFieldFilterForm(props)
                 </>;
         default:
             return <Autocomplete
-            options={API.getValuesForField(props.DBfield)}
-            freeSolo
+            options={API.getValuesForField(props.DBfield).map(e => {return {value: e, label: e};})}
+            autoComplete
+            autoSelect
             onChange={(event) => {
-                props.onChangeFiltersForm(props.DBfield, event.target.value);
+                props.onChangeFiltersForm(props.DBfield, event.target.outerText);
             }}
             onBlur={(event) => {
-                props.onChangeFiltersForm(props.DBfield, event.target.value);
+                props.onChangeFiltersForm(props.DBfield, event.target.outerText);
             }}
             renderInput={(params) => <TextField {...params} variant="standard"   style={{ paddingLeft: "2px", borderRadius: "6px", width: '100%', fontSize: "12px"}}/>}
           />//<Form.Control defaultValue={props.filters[props.DBfield]} id={props.DBfield} type="text" onChange={(event) => props.onChangeFiltersForm(event)}/>;
@@ -60,8 +61,9 @@ function AdvancedFiltersTable(props)
                                     <Row><ThesisFieldFilterForm filters={props.filters} onChangeFiltersForm={props.onChangeFiltersForm} DBfield={c.DBfield} /></Row>
                             </div>)}
     </Row>
+    
     </Row>
-    <hr size={15}/>
+    
     </>;
 }
 
@@ -100,12 +102,9 @@ function FiltersForm(props)
     return (
         <>
         <Row className="mb-3 justify-content-around">
-            <Col className="col-xl-9 col-lg-9 col-md-9 col-s-7 col-xs-5"><Form.Control value={props.filters.title} id='title' type="text" placeholder="Search title..." onChange={(event) => onChangeFiltersForm(event)} /></Col>
-            <Col><Table borderless><tbody><tr>
-                <td style={{backgroundColor: "#fff0"}} className="col-3 hover-zoom"><Search className="flexible_icons icons" onClick={() => ctxState.setState(ctxState.states.loading)}/></td>
-                <td style={{backgroundColor: "#fff0"}} className="col-3 hover-zoom"><Filter className="flexible_icons icons" onClick={() => setShowAdvancedFilters(s => !s)}/></td>
-                <td style={{backgroundColor: "#fff0"}} className="col-3"><Button className="blueButton" disabled={!isFiltered()} onClick={() => resetFilters()}>Reset</Button></td>
-            </tr></tbody></Table></Col>
+            <Col className="col-xl-9 col-lg-9 col-md-9 col-s-9 col-xs-8"><Form.Control value={props.filters.title} id='title' type="text" placeholder="Search title..." onChange={(event) => onChangeFiltersForm(event)} /></Col>
+            <Col className="col-1" style={{backgroundColor: "#fff0"}}><Search className="flexible_icons icons" onClick={() => ctxState.setState(ctxState.states.loading)}/></Col>
+            <Col className="col-2" style={{backgroundColor: "#fff0"}}><Button onClick={() => setShowAdvancedFilters(s => !s)}>More filters...</Button></Col>
         </Row>
         <Row>
             {showAdvancedFilters ? <AdvancedFiltersTable filters={filters} onChangeFiltersForm={onChangeFiltersForm}/>

@@ -22,7 +22,7 @@ function ThesisList(props)
         { DBfield: "coSupervisors", title: "Co-Supervisors",  }, //array
         { DBfield: "type", title: "Type",  },
         { DBfield: "groups", title: "Groups",  }, //array
-        { DBfield: "expirationDate", title: "Expiration date",  },
+        { DBfield: "expirationDate", title: "Expiration",  },
         { DBfield: "level", title: "Level",  },
         { DBfield: "programmes", title: "Programmes",  }
         //further info in the thesis dedicated page
@@ -33,7 +33,7 @@ function ThesisList(props)
     const DEFAULT_FILTERS =  {
         expirationDate: {to: "", from: ""},
         title: "",
-        teacherName: "",
+        supervisor: "",
         coSupervisors: [],
         type: "",
         groups: [],
@@ -202,7 +202,9 @@ function ThesisList(props)
                 { (state == STATES.ready || state == STATES.show_more) ? 
                     <>
                         <FiltersForm filters={[filters, setFilters, resetFilters, isFiltered]}/>
-                        <p>Number of items: {thesisNumber}</p>
+                        
+                        <p className="text-info">Number of items: {thesisNumber}</p>
+                        <hr />
                         <ThesisTable columns={COLUMNS} thesis={thesis} orderBy={orderBy} orderByField={orderByField}/>
                         {
                             <Row className="justify-content-center"><Col className="col-2 justify-content-center">
