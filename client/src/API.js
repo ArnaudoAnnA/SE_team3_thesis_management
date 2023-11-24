@@ -359,6 +359,14 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
   }
 };
 
+/**
+ * 
+ */
+const getValuesForField = (DBfield) =>
+{
+  return ["mock!!!!"];
+}
+
 const getThesisNumber = async (filters) => {
   try {
     // add filters to the query
@@ -805,7 +813,7 @@ const insertProposal = async (thesisProposalData) => {
 };
 
 const API = {
-  getThesis, getAllThesis, getThesisWithId, getThesisNumber,
+  getThesis, getAllThesis, getThesisWithId, getThesisNumber, getValuesForField,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser,
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplications, getApplicationDetails, getCVOfApplication,
