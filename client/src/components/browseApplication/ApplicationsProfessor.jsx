@@ -13,6 +13,24 @@ import API  from '../../API';
 import { userContext } from "../Utils";
 import dayjs from 'dayjs';
 
+let date = new dayjs();
+
+const formatWatchDate = (dayJsDate, format) => {
+    return dayJsDate ? dayJsDate.format(format) : '';
+}
+
+const returnedObject = {
+    "studentId": "ciao",
+    "accepted": "ciao",
+    "thesisId": "ciao",
+    "thesisTitle": "Stack App",
+    "thesisDescription": "ciao",
+    "teacherName": "ciao",
+    "teacherSurname": "ciao",
+    "students": [{name: "Anna", surname: "ciao", date: date},{name: "Emilio", surname: "ciao2", date: date}, {name: "Vincenzo", surname: "ciao3", date: new dayjs()}],
+
+  }
+
 function ApplicationsProfessor(props) {
 
     const user = useContext(userContext);
@@ -22,16 +40,9 @@ function ApplicationsProfessor(props) {
     const [key, setKey] = useState(activeKey);
     const [applications, setApplications] = useState([]);
 
-    const returnedObject = {
-        "studentId": "ciao",
-        "accepted": "ciao",
-        "date": "ciao",
-        "thesisId": "ciao",
-        "thesisTitle": "ciao",
-        "thesisDescription": "ciao",
-        "teacherName": "ciao",
-        "teacherSurname": "ciao"
-      }
+
+
+    
 
     useEffect(() => {
 
@@ -47,11 +58,17 @@ function ApplicationsProfessor(props) {
         }
 
         if (key=="Pending") {
-            fetchApplicationsByState("Pending");
+            //fetchApplicationsByState("Pending");
+            let v = [];
+            v[0]= returnedObject;
+            v[1]= returnedObject;
+            v[2]= returnedObject;
+            v[3]= returnedObject;
+            setApplications(v)
         } else if (key=="Accepted") {
-            fetchApplicationsByState("Accepted");
+           // fetchApplicationsByState("Accepted");
         } else {
-            fetchApplicationsByState("Rejected");
+            //fetchApplicationsByState("Rejected");
         }
 
         //console.log("activeKey from ThesisDetail: " + activeKey);
@@ -66,23 +83,36 @@ function ApplicationsProfessor(props) {
                 justify
                 activeKey={key}
                 onSelect={(k) => setKey(k)}
+   
             >
-                <Tab eventKey="Pending" title="Pending">
+                <Tab eventKey="Pending" title="Pending" style={{width: "70%", padding: "3%", backgroundColor: "white", marginTop:"2%", borderRadius: "6px", border:" 3px solid rgba(125, 123, 123, 0.42)", marginLeft: "auto", marginRight: "auto"}}>
+                    <Table>
+                        <tbody>
                     {applications.length == 0 ? "You have no applications for this category" : 
-                        applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
+                        applications.map((app) => <tr><AppTable key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/></tr>)
                     }
+                    </tbody>
+                    </Table>
                 </Tab>
 
-                <Tab eventKey="Accepted" title="Accepted">
+                <Tab eventKey="Accepted" title="Accepted" style={{width: "70%", padding: "3%", backgroundColor: "white", marginTop:"2%", borderRadius: "6px", border:" 3px solid rgba(125, 123, 123, 0.42)", marginLeft: "auto", marginRight: "auto"}}>
+                <Table>
+                        <tbody>
                     {applications.length == 0 ? "You have no applications for this category" : 
-                        applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
+                        applications.map((app) => <tr><AppTable key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/></tr>)
                     }
+                     </tbody>
+                    </Table>
                 </Tab>
 
-                <Tab eventKey="Rejected" title="Rejected">
+                <Tab eventKey="Rejected" title="Rejected" style={{width: "70%", padding: "3%", backgroundColor: "white", marginTop:"2%", borderRadius: "6px", border:" 3px solid rgba(125, 123, 123, 0.42)", marginLeft: "auto", marginRight: "auto"}}>
+                <Table>
+                        <tbody>
                     {applications.length == 0 ? "You have no applications for this category" : 
-                        applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
+                        applications.map((app) => <tr><AppTable key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/></tr>)
                     }
+                         </tbody>
+                    </Table>
                 </Tab>
             </Tabs>
     </div>
@@ -90,36 +120,53 @@ function ApplicationsProfessor(props) {
 
 }
 
-function AppCard(props) {
+function AppTable(props) {
 
     const formatWatchDate = (dayJsDate, format) => {
         return dayJsDate ? dayJsDate.format(format) : '';
     }
 
     const location = useLocation();
+    const [studName, setName] = useState();
+    const [viewStudents, setViewStudents] = useState(false);
+
+
 
     return (
-        <Card className="text-center mt-3 mx-5 appCard">
-            <Card.Header className="text-end">{props.app.thesisTitle}</Card.Header>
-            <Card.Body>
-                <Card.Text>
-                    {props.app.coSupervisors}
-                </Card.Text>
-                <select
-                      style={{ borderRadius: "6px" }}
-                      className="form-control"
-                      value={nomeStudenti}
-                      onChange={ev => setName(ev.target.value)}>
-                      <option  value="" disabled>--Select the student--</option>
-                      {Object.keys(optionsObject).map(optionKey => (
-                        <option key={optionKey} value={optionKey}>
-                          {optionsObject[optionKey]}
-                        </option>
-                      ))}
-                    </select>
-            </Card.Body>
-            <Card.Footer className="text-muted text-end">Application Date: {formatWatchDate(dayjs(props.app.date), 'MMMM D, YYYY')}</Card.Footer>
-        </Card>
+ <>
+                <h1> {returnedObject.thesisTitle}</h1>
+                <p className= "text-info" style={{textAlign: "start"}} onClick={(e) => setViewStudents((v) => !v)}>
+                    {"View applications" + (viewStudents ? " ▽ " : " ▷")}
+                </p>
+                {viewStudents ? <Table class= "prova" hover style={{flexDirection: "row", width:"85%", borderBlockColor: "white"}}>
+
+                    <tbody>
+
+                    {returnedObject.students.map(
+
+                        key => (
+
+                            <tr>
+
+                                <td><h5> {key.name} </h5></td>
+                                <td> <h5> {key.surname} </h5></td>
+                                <td style={{marginLeft: "1px"}}><p> Application Date: {formatWatchDate(key.date, 'YYYY-MM-DD')} </p></td>
+    
+
+                            </tr>
+
+                        )
+
+                    )}
+
+
+                    </tbody>
+
+                </Table> : ""} 
+                <hr></hr>
+
+                </>
+  
     );
 }
 

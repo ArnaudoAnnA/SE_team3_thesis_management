@@ -162,6 +162,8 @@ body {
   border-bottom: 5px solid orangered;
 }
 
+
+
 /*BEGINNING OF MEDIA QUERY INSERT PROPOSAL*/
 
 .proposal-article{
@@ -245,11 +247,7 @@ body {
   }
 
   
-  .fade{
 
-    width: 30% !important;
-
-  }
 
 }
 
@@ -287,11 +285,7 @@ body {
 
   }
   
-  .fade{
 
-    width: 30% !important;
-
-  }
   .MuiAutocomplete-root{
 
     flex: 1 1 auto !important; 
@@ -325,11 +319,7 @@ body {
     padding-right: 30px;
   }
 
-  .fade{
 
-    width: 50% !important;
-
-  }
 
   .MuiAutocomplete-root{
 
@@ -437,12 +427,7 @@ body {
 
 
   }
-  
-  .fade{
 
-    width: 30% !important;
-
-  }
 
 }
 
@@ -484,11 +469,7 @@ body {
 
   }
   
-  .fade{
 
-    width: 50% !important;
-
-  }
 
 }
 
@@ -563,11 +544,7 @@ body {
   }
 
   
-  .fade{
 
-    width: 50% !important;
-
-  }
 
 }
 
@@ -592,13 +569,7 @@ body {
   }
 
   
-  .fade{
 
-    width: 80% !important;
-    height: 5% !important;
-    font-size: "5px" !important;
-
-  }
   
   .bi-exclamation-triangle{
 
