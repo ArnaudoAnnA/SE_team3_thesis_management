@@ -36,7 +36,9 @@ function ApplicationsProfessor(props) {
     const user = useContext(userContext);
     const location = useLocation();
     const activeKey = location.state?.activeKey || "Pending";
+    const STATES = {LOADING: "Loading...", ERROR: "Some error occoured...", READY: "ready"};
 
+    const [state, setState] = useState(STATES.LOADING);
     const [key, setKey] = useState(activeKey);
     const [applications, setApplications] = useState([]);
 
@@ -46,25 +48,30 @@ function ApplicationsProfessor(props) {
 
     useEffect(() => {
 
+        setState(STATES.LOADING);
         async function fetchApplicationsByState(state){
             if(user.id){
                 API.getApplicationsByState(state)
                 .then((applications) => {
                     setApplications(applications);
-                    console.log(applications)
+                    setState(STATES.READY);
+                    console.log(applications);
                 })
-                .catch(e => console.log("Error in ApplicationsStudent/getApplicationsByState:" + e))
+                .catch(e => {console.log("Error in ApplicationsStudent/getApplicationsByState:" + e); setState(STATES.ERROR);});
             }
         }
 
         if (key=="Pending") {
             //fetchApplicationsByState("Pending");
+            /* --------------MOCK (TO BE DELETED) -------------------*/
             let v = [];
             v[0]= returnedObject;
             v[1]= returnedObject;
             v[2]= returnedObject;
             v[3]= returnedObject;
-            setApplications(v)
+            setApplications(v);
+            setState(STATES.READY); 
+            /*--------------------------------------*/
         } else if (key=="Accepted") {
            // fetchApplicationsByState("Accepted");
         } else {
@@ -77,6 +84,7 @@ function ApplicationsProfessor(props) {
   
     return (
         <div className='mx-5'>
+            {state != STATES.READY ? <Alert>{state}</Alert>: ""}
             <Tabs
                 variant="pills"
                 className="mt-3 tabElem"
@@ -133,9 +141,9 @@ function AppTable(props) {
 
 
     return (
- <>
+            <>
                 <h1> {returnedObject.thesisTitle}</h1>
-                <p className= "text-info" style={{textAlign: "start"}} onClick={(e) => setViewStudents((v) => !v)}>
+                <p className= "text-info change-bg-on-hover" style={{textAlign: "start"}} onClick={(e) => setViewStudents((v) => !v)}>
                     {"View applications" + (viewStudents ? " ▽ " : " ▷")}
                 </p>
                 {viewStudents ? <Table class= "prova" hover style={{flexDirection: "row", width:"85%", borderBlockColor: "white"}}>

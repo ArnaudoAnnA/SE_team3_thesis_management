@@ -640,7 +640,7 @@ body {
   }
 }
 
-.icons:hover
-  {
-    background-color:lightgrey;
-  }
+.change-bg-on-hover:hover
+{
+  background-color:rgb(239, 237, 237);
+}

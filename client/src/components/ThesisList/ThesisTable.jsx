@@ -77,8 +77,8 @@ function InteractiveTh(props)
 
     function ToggleArrow()
     {
-        return asc ? <th className='text-center icons text-info' onClick={() => {props.orderByField(props.col.DBfield, false);}}>{"🡇"}</th>
-                    : <th className='text-center icons text-info' onClick={() => { props.orderByField(props.col.DBfield, true); }}>{"🡅"}</th>;
+        return asc ? <th className='text-center icons change-bg-on-hover text-info' onClick={() => {props.orderByField(props.col.DBfield, false);}}>{"🡇"}</th>
+                    : <th className='text-center icons change-bg-on-hover text-info' onClick={() => { props.orderByField(props.col.DBfield, true); }}>{"🡅"}</th>;
     }
 
     return <th key={props.col.DBfield}><Table borderless>

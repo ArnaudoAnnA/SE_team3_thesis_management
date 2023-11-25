@@ -105,12 +105,12 @@ function FiltersForm(props)
         <>
         <Row className="mb-3 justify-content-around">
             <Col className="col-xl-9 col-lg-9 col-md-9 col-s-9 col-xs-8"><Form.Control value={props.filters.title} id='title' type="text" placeholder="Search title..." onChange={(event) => onChangeFiltersForm(event)} /></Col>
-            <Col className="col-1" style={{backgroundColor: "#fff0"}}><Search className="flexible_icons icons" onClick={() => ctxState.setState(ctxState.states.loading)}/></Col>
+            <Col className="col-1" style={{backgroundColor: "#fff0"}}><Search className="flexible_icons icons change-bg-on-hover" onClick={() => ctxState.setState(ctxState.states.loading)}/></Col>
             <Col className="col-2" style={{backgroundColor: "#fff0"}}>
                 {
                     mediaLarge ?
                     <Button onClick={() => setShowAdvancedFilters(s => !s)}>More filters...</Button>
-                    : <Filter className="flexible_icons icons" onClick={() => setShowAdvancedFilters(s => !s)} />
+                    : <Filter className="flexible_icons icons change-bg-on-hover" onClick={() => setShowAdvancedFilters(s => !s)} />
                 }
             </Col>
         </Row>

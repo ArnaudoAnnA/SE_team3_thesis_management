@@ -106,8 +106,7 @@ function Main() {
             <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm /> : <NotFoundPage />) : <Login />} />
             <Route path='/thesis/:id' element={user.email ? <ThesisDetails /> : <Login />} />
             <Route path='/thesis/:id/apply' element={user.email ? (user.role === "student" ? <ApplyForm virtualDate={date} /> : <NotFoundPage />) : <Login />} />
-            <Route path='/applications' element={user.email ? (user.role === "teacher" ? <NotFoundPage /> : <ApplicationsStudent />) : <Login />} />
-            <Route path='/applicationsprof' element={user.email ? (user.role === "student" ? <NotFoundPage /> : <ApplicationsProfessor />) : <Login />} />
+            <Route path='/applications' element={user.email ? (user.role === "teacher" ? <ApplicationsProfessor /> : <ApplicationsStudent />) : <Login />} />
             <Route path='/browse' element={user.email ? (user.role === "teacher" ? <BrowseForm /> : <NotFoundPage />) : <Login />} />
 
           </Route>
