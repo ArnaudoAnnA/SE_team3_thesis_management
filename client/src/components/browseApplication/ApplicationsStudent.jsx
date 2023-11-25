@@ -16,8 +16,10 @@ import dayjs from 'dayjs';
 function ApplicationsStudent(props) {
 
     const user = useContext(userContext);
+    const location = useLocation();
+    const activeKey = location.state?.activeKey || "Pending";
 
-    const [key, setKey] = useState('Pending');
+    const [key, setKey] = useState(activeKey);
     const [applications, setApplications] = useState([]);
 
     useEffect(() => {
@@ -39,6 +41,8 @@ function ApplicationsStudent(props) {
         } else {
             fetchApplicationsByState("Rejected");
         }
+
+        //console.log("activeKey from ThesisDetail: " + activeKey);
         
     },[key]);
   
@@ -53,19 +57,19 @@ function ApplicationsStudent(props) {
             >
                 <Tab eventKey="Pending" title="Pending">
                     {applications.length == 0 ? "You have no applications for this category" : 
-                        applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app}/>)
+                        applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
                     }
                 </Tab>
 
                 <Tab eventKey="Accepted" title="Accepted">
                     {applications.length == 0 ? "You have no applications for this category" : 
-                        applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app}/>)
+                        applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
                     }
                 </Tab>
 
                 <Tab eventKey="Rejected" title="Rejected">
                     {applications.length == 0 ? "You have no applications for this category" : 
-                        applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app}/>)
+                        applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
                     }
                 </Tab>
             </Tabs>
@@ -90,7 +94,7 @@ function AppCard(props) {
                 <Card.Text>
                     {props.app.thesisDescription}
                 </Card.Text>
-                <Link to={`/thesis/${props.app.thesisId}`} className="btn blueButton" state={{nextpage: location.pathname}}> <span className='white'> See details &nbsp; </span> <i className="bi bi-search white"></i> </Link>
+                <Link to={`/thesis/${props.app.thesisId}`} className="btn blueButton" state={{nextpage: location.pathname, activeKey: props.activeKey}}> <span className='white'> See thesis details &nbsp; </span> <i className="bi bi-search white"></i> </Link>
             </Card.Body>
             <Card.Footer className="text-muted text-end">Application Date: {formatWatchDate(dayjs(props.app.date), 'MMMM D, YYYY')}</Card.Footer>
         </Card>

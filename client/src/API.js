@@ -748,7 +748,7 @@ const getApplicationsByState = async (state) => {
           
         }
 
-        console.log("Chiamata Api per " + state + " con risultato: " + applicationsArray);
+        //console.log("Chiamata Api per " + state + " con risultato: " + applicationsArray);
         return applicationsArray;
 
       } catch (error) {

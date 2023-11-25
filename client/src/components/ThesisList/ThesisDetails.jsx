@@ -50,6 +50,7 @@ function ThesisDetails(props) {
     const navigate = useNavigate();
     const location = useLocation();
     const nextpage = location.state?.nextpage || '/';
+    const activeKey = location.state?.activeKey || 'Pending';
 
     /* --------------------------------- */
 
@@ -81,7 +82,7 @@ function ThesisDetails(props) {
         {
             thesis ? <>
                 <Row>
-                    <Col className="col-1"><Button className="blueButton" onClick={() => navigate(nextpage)}><Arrow90degLeft /></Button></Col>
+                    <Col className="col-1"><Link to={nextpage} state={{activeKey: activeKey}}><Button className="blueButton"><Arrow90degLeft /></Button></Link></Col>
                     {user.role == 'teacher' ? null : <>
                         <Col className="col-7"></Col>
                         <Col className="col-4 d-flex justify-content-end">
