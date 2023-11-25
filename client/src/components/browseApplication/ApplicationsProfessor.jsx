@@ -5,7 +5,7 @@ import Application from '../models/Application';
 import { userContext } from "./Utils";
 */
 import { Alert, Card, Button, Nav, Form, Col, Container, Row, Table, Tabs, Tab } from 'react-bootstrap';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useEffect, useContext } from 'react';
@@ -23,11 +23,11 @@ const returnedObject = {
     "studentId": "ciao",
     "accepted": "ciao",
     "thesisId": "ciao",
-    "thesisTitle": "Stack App",
+    "thesisTitle": "Leonardo",
     "thesisDescription": "ciao",
     "teacherName": "ciao",
-    "teacherSurname": "ciao",
-    "students": [{name: "Anna", surname: "ciao", date: date},{name: "Emilio", surname: "ciao2", date: date}, {name: "Vincenzo", surname: "ciao3", date: new dayjs()}],
+    "teacherSurname": "Leonardo",
+    "students": [{name: "Anna", surname: "Salvatore", date: date},{name: "Emilio", surname: "David", date: date}, {name: "Vincenzo", surname: "Davide", date: new dayjs()}],
 
   }
 
@@ -37,7 +37,6 @@ function ApplicationsProfessor(props) {
     const location = useLocation();
     const activeKey = location.state?.activeKey || "Pending";
     const STATES = {LOADING: "Loading...", ERROR: "Some error occoured...", READY: "ready"};
-
     const [state, setState] = useState(STATES.LOADING);
     const [key, setKey] = useState(activeKey);
     const [applications, setApplications] = useState([]);
@@ -49,7 +48,7 @@ function ApplicationsProfessor(props) {
     useEffect(() => {
 
         setState(STATES.LOADING);
-        async function fetchApplicationsByState(state){
+        /*async function fetchApplicationsByState(state){
             if(user.id){
                 API.getApplicationsByState(state)
                 .then((applications) => {
@@ -59,7 +58,7 @@ function ApplicationsProfessor(props) {
                 })
                 .catch(e => {console.log("Error in ApplicationsStudent/getApplicationsByState:" + e); setState(STATES.ERROR);});
             }
-        }
+        }*/
 
         if (key=="Pending") {
             //fetchApplicationsByState("Pending");
@@ -84,7 +83,7 @@ function ApplicationsProfessor(props) {
   
     return (
         <div className='mx-5'>
-            {state != STATES.READY ? <Alert>{state}</Alert>: ""}
+            {state != STATES.READY ? <Alert style={{textAlign: "center", width: "50%", marginLeft: "auto", marginRight: "auto"}}>{state}</Alert>: ""}
             <Tabs
                 variant="pills"
                 className="mt-3 tabElem"
@@ -93,33 +92,48 @@ function ApplicationsProfessor(props) {
                 onSelect={(k) => setKey(k)}
    
             >
-                <Tab eventKey="Pending" title="Pending" style={{width: "70%", padding: "3%", backgroundColor: "white", marginTop:"2%", borderRadius: "6px", border:" 3px solid rgba(125, 123, 123, 0.42)", marginLeft: "auto", marginRight: "auto"}}>
-                    <Table>
+                <Tab eventKey="Pending" title="Pending" style={{width: "70%", padding: "3%", backgroundColor: "white", marginTop:"2%", borderRadius: "6px", border:" 3px solid rgba(125, 123, 123, 0.42)", marginLeft: "auto", marginRight: "auto", marginBottom: "4%"}}>
+                    <Table >
                         <tbody>
-                    {applications.length == 0 ? "You have no applications for this category" : 
-                        applications.map((app) => <tr><AppTable key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/></tr>)
-                    }
-                    </tbody>
+                            {applications.length === 0 ? (
+                                <tr>
+                                    <td colSpan="3">You have no applications for this category</td>
+                                </tr>
+                            ) : (
+                                applications.map((app) => <tr key={"" + app.studentId + " - " + app.thesisId}><AppTable app={app} activeKey={key} /></tr>)
+                            )}
+                        </tbody>
+
                     </Table>
                 </Tab>
 
-                <Tab eventKey="Accepted" title="Accepted" style={{width: "70%", padding: "3%", backgroundColor: "white", marginTop:"2%", borderRadius: "6px", border:" 3px solid rgba(125, 123, 123, 0.42)", marginLeft: "auto", marginRight: "auto"}}>
+                <Tab eventKey="Accepted" title="Accepted" style={{width: "70%", padding: "3%", backgroundColor: "white", marginTop:"2%", borderRadius: "6px", border:" 3px solid rgba(125, 123, 123, 0.42)", marginLeft: "auto", marginRight: "auto", marginBottom: "4%"}}>
                 <Table>
                         <tbody>
-                    {applications.length == 0 ? "You have no applications for this category" : 
-                        applications.map((app) => <tr><AppTable key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/></tr>)
-                    }
-                     </tbody>
+                            {applications.length === 0 ? (
+                                <tr>
+                                    <td colSpan="3">You have no applications for this category</td>
+                                </tr>
+                            ) : (
+                                applications.map((app) => <tr key={"" + app.studentId + " - " + app.thesisId}><AppTable app={app} activeKey={key} /></tr>)
+                            )}
+                        </tbody>
+
                     </Table>
                 </Tab>
 
-                <Tab eventKey="Rejected" title="Rejected" style={{width: "70%", padding: "3%", backgroundColor: "white", marginTop:"2%", borderRadius: "6px", border:" 3px solid rgba(125, 123, 123, 0.42)", marginLeft: "auto", marginRight: "auto"}}>
+                <Tab eventKey="Rejected" title="Rejected" style={{width: "70%", padding: "3%", backgroundColor: "white", marginTop:"2%", borderRadius: "6px", border:" 3px solid rgba(125, 123, 123, 0.42)", marginLeft: "auto", marginRight: "auto", marginBottom: "4%"}}>
                 <Table>
                         <tbody>
-                    {applications.length == 0 ? "You have no applications for this category" : 
-                        applications.map((app) => <tr><AppTable key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/></tr>)
-                    }
-                         </tbody>
+                            {applications.length === 0 ? (
+                                <tr>
+                                    <td colSpan="3">You have no applications for this category</td>
+                                </tr>
+                            ) : (
+                                applications.map((app) => <tr key={"" + app.studentId + " - " + app.thesisId}><AppTable app={app} activeKey={key} /></tr>)
+                            )}
+                        </tbody>
+
                     </Table>
                 </Tab>
             </Tabs>
@@ -137,16 +151,16 @@ function AppTable(props) {
     const location = useLocation();
     const [studName, setName] = useState();
     const [viewStudents, setViewStudents] = useState(false);
-
+    const navigate = useNavigate()
 
 
     return (
             <>
                 <h1> {returnedObject.thesisTitle}</h1>
-                <p className= "text-info change-bg-on-hover" style={{textAlign: "start"}} onClick={(e) => setViewStudents((v) => !v)}>
+                <p className= "text-info change-bg-on-hover" style={{textAlign: "start", cursor: "pointer", paddingLeft: "2%"}} onClick={(e) => setViewStudents((v) => !v)}>
                     {"View applications" + (viewStudents ? " ▽ " : " ▷")}
                 </p>
-                {viewStudents ? <Table class= "prova" hover style={{flexDirection: "row", width:"85%", borderBlockColor: "white"}}>
+                {viewStudents ? <Table hover style={{ width:"85%", borderBlockColor: "white", cursor: "pointer"}}>
 
                     <tbody>
 
@@ -155,12 +169,15 @@ function AppTable(props) {
                         key => (
 
                             <tr>
-
-                                <td><h5> {key.name} </h5></td>
-                                <td> <h5> {key.surname} </h5></td>
-                                <td style={{marginLeft: "1px"}}><p> Application Date: {formatWatchDate(key.date, 'YYYY-MM-DD')} </p></td>
-    
-
+                                <td onClick={() => navigate(`/browse`)} style={{ verticalAlign: "middle" }}>
+                                    <h5>{key.name}</h5>
+                                </td>
+                                <td onClick={() => navigate(`/browse`)} style={{ verticalAlign: "middle" }}>
+                                    <h5>{key.surname}</h5>
+                                </td>
+                                <td onClick={() => navigate(`/browse`)} style={{ verticalAlign: "middle" }}>
+                                    <p>Application Date: {formatWatchDate(key.date, 'YYYY-MM-DD')}</p>
+                                </td>
                             </tr>
 
                         )
@@ -171,7 +188,7 @@ function AppTable(props) {
                     </tbody>
 
                 </Table> : ""} 
-                <hr></hr>
+                <hr ></hr>
 
                 </>
   

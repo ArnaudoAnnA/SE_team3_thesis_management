@@ -125,7 +125,7 @@ function BrowseForm(props) {
         </Row>
         <Row>
             <Col md={4}>
-                <Link to={`/thesis/${id}`} className="btn blueButton" style={{marginLeft: "4%"}}> <i className="bi bi-arrow-90deg-left white"></i> </Link>
+                <Link to={`/applications`} className="btn blueButton" style={{marginLeft: "4%"}}> <i className="bi bi-arrow-90deg-left white"></i> </Link>
             </Col>
             <Col md={4}>
             </Col>
