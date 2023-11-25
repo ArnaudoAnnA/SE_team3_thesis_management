@@ -35,7 +35,7 @@ const thesisProposals = [
     "keywords": ["keyword1", "tag1"],
     "description": "Description for Thesis Proposal 1",
     "coSupervisors": ["laura@polito.it", "d123456@polito.it"],
-    "level": "master",
+    "level": "bachelor",
     "groups": ["FM", "SOFTENG"],
     "requiredKnowledge": "Required knowledge for Thesis Proposal 1",
     "teacherId": "d234567",
@@ -123,7 +123,7 @@ const thesisProposals = [
     "requiredKnowledge": "Required knowledge for Thesis Proposal 2",
     "keywords": ["keyword2", "tag2"],
     "notes": "Additional notes for Thesis Proposal 2",
-    "level": "master",
+    "level": "bachelor",
     "expirationDate": "2022-11-29T15:15:06.474Z",
     "coSupervisors": ["d345678@polito.it", "laura@polito.it"]
   },
@@ -138,7 +138,7 @@ const thesisProposals = [
       "d234567@polito.it",
       "d345678@polito.it"
     ],
-    "level": "master",
+    "level": "bachelor",
     "keywords": ["keyword1", "tag1"],
     "description": "Description for Thesis Proposal 1",
     "programmes": "Bachelor of Engineering in Electrical Engineering",
@@ -149,7 +149,7 @@ const thesisProposals = [
   {
     "expirationDate": "2025-10-08T14:15:06.475Z",
     "keywords": ["keyword2", "tag2"],
-    "level": "master",
+    "level": "bachelor",
     "description": "Description for Thesis Proposal 2",
     "archiveDate": "2025-09-08T14:15:06.475Z",
     "id": 9,
@@ -179,7 +179,7 @@ const thesisProposals = [
     "archiveDate": "2024-05-20T07:17:35.131Z",
     "programmes": "Bachelor of Architecture",
     "teacherId": "d345678",
-    "level": "Master"
+    "level": "bachelor"
   }
 ]
 
