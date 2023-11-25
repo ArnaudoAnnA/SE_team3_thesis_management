@@ -16,6 +16,8 @@ import { InsertProposalForm } from './components/InsertProposalForm.jsx';
 import { ApplyForm } from './components/ApplyForm.jsx';
 import { BrowseForm } from './components/browseApplication/BrowseForm.jsx';
 import { ApplicationsStudent } from './components/browseApplication/ApplicationsStudent.jsx';
+import { ApplicationsProfessor } from './components/browseApplication/ApplicationsProfessor.jsx';
+
 
 
 function App() {
@@ -105,6 +107,7 @@ function Main() {
             <Route path='/thesis/:id' element={user.email ? <ThesisDetails /> : <Login />} />
             <Route path='/thesis/:id/apply' element={user.email ? (user.role === "student" ? <ApplyForm virtualDate={date} /> : <NotFoundPage />) : <Login />} />
             <Route path='/applications' element={user.email ? (user.role === "teacher" ? <NotFoundPage /> : <ApplicationsStudent />) : <Login />} />
+            <Route path='/applicationsprof' element={user.email ? (user.role === "student" ? <NotFoundPage /> : <ApplicationsProfessor />) : <Login />} />
             <Route path='/browse' element={user.email ? (user.role === "teacher" ? <BrowseForm /> : <NotFoundPage />) : <Login />} />
 
           </Route>
