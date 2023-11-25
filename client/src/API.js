@@ -756,7 +756,55 @@ const getApplicationsByState = async (state) => {
       }
 
     } else {
-      return CONSTANTS.unauthorized;
+      const user = await API.getUser(auth.currentUser.email);
+      
+      let stateValue = null;
+
+      if (state==="Accepted") {
+        stateValue = true;
+      } else if (state==="Rejected") {
+        stateValue = false;
+      }
+
+      //SELECT A.studentId, A.accepted, A.date, A.thesisId, P.title, P.description, T.name, T.surname
+      //FROM applications A, teachers T, thesisProposals P
+      //WHERE join && A.studentId=user.id && A.accepted=stateValue
+
+      const whereTeacherId = where("id", "==", user.id);
+      const whereAccepted = where("accepted", "==", stateValue);
+
+      const qApplication = query(applicationsRef, whereTeacherId, whereAccepted);
+
+      let applicationsArray = [];
+
+      try {
+        const applicationsSnapshot = await getDocs(qApplication)
+        const applications = applicationsSnapshot.docs;
+        for (let i=0; i<applications.length; i++) {
+        
+          const thesis = await API.getThesisWithId(applications[i].data().thesisId);
+          const whereStudentId = where("studentId", "==", thesis.studentId);
+          //const qStudent = query(teachersRef, whereStudentId);
+          //const studentSnapshot = await getDocs(qStudent);
+          const returnedObject = {
+            "studentId": applications[i].data().studentId,
+            "accepted": applications[i].data().accepted,
+            "date": applications[i].data().date,
+            "thesisId": applications[i].data().thesisId,
+            "thesisTitle": thesis.title,
+            "thesisDescription": thesis.description,
+          }
+
+          applicationsArray.push(returnedObject);
+          
+        }
+
+        //console.log("Chiamata Api per " + state + " con risultato: " + applicationsArray);
+        return applicationsArray;
+
+      } catch (error) {
+        console.log(error);
+      }
     }
   } else {
     return CONSTANTS.notLogged;
