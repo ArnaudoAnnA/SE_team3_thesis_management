@@ -608,7 +608,7 @@ const retrieveCareer = async (studentId) => {
  * Possible values for status: [200 (ok), 500 (internal server error), 404 (not found)].
  * Possible values for applications [array (in case of success), null (in case of error)]
  */
-const getApplications = (professorId, state) =>
+const getApplications = (state) =>
 {
 
 }
