@@ -147,7 +147,13 @@ function InsertProposalForm(props) {
   const [title, setTitle] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const [selectedDate, setSelectedDate] = useState(new dayjs());
-
+  const optionsObject = {
+    option1: 'Opzione 1',
+    option2: 'Opzione 2',
+    option3: 'Opzione 3',
+    // ... altri elementi
+  };
+  
  
   useEffect(() => {
     const now = dayjs();
@@ -334,7 +340,7 @@ function InsertProposalForm(props) {
                         setDegree(ev.target.value);
                         console.log(ev.target.value);
                       }}
-                      renderInput={(params) => <TextField {...params} placeholder="Insert the Type.." variant="standard"   style={{ paddingLeft: "2px", borderRadius: "6px", width: '100%', fontSize: "12px"}}/>}
+                      renderInput={(params) => <TextField {...params} placeholder="Insert the Type.." variant="standard" style={{ paddingLeft: "2px", borderRadius: "6px", width: '100%', fontSize: "12px"}}/>}
                     />
                       </div>                 
                       <div className="form-group input-group" style={{display: "flex", marginBottom: "10px"}}>
@@ -365,7 +371,7 @@ function InsertProposalForm(props) {
                         </svg>
                           </div>
                           <select className="form-control" style={{borderRadius: "6px"}} value={level} onChange={ev => setLevel(ev.target.value)}>
-                              <option value=""> --Insert Level--</option>
+                              <option  style={{ fontWeight: "100" }} value="" disabled> --Insert Level--</option>
                               <option value= "Master">Master</option>
                               <option value= "Bachelor">Bachelor</option>
 
@@ -427,7 +433,18 @@ function InsertProposalForm(props) {
                           <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h5.243c.122-.326.295-.668.526-1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v7.81c.353.23.656.496.91.783.059-.187.09-.386.09-.593V4a2 2 0 0 0-2-2H2Z" />
                         </svg>
                       </div>
-                      <input style={{ borderRadius: "6px" }} name="" className="form-control" placeholder="Cds/Programmes" type="text" value={pname} onChange={ev => setpName(ev.target.value)} />
+                    <select
+                      style={{ borderRadius: "6px" }}
+                      className="form-control"
+                      value={pname}
+                      onChange={ev => setpName(ev.target.value)}>
+                      <option  value="" disabled>--Insert Programmes--</option>
+                      {Object.keys(optionsObject).map(optionKey => (
+                        <option key={optionKey} value={optionKey}>
+                          {optionsObject[optionKey]}
+                        </option>
+                      ))}
+                    </select>
                     </div>  
                   <div style={{ display: "flex" }}>
                   <p style={{ paddingTop: "2px", marginBottom: "3px", marginLeft: "auto", marginRight: "auto", fontWeight: "300" }}>Expected Expiration Date (may change)</p>
@@ -454,8 +471,7 @@ function InsertProposalForm(props) {
                           placeholder="Insert your notes here.."
                         />
                       </div> 
-                   
-                                                       
+                       
                       <div className="form-group" style={{marginTop: "2vh", display: 'flex'}}>
                           <Button id="sendpb" style={{marginLeft: "auto", marginRight:"auto",  width: "150px", marginBottom: '10px'}} type="submit" className="blueButton" onClick={handleSubmit}> Upload Proposal  </Button>
                       </div>     
