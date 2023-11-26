@@ -18,7 +18,7 @@ function ThesisFieldFilterForm(props)
         case "expirationDate":
             return <>
                         <Col><Form.Label>From:</Form.Label><Form.Control defaultValue={props.filters.expirationDate.from} id={"expirationDateFrom"} type="date" onChange={(event) => props.onChangeFiltersForm(event.target.id, event.target.value)}/></Col>
-                        <Col><Form.Label>To:</Form.Label><Form.Control defaultValue={props.filters.expirationDate.to} id={"expirationDateTo"} type="date" onChange={(event) => props.onChangeFiltersForm(event.taerget.id, event.target.value)}/></Col>
+                        <Col><Form.Label>To:</Form.Label><Form.Control defaultValue={props.filters.expirationDate.to} id={"expirationDateTo"} type="date" onChange={(event) => props.onChangeFiltersForm(event.target.id, event.target.value)}/></Col>
                 </>;
         default:
             return <Autocomplete
