@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { Alert, Card, Button, Badge, Form, Col, Container, Row, Table } from 'react-bootstrap';
+import { Alert, Card, Button, Badge, Form, Col, Container, Row, Table, Spinner } from 'react-bootstrap';
 import { useState, useEffect, useCallback, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -16,7 +16,7 @@ function BrowseForm(props) {
   const [career, setCareer] = useState([]);
   const [title, setTitle] = useState('');
   const [teacher, setTeacher] = useState();
-
+  const [showSpinner, setShowSpinner] = useState(true);
   const user = useContext(userContext);
   //const {id} = useParams();
   const id = 's345678';
@@ -62,6 +62,7 @@ function BrowseForm(props) {
                     }
                 });
                 setCareer(career);
+                setShowSpinner(false);
             })
             .catch(e => console.log("Error in ApplyForm/retrieveCareerAPI:" + e))
         }
@@ -72,6 +73,7 @@ function BrowseForm(props) {
         .then((result) => {
             setTitle(result.title);
             setTeacher(result.teacher);
+            setShowSpinner(false);
         })
         .catch(e => console.log("Error in ApplyForm/getTitleAndTeacher:" + e))
     }
@@ -131,6 +133,7 @@ function BrowseForm(props) {
             </Col>
         </Row>
       
+        {showSpinner ? (<Spinner  style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "auto", marginRight: "auto", width: "140px", height:"140px"}} animation="border" role="status" />):(
           <div className='container'>
             <hr style={{width: "70%",  marginLeft: "auto", marginRight: "auto"}}></hr>
               <Table style={{ width: "70%", marginLeft: "auto", marginRight: "auto"}}>
@@ -159,25 +162,31 @@ function BrowseForm(props) {
               </Table>
 
           </div>
+          )}
 
-          <Row className="text-center">
-                <Container className='mt-5' style={{width: '55%'}}>
-          <h5 className='mb-5'>Student Career <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0Zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5Z" />
+<>
+      <Row className="text-center">
+        <Container className='mt-5' style={{ width: '55%' }}>
+          <h5 className='mb-5'>Student Career <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-graph-up-arrow" viewBox="0 0 16 16">
+            <path fillRule="evenodd" d="M0 0h1v15h15v1H0V0Zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5Z" />
           </svg></h5>
-                    <StudentCareer exams={career} ></StudentCareer>
-                </Container>
-            </Row>
-          <Row>
-                <Container className='d-flex  mt-1' style={{ width: '50%', height: '10%'}}>  
-                  <Button variant="secondary" class="bg-grey-light hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center">
-                      <svg  style={{ height: '2vw', width: '2vw', marginRight: "8px" }}  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" /></svg>
-                      <span>Download CV</span>
-                  </Button>  
-                </Container>
-            </Row>
-            <Row>
-                <Container className='d-flex justify-content-center mt-4'style={{marginBottom: "3%"}}>
+          {showSpinner ? (
+            <Spinner style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "auto", marginRight: "auto", width: "140px", height: "140px" }} animation="border" role="status" />
+          ) : (
+            <StudentCareer exams={career}></StudentCareer>
+          )}
+        </Container>
+      </Row>
+      <Row>
+        <Container className='d-flex  mt-1' style={{ width: '50%', height: '10%' }}>
+          <Button variant="secondary" className="bg-grey-light hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center" onClick={() => successAlert()}>
+            <svg style={{ height: '2vw', width: '2vw', marginRight: "8px" }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" /></svg>
+            <span>Download CV</span>
+          </Button>
+        </Container>
+      </Row>
+      <Row>
+        <Container className='d-flex justify-content-center mt-4' style={{ marginBottom: "3%" }}>
           <Button
             type="submit"
             style={{ marginRight: "3px", fontSize: "16px", padding: "0.5% 2%" }}
@@ -192,9 +201,9 @@ function BrowseForm(props) {
           >
             Decline
           </Button>
-  
-                </Container>
-            </Row>
+        </Container>
+      </Row>
+    </>
 
     </Container >
   );
