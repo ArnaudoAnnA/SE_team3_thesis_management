@@ -599,20 +599,6 @@ const retrieveCareer = async (studentId) => {
   return career;
 }
 
-/** Retrive the list of applications of all the thesis of a theacher.
- * 
- * @param {int} professorId 
- * @param {bool} state possible values: [null (pending), true (accepted), false (rejected)]
- * 
- * @returns {{status: code, applications: [{id: , studentID: , studentName: , studentSurname: , thesisTitle: , title: }, ...]}}
- * Possible values for status: [200 (ok), 500 (internal server error), 404 (not found)].
- * Possible values for applications [array (in case of success), null (in case of error)]
- */
-const getApplications = (state) =>
-{
-
-}
-
 /**
  * Retrieve the thesis title and relative teacher
  * @param thesisId the id of the thesis
@@ -740,6 +726,7 @@ const getApplicationsByState = async (state) => {
             "thesisId": applications[i].data().thesisId,
             "thesisTitle": thesis.title,
             "thesisDescription": thesis.description,
+            "thesisType": thesis.type,
             "teacherName": teacherSnapshot.docs[0].data().name,
             "teacherSurname": teacherSnapshot.docs[0].data().surname
           }
@@ -812,6 +799,20 @@ const getApplicationsByState = async (state) => {
 
 }
 
+/** Retrive the list of applications of all the thesis of a theacher.
+ * 
+ * @param {int} professorId 
+ * @param {bool} state possible values: [null (pending), true (accepted), false (rejected)]
+ * 
+ * @returns {{status: code, applications: [{id: , studentID: , studentName: , studentSurname: , thesisTitle: , title: }, ...]}}
+ * Possible values for status: [200 (ok), 500 (internal server error), 404 (not found)].
+ * Possible values for applications [array (in case of success), null (in case of error)]
+ */
+const getApplications = (state) =>
+{
+  //talk with Salvo
+}
+
 /** API similar to getApplication, but returns data organized in  a different way.
  * 
  * @param {int} id 
@@ -831,7 +832,7 @@ const getApplicationsByState = async (state) => {
  */
 const getApplicationDetails = (id) =>
 {
-
+  //talk with Salvo
 }
 
 /**
