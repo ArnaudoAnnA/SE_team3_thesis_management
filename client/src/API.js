@@ -988,14 +988,30 @@ const insertProposal = async (thesisProposalData) => {
   }
 };
 
+const getDegree = async () => {
+  try {
+    const q = query(degreesRef);
+    const snapshot = await getDocs(q);
+
+    const titles = snapshot.docs.map((doc) => doc.data().titleDegree);
+
+    return titles.length > 0 ? titles : null;
+  } catch (error) {
+    console.error("Error in calling Firebase:", error);
+    return null;
+  }
+};
+
+
 const API = {
   getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser,
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplications, getApplicationDetails, getCVOfApplication,
   removeAllProposals, insertProposal, loginWithSaml,
-  getApplicationsByState
+  getApplicationsByState, getDegree
 };
+
 
 export default API;
 

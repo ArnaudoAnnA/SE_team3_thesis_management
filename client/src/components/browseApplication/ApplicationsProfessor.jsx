@@ -63,7 +63,12 @@ function ApplicationsProfessor(props) {
         if (key=="Pending") {
             //fetchApplicationsByState("Pending");
             /* --------------MOCK (TO BE DELETED) -------------------*/
-            let v = [];
+            let v = [
+                { key: "unique_key_1", ...returnedObject },
+                { key: "unique_key_2", ...returnedObject },
+                { key: "unique_key_3", ...returnedObject },
+                { key: "unique_key_4", ...returnedObject },
+              ];
             v[0]= returnedObject;
             v[1]= returnedObject;
             v[2]= returnedObject;
@@ -100,7 +105,7 @@ function ApplicationsProfessor(props) {
                                     <td colSpan="3">You have no applications for this category</td>
                                 </tr>
                             ) : (
-                                applications.map((app) => <tr key={"" + app.studentId + " - " + app.thesisId}><AppTable app={app} activeKey={key} /></tr>)
+                                applications.map((app) => <tr key={app.key}><AppTable app={app} activeKey={key} /></tr>)
                             )}
                         </tbody>
 
@@ -115,7 +120,7 @@ function ApplicationsProfessor(props) {
                                     <td colSpan="3">You have no applications for this category</td>
                                 </tr>
                             ) : (
-                                applications.map((app) => <tr key={"" + app.studentId + " - " + app.thesisId}><AppTable app={app} activeKey={key} /></tr>)
+                                applications.map((app) => <tr key={app.key}><AppTable app={app} activeKey={key} /></tr>)
                             )}
                         </tbody>
 
@@ -130,7 +135,7 @@ function ApplicationsProfessor(props) {
                                     <td colSpan="3">You have no applications for this category</td>
                                 </tr>
                             ) : (
-                                applications.map((app) => <tr key={"" + app.studentId + " - " + app.thesisId}><AppTable app={app} activeKey={key} /></tr>)
+                                applications.map((app) => <tr key={app.key}><AppTable app={app} activeKey={key} /></tr>)
                             )}
                         </tbody>
 
@@ -166,9 +171,9 @@ function AppTable(props) {
 
                     {returnedObject.students.map(
 
-                        key => (
+                        (key, index) => (
 
-                            <tr>
+                            <tr key={index} >
                                 <td onClick={() => navigate(`/browse`)} style={{ verticalAlign: "middle" }}>
                                     <h5>{key.name}</h5>
                                 </td>
@@ -188,7 +193,9 @@ function AppTable(props) {
                     </tbody>
 
                 </Table> : ""} 
+           
                 <hr ></hr>
+    
 
                 </>
   

@@ -29,7 +29,6 @@ function InsertProposalForm(props) {
   ];
 
 
-
   const successAlert = () => {
     Swal.fire({  
       title: 'Finished!',  
@@ -147,18 +146,25 @@ function InsertProposalForm(props) {
   const [title, setTitle] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const [selectedDate, setSelectedDate] = useState(new dayjs());
-  const optionsObject = {
-    option1: 'Opzione 1',
-    option2: 'Opzione 2',
-    option3: 'Opzione 3',
-    // ... altri elementi
-  };
-  
- 
+  const [deg, setDeg] = useState()
+
   useEffect(() => {
     const now = dayjs();
     const sixMonthsLater = now.add(6, 'month');
     setSelectedDate(sixMonthsLater)
+    API.getDegree()
+    .then((d) => {
+      console.log("Result:", d);
+      setDeg(d);
+    })
+    .catch((e) => {
+      console.error("Error API:", e);
+
+    });
+  
+  
+    console.log(deg)
+
   }, []);
  
   //Performs the controlls and if it's true the sendig part of the form
@@ -224,17 +230,7 @@ function InsertProposalForm(props) {
       return false;
     }
   
-  // Esegui i controlli
- 
-  if (!pname.match(nomeRegex)) {
-    setErrorMsg('Not valid programmes name!');
-    window.scrollTo(0, 0);
-    return false;
-  }
- 
-  
-
- 
+   
   // if everything is ok return true but in out case we send the data, console log to check everything is ok
 
     console.log(`
@@ -272,7 +268,7 @@ function InsertProposalForm(props) {
     
       API.insertProposal(predefinedProposalStructure)
       .then(successAlert) 
-      .catch(errorAlert) 
+      .catch(errorAlert)
  
 
 
@@ -439,9 +435,9 @@ function InsertProposalForm(props) {
                       value={pname}
                       onChange={ev => setpName(ev.target.value)}>
                       <option  value="" disabled>--Insert Programmes--</option>
-                      {Object.keys(optionsObject).map(optionKey => (
-                        <option key={optionKey} value={optionKey}>
-                          {optionsObject[optionKey]}
+                      {deg && Object.keys(deg).map((optionKey) => (
+                        <option key={deg[optionKey]} value={deg[optionKey]}>
+                          {deg[optionKey]}
                         </option>
                       ))}
                     </select>
