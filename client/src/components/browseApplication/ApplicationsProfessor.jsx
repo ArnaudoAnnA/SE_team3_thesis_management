@@ -97,7 +97,7 @@ function ApplicationsProfessor(props) {
                 onSelect={(k) => setKey(k)}
    
             >
-                <Tab eventKey="Pending" title="Pending" style={{width: "70%", padding: "3%", backgroundColor: "white", marginTop:"2%", borderRadius: "6px", border:" 3px solid rgba(125, 123, 123, 0.42)", marginLeft: "auto", marginRight: "auto", marginBottom: "4%"}}>
+                <Tab eventKey="Pending" title="Pending" style={{width: window.matchMedia("(max-width: 700px)").matches ? "100%": "70%", padding: "3%", backgroundColor: "white", marginTop:"2%", borderRadius: "6px", border:" 3px solid rgba(125, 123, 123, 0.42)", marginLeft: "auto", marginRight: "auto", marginBottom: "4%"}}>
                     <Table >
                         <tbody>
                             {applications.length === 0 ? (
@@ -112,7 +112,7 @@ function ApplicationsProfessor(props) {
                     </Table>
                 </Tab>
 
-                <Tab eventKey="Accepted" title="Accepted" style={{width: "70%", padding: "3%", backgroundColor: "white", marginTop:"2%", borderRadius: "6px", border:" 3px solid rgba(125, 123, 123, 0.42)", marginLeft: "auto", marginRight: "auto", marginBottom: "4%"}}>
+                <Tab eventKey="Accepted" title="Accepted" style={{width: window.matchMedia("(max-width: 700px)").matches ? "100%": "70%", padding: "3%", backgroundColor: "white", marginTop:"2%", borderRadius: "6px", border:" 3px solid rgba(125, 123, 123, 0.42)", marginLeft: "auto", marginRight: "auto", marginBottom: "4%"}}>
                 <Table>
                         <tbody>
                             {applications.length === 0 ? (
@@ -127,7 +127,7 @@ function ApplicationsProfessor(props) {
                     </Table>
                 </Tab>
 
-                <Tab eventKey="Rejected" title="Rejected" style={{width: "70%", padding: "3%", backgroundColor: "white", marginTop:"2%", borderRadius: "6px", border:" 3px solid rgba(125, 123, 123, 0.42)", marginLeft: "auto", marginRight: "auto", marginBottom: "4%"}}>
+                <Tab eventKey="Rejected" title="Rejected" style={{width: window.matchMedia("(max-width: 700px)").matches ? "100%": "70%", padding: "3%", backgroundColor: "white", marginTop:"2%", borderRadius: "6px", border:" 3px solid rgba(125, 123, 123, 0.42)", marginLeft: "auto", marginRight: "auto", marginBottom: "4%"}}>
                 <Table>
                         <tbody>
                             {applications.length === 0 ? (
@@ -135,7 +135,7 @@ function ApplicationsProfessor(props) {
                                     <td colSpan="3">You have no applications for this category</td>
                                 </tr>
                             ) : (
-                                applications.map((app) => <tr key={app.key}><AppTable app={app} activeKey={key} /></tr>)
+                                applications.map((app) => <tr key={app.key}><td><AppTable app={app} activeKey={key} /></td></tr>)
                             )}
                         </tbody>
 
