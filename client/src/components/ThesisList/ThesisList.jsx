@@ -102,45 +102,9 @@ function ThesisList(props)
     }
     
 
-    function isQueryChanged()
+    function reloadThesisFromBeginning()
     {
-        if (!old_filters || !old_orderBy) return true;
-
-        return (old_filters.toString() != filters.toString() || old_orderBy.toString() != orderBy.toString() || page != old_page);
-
-        /*
-        for (let [f1, i] of old_orderBy)
-        {
-            let f2 = orderBy[i];
-
-        }
-
-        for (let prop in old_filters)
-        {
-            if( (old_filters[prop] && !filters[prop]) || (old_filters[prop] && !filters[prop])) return true;
-            if (typeof old_filters[prop] == "string")
-            {
-                if (old_filters[prop] != filters[prop]) return true;
-            }else if(Array.isArray(old_filters[prop]))
-            {
-                for (let [v, i] of old_filters[prop])
-                {
-                    if(v != filters[i]) return true;
-                }
-            }else
-            {
-                console.log(`ERROR: (isQueryChanged()) invalid type of filters.${prop}`);
-            }
-        }*/
-    }
-
-    /*-----------------------------------------*/
-
-    useEffect(()=>
-    {
-        if(state == STATES.loading)
-        {
-            API.getThesis(filters, orderBy, undefined, ENTRIES_PER_PAGE)
+        API.getThesis(filters, orderBy, undefined, ENTRIES_PER_PAGE)
             .then(ret => 
                 {
                     if (ret.status == 200)
@@ -157,10 +121,12 @@ function ThesisList(props)
                     }
                     
                 })
-            .catch(e => setState(STATES.error));  
-        }else if (state == STATES.show_more)
-        {
-            API.getThesis(filters, orderBy, thesis[thesis.length -1].id, ENTRIES_PER_PAGE)
+            .catch(e => setState(STATES.error));
+    }
+
+    function showMoreThesis()
+    {
+        API.getThesis(filters, orderBy, thesis[thesis.length -1].id, ENTRIES_PER_PAGE)
             .then(ret => 
                 {
                     if (ret.status == 200)
@@ -173,7 +139,19 @@ function ThesisList(props)
                         setState(STATES.error);
                     }
                 })
-            .catch(e => {console.log(e); setState(STATES.error);})
+            .catch(e => {console.log(e); setState(STATES.error);});
+    }
+
+    /*-----------------------------------------*/
+
+    useEffect(()=>
+    {
+        if(state == STATES.loading)
+        {
+            reloadThesisFromBeginning();
+        }else if (state == STATES.show_more)
+        {
+            showMoreThesis();
         }
         
 
