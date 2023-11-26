@@ -29,7 +29,6 @@ function InsertProposalForm(props) {
   ];
 
 
-
   const successAlert = () => {
     Swal.fire({  
       title: 'Finished!',  
@@ -147,12 +146,25 @@ function InsertProposalForm(props) {
   const [title, setTitle] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const [selectedDate, setSelectedDate] = useState(new dayjs());
+  const [deg, setDeg] = useState()
 
- 
   useEffect(() => {
     const now = dayjs();
     const sixMonthsLater = now.add(6, 'month');
     setSelectedDate(sixMonthsLater)
+    API.getDegree()
+    .then((d) => {
+      console.log("Result:", d);
+      setDeg(d);
+    })
+    .catch((e) => {
+      console.error("Error API:", e);
+
+    });
+  
+  
+    console.log(deg)
+
   }, []);
  
   //Performs the controlls and if it's true the sendig part of the form
@@ -218,17 +230,7 @@ function InsertProposalForm(props) {
       return false;
     }
   
-  // Esegui i controlli
- 
-  if (!pname.match(nomeRegex)) {
-    setErrorMsg('Not valid programmes name!');
-    window.scrollTo(0, 0);
-    return false;
-  }
- 
-  
-
- 
+   
   // if everything is ok return true but in out case we send the data, console log to check everything is ok
 
     console.log(`
@@ -266,7 +268,7 @@ function InsertProposalForm(props) {
     
       API.insertProposal(predefinedProposalStructure)
       .then(successAlert) 
-      .catch(errorAlert) 
+      .catch(errorAlert)
  
 
 
@@ -334,7 +336,7 @@ function InsertProposalForm(props) {
                         setDegree(ev.target.value);
                         console.log(ev.target.value);
                       }}
-                      renderInput={(params) => <TextField {...params} placeholder="Insert the Type.." variant="standard"   style={{ paddingLeft: "2px", borderRadius: "6px", width: '100%', fontSize: "12px"}}/>}
+                      renderInput={(params) => <TextField {...params} placeholder="Insert the Type.." variant="standard" style={{ paddingLeft: "2px", borderRadius: "6px", width: '100%', fontSize: "12px"}}/>}
                     />
                       </div>                 
                       <div className="form-group input-group" style={{display: "flex", marginBottom: "10px"}}>
@@ -365,7 +367,7 @@ function InsertProposalForm(props) {
                         </svg>
                           </div>
                           <select className="form-control" style={{borderRadius: "6px"}} value={level} onChange={ev => setLevel(ev.target.value)}>
-                              <option value=""> --Insert Level--</option>
+                              <option  style={{ fontWeight: "100" }} value="" disabled> --Insert Level--</option>
                               <option value= "Master">Master</option>
                               <option value= "Bachelor">Bachelor</option>
 
@@ -427,7 +429,18 @@ function InsertProposalForm(props) {
                           <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h5.243c.122-.326.295-.668.526-1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v7.81c.353.23.656.496.91.783.059-.187.09-.386.09-.593V4a2 2 0 0 0-2-2H2Z" />
                         </svg>
                       </div>
-                      <input style={{ borderRadius: "6px" }} name="" className="form-control" placeholder="Cds/Programmes" type="text" value={pname} onChange={ev => setpName(ev.target.value)} />
+                    <select
+                      style={{ borderRadius: "6px" }}
+                      className="form-control"
+                      value={pname}
+                      onChange={ev => setpName(ev.target.value)}>
+                      <option  value="" disabled>--Insert Programmes--</option>
+                      {deg && Object.keys(deg).map((optionKey) => (
+                        <option key={deg[optionKey]} value={deg[optionKey]}>
+                          {deg[optionKey]}
+                        </option>
+                      ))}
+                    </select>
                     </div>  
                   <div style={{ display: "flex" }}>
                   <p style={{ paddingTop: "2px", marginBottom: "3px", marginLeft: "auto", marginRight: "auto", fontWeight: "300" }}>Expected Expiration Date (may change)</p>
@@ -454,8 +467,7 @@ function InsertProposalForm(props) {
                           placeholder="Insert your notes here.."
                         />
                       </div> 
-                   
-                                                       
+                       
                       <div className="form-group" style={{marginTop: "2vh", display: 'flex'}}>
                           <Button id="sendpb" style={{marginLeft: "auto", marginRight:"auto",  width: "150px", marginBottom: '10px'}} type="submit" className="blueButton" onClick={handleSubmit}> Upload Proposal  </Button>
                       </div>     

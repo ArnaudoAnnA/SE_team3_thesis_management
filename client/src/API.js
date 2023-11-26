@@ -626,20 +626,6 @@ const retrieveCareer = async (studentId) => {
   return career;
 }
 
-/** Retrive the list of applications of all the thesis of a theacher.
- * 
- * @param {int} professorId 
- * @param {bool} state possible values: [null (pending), true (accepted), false (rejected)]
- * 
- * @returns {{status: code, applications: [{id: , studentID: , thesisTitle: }, ...]}}
- * Possible values for status: [200 (ok), 500 (internal server error), 404 (not found)].
- * Possible values for applications [array (in case of success), null (in case of error)]
- */
-const getApplications = (professorId, state) =>
-{
-
-}
-
 /**
  * Retrieve the thesis title and relative teacher
  * @param thesisId the id of the thesis
@@ -767,6 +753,7 @@ const getApplicationsByState = async (state) => {
             "thesisId": applications[i].data().thesisId,
             "thesisTitle": thesis.title,
             "thesisDescription": thesis.description,
+            "thesisType": thesis.type,
             "teacherName": teacherSnapshot.docs[0].data().name,
             "teacherSurname": teacherSnapshot.docs[0].data().surname
           }
@@ -783,12 +770,74 @@ const getApplicationsByState = async (state) => {
       }
 
     } else {
-      return CONSTANTS.unauthorized;
+      const user = await API.getUser(auth.currentUser.email);
+      
+      let stateValue = null;
+
+      if (state==="Accepted") {
+        stateValue = true;
+      } else if (state==="Rejected") {
+        stateValue = false;
+      }
+
+      //SELECT A.studentId, A.accepted, A.date, A.thesisId, P.title, P.description, T.name, T.surname
+      //FROM applications A, teachers T, thesisProposals P
+      //WHERE join && A.studentId=user.id && A.accepted=stateValue
+
+      const whereTeacherId = where("id", "==", user.id);
+      const whereAccepted = where("accepted", "==", stateValue);
+
+      const qApplication = query(applicationsRef, whereTeacherId, whereAccepted);
+
+      let applicationsArray = [];
+
+      try {
+        const applicationsSnapshot = await getDocs(qApplication)
+        const applications = applicationsSnapshot.docs;
+        for (let i=0; i<applications.length; i++) {
+        
+          const thesis = await API.getThesisWithId(applications[i].data().thesisId);
+          const whereStudentId = where("studentId", "==", thesis.studentId);
+          //const qStudent = query(teachersRef, whereStudentId);
+          //const studentSnapshot = await getDocs(qStudent);
+          const returnedObject = {
+            "studentId": applications[i].data().studentId,
+            "accepted": applications[i].data().accepted,
+            "date": applications[i].data().date,
+            "thesisId": applications[i].data().thesisId,
+            "thesisTitle": thesis.title,
+            "thesisDescription": thesis.description,
+          }
+
+          applicationsArray.push(returnedObject);
+          
+        }
+
+        //console.log("Chiamata Api per " + state + " con risultato: " + applicationsArray);
+        return applicationsArray;
+
+      } catch (error) {
+        console.log(error);
+      }
     }
   } else {
     return CONSTANTS.notLogged;
   }
 
+}
+
+/** Retrive the list of applications of all the thesis of a theacher.
+ * 
+ * @param {int} professorId 
+ * @param {bool} state possible values: [null (pending), true (accepted), false (rejected)]
+ * 
+ * @returns {{status: code, applications: [{id: , studentID: , studentName: , studentSurname: , thesisTitle: , title: }, ...]}}
+ * Possible values for status: [200 (ok), 500 (internal server error), 404 (not found)].
+ * Possible values for applications [array (in case of success), null (in case of error)]
+ */
+const getApplications = (state) =>
+{
+  //talk with Salvo
 }
 
 /** API similar to getApplication, but returns data organized in  a different way.
@@ -810,7 +859,7 @@ const getApplicationsByState = async (state) => {
  */
 const getApplicationDetails = (id) =>
 {
-
+  //talk with Salvo
 }
 
 /**
@@ -966,14 +1015,30 @@ const insertProposal = async (thesisProposalData) => {
   }
 };
 
+const getDegree = async () => {
+  try {
+    const q = query(degreesRef);
+    const snapshot = await getDocs(q);
+
+    const titles = snapshot.docs.map((doc) => doc.data().titleDegree);
+
+    return titles.length > 0 ? titles : null;
+  } catch (error) {
+    console.error("Error in calling Firebase:", error);
+    return null;
+  }
+};
+
+
 const API = {
   getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser,
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplications, getApplicationDetails, getCVOfApplication,
   removeAllProposals, insertProposal, loginWithSaml,
-  getApplicationsByState
+  getApplicationsByState, getDegree
 };
+
 
 export default API;
 

@@ -4,7 +4,7 @@ import { useDropzone} from 'react-dropzone';
 import Application from '../models/Application';
 import { userContext } from "./Utils";
 */
-import { Alert, Card, Button, Nav, Form, Col, Container, Row, Table, Tabs, Tab } from 'react-bootstrap';
+import { Spinner, Card, Tabs, Tab } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -16,11 +16,15 @@ import dayjs from 'dayjs';
 function ApplicationsStudent(props) {
 
     const user = useContext(userContext);
+
     const location = useLocation();
     const activeKey = location.state?.activeKey || "Pending";
 
+    const STATES = {LOADING: "Loading...", ERROR: "Some error occoured...", READY: "ready"};
+
     const [key, setKey] = useState(activeKey);
     const [applications, setApplications] = useState([]);
+    const [state, setState] = useState(STATES.LOADING);
 
     useEffect(() => {
 
@@ -29,11 +33,13 @@ function ApplicationsStudent(props) {
                 API.getApplicationsByState(state)
                 .then((applications) => {
                     setApplications(applications);
+                    setState(STATES.READY);
                 })
                 .catch(e => console.log("Error in ApplicationsStudent/getApplicationsByState:" + e))
             }
         }
 
+        setState(STATES.LOADING);
         if (key=="Pending") {
             fetchApplicationsByState("Pending");
         } else if (key=="Accepted") {
@@ -41,8 +47,6 @@ function ApplicationsStudent(props) {
         } else {
             fetchApplicationsByState("Rejected");
         }
-
-        //console.log("activeKey from ThesisDetail: " + activeKey);
         
     },[key]);
   
@@ -56,21 +60,33 @@ function ApplicationsStudent(props) {
                 onSelect={(k) => setKey(k)}
             >
                 <Tab eventKey="Pending" title="Pending">
-                    {applications.length == 0 ? "You have no applications for this category" : 
-                        applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
-                    }
+                    <div className='mt-3'>
+                        {state===STATES.LOADING ? <Spinner animation="border" role="status"/> : 
+                            (applications.length == 0 ? "You have no applications for this category" : 
+                                applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
+                            )
+                        }
+                    </div>
                 </Tab>
 
                 <Tab eventKey="Accepted" title="Accepted">
-                    {applications.length == 0 ? "You have no applications for this category" : 
-                        applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
-                    }
+                    <div className='mt-3'>
+                        {state===STATES.LOADING ? <Spinner animation="border" role="status"/> : 
+                            (applications.length == 0 ? "You have no applications for this category" : 
+                                applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
+                            )
+                        }
+                    </div>
                 </Tab>
 
                 <Tab eventKey="Rejected" title="Rejected">
-                    {applications.length == 0 ? "You have no applications for this category" : 
-                        applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
-                    }
+                    <div className='mt-3'>
+                        {state===STATES.LOADING ? <Spinner animation="border" role="status"/> :
+                            (applications.length == 0 ? "You have no applications for this category" : 
+                                applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
+                            )
+                        }
+                    </div>
                 </Tab>
             </Tabs>
     </div>
@@ -87,8 +103,8 @@ function AppCard(props) {
     const location = useLocation();
 
     return (
-        <Card className="text-center mt-3 mx-5 appCard">
-            <Card.Header className="text-end">{props.app.teacherName} {props.app.teacherSurname}</Card.Header>
+        <Card className="text-center mb-3 mx-5 appCard">
+            <Card.Header className="d-flex justify-content-between"> <span> {props.app.thesisType} </span> <span> <i className="bi bi-person-lines-fill"></i> {props.app.teacherName} {props.app.teacherSurname} </span></Card.Header>
             <Card.Body>
                 <Card.Title>{props.app.thesisTitle}</Card.Title>
                 <Card.Text>

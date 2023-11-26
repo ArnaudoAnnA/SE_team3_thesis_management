@@ -16,7 +16,7 @@ To add other users, go in firebase -> authentication -> users -> add user
 
 | email | password | type | 
 | :--- | :--- | :--- |
-| d345678@studenti.polito.it | p6bTzUftxNHG5y | professor |
+| d345678@polito.it | p6bTzUftxNHG5y | professor |
 | s901234@studenti.polito.it | 7eNfF7Ssxvctd7 | student |
 
 ## Docker

@@ -89,6 +89,7 @@ body {
   background-color: white !important;
   padding-left: 1px !important;
 
+
 }
 .MuiFormControl-root{
   width: 99% !important;
@@ -160,6 +161,8 @@ body {
   color: white !important;
   border-bottom: 5px solid orangered;
 }
+
+
 
 /*BEGINNING OF MEDIA QUERY INSERT PROPOSAL*/
 
@@ -244,17 +247,20 @@ body {
   }
 
   
-  .fade{
 
-    width: 30% !important;
-
-  }
 
 }
 
 
 
 @media only screen and (max-width: 768px) {
+
+  .brwbtt{
+
+    font-size: 13px !important;
+
+  }
+
 
   .card.bg-light {
     width: 75vw !important;
@@ -286,11 +292,7 @@ body {
 
   }
   
-  .fade{
 
-    width: 30% !important;
-
-  }
   .MuiAutocomplete-root{
 
     flex: 1 1 auto !important; 
@@ -324,11 +326,7 @@ body {
     padding-right: 30px;
   }
 
-  .fade{
 
-    width: 50% !important;
-
-  }
 
   .MuiAutocomplete-root{
 
@@ -436,12 +434,7 @@ body {
 
 
   }
-  
-  .fade{
 
-    width: 30% !important;
-
-  }
 
 }
 
@@ -483,11 +476,7 @@ body {
 
   }
   
-  .fade{
 
-    width: 50% !important;
-
-  }
 
 }
 
@@ -562,11 +551,7 @@ body {
   }
 
   
-  .fade{
 
-    width: 50% !important;
-
-  }
 
 }
 
@@ -591,13 +576,7 @@ body {
   }
 
   
-  .fade{
 
-    width: 80% !important;
-    height: 5% !important;
-    font-size: "5px" !important;
-
-  }
   
   .bi-exclamation-triangle{
 
@@ -668,7 +647,7 @@ body {
   }
 }
 
-.icons:hover
-  {
-    background-color:lightgrey;
-  }
+.change-bg-on-hover:hover
+{
+  background-color:rgb(239, 237, 237);
+}
