@@ -255,6 +255,13 @@ body {
 
 @media only screen and (max-width: 768px) {
 
+  .brwbtt{
+
+    font-size: 13px !important;
+
+  }
+
+
   .card.bg-light {
     width: 75vw !important;
   }

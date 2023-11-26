@@ -189,6 +189,7 @@ function BrowseForm(props) {
         <Container className='d-flex justify-content-center mt-4' style={{ marginBottom: "3%" }}>
           <Button
             type="submit"
+            className='brwbtt'
             style={{ marginRight: "3px", fontSize: "16px", padding: "0.5% 2%" }}
             onClick={() => successAlert()}
           >
@@ -196,6 +197,7 @@ function BrowseForm(props) {
           </Button>
           <Button
             variant="warning"
+            className='brwbtt'
             style={{ fontSize: "16px", padding: "0.5% 2%" }}
             onClick={(e) => errorAlert(e)}
           >

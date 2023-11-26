@@ -78,8 +78,10 @@ function ApplicationsProfessor(props) {
             /*--------------------------------------*/
         } else if (key=="Accepted") {
            // fetchApplicationsByState("Accepted");
+           setState(STATES.READY); 
         } else {
             //fetchApplicationsByState("Rejected");
+            setState(STATES.READY); 
         }
 
         //console.log("activeKey from ThesisDetail: " + activeKey);
@@ -135,7 +137,7 @@ function ApplicationsProfessor(props) {
                                     <td colSpan="3">You have no applications for this category</td>
                                 </tr>
                             ) : (
-                                applications.map((app) => <tr key={app.key}><td><AppTable app={app} activeKey={key} /></td></tr>)
+                                applications.map((app) => <tr key={app.key}><AppTable app={app} activeKey={key} /></tr>)
                             )}
                         </tbody>
 
