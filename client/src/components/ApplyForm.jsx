@@ -96,7 +96,7 @@ function ApplyForm(props) {
     if (app) {
         errorAlert("You can't apply at the same thesis twice");
     } else {
-        const application = new Application(user.id, id, false, file, props.virtualDate);
+        const application = new Application(user.id, id, null, file, props.virtualDate);
         console.log(application)
         
         API.addApplication(application)

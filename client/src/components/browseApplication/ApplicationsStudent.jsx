@@ -56,21 +56,27 @@ function ApplicationsStudent(props) {
                 onSelect={(k) => setKey(k)}
             >
                 <Tab eventKey="Pending" title="Pending">
-                    {applications.length == 0 ? "You have no applications for this category" : 
-                        applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
-                    }
+                    <div className='mt-3'>
+                        {applications.length == 0 ? "You have no applications for this category" : 
+                            applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
+                        }
+                    </div>
                 </Tab>
 
                 <Tab eventKey="Accepted" title="Accepted">
-                    {applications.length == 0 ? "You have no applications for this category" : 
-                        applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
-                    }
+                    <div className='mt-3'>
+                        {applications.length == 0 ? "You have no applications for this category" : 
+                            applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
+                        }
+                    </div>
                 </Tab>
 
                 <Tab eventKey="Rejected" title="Rejected">
-                    {applications.length == 0 ? "You have no applications for this category" : 
-                        applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
-                    }
+                    <div className='mt-3'>
+                        {applications.length == 0 ? "You have no applications for this category" : 
+                            applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
+                        }
+                    </div>
                 </Tab>
             </Tabs>
     </div>
@@ -87,7 +93,7 @@ function AppCard(props) {
     const location = useLocation();
 
     return (
-        <Card className="text-center mt-3 mx-5 appCard">
+        <Card className="text-center mb-3 mx-5 appCard">
             <Card.Header className="text-end">{props.app.teacherName} {props.app.teacherSurname}</Card.Header>
             <Card.Body>
                 <Card.Title>{props.app.thesisTitle}</Card.Title>
