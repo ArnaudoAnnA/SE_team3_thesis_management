@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Alert, Card, Button, Badge, Form, Col, Container, Row, Table, Spinner } from 'react-bootstrap';
 import { useState, useEffect, useCallback, useContext } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2'
 import API from "../../API";
@@ -18,26 +18,59 @@ function BrowseForm(props) {
   const [student, setStudent] = useState();
   const [showSpinner, setShowSpinner] = useState(true);
   const { id, state } = useParams();
+  const navigate = useNavigate();
 
 
   const successAlert = () => {
-    Swal.fire({  
-      title: 'Accepted!',  
-      text: 'Your have accepted the application!',
-      icon: 'success'
-    });
-    return true;
+    
+    API.acceptApplication(id)
+      .then(() => {
+        
+        Swal.fire({  
+          title: 'Accepted!',  
+          text: 'Your have accepted the application!',
+          icon: 'success'
+        });
+
+        navigate("/");
+      })
+      .catch((error) => {
+        // La chiamata API ha generato un errore
+        console.error("Error accepting application:", error);
+        Swal.fire({
+          title: 'Error',
+          text: 'An error occurred while accepting the application. Please try again later.',
+          icon: 'error'
+        });
+
+      });
   };
   
-  const errorAlert = (e) => {
-    Swal.fire({  
-      title: 'Declined!',  
-      text: 'You have declined the application!',
-      icon: 'error'
-    });
-    return false;
-  };
+  
+  const errorAlert = () => {
+ 
+    API.declineApplication(id)
+      .then(() => {
 
+        Swal.fire({  
+          title: 'Declined!',  
+          text: 'You have declined the application!',
+          icon: 'error'
+        });
+
+        navigate("/");
+      })
+      .catch((error) => {
+
+        console.error("Error declining application:", error);
+        Swal.fire({
+          title: 'Error',
+          text: 'An error occurred while declining the application. Please try again later.',
+          icon: 'error'
+        });
+      });
+  };
+  
   useEffect(() => {
     async function fetchApplicationDetails(id) {
 

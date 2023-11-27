@@ -1,9 +1,3 @@
-/*
-import { useDropzone} from 'react-dropzone';
-
-import Application from '../models/Application';
-import { userContext } from "./Utils";
-*/
 import { Alert, Card, Button, Nav, Form, Col, Container, Row, Table, Tabs, Tab } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -36,7 +30,7 @@ function ApplicationsProfessor(props) {
     const user = useContext(userContext);
     const location = useLocation();
     const activeKey = location.state?.activeKey || "Pending";
-    const STATES = {LOADING: "Loading...", ERROR: "Some error occoured...", READY: "ready"};
+    const STATES = {LOADING: "Loading...", ERROR: "Some error occoured...", READY: "ready", EMPTY: "You have no applications for this category!"};
     const [state, setState] = useState(STATES.LOADING);
     const [key, setKey] = useState(activeKey);
     const [applications, setApplications] = useState([]);
@@ -52,13 +46,13 @@ function ApplicationsProfessor(props) {
             if(user.id){
                 API.getApplications(state)
                 .then((res) => {
-                    if(res.status != 200) {
-                        setState(STATES.READY);
-                        return
-                    };
                     console.log(res);
-                    setApplications(res.applications);
-                    setState(STATES.READY);
+                    if (!res || !res.applications) {
+                        setState(STATES.EMPTY);
+                    } else {
+                        setApplications(res.applications);
+                    }
+                   
                     console.log(applications);
                 })
                 .catch(e => {console.log("Error in ApplicationsStudent/getApplicationsByState:" + e); setState(STATES.ERROR);});
@@ -68,28 +62,16 @@ function ApplicationsProfessor(props) {
         if (key=="Pending") {
             setApplications([]);
             fetchApplicationsByState(null);
-            /* --------------MOCK (TO BE DELETED) -------------------*/
-            // let v = [
-            //     { key: "unique_key_1", ...returnedObject },
-            //     { key: "unique_key_2", ...returnedObject },
-            //     { key: "unique_key_3", ...returnedObject },
-            //     { key: "unique_key_4", ...returnedObject },
-            //   ];
-            // v[0]= returnedObject;
-            // v[1]= returnedObject;
-            // v[2]= returnedObject;
-            // v[3]= returnedObject;
-            // setApplications(v);
-            setState(STATES.READY); 
+          
             /*--------------------------------------*/
         } else if (key=="Accepted") {
-            setApplications([]);
+           setApplications([]);
            fetchApplicationsByState(true);
-           setState(STATES.READY); 
-        } else {
+      
+        } else if (key == "Rejected") {
             setApplications([]);
             fetchApplicationsByState(false);
-            setState(STATES.READY); 
+          
         }
 
         console.log("activeKey from ThesisDetail: " + activeKey);
@@ -98,7 +80,7 @@ function ApplicationsProfessor(props) {
   
     return (
         <div className='mx-5'>
-            {state != STATES.READY ? <Alert style={{textAlign: "center", width: "50%", marginLeft: "auto", marginRight: "auto"}}>{state}</Alert>: ""}
+            
             <Tabs
                 variant="pills"
                 className="mt-3 tabElem"
@@ -112,7 +94,7 @@ function ApplicationsProfessor(props) {
                         <tbody>
                             {applications.length === 0 ? (
                                 <tr>
-                                    <td colSpan="3">You have no applications for this category</td>
+                                    <td colSpan="3"> {state == STATES.EMPTY ? <Alert style={{textAlign: "center", width: "50%", marginLeft: "auto", marginRight: "auto"}}>{state}</Alert>: ""}</td>
                                 </tr>
                             ) : (
                                 console.log(applications),
@@ -128,7 +110,7 @@ function ApplicationsProfessor(props) {
                         <tbody>
                             {applications.length === 0 ? (
                                 <tr>
-                                    <td colSpan="3">You have no applications for this category</td>
+                                    <td colSpan="3">{state == STATES.EMPTY ? <Alert style={{textAlign: "center", width: "50%", marginLeft: "auto", marginRight: "auto"}}>{state}</Alert>: ""}</td>
                                 </tr>
                             ) : (
                                 applications.map((app) => <tr key={app.applicationId}><AppTable app={app} activeKey={key} /></tr>)
@@ -143,7 +125,7 @@ function ApplicationsProfessor(props) {
                         <tbody>
                             {applications.length === 0 ? (
                                 <tr>
-                                    <td colSpan="3">You have no applications for this category</td>
+                                    <td colSpan="3">{state == STATES.EMPTY ? <Alert style={{textAlign: "center", width: "50%", marginLeft: "auto", marginRight: "auto"}}>{state}</Alert>: ""}</td>
                                 </tr>
                             ) : (
                                 applications.map((app) => <tr key={app.applicationId}><AppTable app={app} activeKey={key} /></tr>)
