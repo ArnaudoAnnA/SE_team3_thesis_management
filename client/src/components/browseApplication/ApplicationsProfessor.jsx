@@ -183,13 +183,13 @@ function AppTable(props) {
                         (e) => {
                             return (
                             <tr key={e.id} >
-                                <td onClick={() => navigate(`/applications/` + e.id)} style={{ verticalAlign: "middle" }}>
+                                <td onClick={() => navigate(`/applications/` + e.id + `/` + props.activeKey )} style={{ verticalAlign: "middle" }}>
                                     <h5>{e.student.id}</h5>
                                 </td>
-                                <td onClick={() => navigate(`/applications/` + e.id)} style={{ verticalAlign: "middle" }}>
+                                <td onClick={() => navigate(`/applications/` + e.id + `/` + props.activeKey)} style={{ verticalAlign: "middle" }}>
                                     <h5>{e.student.name}</h5>
                                 </td>
-                                <td onClick={() => navigate(`/applications/` + e.id)} style={{ verticalAlign: "middle" }}>
+                                <td onClick={() => navigate(`/applications/` + e.id + `/` + props.activeKey)} style={{ verticalAlign: "middle" }}>
                                     <h5>{e.student.surname}</h5>
                                 </td>
                                 <td onClick={() => navigate(`/applications/` + e.id)} style={{ verticalAlign: "middle" }}>

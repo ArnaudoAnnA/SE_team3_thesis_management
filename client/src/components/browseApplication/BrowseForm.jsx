@@ -17,7 +17,7 @@ function BrowseForm(props) {
   const [title, setTitle] = useState('');
   const [student, setStudent] = useState();
   const [showSpinner, setShowSpinner] = useState(true);
-  const { id } = useParams();
+  const { id, state } = useParams();
 
 
   const successAlert = () => {
@@ -174,7 +174,7 @@ function BrowseForm(props) {
         </Row>
         <Row>
           <Container className='d-flex justify-content-center mt-4' style={{ marginBottom: "3%" }}>
-            {props.activeKey == 'Accepted' || props.activeKey == 'Rejected' && (
+            {state  == 'Pending'  && (
               <>
                 <Button
                   type="submit"

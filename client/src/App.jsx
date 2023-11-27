@@ -120,7 +120,7 @@ function Main() {
             <Route path='/thesis/:id' element={user.email ? <ThesisDetails /> : <Login />} />
             <Route path='/thesis/:id/apply' element={user.email ? (user.role === "student" ? <ApplyForm virtualDate={date} /> : <NotFoundPage />) : <Login />} />
             <Route path='/applications' element={user.email ? (user.role === "teacher" ? <ApplicationsProfessor /> : <ApplicationsStudent />) : <Login />} />
-            <Route path='/applications/:id' element={user.email ? (user.role === "teacher" ? <BrowseForm /> : <NotFoundPage />) : <Login />} />
+            <Route path='/applications/:id/:state' element={user.email ? (user.role === "teacher" ? <BrowseForm /> : <NotFoundPage />) : <Login />} />
             <Route path='/browse' element={user.email ? (user.role === "teacher" ? <BrowseForm /> : <NotFoundPage />) : <Login />} />
 
           </Route>
