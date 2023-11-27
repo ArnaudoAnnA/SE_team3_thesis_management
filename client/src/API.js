@@ -752,8 +752,8 @@ const getTitleAndTeacher = async (thesisId) => {
 
 /**
  * Retrieve the application by the id of the student and the id of the thesis
- * @param studentId the id of the student
- * @param thesisId the id of the thesis
+ * @param {string} studentId the id of the student
+ * @param {string} thesisId the id of the thesis
  * @return the application object, null if the object doesn't exist
  * 
  */
@@ -1127,7 +1127,8 @@ const getDegree = async () => {
 /**
  * Accept an application and decline all the others for the same thesis
  * @param {string} applicationId id of the accepted application
- * @returns 
+ * @returns {{ status: code }}
+ * Possible values for status: [200 (ok), 400 (bad request), 401 (unauthorized), 404 (not found(), 500 (server error)]
  */
 
 const acceptApplication = async (applicationId) => {
@@ -1158,7 +1159,8 @@ const acceptApplication = async (applicationId) => {
 /**
  * Decline an application
  * @param {string} applicationId id of the declined application
- * @returns 
+ * @returns {{ status: code }}
+ * Possible values for status: [200 (ok), 400 (bad request), 401 (unauthorized), 404 (not found(), 500 (server error)]
  */
 const declineApplication = async (applicationId) => {
   if (!auth.currentUser) return { status: 401, err: "User not logged in" };
