@@ -423,6 +423,9 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
 
     let index = -1;
 
+    console.log(`filters: ${JSON.stringify(filters)}`);
+
+    // load of the first page
     if (lastThesisID === undefined) {
       // add filters to the query
       let whereConditions = await buildWhereConditions(filters);
@@ -434,13 +437,13 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
         whereConditions.push(where("teacherId", "==", thisTeacherId));
       } else if (await isStudent(auth.currentUser.email)) {
         // if the user is a student, show only thesis of his degree
-        // let studentCodDegree = await getDocs(
-        //   query(studentsRef, where("email", "==", auth.currentUser.email))
-        // ).then((snap) => snap.docs[0].data().cod_degree);
-        // let titleDegree = await getDocs(
-        //   query(degreesRef, where("codDegree", "==", studentCodDegree))
-        // ).then((snap) => snap.docs[0].data().titleDegree);
-        // whereConditions.push(where("programmes", "==", titleDegree));
+        let studentCodDegree = await getDocs(
+          query(studentsRef, where("email", "==", auth.currentUser.email))
+        ).then((snap) => snap.docs[0].data().cod_degree);
+        let titleDegree = await getDocs(
+          query(degreesRef, where("codDegree", "==", studentCodDegree))
+        ).then((snap) => snap.docs[0].data().titleDegree);
+        whereConditions.push(where("programmes", "==", titleDegree));
       }
 
       // show only active thesis
@@ -469,16 +472,15 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
 
       // order the thesis
       if (thesis.length != 0) {
-        orderByArray.slice().reverse()
-          .forEach((orderBy) => {
-            thesis = orderThesis(thesis, orderBy);
-          });
+        if(orderByArray[0] === 'title')
+          thesis.orderThesis(thesis, orderByArray[0])
+        else 
+          orderByArray.slice().reverse()
+            .forEach((orderBy) => { thesis = orderThesis(thesis, orderBy); });
       }
 
-      // update the current snapshot
-      THESIS_CACHE = thesis;
-
       if (isFiltersEmpty(filters)) {
+        // save the values of the attributes for the filter form
         let formValues = {};
         Object.keys(filters).forEach( (key) => {
           if (key === 'teacherName')
@@ -487,9 +489,34 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
             formValues['' + key] = setValuesForField(key)
         });
         FILTER_FORM_VALUES = formValues;
+      } else {
+        // filter the thesis on title and expiration date
+        if(filters.title !== undefined && filters.title !== '') {
+          console.log(`filters.title: ${filters.title}`);
+          thesis = thesis.filter((proposal) => proposal.title.toLowerCase().includes(filters.title.toLowerCase()));
+        }
+  
+        if(filters.expirationDate !== undefined && (filters.expirationDate.from !== '' || filters.expirationDate.to !== '')) {  
+          console.log(`Filters \nfrom: ${filters.expirationDate.from} to: ${filters.expirationDate.to}`);
+          thesis = thesis.filter((proposal) => {
+            let from = filters.expirationDate.from;
+            let to = filters.expirationDate.to; 
+            let expirationDate = proposal.expirationDate;
+            if(from !== '' && to !== '') {
+              return dayjs(expirationDate).isBetween(from, to, null, '[]');
+            } else if(from !== '') {
+              return dayjs(expirationDate).isAfter(from);
+            } else if(to !== '') {
+              return dayjs(expirationDate).isBefore(to);
+            }
+          });
+        }
       }
+
+      // update the current snapshot
+      THESIS_CACHE = thesis;
     }
-    // page the thesis
+    // when a new page is requested
     else
       index = THESIS_CACHE.findIndex((proposal) => proposal.id === lastThesisID);
 
@@ -764,6 +791,7 @@ const getApplicationsByState = async (state) => {
             "thesisId": applications[i].data().thesisId,
             "thesisTitle": thesis.title,
             "thesisDescription": thesis.description,
+            "thesisType": thesis.type,
             "teacherName": teacherSnapshot.docs[0].data().name,
             "teacherSurname": teacherSnapshot.docs[0].data().surname
           }
@@ -780,12 +808,74 @@ const getApplicationsByState = async (state) => {
       }
 
     } else {
-      return CONSTANTS.unauthorized;
+      const user = await API.getUser(auth.currentUser.email);
+      
+      let stateValue = null;
+
+      if (state==="Accepted") {
+        stateValue = true;
+      } else if (state==="Rejected") {
+        stateValue = false;
+      }
+
+      //SELECT A.studentId, A.accepted, A.date, A.thesisId, P.title, P.description, T.name, T.surname
+      //FROM applications A, teachers T, thesisProposals P
+      //WHERE join && A.studentId=user.id && A.accepted=stateValue
+
+      const whereTeacherId = where("id", "==", user.id);
+      const whereAccepted = where("accepted", "==", stateValue);
+
+      const qApplication = query(applicationsRef, whereTeacherId, whereAccepted);
+
+      let applicationsArray = [];
+
+      try {
+        const applicationsSnapshot = await getDocs(qApplication)
+        const applications = applicationsSnapshot.docs;
+        for (let i=0; i<applications.length; i++) {
+        
+          const thesis = await API.getThesisWithId(applications[i].data().thesisId);
+          const whereStudentId = where("studentId", "==", thesis.studentId);
+          //const qStudent = query(teachersRef, whereStudentId);
+          //const studentSnapshot = await getDocs(qStudent);
+          const returnedObject = {
+            "studentId": applications[i].data().studentId,
+            "accepted": applications[i].data().accepted,
+            "date": applications[i].data().date,
+            "thesisId": applications[i].data().thesisId,
+            "thesisTitle": thesis.title,
+            "thesisDescription": thesis.description,
+          }
+
+          applicationsArray.push(returnedObject);
+          
+        }
+
+        //console.log("Chiamata Api per " + state + " con risultato: " + applicationsArray);
+        return applicationsArray;
+
+      } catch (error) {
+        console.log(error);
+      }
     }
   } else {
     return CONSTANTS.notLogged;
   }
 
+}
+
+/** Retrive the list of applications of all the thesis of a theacher.
+ * 
+ * @param {int} professorId 
+ * @param {bool} state possible values: [null (pending), true (accepted), false (rejected)]
+ * 
+ * @returns {{status: code, applications: [{id: , studentID: , studentName: , studentSurname: , thesisTitle: , title: }, ...]}}
+ * Possible values for status: [200 (ok), 500 (internal server error), 404 (not found)].
+ * Possible values for applications [array (in case of success), null (in case of error)]
+ */
+const getApplications = (state) =>
+{
+  //talk with Salvo
 }
 
 /** API similar to getApplication, but returns data organized in  a different way.
@@ -985,6 +1075,20 @@ const insertProposal = async (thesisProposalData) => {
   }
 };
 
+const getDegree = async () => {
+  try {
+    const q = query(degreesRef);
+    const snapshot = await getDocs(q);
+
+    const titles = snapshot.docs.map((doc) => doc.data().titleDegree);
+
+    return titles.length > 0 ? titles : null;
+  } catch (error) {
+    console.error("Error in calling Firebase:", error);
+    return null;
+  }
+};
+
 
 const API = {
   getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField,
@@ -992,8 +1096,9 @@ const API = {
   signUp, logIn, logOut, getUser,
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplications, getApplicationDetails, getCVOfApplication,
   removeAllProposals, insertProposal, loginWithSaml,
-  getApplicationsByState
+  getApplicationsByState, getDegree
 };
+
 
 export default API;
 
