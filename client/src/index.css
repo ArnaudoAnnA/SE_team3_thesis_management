@@ -6,6 +6,11 @@ body {
   background-color: #003576;
 }
 
+.whiteNavbar {
+  background-color: white;
+  border-bottom: 6px solid #fc7a08;
+}
+
 .blueButton {
   background-color: #003576;
   border: none;
@@ -118,11 +123,11 @@ body {
 }
 
 .customLink {
-  color:white !important;
+  color:black !important;
 }
 
 .customLink:hover {
-  color:black !important;
+  color:#fc7a08 !important;
 }
 
 .appCard {

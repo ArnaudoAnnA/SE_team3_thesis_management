@@ -1,9 +1,8 @@
 import { createContext, useContext, useState } from "react";
-import { Alert, Button, Container, Col, Row, Card, Form, Navbar, Nav, NavDropdown } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
-import validator from "validator";
+import { Button, Col, Row, Form, Navbar, Nav, NavDropdown } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import dayjs from "dayjs";
-import API from "../API";
+import "../navbar.css"
 
 /** Context used to propagate the user object */
 const userContext = createContext();
@@ -30,12 +29,6 @@ function CustomNavbar(props) {
         }, 1000);
     }
 
-    const navDropdownTitle = (  <>
-                                    <Row> <div className="d-flex justify-content-center"> <i className="bi bi-person-circle"></i> </div></Row>
-                                    <Row className="d-flex justify-content-left"> <span style={{fontSize: "12px"}}> {`${user.name} ${user.surname}, ${user.id}`} </span></Row>
-                                </>
-                            );
-
     return (
         <>
             {/* Top banner with logo and app name */}
@@ -47,8 +40,8 @@ function CustomNavbar(props) {
             </Navbar>
             {/* App main navbar */}
             {user.email ?
-                <Navbar sticky="top" expand="lg" className='orangePoli mb-3 shadow' collapseOnSelect>
-                    <Navbar.Toggle aria-controls="navbar-nav" />
+                <Navbar sticky="top" expand="lg" className='whiteNavbar mb-3 shadow' collapseOnSelect>
+                    <Navbar.Toggle />
                     <Navbar.Collapse>
                         <Nav>
                             <Nav.Link as={Link} to={"/"} className="customLink" href='/'>Home</Nav.Link>
@@ -61,14 +54,16 @@ function CustomNavbar(props) {
                             <Nav.Link as={Link} to={"/notifications"} className="customLink" href='/notifications'>Notifications</Nav.Link>
                         </Nav>
                     </ Navbar.Collapse>
-                    <div style={{marginRight: "80px"}}>
-                        <NavDropdown title={navDropdownTitle} className="white" id="basic-nav-dropdown">
-                            <NavDropdown.Item as={Link} to='/' onClick={props.logoutCbk}>
-                                <i className="bi bi-box-arrow-right" style={{ marginLeft: '5px', marginRight: '5px' }} />
-                                LOGOUT
-                            </NavDropdown.Item>
-                        </NavDropdown>
-                    </div>
+                    <NavDropdown title={<i className="bi bi-person-circle" style={{ fontSize: '2rem' }} />} id="basic-nav-dropdown" style={{ marginRight: '10px' }} className="dropdown-menu-right">
+                        <NavDropdown.Header>
+                            <Row> {`${user.name} ${user.surname}`} </Row>
+                            <Row> {`${user.email}`} </Row>
+                        </NavDropdown.Header>
+                        <NavDropdown.Item as={Link} to='/' onClick={props.logoutCbk}>
+                            <i className="bi bi-box-arrow-right" style={{ marginRight: '5px' }} />
+                            Logout
+                        </NavDropdown.Item>
+                    </NavDropdown>
                 </Navbar>
                 : null}
 
@@ -92,7 +87,7 @@ function CustomNavbar(props) {
                         </Row>
                     </Form>
                     {showConfirmation && (
-                            <span style={{ marginLeft: '10px', color: 'black' }}>Date changed</span>
+                        <span style={{ marginLeft: '10px', color: 'black' }}>Date changed</span>
                     )}
                 </Navbar>
                 : null}
