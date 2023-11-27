@@ -16,6 +16,7 @@ import ThesisProposal from './models/ThesisProposal.js';
 
 import StringUtils from './utils/StringUtils.js';
 import CONSTANTS from './utils/Constants.js';
+import MessageUtils from './utils/MessageUtils.js';
 
 //DO NOT CANCEL
 const firebaseConfig = {
@@ -557,7 +558,7 @@ const addApplication = async (application) => {
         }
         
         console.log(application.parse(fileRef? fileRef.fullPath : null))
-        addDoc(applicationsRef, application.parse(fileRef? fileRef.fullPath : null )).then(doc => {
+        addDoc(applicationsRef, application.parse(fileRef? fileRef.fullPath : null)).then(doc => {
           console.log(doc.id)
           console.log("Added application with id:" + doc.id)
           return "Application sent"
@@ -608,9 +609,30 @@ const retrieveCareer = async (studentId) => {
  * Possible values for status: [200 (ok), 500 (internal server error), 404 (not found)].
  * Possible values for applications [array (in case of success), null (in case of error)]
  */
-const getApplications = (professorId, state) =>
-{
-
+const getApplications = async (status) => {
+  
+  if(auth.currentUser){
+    const user = await API.getUser(auth.currentUser.email)
+    console.log(user.id)
+    const whereProfessorId = where("teacherId", "==", user.id)
+      const whereStatus = where("accepted", "==" , status)
+      const q = query(applicationsRef, whereProfessorId, whereStatus)
+      const appSnaphot = await getDocs(q)
+      console.log(appSnaphot.docs.length)
+      const applications = appSnaphot.docs.map(doc => {
+        const data = doc.data()
+        const id = doc.id
+        console.log(data)
+        return new Application(id, data.studentId, data.thesisId, status, data.curriculum, data.date, data.teacherId, data.thesisTitle)
+        })
+      console.log(applications)
+      if(applications.length == 0){
+        return MessageUtils.createMessage(404, "error", "No data found")
+      }
+      return MessageUtils.createMessage(200, "applications", applications)
+  } else {
+    return MessageUtils.createMessage(500, "error", "Server error")
+  }
 }
 
 /**
@@ -642,7 +664,8 @@ const getTitleAndTeacher = async (thesisId) => {
       title: thesis.title,
       teacher: {
         name: teacher.name,
-        surname: teacher.surname
+        surname: teacher.surname,
+        id: teacher.id
       }
     }
 
@@ -676,7 +699,8 @@ const getApplication = async (studentId, thesisId) => {
         if (applicationSnapshot.docs.length > 0) {
           console.log("there is already a record")
           const app = applicationSnapshot.docs[0].data()
-          return new Application(app.studentId, app.thesisId, app.accepted, app.curriculum, app.date)
+          const id = applicationSnapshot.docs[0].id
+          return new Application(id, app.studentId, app.thesisId, app.accepted, app.curriculum, app.date, app.teacherId, app.thesisTitle)
         }
         console.log("No records")
         return null
@@ -769,7 +793,7 @@ const getApplicationsByState = async (state) => {
  * @param {int} id 
  * 
  * @returns {{status: code, 
- *            bool_cvExists: , 
+ *            curriculum: , path do cv if present, null otherwise 
  *            application: {studentName: , 
  *                          carreer: [{codCourse: , 
  *                                    titleCourse: , 
@@ -781,9 +805,31 @@ const getApplicationsByState = async (state) => {
  * Possible values for status: [200 (ok), 500 (internal server error), 404 (not found)].
  * Application is null in case of error.
  */
-const getApplicationDetails = (id) =>
+const getApplicationDetails = async (id) =>
 {
-
+  if (!auth.currentUser) return MessageUtils.createMessage(401, "error", "Not logged in");
+  const applicationRef = doc(db, "applications", id);
+  const applicationSnapshot = await getDoc(applicationRef)
+  if(!applicationSnapshot.exists()) return MessageUtils.createMessage(404, "error", "Application not found");
+  const application = applicationSnapshot.data();
+  const student = await getUser(application.studentId + "@studenti.polito.it");
+  const career = await retrieveCareer(student.id);
+  // console.log("Application details:");
+  // console.log(application);
+  // console.log("student");
+  // console.log(student);
+  // console.log("career");
+  // console.log(career);
+  
+  const applicationDetails = {
+    studentName: student.name + " " + student.surname,
+    curriculum: application.curriculum ? application.curriculum : null,
+    career: career,
+  };
+  console.log("applicationDetails");
+  console.log(applicationDetails);
+  
+  return MessageUtils.createMessage(200, "application", applicationDetails);
 }
 
 /**
@@ -938,6 +984,7 @@ const insertProposal = async (thesisProposalData) => {
     return { status: 500 }; // or handle the error accordingly
   }
 };
+
 
 const API = {
   getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField,

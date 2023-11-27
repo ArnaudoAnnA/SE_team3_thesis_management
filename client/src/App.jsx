@@ -91,7 +91,20 @@ function Main() {
     API.logOut()
     setUser({})
   }
+  const a = async () => {
+    // const res = await API.getApplications(null);
+    // if(res.status === 200){
+    //   res.applications.forEach(e => console.log(e))
+    // } else{
+    //   console.log(res.error)
+    // }
+    const res = await API.getApplicationDetails('nvt7M3McN9nXT5ZBZJtL');
+    console.log(res)
+  }
 
+  useEffect(()=> {
+    a()
+  })
   return (
     <userContext.Provider value={user}>
       {date === null ? null :
