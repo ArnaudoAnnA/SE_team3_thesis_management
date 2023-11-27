@@ -1124,12 +1124,66 @@ const getDegree = async () => {
   }
 };
 
+/**
+ * Accept an application and decline all the others for the same thesis
+ * @param {string} applicationId id of the accepted application
+ * @returns 
+ */
+
+const acceptApplication = async (applicationId) => {
+  if (!auth.currentUser) return { status: 401, err: "User not logged in" };
+  if (!(await isTeacher(auth.currentUser.email))) return { status: 401, err: "User is not a teacher" };
+
+  try {
+    const applicationRef = doc(db, "applications", applicationId);
+    const applicationSnapshot = await getDoc(applicationRef);
+    if (!applicationSnapshot.exists()) return { status: 404, err: "Application not found" };
+    const application = applicationSnapshot.data();
+    if (application.accepted) return { status: 400, err: "Application already accepted" };
+    await updateDoc(applicationRef, { accepted: true });
+    // decline all the other applications for the same thesis
+    const otherApplications = await getDocs(query(applicationsRef, where("thesisId", "==", application.thesisId)));
+    otherApplications.forEach(async (doc) => {
+      if (doc.id !== applicationId) {
+        await updateDoc(doc.ref, { accepted: false });
+      }
+    });
+    return { status: 200 };
+  } catch (error) {
+    console.error("Error in calling Firebase:", error);
+    return { status: 500 };
+  }
+};
+
+/**
+ * Decline an application
+ * @param {string} applicationId id of the declined application
+ * @returns 
+ */
+const declineApplication = async (applicationId) => {
+  if (!auth.currentUser) return { status: 401, err: "User not logged in" };
+  if (!(await isTeacher(auth.currentUser.email))) return { status: 401, err: "User is not a teacher" };
+
+  try {
+    const applicationRef = doc(db, "applications", applicationId);
+    const applicationSnapshot = await getDoc(applicationRef);
+    if (!applicationSnapshot.exists()) return { status: 404, err: "Application not found" };
+    const application = applicationSnapshot.data();
+    if (!application.accepted) return { status: 400, err: "Application already declined" };
+
+    await updateDoc(applicationRef, { accepted: false });
+    return { status: 200 };
+  } catch (error) {
+    console.error("Error in calling Firebase:", error);
+    return { status: 500 };
+  }
+}
 
 const API = {
   getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser,
-  addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplications, getApplicationDetails, getCVOfApplication,
+  addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplications, getApplicationDetails, getCVOfApplication, acceptApplication, declineApplication,
   removeAllProposals, insertProposal, loginWithSaml,
   getApplicationsByState, getDegree
 };
