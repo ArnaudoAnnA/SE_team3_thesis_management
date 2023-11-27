@@ -94,7 +94,7 @@ function ApplicationsProfessor(props) {
                         <tbody>
                             {applications.length === 0 ? (
                                 <tr>
-                                    <td colSpan="3"> {state == STATES.EMPTY ? <Alert style={{textAlign: "center", width: "50%", marginLeft: "auto", marginRight: "auto"}}>{state}</Alert>: ""}</td>
+                                    <td colSpan="3"> {state ? <Alert style={{textAlign: "center", width: "50%", marginLeft: "auto", marginRight: "auto"}}>{state}</Alert>: ""}</td>
                                 </tr>
                             ) : (
                                 console.log(applications),
@@ -110,7 +110,7 @@ function ApplicationsProfessor(props) {
                         <tbody>
                             {applications.length === 0 ? (
                                 <tr>
-                                    <td colSpan="3">{state == STATES.EMPTY ? <Alert style={{textAlign: "center", width: "50%", marginLeft: "auto", marginRight: "auto"}}>{state}</Alert>: ""}</td>
+                                    <td colSpan="3">{state  ? <Alert style={{textAlign: "center", width: "50%", marginLeft: "auto", marginRight: "auto"}}>{state}</Alert>: ""}</td>
                                 </tr>
                             ) : (
                                 applications.map((app) => <tr key={app.applicationId}><AppTable app={app} activeKey={key} /></tr>)
@@ -125,7 +125,7 @@ function ApplicationsProfessor(props) {
                         <tbody>
                             {applications.length === 0 ? (
                                 <tr>
-                                    <td colSpan="3">{state == STATES.EMPTY ? <Alert style={{textAlign: "center", width: "50%", marginLeft: "auto", marginRight: "auto"}}>{state}</Alert>: ""}</td>
+                                    <td colSpan="3">{state  ? <Alert style={{textAlign: "center", width: "50%", marginLeft: "auto", marginRight: "auto"}}>{state}</Alert>: ""}</td>
                                 </tr>
                             ) : (
                                 applications.map((app) => <tr key={app.applicationId}><AppTable app={app} activeKey={key} /></tr>)
@@ -154,13 +154,13 @@ function AppTable(props) {
 
     return (
             <>
-                <h1> {props.app.thesisTitle}</h1>
-                <p className= "text-info change-bg-on-hover" style={{textAlign: "start", cursor: "pointer", paddingLeft: "2%"}} onClick={(e) => setViewStudents((v) => !v)}>
+                <h1 className='profAppl'> {props.app.thesisTitle}</h1>
+                <p className= "text-info change-bg-on-hover profAppl" style={{textAlign: "start", cursor: "pointer", paddingLeft: "2%"}} onClick={(e) => setViewStudents((v) => !v)}>
                     {"View applications" + (viewStudents ? " ▽ " : " ▷")}
                 </p>
-                {viewStudents ? <Table hover style={{ width:"85%", borderBlockColor: "white", cursor: "pointer"}}>
+                {viewStudents ? <Table responsive hover style={{ width:"85%", borderBlockColor: "white", cursor: "pointer"}}>
 
-                    <tbody>
+                    <tbody className= 'profAppl'>
                     {props.app.applications.map(
                         (e) => {
                             return (
@@ -174,7 +174,7 @@ function AppTable(props) {
                                 <td onClick={() => navigate(`/applications/` + e.id + `/` + props.activeKey)} style={{ verticalAlign: "middle" }}>
                                     <h5>{e.student.surname}</h5>
                                 </td>
-                                <td onClick={() => navigate(`/applications/` + e.id)} style={{ verticalAlign: "middle" }}>
+                                <td onClick={() => navigate(`/applications/` + e.id + `/` + props.activeKey)} style={{ verticalAlign: "middle" }}>
                                     <p>Application Date: {formatWatchDate(e.applicationDate, 'YYYY-MM-DD')}</p>
                                 </td>
                             </tr>

@@ -53,6 +53,12 @@ body {
   cursor: pointer;
 }
 
+.tab-pane{
+
+  min-width: 230px !important;
+
+}
+
 .MuiAutocomplete-root{
 
   flex: 1 1 auto !important; 
@@ -259,6 +265,13 @@ body {
 
 
 @media only screen and (max-width: 768px) {
+
+.profAppl{
+
+  font-size: 13px !important;
+  width: 80% !important;
+
+}
 
   .brwbtt{
 
@@ -561,6 +574,14 @@ body {
 }
 
 @media only screen and (max-width: 280px) {
+
+  .browseProf{
+
+    font-size: 11px !important;
+    margin-bottom: 20px !important;
+    margin-right: 35% !important;
+
+  }
 
   .MuiOutlinedInput-root {
 
