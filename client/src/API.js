@@ -864,19 +864,6 @@ const getApplicationsByState = async (state) => {
 
 }
 
-/** Retrive the list of applications of all the thesis of a theacher.
- * 
- * @param {int} professorId 
- * @param {bool} state possible values: [null (pending), true (accepted), false (rejected)]
- * 
- * @returns {{status: code, applications: [{id: , studentID: , studentName: , studentSurname: , thesisTitle: , title: }, ...]}}
- * Possible values for status: [200 (ok), 500 (internal server error), 404 (not found)].
- * Possible values for applications [array (in case of success), null (in case of error)]
- */
-const getApplications = (state) =>
-{
-  //talk with Salvo
-}
 
 /** API similar to getApplication, but returns data organized in  a different way.
  * 
