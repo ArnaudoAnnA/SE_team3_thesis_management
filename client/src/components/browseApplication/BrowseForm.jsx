@@ -18,9 +18,25 @@ function BrowseForm(props) {
   const [student, setStudent] = useState();
   const [showSpinner, setShowSpinner] = useState(true);
   const { id } = useParams();
-  // const id = 's345678';
-  //put just for test
 
+
+  const successAlert = () => {
+    Swal.fire({  
+      title: 'Accepted!',  
+      text: 'Your have accepted the application!',
+      icon: 'success'
+    });
+    return true;
+  };
+  
+  const errorAlert = (e) => {
+    Swal.fire({  
+      title: 'Declined!',  
+      text: 'You have declined the application!',
+      icon: 'error'
+    });
+    return false;
+  };
 
   useEffect(() => {
     async function fetchApplicationDetails(id) {
@@ -158,22 +174,34 @@ function BrowseForm(props) {
         </Row>
         <Row>
           <Container className='d-flex justify-content-center mt-4' style={{ marginBottom: "3%" }}>
-            <Button
-              type="submit"
-              className='brwbtt'
-              style={{ marginRight: "3px", fontSize: "16px", padding: "0.5% 2%" }}
-              onClick={() => successAlert()}
-            >
-              Accept
-            </Button>
-            <Button
-              variant="warning"
-              className='brwbtt'
-              style={{ fontSize: "16px", padding: "0.5% 2%" }}
-              onClick={(e) => errorAlert(e)}
-            >
-              Decline
-            </Button>
+            {props.activeKey == 'Accepted' || props.activeKey == 'Rejected' && (
+              <>
+                <Button
+                  type="submit"
+                  className='brwbtt'
+                  style={{
+                    marginRight: "3px",
+                    fontSize: "16px",
+                    padding: "0.5% 2%"
+                  }}
+                  onClick={() => successAlert()}
+                >
+                  Accept
+                </Button>
+                <Button
+                  variant="warning"
+                  className='brwbtt'
+                  style={{
+                    fontSize: "16px",
+                    padding: "0.5% 2%"
+                  }}
+                  onClick={(e) => errorAlert(e)}
+                >
+                  Decline
+                </Button>
+              </>
+            )}
+
           </Container>
         </Row>
       </>
