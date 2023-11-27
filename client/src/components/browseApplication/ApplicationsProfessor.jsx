@@ -19,17 +19,17 @@ const formatWatchDate = (dayJsDate, format) => {
     return dayJsDate ? dayJsDate.format(format) : '';
 }
 
-const returnedObject = {
-    "studentId": "ciao",
-    "accepted": "ciao",
-    "thesisId": "ciao",
-    "thesisTitle": "Leonardo",
-    "thesisDescription": "ciao",
-    "teacherName": "ciao",
-    "teacherSurname": "Leonardo",
-    "students": [{name: "Anna", surname: "Salvatore", date: date},{name: "Emilio", surname: "David", date: date}, {name: "Vincenzo", surname: "Davide", date: new dayjs()}],
+// const returnedObject = {
+//     "studentId": "ciao",
+//     "accepted": "ciao",
+//     "thesisId": "ciao",
+//     "thesisTitle": "Leonardo",
+//     "thesisDescription": "ciao",
+//     "teacherName": "ciao",
+//     "teacherSurname": "Leonardo",
+//     "students": [{name: "Anna", surname: "Salvatore", date: date},{name: "Emilio", surname: "David", date: date}, {name: "Vincenzo", surname: "Davide", date: new dayjs()}],
 
-  }
+// }
 
 function ApplicationsProfessor(props) {
 
@@ -48,43 +48,51 @@ function ApplicationsProfessor(props) {
     useEffect(() => {
 
         setState(STATES.LOADING);
-        /*async function fetchApplicationsByState(state){
+        async function fetchApplicationsByState(state){
             if(user.id){
-                API.getApplicationsByState(state)
-                .then((applications) => {
-                    setApplications(applications);
+                API.getApplications(state)
+                .then((res) => {
+                    if(res.status != 200) {
+                        setState(STATES.READY);
+                        return
+                    };
+                    console.log(res);
+                    setApplications(res.applications);
                     setState(STATES.READY);
                     console.log(applications);
                 })
                 .catch(e => {console.log("Error in ApplicationsStudent/getApplicationsByState:" + e); setState(STATES.ERROR);});
             }
-        }*/
+        }
 
         if (key=="Pending") {
-            //fetchApplicationsByState("Pending");
+            setApplications([]);
+            fetchApplicationsByState(null);
             /* --------------MOCK (TO BE DELETED) -------------------*/
-            let v = [
-                { key: "unique_key_1", ...returnedObject },
-                { key: "unique_key_2", ...returnedObject },
-                { key: "unique_key_3", ...returnedObject },
-                { key: "unique_key_4", ...returnedObject },
-              ];
-            v[0]= returnedObject;
-            v[1]= returnedObject;
-            v[2]= returnedObject;
-            v[3]= returnedObject;
-            setApplications(v);
+            // let v = [
+            //     { key: "unique_key_1", ...returnedObject },
+            //     { key: "unique_key_2", ...returnedObject },
+            //     { key: "unique_key_3", ...returnedObject },
+            //     { key: "unique_key_4", ...returnedObject },
+            //   ];
+            // v[0]= returnedObject;
+            // v[1]= returnedObject;
+            // v[2]= returnedObject;
+            // v[3]= returnedObject;
+            // setApplications(v);
             setState(STATES.READY); 
             /*--------------------------------------*/
         } else if (key=="Accepted") {
-           // fetchApplicationsByState("Accepted");
+            setApplications([]);
+           fetchApplicationsByState(true);
            setState(STATES.READY); 
         } else {
-            //fetchApplicationsByState("Rejected");
+            setApplications([]);
+            fetchApplicationsByState(false);
             setState(STATES.READY); 
         }
 
-        //console.log("activeKey from ThesisDetail: " + activeKey);
+        console.log("activeKey from ThesisDetail: " + activeKey);
         
     },[key]);
   
@@ -107,7 +115,8 @@ function ApplicationsProfessor(props) {
                                     <td colSpan="3">You have no applications for this category</td>
                                 </tr>
                             ) : (
-                                applications.map((app) => <tr key={app.key}><AppTable app={app} activeKey={key} /></tr>)
+                                console.log(applications),
+                                applications.map((app) => <tr key={app.applicationId}><AppTable app={app} activeKey={key} /></tr>)
                             )}
                         </tbody>
 
@@ -122,7 +131,7 @@ function ApplicationsProfessor(props) {
                                     <td colSpan="3">You have no applications for this category</td>
                                 </tr>
                             ) : (
-                                applications.map((app) => <tr key={app.key}><AppTable app={app} activeKey={key} /></tr>)
+                                applications.map((app) => <tr key={app.applicationId}><AppTable app={app} activeKey={key} /></tr>)
                             )}
                         </tbody>
 
@@ -137,7 +146,7 @@ function ApplicationsProfessor(props) {
                                     <td colSpan="3">You have no applications for this category</td>
                                 </tr>
                             ) : (
-                                applications.map((app) => <tr key={app.key}><AppTable app={app} activeKey={key} /></tr>)
+                                applications.map((app) => <tr key={app.applicationId}><AppTable app={app} activeKey={key} /></tr>)
                             )}
                         </tbody>
 
@@ -152,7 +161,7 @@ function ApplicationsProfessor(props) {
 function AppTable(props) {
 
     const formatWatchDate = (dayJsDate, format) => {
-        return dayJsDate ? dayJsDate.format(format) : '';
+        return dayJsDate ? dayjs(dayJsDate).format(format) : '';
     }
 
     const location = useLocation();
@@ -163,31 +172,32 @@ function AppTable(props) {
 
     return (
             <>
-                <h1> {returnedObject.thesisTitle}</h1>
+                <h1> {props.app.thesisTitle}</h1>
                 <p className= "text-info change-bg-on-hover" style={{textAlign: "start", cursor: "pointer", paddingLeft: "2%"}} onClick={(e) => setViewStudents((v) => !v)}>
                     {"View applications" + (viewStudents ? " ▽ " : " ▷")}
                 </p>
                 {viewStudents ? <Table hover style={{ width:"85%", borderBlockColor: "white", cursor: "pointer"}}>
 
                     <tbody>
-
-                    {returnedObject.students.map(
-
-                        (key, index) => (
-
-                            <tr key={index} >
-                                <td onClick={() => navigate(`/browse`)} style={{ verticalAlign: "middle" }}>
-                                    <h5>{key.name}</h5>
+                    {props.app.applications.map(
+                        (e) => {
+                            return (
+                            <tr key={e.id} >
+                                <td onClick={() => navigate(`/applications/` + e.id)} style={{ verticalAlign: "middle" }}>
+                                    <h5>{e.student.id}</h5>
                                 </td>
-                                <td onClick={() => navigate(`/browse`)} style={{ verticalAlign: "middle" }}>
-                                    <h5>{key.surname}</h5>
+                                <td onClick={() => navigate(`/applications/` + e.id)} style={{ verticalAlign: "middle" }}>
+                                    <h5>{e.student.name}</h5>
                                 </td>
-                                <td onClick={() => navigate(`/browse`)} style={{ verticalAlign: "middle" }}>
-                                    <p>Application Date: {formatWatchDate(key.date, 'YYYY-MM-DD')}</p>
+                                <td onClick={() => navigate(`/applications/` + e.id)} style={{ verticalAlign: "middle" }}>
+                                    <h5>{e.student.surname}</h5>
+                                </td>
+                                <td onClick={() => navigate(`/applications/` + e.id)} style={{ verticalAlign: "middle" }}>
+                                    <p>Application Date: {formatWatchDate(e.applicationDate, 'YYYY-MM-DD')}</p>
                                 </td>
                             </tr>
 
-                        )
+                        )}
 
                     )}
 

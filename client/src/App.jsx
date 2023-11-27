@@ -93,20 +93,20 @@ function Main() {
     API.logOut()
     setUser({})
   }
-  const a = async () => {
+  // const a = async () => {
     // const res = await API.getApplications(null);
     // if(res.status === 200){
     //   res.applications.forEach(e => console.log(e))
     // } else{
     //   console.log(res.error)
     // }
-    const res = await API.getApplicationDetails('nvt7M3McN9nXT5ZBZJtL');
-    console.log(res)
-  }
+    // const res = await API.getApplicationDetails('nvt7M3McN9nXT5ZBZJtL');
+  //   console.log(res)
+  // }
 
-  useEffect(()=> {
-    a()
-  })
+  // useEffect(()=> {
+  //   a()
+  // })
   return (
     <userContext.Provider value={user}>
       {date === null ? null :
@@ -120,6 +120,7 @@ function Main() {
             <Route path='/thesis/:id' element={user.email ? <ThesisDetails /> : <Login />} />
             <Route path='/thesis/:id/apply' element={user.email ? (user.role === "student" ? <ApplyForm virtualDate={date} /> : <NotFoundPage />) : <Login />} />
             <Route path='/applications' element={user.email ? (user.role === "teacher" ? <ApplicationsProfessor /> : <ApplicationsStudent />) : <Login />} />
+            <Route path='/applications/:id' element={user.email ? (user.role === "teacher" ? <BrowseForm /> : <NotFoundPage />) : <Login />} />
             <Route path='/browse' element={user.email ? (user.role === "teacher" ? <BrowseForm /> : <NotFoundPage />) : <Login />} />
 
           </Route>

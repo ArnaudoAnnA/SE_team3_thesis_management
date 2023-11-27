@@ -17,6 +17,7 @@ import ThesisProposal from './models/ThesisProposal.js';
 import StringUtils from './utils/StringUtils.js';
 import CONSTANTS from './utils/Constants.js';
 import MessageUtils from './utils/MessageUtils.js';
+import ApplicationUtils from './utils/ApplicationUtils.js';
 
 //DO NOT CANCEL
 const firebaseConfig = {
@@ -152,6 +153,35 @@ const getUser = async (email) => {
   }
 
   // console.log(user)
+  return user
+};
+
+const getUsers = async (ids) => {
+  const users = await Promise.all(ids.map(async (id) => {
+    const user = await getUserById(id)
+    return user
+  }))
+  console.log(users)
+  return users
+}
+
+const getUserById = async (id) => {
+  let user = null
+  const whereCond = where("id", "==", id)
+  const qStudent = query(studentsRef, whereCond)
+  const qTeacher = query(teachersRef, whereCond)
+
+  const studentSnapshot = await getDocs(qStudent)
+  const teacherSnapshot = await getDocs(qTeacher)
+  if (studentSnapshot.docs[0]) {
+    const student = studentSnapshot.docs[0].data()
+    user = new Student(student.id, student.surname, student.name, student.gender, student.nationality, student.email, student.cod_degree, student.enrollment_year)
+  } else {
+    const teacher = teacherSnapshot.docs[0].data()
+    user = new Teacher(teacher.id, teacher.surname, teacher.name, teacher.email, teacher.cod_group, teacher.cod_department)
+  }
+
+  console.log(user)
   return user
 };
 
@@ -637,29 +667,40 @@ const retrieveCareer = async (studentId) => {
  * Possible values for applications [array (in case of success), null (in case of error)]
  */
 const getApplications = async (status) => {
-  
-  if(auth.currentUser){
-    const user = await API.getUser(auth.currentUser.email)
-    console.log(user.id)
-    const whereProfessorId = where("teacherId", "==", user.id)
-      const whereStatus = where("accepted", "==" , status)
-      const q = query(applicationsRef, whereProfessorId, whereStatus)
-      const appSnaphot = await getDocs(q)
-      console.log(appSnaphot.docs.length)
-      const applications = appSnaphot.docs.map(doc => {
-        const data = doc.data()
-        const id = doc.id
-        console.log(data)
-        return new Application(id, data.studentId, data.thesisId, status, data.curriculum, data.date, data.teacherId, data.thesisTitle)
-        })
-      console.log(applications)
-      if(applications.length == 0){
-        return MessageUtils.createMessage(404, "error", "No data found")
-      }
-      return MessageUtils.createMessage(200, "applications", applications)
-  } else {
+  console.log(status)
+  if(!auth.currentUser){
     return MessageUtils.createMessage(500, "error", "Server error")
   }
+  const user = await API.getUser(auth.currentUser.email)
+  console.log(user.id)
+  const whereProfessorId = where("teacherId", "==", user.id)
+  const whereStatus = where("accepted", "==" , status)
+  const q = query(applicationsRef, whereProfessorId, whereStatus)
+  const appSnaphot = await getDocs(q)
+  console.log(appSnaphot.docs.length)
+  const applications = appSnaphot.docs.map(doc => {
+    const data = doc.data()
+    const id = doc.id
+    console.log(data)
+    return new Application(id, data.studentId, data.thesisId, status, data.curriculum, data.date, data.teacherId, data.thesisTitle)
+    })
+  console.log(applications)
+  const studentsIds = []
+  applications.forEach(app => {
+    if(!studentsIds.includes(app.studentId)){
+      app.studentId
+      studentsIds.push(app.studentId)
+    }
+  })
+  const studentsInfo = await getUsers(studentsIds)
+  console.log(studentsInfo)
+  studentsInfo.forEach(e => { console.log(e) })
+  const groupedApplications = ApplicationUtils.createApplicationsListGroupByThesis(applications, studentsInfo)
+  console.log(groupedApplications)
+  if(applications.length == 0){
+    return MessageUtils.createMessage(404, "error", "No data found")
+  }
+  return MessageUtils.createMessage(200, "applications", groupedApplications)
 }
 
 /**
@@ -889,7 +930,7 @@ const getApplicationDetails = async (id) =>
   const applicationSnapshot = await getDoc(applicationRef)
   if(!applicationSnapshot.exists()) return MessageUtils.createMessage(404, "error", "Application not found");
   const application = applicationSnapshot.data();
-  const student = await getUser(application.studentId + "@studenti.polito.it");
+  const student = await getUserById(application.studentId);
   const career = await retrieveCareer(student.id);
   // console.log("Application details:");
   // console.log(application);
@@ -899,7 +940,8 @@ const getApplicationDetails = async (id) =>
   // console.log(career);
   
   const applicationDetails = {
-    studentName: student.name + " " + student.surname,
+    title: application.thesisTitle,
+    student: student,
     curriculum: application.curriculum ? application.curriculum : null,
     career: career,
   };
