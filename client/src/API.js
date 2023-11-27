@@ -336,6 +336,11 @@ const buildWhereConditions = async (filters) => {
     whereConditions.push(where("groups", "array-contains-any", [group]));
   }
 
+  if (filters.programmes && filters.programmes.length != '') {
+    let programme = filters.programmes;
+    whereConditions.push(where("programmes", "==", programme));
+  }
+
   return whereConditions;
 };
 
@@ -402,9 +407,9 @@ const getValuesForField = (DBfield) => {
   }
 }
 
-const setValuesForField = (DBfield) => {
+const setValuesForField = (thesis, DBfield) => {
   const values = [];
-  THESIS_CACHE.forEach(proposal => {
+  thesis.forEach(proposal => {
     let value = proposal[DBfield];
     if (Array.isArray(value))
       value.forEach(v => {
@@ -511,23 +516,24 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
 
       if (isFiltersEmpty(filters)) {
         // save the values of the attributes for the filter form
+        console.log("Setting values for filter form")
         let formValues = {};
         Object.keys(filters).forEach( (key) => {
           if (key === 'teacherName')
-            formValues['supervisor'] = setValuesForField('supervisor');
-          else if(key !== 'expirationDate' && key !== 'programmes' && key !== 'title')
-            formValues['' + key] = setValuesForField(key)
+            formValues['supervisor'] = setValuesForField(thesis, 'supervisor');
+          else if(key !== 'expirationDate' && key !== 'title')
+            formValues['' + key] = setValuesForField(thesis, key)
         });
         FILTER_FORM_VALUES = formValues;
       } else {
         // filter the thesis on title and expiration date
         if(filters.title !== undefined && filters.title !== '') {
-          console.log(`filters.title: ${filters.title}`);
+          // console.log(`filters.title: ${filters.title}`);
           thesis = thesis.filter((proposal) => proposal.title.toLowerCase().includes(filters.title.toLowerCase()));
         }
   
         if(filters.expirationDate !== undefined && (filters.expirationDate.from !== '' || filters.expirationDate.to !== '')) {  
-          console.log(`Filters \nfrom: ${filters.expirationDate.from} to: ${filters.expirationDate.to}`);
+          // console.log(`Filters \nfrom: ${filters.expirationDate.from} to: ${filters.expirationDate.to}`);
           thesis = thesis.filter((proposal) => {
             let from = filters.expirationDate.from;
             let to = filters.expirationDate.to; 
