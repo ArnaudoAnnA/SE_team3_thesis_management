@@ -2,7 +2,8 @@ import { createContext, useContext, useState } from "react";
 import { Button, Col, Row, Form, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
-import "../navbar.css"
+import "../navbar_sidebar.css";
+import { IoMenuOutline as MenuIcon, IoClose as CloseIcon } from "react-icons/io5"
 
 /** Context used to propagate the user object */
 const userContext = createContext();
@@ -18,6 +19,7 @@ const userContext = createContext();
 function CustomNavbar(props) {
     const user = useContext(userContext);
     const [date, setDate] = useState(props.date);
+    const [isOpen, setIsOpen] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
 
     function handleSubmit(event) {
@@ -29,6 +31,14 @@ function CustomNavbar(props) {
         }, 1000);
     }
 
+    const openSidebar = () => {
+        setIsOpen(true);
+    }
+
+    const closeSidebar = () => {
+        setIsOpen(false);
+    }
+
     return (
         <>
             {/* Top banner with logo and app name */}
@@ -38,33 +48,42 @@ function CustomNavbar(props) {
                     Thesis Management
                 </Navbar.Brand>
             </Navbar>
+
             {/* App main navbar */}
             {user.email ?
-                <Navbar sticky="top" expand="lg" className='whiteNavbar mb-3 shadow' collapseOnSelect>
-                    <Navbar.Toggle />
-                    <Navbar.Collapse>
-                        <Nav>
-                            <Nav.Link as={Link} to={"/"} className="customLink" href='/'>Home</Nav.Link>
-                            <Nav.Link as={Link} to={"/applications"} className="customLink" href='/applications'>Applications</Nav.Link>
-                            {user.role == 'teacher' ?
-                                <>
-                                    <Nav.Link as={Link} to={"/archive"} className="customLink" href='/archive'>Archive</Nav.Link>
-                                </>
-                                : null}
-                            <Nav.Link as={Link} to={"/notifications"} className="customLink" href='/notifications'>Notifications</Nav.Link>
-                        </Nav>
-                    </ Navbar.Collapse>
-                    <NavDropdown title={<i className="bi bi-person-circle" style={{ fontSize: '2rem' }} />} id="basic-nav-dropdown" style={{ marginRight: '10px' }} className="dropdown-menu-right">
-                        <NavDropdown.Header>
-                            <Row> {`${user.name} ${user.surname}`} </Row>
-                            <Row> {`${user.email}`} </Row>
-                        </NavDropdown.Header>
-                        <NavDropdown.Item as={Link} to='/' onClick={props.logoutCbk}>
-                            <i className="bi bi-box-arrow-right" style={{ marginRight: '5px' }} />
-                            Logout
-                        </NavDropdown.Item>
-                    </NavDropdown>
-                </Navbar>
+                <header sticky="top" expand="lg" className="whiteNavbar mb-3">
+                    <div className='generalNavbar shadow'>
+                        <div className="menuBtn" onClick={() => openSidebar()}>
+                            <MenuIcon size={30} />
+                        </div>
+
+                        <div className="links">
+                                <Nav.Link as={Link} to={"/"} className="customLink" href='/'>Home</Nav.Link>
+                                <Nav.Link as={Link} to={"/applications"} className="customLink" href='/applications'>Applications</Nav.Link>
+                                {user.role == 'teacher' ?
+                                    <>
+                                        <Nav.Link as={Link} to={"/archive"} className="customLink" href='/archive'>Archive</Nav.Link>
+                                    </>
+                                    : null}
+                                <Nav.Link as={Link} to={"/notifications"} className="customLink" href='/notifications'>Notifications</Nav.Link>
+                        </div>
+
+                        <div className="auth">
+                            <NavDropdown title={<i className="bi bi-person-circle" style={{ fontSize: '2rem' }} />} id="basic-nav-dropdown" style={{ marginRight: '10px' }} className="dropdown-menu-right">
+                                <NavDropdown.Header>
+                                    <Row> {`${user.name} ${user.surname}`} </Row>
+                                    <Row> {`${user.email}`} </Row>
+                                </NavDropdown.Header>
+                                <NavDropdown.Item as={Link} to='/' onClick={props.logoutCbk}>
+                                    <i className="bi bi-box-arrow-right" style={{ marginRight: '5px' }} />
+                                    Logout
+                                </NavDropdown.Item>
+                            </NavDropdown>
+                        </div>
+
+                        <Sidebar isOpen={isOpen} closeSidebar={closeSidebar} user={user}/>
+                    </div>
+                </header>
                 : null}
 
             {/* Virtual clock, just for testing */}
@@ -114,8 +133,31 @@ function NotFoundPage() {
     </>;
 }
 
+
+function Sidebar(props) {
+    return <>
+        <div className={`sidebar ${props.isOpen && "open"}`}>
+            <span className="closeIcon" onClick={() => props.closeSidebar()}>
+                <CloseIcon size={30}/>
+            </span>
+
+            <div>
+                <Nav.Link as={Link} to={"/"} className="customSidebarLink" href='/' onClick={() => props.closeSidebar()}>Home</Nav.Link>
+                <Nav.Link as={Link} to={"/applications"} className="customSidebarLink" href='/applications' onClick={() => props.closeSidebar()}>Applications</Nav.Link>
+                {props.user.role == 'teacher' ?
+                    <>
+                        <Nav.Link as={Link} to={"/archive"} className="customSidebarLink" href='/archive' onClick={() => props.closeSidebar()}>Archive</Nav.Link>
+                    </>
+                    : null}
+                <Nav.Link as={Link} to={"/notifications"} className="customSidebarLink" href='/notifications' onClick={() => props.closeSidebar()}>Notifications</Nav.Link>
+            </div>
+        </div>
+    </>;
+}
+
 export {
     NotFoundPage,
     userContext,
     CustomNavbar,
+    Sidebar
 };

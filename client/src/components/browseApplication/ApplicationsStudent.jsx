@@ -62,7 +62,7 @@ function ApplicationsStudent(props) {
                 <Tab eventKey="Pending" title="Pending">
                     <div className='mt-3'>
                         {state===STATES.LOADING ? <Spinner animation="border" role="status"/> : 
-                            (applications.length == 0 ? "You have no applications for this category" : 
+                            (applications.length == 0 ? <span style={{textDecoration: "underline"}}> You have no applications for this category </span> : 
                                 applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
                             )
                         }
@@ -72,7 +72,7 @@ function ApplicationsStudent(props) {
                 <Tab eventKey="Accepted" title="Accepted">
                     <div className='mt-3'>
                         {state===STATES.LOADING ? <Spinner animation="border" role="status"/> : 
-                            (applications.length == 0 ? "You have no applications for this category" : 
+                            (applications.length == 0 ? <span style={{textDecoration: "underline"}}> You have no applications for this category </span> : 
                                 applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
                             )
                         }
@@ -82,7 +82,7 @@ function ApplicationsStudent(props) {
                 <Tab eventKey="Rejected" title="Rejected">
                     <div className='mt-3'>
                         {state===STATES.LOADING ? <Spinner animation="border" role="status"/> :
-                            (applications.length == 0 ? "You have no applications for this category" : 
+                            (applications.length == 0 ? <span style={{textDecoration: "underline"}}> You have no applications for this category </span> : 
                                 applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
                             )
                         }

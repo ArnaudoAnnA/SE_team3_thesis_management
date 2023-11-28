@@ -6,11 +6,6 @@ body {
   background-color: #003576;
 }
 
-.whiteNavbar {
-  background-color: white;
-  border-bottom: 6px solid #fc7a08;
-}
-
 .blueButton {
   background-color: #003576;
   border: none;
@@ -117,23 +112,6 @@ body {
   font-family: inherit !important;
   font-weight: 400px !important;
 
-}
-
-.dropdown-toggle::after {
-  display: none !important;
-}
-
-.dropdown-toggle:hover, 
-.dropdown-toggle:focus {
-  color: black;
-}
-
-.customLink {
-  color:black !important;
-}
-
-.customLink:hover {
-  color:#fc7a08 !important;
 }
 
 .appCard {

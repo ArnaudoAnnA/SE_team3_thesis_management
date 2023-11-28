@@ -1,0 +1,108 @@
+.whiteNavbar {
+    background-color: white;
+    border-bottom: 4px solid #fc7a08;
+}
+
+.generalNavbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+}
+
+.dropdown-toggle::after {
+    display: none !important;
+}
+
+.dropdown-toggle:hover, 
+.dropdown-toggle:focus {
+  color: #fc7a08;
+  scale: 1.05
+}
+
+.customLink {
+    color:black !important;
+}
+
+.customLink:hover {
+    color:#fc7a08 !important;
+    border-bottom: solid 2px #fc7a08;
+}
+
+.links {
+    display: flex;
+    gap: 2rem
+}
+
+.menuBtn {
+    color:black;
+    cursor: pointer;
+    display: none
+}
+
+.sidebar {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 300px;
+    padding: 3rem 0;
+    background-color: rgb(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    transform: translateX(-100%);
+    transition: transform 0.4s ease-in-out;
+    z-index: 2;
+}
+
+.sidebar.open {
+    transform: translateX(0);
+}
+
+.closeIcon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    cursor: pointer;
+}
+
+.closeIcon:hover {
+    opacity: 0.9;
+    scale: 1.1;
+}
+
+.sidebar a {
+    padding: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.customSidebarLink:hover{
+    background-color: #fc7a08 !important;
+    color: white !important;
+}
+
+/* RESPONSIVE DESIGN */
+@media(max-width: 992px){
+    .whiteNavbar {
+        background-color: transparent;
+        border-bottom: 4px solid #fc7a08;
+    }
+
+    .links {
+        display: none;
+    }
+
+    .menuBtn {
+        display: block;
+    }
+
+    .sidebar{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+}
