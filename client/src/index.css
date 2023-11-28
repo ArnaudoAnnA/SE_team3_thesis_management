@@ -132,27 +132,27 @@ body {
 .tabElem > li:first-child > button:focus,
 .tabElem > li:first-child .active
 {
-  background-color: blue !important;
+  background-color: #003576 !important;
   color: white !important;
-  border-bottom: 5px solid lightblue;
+  border-bottom: 5px solid rgb(105,144,253);
 }
 
 .tabElem > li:nth-child(2) > button:active,
 .tabElem > li:nth-child(2) > button:focus,
 .tabElem > li:nth-child(2) .active
 {
-  background-color: green !important;
+  background-color: rgb(51,102,0) !important;
   color: white !important;
-  border-bottom: 5px solid greenyellow;
+  border-bottom: 5px solid rgb(0,153,0);
 }
 
 .tabElem > li:last-child > button:active,
 .tabElem > li:last-child > button:focus,
 .tabElem > li:last-child .active
 {
-  background-color: rgb(192, 4, 4) !important;
+  background-color: rgb(153,0,0) !important;
   color: white !important;
-  border-bottom: 5px solid orangered;
+  border-bottom: 5px solid rgb(228,56,56);
 }
 
 

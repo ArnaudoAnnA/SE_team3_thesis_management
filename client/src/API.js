@@ -1,7 +1,7 @@
 "use strict;"
 
 import { initializeApp } from 'firebase/app';
-import { collection, addDoc, getFirestore, doc, query, getDocs, where, setDoc, deleteDoc, getDoc, limit, QueryFieldFilterConstraint, startAfter, orderBy } from 'firebase/firestore';
+import { collection, addDoc, getFirestore, doc, query, getDocs, updateDoc, where, setDoc, deleteDoc, getDoc, limit, QueryFieldFilterConstraint, startAfter, orderBy } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { getStorage, ref, uploadBytes} from "firebase/storage";
 import { SAMLAuthProvider } from "firebase/auth";
@@ -793,7 +793,7 @@ const getApplication = async (studentId, thesisId) => {
 
 /**
  * Retrieve the applications of the student by the applications' state
- * @param state the state of applications you are searching for
+ * @param {string} state the state of applications you are searching for
  * @return the applications' array
  * 
  */
@@ -1203,3 +1203,5 @@ await getApplicationsByState("Accepted", "s901234"); //1
 console.log("Pending:");
 await getApplicationsByState("Pending", "s901234"); //0
 */
+
+//acceptApplication("lPfv3SXcK5NCg3wKaDzK");
