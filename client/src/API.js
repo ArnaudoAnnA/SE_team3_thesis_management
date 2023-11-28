@@ -696,7 +696,7 @@ const getApplications = async (status) => {
   const studentsIds = []
   applications.forEach(app => {
     if(!studentsIds.includes(app.studentId)){
-      app.studentId
+      //app.studentId
       studentsIds.push(app.studentId)
     }
   })
@@ -1171,7 +1171,7 @@ const declineApplication = async (applicationId) => {
     const applicationSnapshot = await getDoc(applicationRef);
     if (!applicationSnapshot.exists()) return { status: 404, err: "Application not found" };
     const application = applicationSnapshot.data();
-    if (!application.accepted) return { status: 400, err: "Application already declined" };
+    if (application.accepted === false) return { status: 400, err: "Application already declined" };
 
     await updateDoc(applicationRef, { accepted: false });
     return { status: 200 };
@@ -1203,5 +1203,3 @@ await getApplicationsByState("Accepted", "s901234"); //1
 console.log("Pending:");
 await getApplicationsByState("Pending", "s901234"); //0
 */
-
-//acceptApplication("lPfv3SXcK5NCg3wKaDzK");

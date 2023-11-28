@@ -55,7 +55,7 @@ function ApplicationsProfessor(props) {
                    
                     console.log(applications);
                 })
-                .catch(e => {console.log("Error in ApplicationsStudent/getApplicationsByState:" + e); setState(STATES.ERROR);});
+                .catch(e => {console.log("Error in ApplicationsProfessor/getApplications:" + e); setState(STATES.ERROR);});
             }
         }
 

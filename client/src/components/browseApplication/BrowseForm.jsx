@@ -84,7 +84,7 @@ function BrowseForm(props) {
           setCvPath(res.application.curriculum);
           setShowSpinner(false);
         })
-        .catch(e => console.log("Error in ApplyForm/getApplicationDetails:" + e))
+        .catch(e => console.log("Error in BrowseForm/getApplicationDetails:" + e))
 
 
     }
