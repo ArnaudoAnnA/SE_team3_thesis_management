@@ -11,7 +11,7 @@ describe('1: Testing the getAllThesis API', () => {
     });
 
     test('T1.2: Should retrive a thesis array with length=0 if there are any thesis', async () => {
-        await API.logIn("d345678@studenti.polito.it", "d345678");
+        await API.logIn("d123456@polito.it", "test123");
         await API.removeAllProposals();
         const response = await API.getAllThesis();
         await API.logOut();
@@ -20,9 +20,9 @@ describe('1: Testing the getAllThesis API', () => {
     });
 
     test('T1.3: Should retrive a thesis array with length=1 if there is only 1 thesis', async () => {
-        await API.logIn("d345678@studenti.polito.it", "d345678");
+        await API.logIn("d123456@polito.it", "test123");
 
-        const user = await API.getUser("d345678@studenti.polito.it");
+        const user = await API.getUser("d123456@polito.it");
         
         await API.removeAllProposals();
 
@@ -62,7 +62,7 @@ describe('2: Testing the getThesis API', () => {
     });
 
     test('T2.2: Should retrive a thesis array with length=0 if there are any thesis', async () => {
-        await API.logIn("d345678@studenti.polito.it", "d345678");
+        await API.logIn("d123456@polito.it", "test123");
         await API.removeAllProposals();
         const response = await API.getThesis({type : "myType"});
         await API.logOut();

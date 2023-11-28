@@ -20,7 +20,7 @@ describe('testing the application to a thesis proposal in the database', () => {
 
     test('should retrive an error if the application does not have all the required fields', async () => {
         await API.logOut();
-        await API.logIn("d345678@studenti.polito.it", "d345678");
+        await API.logIn("d123456@polito.it", "test123");
         const response = await API.addApplication(applicationNoCurriculum);
         expect(response).toBe("Application sent")
     });
