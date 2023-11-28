@@ -23,7 +23,7 @@ By opening the component we will be able to see something like that:
 
 ![Screenshot](./screenshots/browseTabs.png)
 
-There a classification of the proposal depending on their state: 
+There a classification of the proposals depending on their state: 
 - Pending
 - Accepted
 - Rejected
