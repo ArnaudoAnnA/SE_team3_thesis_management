@@ -106,14 +106,14 @@ function FiltersForm(props)
             <Col style={{backgroundColor: "#fff0"}}>
                 {
                     mediaLarge ?
-                    <Button onClick={() => setShowAdvancedFilters(s => !s)}>More filters...</Button>
+                    <Button onClick={() => setShowAdvancedFilters(s => !s)} className="blueButton" >More filters...</Button>
                     : <Filter className="flexible_icons icons change-bg-on-hover" onClick={() => setShowAdvancedFilters(s => !s)} />
                 }
             </Col>
             <Col>
                 {
                     mediaLarge ?
-                    <Button onClick={() => {resetFilters(); ctxState.setState(ctxState.states.loading);}}>Reset filters</Button>
+                    <Button onClick={() => {resetFilters(); ctxState.setState(ctxState.states.loading);}} className="blueButton" >Reset filters</Button>
                     : <BootstrapReboot className="flexible_icons icons change-bg-on-hover" onClick={() => {resetFilters(); ctxState.setState(ctxState.states.loading);}} />
                 }
             </Col>

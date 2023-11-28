@@ -211,7 +211,7 @@ function BrowseForm(props) {
               <>
                 <Button
                   type="submit"
-                  className='brwbtt'
+                  className='brwbtt blueButton'
                   style={{
                     marginRight: "3px",
                     fontSize: "16px",
@@ -223,7 +223,7 @@ function BrowseForm(props) {
                 </Button>
                 <Button
                   variant="warning"
-                  className='brwbtt'
+                  className='brwbtt orangeButton'
                   style={{
                     fontSize: "16px",
                     padding: "0.5% 2%"

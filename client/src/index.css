@@ -8,11 +8,13 @@ body {
 
 .blueButton {
   background-color: #003576;
+  color : white;
   border: none;
 }
 
 .blueButton:hover {
   background-color: #002855;
+  color : white;
 }
 
 .orangePoli {
@@ -21,11 +23,13 @@ body {
 
 .orangeButton {
   background-color: #fc7a08;
+  color : white;
   border: none;
 }
 
 .orangeButton:hover {
   background-color: #e65c00;
+  color: white;
 }
 
 .white {
