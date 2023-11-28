@@ -604,6 +604,9 @@ const getThesisWithId = async (ID) => {
   }
 } 
 
+
+//---------------------------OTHER FUNCTIONALITIES----------------------------------
+
 /**
  * Add a new application into the server
  * @param application the application object (look model/Application)
@@ -622,7 +625,6 @@ const addApplication = async (application) => {
         
         console.log(application.parse(fileRef? fileRef.fullPath : null))
         addDoc(applicationsRef, application.parse(fileRef? fileRef.fullPath : null)).then(doc => {
-          console.log(doc.id)
           console.log("Added application with id:" + doc.id)
           return "Application sent"
         })
@@ -760,8 +762,6 @@ const getTitleAndTeacher = async (thesisId) => {
 const getApplication = async (studentId, thesisId) => {
   if (auth.currentUser) {
     if (StringUtils.checkId(studentId, auth.currentUser.email)) {
-      console.log(studentId)
-      console.log(thesisId)
       const whereThesisId = where("thesisId", "==", Number(thesisId))
       const whereStudentId = where("studentId", "==", studentId)
 
