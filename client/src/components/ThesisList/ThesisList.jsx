@@ -104,7 +104,7 @@ function ThesisList(props)
     function reloadThesisFromBeginning()
     {
         //changing the format of filters object:
-        let nf = Object.assign({}, filters, {coSupervisors: [filters.coSupervisors]});
+        let nf = Object.assign({}, filters, {coSupervisors: filters.coSupervisors ? [filters.coSupervisors] : [], groups: filters.groups ? [filters.groups] : []});
 
         API.getThesis(nf, orderBy, undefined, ENTRIES_PER_PAGE)
             .then(ret => 
@@ -129,7 +129,7 @@ function ThesisList(props)
     function showMoreThesis()
     {
         //changing the format of filters object:
-        let nf = Object.assign({}, filters, {coSupervisors: [filters.coSupervisors]});
+        let nf = Object.assign({}, filters, {coSupervisors: filters.coSupervisors ? [filters.coSupervisors] : [], groups: filters.groups ? [filters.groups] : []});
 
         API.getThesis(nf, orderBy, thesis[thesis.length -1].id, ENTRIES_PER_PAGE)
             .then(ret => 
@@ -190,7 +190,7 @@ function ThesisList(props)
                         <hr />
                         <ThesisTable columns={COLUMNS} thesis={thesis} orderBy={orderBy} orderByField={orderByField}/>
                         {
-                            <Row className="justify-content-center"><Col className="col-2 justify-content-center">
+                            <Row className="justify-content-center"><Col className="col-2 justify-content-center" style={{display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column"}}>
                             {
                                 state == STATES.show_more ? 
                                     <ClipLoader />
