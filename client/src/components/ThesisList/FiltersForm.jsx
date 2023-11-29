@@ -12,6 +12,8 @@ import contextState from "./contextState";
 
 function ThesisFieldFilterForm(props)
 {
+    const [options, setOptions] = useState();
+    const [selOpt, setSelOpt] = useState({label: props.filters[props.DBfield], value: props.filters[props.DBfield]});
 
     switch(props.DBfield)
     {
@@ -22,10 +24,12 @@ function ThesisFieldFilterForm(props)
                 </>;
         default:
             return <Autocomplete
-            options={API.getValuesForField(props.DBfield) /*.map(e => {return {value: e, label: e};}) */}
-            autoComplete
+            options={API.getValuesForField(props.DBfield)}
+            
             autoSelect
-            onChange={(event) => {
+            selectOnFocus
+            inputValue={props.filters[props.DBfield]}
+            onChange={(event) => { 
                 props.onChangeFiltersForm(props.DBfield, event.target.outerText);
             }}
             renderInput={(params) => <TextField {...params} variant="standard"   style={{ paddingLeft: "2px", borderRadius: "6px", width: '100%', fontSize: "12px"}}/>}
@@ -75,15 +79,13 @@ function FiltersForm(props)
     function onChangeFiltersForm(id, value)
     {
         setFilters(f => {
+                            if(!value) value = "";
                             if (id == "expirationDateFrom")
                             {
                                 f.expirationDate.from = value;
                             }else if (id == "expirationDateTo")
                             {
                                 f.expirationDate.to = value;
-                            }else if(id == "coSupervisors")
-                            {
-                                f.coSupervisors = [value];
                             }else
                             {
                                 f[id] = value;

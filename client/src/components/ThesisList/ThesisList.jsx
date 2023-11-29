@@ -34,9 +34,9 @@ function ThesisList(props)
         expirationDate: {to: "", from: ""},
         title: "",
         supervisor: "",
-        coSupervisors: [],
+        coSupervisors: "",
         type: "",
-        groups: [],
+        groups: "",
         level: "",
         programmes: ""
     };
@@ -67,7 +67,6 @@ function ThesisList(props)
     function resetFilters()
     {
         setFilters(Object.assign({}, DEFAULT_FILTERS));
-        setState(STATES.loading);
     }
 
     /**
@@ -104,7 +103,10 @@ function ThesisList(props)
 
     function reloadThesisFromBeginning()
     {
-        API.getThesis(filters, orderBy, undefined, ENTRIES_PER_PAGE)
+        //changing the format of filters object:
+        let nf = Object.assign({}, filters, {coSupervisors: [filters.coSupervisors]});
+
+        API.getThesis(nf, orderBy, undefined, ENTRIES_PER_PAGE)
             .then(ret => 
                 {
                     if (ret.status == 200)
@@ -126,7 +128,10 @@ function ThesisList(props)
 
     function showMoreThesis()
     {
-        API.getThesis(filters, orderBy, thesis[thesis.length -1].id, ENTRIES_PER_PAGE)
+        //changing the format of filters object:
+        let nf = Object.assign({}, filters, {coSupervisors: [filters.coSupervisors]});
+
+        API.getThesis(nf, orderBy, thesis[thesis.length -1].id, ENTRIES_PER_PAGE)
             .then(ret => 
                 {
                     if (ret.status == 200)
@@ -160,7 +165,7 @@ function ThesisList(props)
     useEffect(()=>
     {
         if(state != STATES.loading) setState(STATES.loading); 
-    }, [props.date, orderBy]);
+    }, [props.date, orderBy, filters]);
 
     /*
     useEffect(() =>
@@ -177,9 +182,9 @@ function ThesisList(props)
     return (
         <contextState.Provider value={{state: state, setState: setState, states: STATES}}>
             <Container>
+            <FiltersForm filters={[filters, setFilters, resetFilters, isFiltered]}/>
                 { (state == STATES.ready || state == STATES.show_more) ? 
                     <>
-                        <FiltersForm filters={[filters, setFilters, resetFilters, isFiltered]}/>
                         
                         <p className="text-info">Number of items: {thesisNumber}</p>
                         <hr />
