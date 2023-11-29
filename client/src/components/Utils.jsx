@@ -141,7 +141,7 @@ function Sidebar(props) {
                 <CloseIcon size={30}/>
             </span>
 
-            <div>
+            <div className="mt-5">
                 <Nav.Link as={Link} to={"/"} className="customSidebarLink" href='/' onClick={() => props.closeSidebar()}>Home</Nav.Link>
                 <Nav.Link as={Link} to={"/applications"} className="customSidebarLink" href='/applications' onClick={() => props.closeSidebar()}>Applications</Nav.Link>
                 {props.user.role == 'teacher' ?
