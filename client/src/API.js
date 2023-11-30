@@ -667,10 +667,9 @@ const retrieveCareer = async (studentId) => {
 
 /** Retrive the list of applications of all the thesis of a theacher.
  * 
- * @param {int} professorId 
- * @param {bool} state possible values: [null (pending), true (accepted), false (rejected)]
+ * @param {bool} status possible values: [null (pending), true (accepted), false (rejected)]
  * 
- * @returns {{status: code, applications: [{id: , studentID: , thesisTitle: }, ...]}}
+ * @returns {{status: code, applications: [[{id: , applicationDate: , student: {...}},{},...],[], ...]}}
  * Possible values for status: [200 (ok), 500 (internal server error), 404 (not found)].
  * Possible values for applications [array (in case of success), null (in case of error)]
  */
@@ -1100,7 +1099,7 @@ const insertProposal = async (thesisProposalData) => {
 
     //We update the thesisProposalData with the obtained groups and calculated id
     thesisProposalData.groups = groupsAux;
-    thesisProposalData.id = (await getThesisNumber()).number+1;
+    thesisProposalData.id = await getNextThesisId();
     const docRef = await addDoc(thesisProposalsRef, thesisProposalData);
     console.log("Thesis proposal added with ID: ", docRef.id);
     return { status: 200, id: docRef.id };
@@ -1109,6 +1108,21 @@ const insertProposal = async (thesisProposalData) => {
     return { status: 500 }; // or handle the error accordingly
   }
 };
+
+const getNextThesisId = async () => {
+  const qThesis = query(thesisProposalsRef);
+
+  try {
+    const thesisSnapshot = await getDocs(qThesis);
+    const thesisArray = thesisSnapshot.docs.map((t) => t.data().id);
+
+    //thesisArray.forEach((id) => console.log("thesisArray[i]: " + id));
+    
+    return Math.max(...thesisArray);
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 const getDegree = async () => {
   try {
