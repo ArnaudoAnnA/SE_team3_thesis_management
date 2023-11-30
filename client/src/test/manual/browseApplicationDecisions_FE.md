@@ -24,22 +24,6 @@ A new page appears and we can see the Pending, Accepted and Rejected application
 ![Screenshot](./screenshots_browse/apps3.png)
 
 
-# Mobile CSS Testing
-
-In this part there's a test regarding the mobile part of the application into 3 devices:
-- Galaxy Fold
-- iPad Air
-- iPhone 12
-
-The CSS is responsive and it adapts in the different dimensions of the devices:
-
-### Galaxy fold
-![Screenshot](./screenshots_browse/galaxy_fold.png)
-### iPad Air
-![Screenshot](./screenshots_browse/ipad_air.png)
-### iPhone 12
-![Screenshot](./screenshots_browse/iphone_12.png)
-
 # Functionality tests
 
 ## Browsing a new application
@@ -70,3 +54,19 @@ In this test we are going to try going back to the applications with the back bu
 RESULTS:
 ![Screenshot](./screenshots_browse/back.png)
 ![Screenshot](./screenshots_browse/apps2.png)
+
+# Mobile CSS Testing
+
+In this part there's a test regarding the mobile part of the application into 3 devices:
+- Galaxy Fold
+- iPad Air
+- iPhone 12
+
+The CSS is responsive and it adapts in the different dimensions of the devices:
+
+### Galaxy fold
+![Screenshot](./screenshots_browse/galaxy_fold.png)
+### iPad Air
+![Screenshot](./screenshots_browse/ipad_air.png)
+### iPhone 12
+![Screenshot](./screenshots_browse/iphone_12.png)
