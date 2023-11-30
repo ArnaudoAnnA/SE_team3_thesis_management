@@ -1118,7 +1118,7 @@ const getNextThesisId = async () => {
 
     //thesisArray.forEach((id) => console.log("thesisArray[i]: " + id));
     
-    return Math.max(...thesisArray);
+    return (Math.max(...thesisArray))+1;
   } catch (error) {
     console.log(error);
   }
