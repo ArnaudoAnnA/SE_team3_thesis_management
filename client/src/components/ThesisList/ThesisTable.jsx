@@ -1,7 +1,6 @@
 
 import {Table, Row, Col} from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowDown, ArrowUp } from 'react-bootstrap-icons';
 import dayjs from 'dayjs';
 import {useState} from 'react';
 
@@ -35,10 +34,9 @@ function thesis_obj_to_array(obj, columns)
  * @param {*} field_content
  * @returns a link to the specific item if exists, or the content of the field itself
  */
-function row_field_to_td(row_id, field_name, field_content)
+function row_field_to_td(thesis_id, field_name, field_content)
 {
     // TO DO: add links to professor, group, ...
-
 
     if (field_name == "expirationDate") return dayjs(field_content).format('YYYY/MM/DD');
 
@@ -63,6 +61,8 @@ function ThesisRow(props)
             {
                 props.columns.map((c,i) => <td key={c.DBfield}>{row_field_to_td(props.row.id, c.DBfield, props.row[c.DBfield] || " ")}</td>)
             }
+            <td><Link to={`/thesis/${props.row.id}`} className='text-info'>Details</Link></td>
+            <td className='text-info'>▷</td>
         </tr>
     )
 }
@@ -77,8 +77,8 @@ function InteractiveTh(props)
 
     function ToggleArrow()
     {
-        return asc ? <th className='text-center icons change-bg-on-hover text-info' onClick={() => {props.orderByField(props.col.DBfield, false);}}>{"🡇"}</th>
-                    : <th className='text-center icons change-bg-on-hover text-info' onClick={() => { props.orderByField(props.col.DBfield, true); }}>{"🡅"}</th>;
+        return asc ? <th className='text-center icons change-bg-on-hover text-info' onClick={() => {props.orderByField(props.col.DBfield, false);}}>{"▿"}</th>
+                    : <th className='text-center icons change-bg-on-hover text-info' onClick={() => { props.orderByField(props.col.DBfield, true); }}>{"▵"}</th>;
     }
 
     return <th key={props.col.DBfield}><Table borderless>
@@ -103,12 +103,13 @@ function ThesisTable(props)
 
     return (
         <>
-        <Table responsive hover style={{minWidth: "700px"}}>
+        <Table responsive hover>
             <thead>
                 <tr>
                     {
                         columns.map( col => <InteractiveTh key={col.title} col={col} orderBy={props.orderBy} orderByField={props.orderByField}/>)
                     }
+                <th></th><th></th>
                 </tr>
             </thead>
 

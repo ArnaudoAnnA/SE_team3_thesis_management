@@ -19,12 +19,12 @@ function ThesisList(props)
     const COLUMNS = [   //TO DO: dynamic width of columns
         { DBfield: "title", title: "Title",  },
         { DBfield: "supervisor", title: "Supervisor",  },
-        { DBfield: "coSupervisors", title: "Co-Supervisors",  }, //array
-        { DBfield: "type", title: "Type",  },
-        { DBfield: "groups", title: "Groups",  }, //array
+        //{ DBfield: "coSupervisors", title: "Co-Supervisors",  }, //array
+        //{ DBfield: "type", title: "Type",  },
+        //{ DBfield: "groups", title: "Groups",  }, //array
         { DBfield: "expirationDate", title: "Expiration",  },
-        { DBfield: "level", title: "Level",  },
-        { DBfield: "programmes", title: "Programmes",  }
+        //{ DBfield: "level", title: "Level",  },
+        //{ DBfield: "programmes", title: "Programmes",  }
         //further info in the thesis dedicated page
     ];
 
