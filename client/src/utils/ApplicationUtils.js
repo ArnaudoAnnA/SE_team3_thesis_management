@@ -3,19 +3,24 @@ const createApplicationsListGroupByThesis = (applications, studentsInfo) => {
     console.log("createApplicationsListGroupByThesis")
     console.log(applications)
     console.log(studentsInfo)
-    studentsInfo.forEach(student => { console.log(student) })    
+    // studentsInfo.forEach(student => { console.log(student) })    
     let applicationsListGroupByThesis = []
     applications.forEach(application => {
+        console.log(application) 
         let thesisId = application.thesisId
         let thesisTitle = application.thesisTitle
-        let thesisApplications = applicationsListGroupByThesis.find(applications => applications.thesisId === thesisId)
-        if (thesisApplications) {
-            thesisApplications.applications.push(application)
+        let thesisGroupExistsIndex = applicationsListGroupByThesis.findIndex(application => application.thesisId === thesisId);
+        console.log(thesisGroupExistsIndex)
+        if (thesisGroupExistsIndex !== -1) {
+            let app = {
+                id: application.applicationId,
+                applicationDate: application.date,
+                student: studentsInfo.find(student => student.id == application.studentId),
+            }
+            applicationsListGroupByThesis[thesisGroupExistsIndex].applications.push(app)
         } else {
-            console.log(studentsInfo.filter(student => student.id == application.studentId))
-            console.log(application.studentId)
-            console.log(studentsInfo[0])
-            applicationsListGroupByThesis.push({
+            console.log("else")
+            let thesisGroup = {
                 thesisId: thesisId,
                 thesisTitle: thesisTitle,
                 applications: [{
@@ -23,8 +28,11 @@ const createApplicationsListGroupByThesis = (applications, studentsInfo) => {
                     applicationDate: application.date,
                     student: studentsInfo.find(student => student.id == application.studentId),
                 }]
-            })
+            }
+            console.log(thesisGroup)
+            applicationsListGroupByThesis.push(thesisGroup)
         }
+        
     })
     console.log(applicationsListGroupByThesis)
     return applicationsListGroupByThesis

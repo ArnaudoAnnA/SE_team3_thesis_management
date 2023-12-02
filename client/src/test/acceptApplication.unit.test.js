@@ -8,7 +8,7 @@ describe('testing the acceptApplication function', () => {
     const acceptedApplications = ["swK6V31H9vOA7YU293Hn","3K6sLgOzPKDIp4HTwXX3","8cdJi7pfCp8TXGZU8CDq", "nmkrc8O5mEDionLYIRgU", "snt8Kne11ScimR4KTvwA"]
     const declinedApplications = ["H4oCncW0Y48kLrWoINDQ", "KTlVJduD2sOoZqVnUFaR","L6j6HB2JR2Ig9n2B2obk", "MVzgEaS0cGQhDlLzBx0b", "gsntN4bG23fjEiWLnSaG", "rozNTqebvquCHm2iqR86"]
     const nullApplications = ["vB2oSIGDr6JeHJDDoDz6", "t2W5rhhZBCp4CymK0OsF"];
-
+    
     test('Should retrieve an error if a teacher is not logged in', async () => {
         await API.logOut();
         const response = await API.acceptApplication("KTlVJduD2sOoZqVnUFaR");

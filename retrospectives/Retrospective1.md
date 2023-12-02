@@ -55,7 +55,7 @@ sections:
 - Estimated Hours Standard deviation: 16h 12m
 - Actual Hours Standard deviation: 16h 36m
 
-- Total task estimation error ratio [(sum of total hours estimation / sum of total hours spent) - 1]: 5535m / 6630 = |-0,165| = 16%
+- Total task estimation error ratio [(sum of total hours estimation / sum of total hours spent) - 1]: |(5535m / 6630m) - 1| = |-0,165| = 16%
 
   
 ## QUALITY MEASURES 

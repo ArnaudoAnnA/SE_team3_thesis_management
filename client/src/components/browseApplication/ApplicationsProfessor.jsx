@@ -98,7 +98,7 @@ function ApplicationsProfessor(props) {
                                 </tr>
                             ) : (
                                 console.log(applications),
-                                applications.map((app) => <tr key={app.applicationId}><AppTable app={app} activeKey={key} /></tr>)
+                                applications.map((app) => <tr key={app.thesisId}><AppTable app={app} activeKey={key} /></tr>)
                             )}
                         </tbody>
 
@@ -113,7 +113,7 @@ function ApplicationsProfessor(props) {
                                     <td colSpan="3">{state  ? <Alert style={{textAlign: "center", width: "50%", marginLeft: "auto", marginRight: "auto"}}>{state}</Alert>: ""}</td>
                                 </tr>
                             ) : (
-                                applications.map((app) => <tr key={app.applicationId}><AppTable app={app} activeKey={key} /></tr>)
+                                applications.map((app) => <tr key={app.thesisId}><AppTable app={app} activeKey={key} /></tr>)
                             )}
                         </tbody>
 
@@ -128,7 +128,7 @@ function ApplicationsProfessor(props) {
                                     <td colSpan="3">{state  ? <Alert style={{textAlign: "center", width: "50%", marginLeft: "auto", marginRight: "auto"}}>{state}</Alert>: ""}</td>
                                 </tr>
                             ) : (
-                                applications.map((app) => <tr key={app.applicationId}><AppTable app={app} activeKey={key} /></tr>)
+                                applications.map((app) => <tr key={app.thesisId}><AppTable app={app} activeKey={key} /></tr>)
                             )}
                         </tbody>
 
