@@ -987,9 +987,9 @@ const removeAllProposals = async () => {
     const len = ids.length;
     const collectionName = DEBUG ? "test-thesisProposals" : "thesisProposals";
 
-    ids.forEach(async (id) => {
+    ids.forEach((id) => {
       const docRef = doc(db, collectionName, id);
-      await deleteDoc(docRef);
+      deleteDoc(docRef);
     })
 
     console.log(len);
