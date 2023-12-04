@@ -1163,6 +1163,9 @@ const acceptApplication = async (applicationId) => {
         await updateDoc(doc.ref, { accepted: false });
       }
     });
+    // archive the thesis
+    const thesisRef = doc(db, "thesisProposals", application.thesisId);
+    await updateDoc(thesisRef, { archiveDate: await getVirtualDate() });
     return { status: 200 };
   } catch (error) {
     console.error("Error in calling Firebase:", error);
@@ -1195,12 +1198,32 @@ const declineApplication = async (applicationId) => {
   }
 }
 
+/**
+ * Archive a thesis
+ * @param {string} thesisId id of the thesis to archive
+ * @returns {{ status: code }}
+ * Possible values for status: [200 (ok), 401 (unauthorized), 500 (server error)]
+ */
+const archiveThesis = async (thesisId) => {
+  if (!auth.currentUser) return { status: 401, err: "User not logged in" };
+  if (!(await isTeacher(auth.currentUser.email))) return { status: 401, err: "User is not a teacher" };
+
+  try {
+    const thesisRef = doc(db, "thesisProposals", thesisId);
+    await updateDoc(thesisRef, { archiveDate: await getVirtualDate() });
+    return { status: 200 };
+  } catch (error) {
+    console.error("Error in calling Firebase:", error);
+    return { status: 500 };
+  }
+}
+
 const API = {
-  getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField,
+  getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField, archiveThesis,
   changeVirtualDate, getVirtualDate,
-  signUp, logIn, logOut, getUser,
+  signUp, logIn, logOut, getUser, loginWithSaml,
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplications, getApplicationDetails, getCVOfApplication, acceptApplication, declineApplication,
-  removeAllProposals, insertProposal, loginWithSaml,
+  removeAllProposals, insertProposal,
   getApplicationsByState, getDegree
 };
 
