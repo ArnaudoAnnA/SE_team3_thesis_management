@@ -1213,7 +1213,8 @@ const archiveThesis = async (thesisId) => {
   if (!(await isTeacher(auth.currentUser.email))) return { status: 401, err: "User is not a teacher" };
 
   try {
-    const thesisRef = doc(db, "thesisProposals", thesisId);
+    const collectionName = DEBUG ? "test-thesisProposals" : "thesisProposals";
+    const thesisRef = doc(db, collectionName, thesisId);
     // check if the thesis exists
     const thesisSnapshot = await getDoc(thesisRef);
     if (!thesisSnapshot.exists()) return { status: 404, err: "Thesis not found" };
@@ -1225,12 +1226,57 @@ const archiveThesis = async (thesisId) => {
   }
 }
 
+/**
+ * Delete a thesis
+ * @param {string} id id of the thesis to delete
+ * @returns {{ status: code }} //if no errors occur
+ * @returns {{ status: code, error: err}} //if errors occur
+ * Possible values for status: [200 (ok), 401 (unauthorized), 500 (server error)]
+ */
+const deleteProposal = async (id) => {
+  if (!auth.currentUser) return { status: 401, error: "User not logged in" };
+  if (!(await isTeacher(auth.currentUser.email))) return { status: 401, error: "User is not a teacher" };
+
+  try {
+    const snapshotThesis = await getSnapshotThesis(id);
+    await deleteDoc(snapshotThesis.snapshot.ref);
+    return { status: 200 };
+  } catch (error) {
+    return { status: 500, error: `Error in calling Firebase: ${error}`};
+  }
+
+}
+
+
+/**
+ * Get the snapshot of the thesis by the thesis id
+ * @param {string} id id of the thesis
+ * @returns {{ status: code, snapshot: snapshot}} //if no errors occur
+ * @returns {{ status: code, error: err}} //if errors occur
+ * Possible values for status: [200 (ok), 401 (unauthorized), 404 (non found), 500 (server error)]
+ */
+const getSnapshotThesis = async (id) => {
+  if (!auth.currentUser) return { status: 401, error: "User not logged in" };
+
+  const whereThesisId = where("id", "==", Number(id));
+
+  const qThesis = query(thesisProposalsRef, whereThesisId);
+  try {
+    const thesisSnapshot = await getDocs(qThesis);
+    if (thesisSnapshot.empty) return { status: 404, error: `No thesis found`};
+    return { status: 200, snapshot: thesisSnapshot.docs[0]};
+  } catch (error) {
+    return { status: 500, error: `Error in calling Firebase: ${error}`};
+  }
+
+}
+
 const API = {
-  getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField, archiveThesis,
+  getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser, loginWithSaml,
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplications, getApplicationDetails, getCVOfApplication, acceptApplication, declineApplication,
-  removeAllProposals, insertProposal,
+  removeAllProposals, insertProposal, archiveThesis, deleteProposal,
   getApplicationsByState, getDegree
 };
 
