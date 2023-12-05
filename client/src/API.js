@@ -1208,17 +1208,15 @@ const declineApplication = async (applicationId) => {
  * @returns {{ status: code }}
  * Possible values for status: [200 (ok), 401 (unauthorized), 404 (not found) 500 (server error)]
  */
-const archiveThesis = async (thesisId) => {
+const archiveThesis = async (id) => {
   if (!auth.currentUser) return { status: 401, err: "User not logged in" };
   if (!(await isTeacher(auth.currentUser.email))) return { status: 401, err: "User is not a teacher" };
 
   try {
-    const collectionName = DEBUG ? "test-thesisProposals" : "thesisProposals";
-    const thesisRef = doc(db, collectionName, thesisId);
-    // check if the thesis exists
-    const thesisSnapshot = await getDoc(thesisRef);
+    // check if the thesis exists and retrieve it
+    const thesisSnapshot = await getSnapshotThesis(id);
     if (!thesisSnapshot.exists()) return { status: 404, err: "Thesis not found" };
-    await updateDoc(thesisRef, { archiveDate: await getVirtualDate() });
+    await updateDoc(thesisSnapshot.snapshot.ref, { archiveDate: await getVirtualDate() });
     return { status: 200 };
   } catch (error) {
     console.error("Error in calling Firebase:", error);
