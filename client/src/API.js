@@ -1215,7 +1215,7 @@ const archiveThesis = async (id) => {
   try {
     // check if the thesis exists and retrieve it
     const thesisSnapshot = await getSnapshotThesis(id);
-    if (!thesisSnapshot.exists()) return { status: 404, err: "Thesis not found" };
+    if (thesisSnapshot.snapshot.ref == null) return { status: 404, err: "Thesis not found" };
     await updateDoc(thesisSnapshot.snapshot.ref, { archiveDate: await getVirtualDate() });
     return { status: 200 };
   } catch (error) {

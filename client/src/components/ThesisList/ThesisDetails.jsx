@@ -41,35 +41,65 @@ function ThesisDetails(props) {
 
     const handleCloseModal = () => setShowModal(false);
     const handleShowModal = () => setShowModal(true);
+    const handleCloseArchiveModal = () => setShowArchiveModal(false);
+    const handleShowArchiveModal = () => setShowArchiveModal(true);
 
-    const successAlert = () => {
-        Swal.fire({  
-          title: 'Done!',  
-          text: 'You deleted the thesis correctly.',
-          icon: 'success'
+    const successAlert = (mode) => {
+        let textField;
+        switch (mode) {
+            case "delete":
+                textField = "Thesis archived successfully!";
+                break;
+            case "archive":
+                textField = "Thesis archived successfully!";
+                break;
+            default:
+                textField = "";
+        }
+
+        Swal.fire({
+            title: 'Done!',
+            text: textField,
+            icon: 'success'
         });
         navigate("/");
     };
 
     async function deleteThesis() {
         API.deleteProposal(id)
-        .then((res) => {
-            if (res.error) {
-                console.log("Error in ThesisDetails/deleteThesis:" + res.error);
-            } else {
-                setShowModal(false);
-                successAlert();
-            }
-        })
-        .catch(e => {
-            console.log("Error in ThesisDetails/deleteThesis:" + e);
-        })
+            .then((res) => {
+                if (res.error) {
+                    console.log("Error in ThesisDetails/deleteThesis:" + res.error);
+                } else {
+                    setShowModal(false);
+                    successAlert("delete");
+                }
+            })
+            .catch(e => {
+                console.log("Error in ThesisDetails/deleteThesis:" + e);
+            })
+    };
+
+    const archiveThesis = async () => {
+        API.archiveThesis(id)
+            .then((res) => {
+                if (res.error) {
+                    console.log("Error in ThesisDetails/archiveThesis:" + res.error);
+                } else {
+                    setShowArchiveModal(false);
+                    successAlert("archive");
+                }
+            })
+            .catch(e => {
+                console.log("Error in ThesisDetails/archiveThesis:" + e);
+            })
     };
 
     /* ------ STATES ----------------- */
     const [thesis, setThesis] = useState(props.thesis);
     const [appliedTwice, setAppliedTwice] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [showArchiveModal, setShowArchiveModal] = useState(false);
 
     /* ------ CONTEXTS ----------------- */
     const user = useContext(userContext);
@@ -116,17 +146,32 @@ function ThesisDetails(props) {
                     keyboard={true} //if you press 'esc' is like clicking on X
                 >
                     <Modal.Header closeButton>
-                        <Modal.Title> <i className="bi bi-exclamation-triangle" style={{color: "red"}}></i> &nbsp; <span style={{color: "red"}}> Attention </span> </Modal.Title>
+                        <Modal.Title> <i className="bi bi-exclamation-triangle" style={{ color: "red" }}></i> &nbsp; <span style={{ color: "red" }}> Attention </span> </Modal.Title>
                     </Modal.Header>
-                    <Modal.Body> Do you really want to delete this page? </Modal.Body>
+                    <Modal.Body> Do you really want to delete this thesis? The action is irreversible. </Modal.Body>
                     <Modal.Footer className="d-flex justify-content-between">
                         <Button variant="danger" onClick={() => deleteThesis()}> Yes </Button>
                         <Button variant="secondary" onClick={() => handleCloseModal()}> No </Button>
                     </Modal.Footer>
                 </Modal>
+                <Modal
+                    show={showArchiveModal}
+                    onHide={() => handleCloseArchiveModal()}
+                    backdrop="static" //if you click outside the modal, the modal does not disappear
+                    keyboard={true} //if you press 'esc' is like clicking on X
+                >
+                    <Modal.Header closeButton>
+                        <Modal.Title> <i className="bi bi-exclamation-triangle" style={{ color: "red" }}></i> &nbsp; <span style={{ color: "red" }}> Attention </span> </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body> Do you really want to archive this thesis? </Modal.Body>
+                    <Modal.Footer className="d-flex justify-content-between">
+                        <Button variant="danger" onClick={() => archiveThesis()}> Yes </Button>
+                        <Button variant="secondary" onClick={() => handleCloseArchiveModal()}> No </Button>
+                    </Modal.Footer>
+                </Modal>
 
                 <Row>
-                    <Col className="col-1"><Link to={nextpage} state={{activeKey: activeKey}}><Button className="blueButton"><Arrow90degLeft /></Button></Link></Col>
+                    <Col className="col-1"><Link to={nextpage} state={{ activeKey: activeKey }}><Button className="blueButton"><Arrow90degLeft /></Button></Link></Col>
                     {user.role == 'teacher' ? null : <>
                         <Col className="col-7"></Col>
                         <Col className="col-4 d-flex justify-content-end">
@@ -145,21 +190,21 @@ function ThesisDetails(props) {
                 </Row>
 
                 <hr size={10} />
-                <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-                <h1>{thesis.title}</h1>
-                {user.role == 'teacher'  && (
-                    <>
+                <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                    <h1>{thesis.title}</h1>
+                    {user.role == 'teacher' && (
+                        <>
                             <DropdownButton id="dropdown-basic-button" title="Edit ▼" variant="warning">
-                                <Dropdown.Item className="py-2" onClick={() => handleShowModal()}> Delete <svg style={{marginLeft: "1px"}} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                <Dropdown.Item className="py-2" onClick={() => handleShowModal()}> Delete <svg style={{ marginLeft: "1px" }} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
                                     <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
                                 </svg></Dropdown.Item>
                                 <Dropdown.Divider />
-                                <Dropdown.Item className="py-2" onClick={()=> navigate("/upproposal")}> Update <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                <Dropdown.Item className="py-2" onClick={() => navigate("/upproposal")}> Update <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
                                     <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
                                 </svg></Dropdown.Item>
                                 <Dropdown.Divider />
-                                <Dropdown.Item className="py-2"> Archive <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-archive" viewBox="0 0 16 16">
+                                <Dropdown.Item className="py-2" onClick={() => handleShowArchiveModal()}> Archive <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-archive" viewBox="0 0 16 16">
                                     <path d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5zm13-3H1v2h14zM5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5" />
                                 </svg></Dropdown.Item>
                                 <Dropdown.Divider />
@@ -169,7 +214,7 @@ function ThesisDetails(props) {
                             </DropdownButton>
 
                         </>
-           )}
+                    )}
                 </div>
                 <h6><i>{thesis.supervisor}</i></h6>
                 <hr />
