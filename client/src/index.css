@@ -2,6 +2,7 @@ body {
   background-color: #fafafa;
 }
 
+
 .bluePoli {
   background-color: #003576;
 }
@@ -155,6 +156,15 @@ body {
   border-bottom: 5px solid rgb(228,56,56);
 }
 
+.red-border {
+  border-color: red !important;
+
+}
+
+.norm-border {
+  border-color: none !important;
+
+}
 
 
 /*BEGINNING OF MEDIA QUERY INSERT PROPOSAL*/
