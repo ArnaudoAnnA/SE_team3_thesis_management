@@ -591,6 +591,7 @@ const getThesisWithId = async (ID) => {
       let teachersSnap = await getDocs(teachersRef);
       let teachers = teachersSnap.docs.map(doc => doc.data());
       let teacher = teachers.find(t => t.id == thesis.teacherId);
+      if (!teacher) return MessageUtils.createMessage(404, "error", "No teacher found");
       thesis.supervisor = teacher.name + ' ' + teacher.surname;
       //console.log(thesis);
       return thesis
@@ -827,9 +828,12 @@ const getApplicationsByState = async (state) => {
         for (let i=0; i<applications.length; i++) {
         
           const thesis = await API.getThesisWithId(applications[i].data().thesisId);
+          if (thesis.error) return MessageUtils.createMessage(thesis.status, "error", thesis.error);
+
           const whereTeacherId = where("id", "==", thesis.teacherId);
           const qTeacher = query(teachersRef, whereTeacherId);
           const teacherSnapshot = await getDocs(qTeacher);
+          if (teacherSnapshot.empty) return MessageUtils.createMessage(404, "error", "No teacher found");
           const returnedObject = {
             "studentId": applications[i].data().studentId,
             "accepted": applications[i].data().accepted,
@@ -842,6 +846,7 @@ const getApplicationsByState = async (state) => {
             "teacherSurname": teacherSnapshot.docs[0].data().surname
           }
 
+          //console.log(returnedObject);
           applicationsArray.push(returnedObject);
           
         }
@@ -881,7 +886,8 @@ const getApplicationsByState = async (state) => {
         for (let i=0; i<applications.length; i++) {
         
           const thesis = await API.getThesisWithId(applications[i].data().thesisId);
-          const whereStudentId = where("studentId", "==", thesis.studentId);
+          if (thesis.error) return MessageUtils.createMessage(thesis.status, "error", thesis.error);
+          //const whereStudentId = where("studentId", "==", thesis.studentId);
           //const qStudent = query(teachersRef, whereStudentId);
           //const studentSnapshot = await getDocs(qStudent);
           const returnedObject = {

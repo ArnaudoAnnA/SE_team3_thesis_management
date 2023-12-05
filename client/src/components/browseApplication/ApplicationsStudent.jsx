@@ -4,7 +4,7 @@ import { useDropzone} from 'react-dropzone';
 import Application from '../models/Application';
 import { userContext } from "./Utils";
 */
-import { Spinner, Card, Tabs, Tab } from 'react-bootstrap';
+import { Alert, Spinner, Card, Tabs, Tab } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -31,11 +31,19 @@ function ApplicationsStudent(props) {
         async function fetchApplicationsByState(state){
             if(user.id){
                 API.getApplicationsByState(state)
-                .then((applications) => {
-                    setApplications(applications);
-                    setState(STATES.READY);
+                .then((res) => {
+                    if (res.error) {
+                        console.log("Error in ApplicationsStudent/getApplicationsByState:" + res.error);
+                        setState(STATES.ERROR);
+                    } else {
+                        setApplications(res);
+                        setState(STATES.READY);
+                    }
                 })
-                .catch(e => console.log("Error in ApplicationsStudent/getApplicationsByState:" + e))
+                .catch(e => {
+                                console.log("Error in ApplicationsStudent/getApplicationsByState:" + e);
+                                setState(STATES.ERROR);
+                            })
             }
         }
 
@@ -61,9 +69,11 @@ function ApplicationsStudent(props) {
             >
                 <Tab eventKey="Pending" title="Pending">
                     <div className='mt-3'>
-                        {state===STATES.LOADING ? <Spinner animation="border" role="status"/> : 
-                            (applications.length == 0 ? <span style={{textDecoration: "underline"}}> You have no applications for this category </span> : 
-                                applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
+                        {state===STATES.LOADING ? <Spinner animation="border" role="status"/> : (
+                            state===STATES.ERROR ? <Alert style={{textDecoration: "underline"}}> Some errors occurred </Alert> :
+                                (applications.length == 0 ? <span style={{textDecoration: "underline"}}> You have no applications for this category </span> : 
+                                    applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
+                                )
                             )
                         }
                     </div>
@@ -71,9 +81,11 @@ function ApplicationsStudent(props) {
 
                 <Tab eventKey="Accepted" title="Accepted">
                     <div className='mt-3'>
-                        {state===STATES.LOADING ? <Spinner animation="border" role="status"/> : 
-                            (applications.length == 0 ? <span style={{textDecoration: "underline"}}> You have no applications for this category </span> : 
-                                applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
+                        {state===STATES.LOADING ? <Spinner animation="border" role="status"/> : (
+                            state===STATES.ERROR ? <Alert style={{textDecoration: "underline"}}> Some errors occurred </Alert> :
+                                (applications.length == 0 ? <span style={{textDecoration: "underline"}}> You have no applications for this category </span> : 
+                                    applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
+                                )
                             )
                         }
                     </div>
@@ -81,10 +93,13 @@ function ApplicationsStudent(props) {
 
                 <Tab eventKey="Rejected" title="Rejected">
                     <div className='mt-3'>
-                        {state===STATES.LOADING ? <Spinner animation="border" role="status"/> :
-                            (applications.length == 0 ? <span style={{textDecoration: "underline"}}> You have no applications for this category </span> : 
-                                applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
+                        {state===STATES.LOADING ? <Spinner animation="border" role="status"/> : (
+                                state===STATES.ERROR ? <Alert style={{textDecoration: "underline"}}> Some errors occurred </Alert> :
+                                    (applications.length == 0 ? <span style={{textDecoration: "underline"}}> You have no applications for this category </span> : 
+                                        applications.map((app) => <AppCard key={"" + app.studentId + " - " + app.thesisId} app={app} activeKey={key}/>)
+                                    )
                             )
+                            
                         }
                     </div>
                 </Tab>

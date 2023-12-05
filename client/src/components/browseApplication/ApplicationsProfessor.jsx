@@ -49,6 +49,9 @@ function ApplicationsProfessor(props) {
                     console.log(res);
                     if (!res || !res.applications) {
                         setState(STATES.EMPTY);
+                    } else if (res.error) {
+                        console.log("Error in ApplicationsStudent/getApplicationsByState:" + res.error);
+                        setState(STATES.ERROR);
                     } else {
                         setApplications(res.applications);
                     }
