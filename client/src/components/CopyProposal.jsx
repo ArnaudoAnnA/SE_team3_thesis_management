@@ -186,7 +186,7 @@ function CopyProposal(props) {
 
 
     })
-    .catch(e => console.log("Error in BrowseForm/getApplicationDetails:" + e))
+    .catch(e => console.log("Error in CopyProposal/getApplicationDetails:" + e))
 
   }, []);
  

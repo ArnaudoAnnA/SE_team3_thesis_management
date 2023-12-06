@@ -121,7 +121,7 @@ function Main() {
             {/** Add here other routes */}
             <Route path='/STRlist_debug' element={<STRlist date={date}/>} />
             <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm /> : <NotFoundPage />) : <Login />} />
-            <Route path='/upproposal' element={user.email ? (user.role === "teacher" ? <UpdateProposal /> : <NotFoundPage />) : <Login />} />
+            <Route path='/upproposal/:id' element={user.email ? (user.role === "teacher" ? <UpdateProposal /> : <NotFoundPage />) : <Login />} />
             <Route path='/cpproposal/:id' element={user.email ? (user.role === "teacher" ? <CopyProposal /> : <NotFoundPage />) : <Login />} />
             <Route path='/thesis/:id' element={user.email ? <ThesisDetails /> : <Login />} />
             <Route path='/thesis/:id/apply' element={user.email ? (user.role === "student" ? <ApplyForm virtualDate={date} /> : <NotFoundPage />) : <Login />} />
