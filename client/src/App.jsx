@@ -18,6 +18,7 @@ import { BrowseForm } from './components/browseApplication/BrowseForm.jsx';
 import { ApplicationsStudent } from './components/browseApplication/ApplicationsStudent.jsx';
 import { ApplicationsProfessor } from './components/browseApplication/ApplicationsProfessor.jsx';
 import { UpdateProposal } from './components/UpdateProposal.jsx';
+import { CopyProposal } from './components/CopyProposal.jsx';
 import { STRlist } from './components/startRequests/STRlist.jsx';
 
 
@@ -121,6 +122,7 @@ function Main() {
             <Route path='/STRlist_debug' element={<STRlist date={date}/>} />
             <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm /> : <NotFoundPage />) : <Login />} />
             <Route path='/upproposal' element={user.email ? (user.role === "teacher" ? <UpdateProposal /> : <NotFoundPage />) : <Login />} />
+            <Route path='/cpproposal' element={user.email ? (user.role === "teacher" ? <CopyProposal /> : <NotFoundPage />) : <Login />} />
             <Route path='/thesis/:id' element={user.email ? <ThesisDetails /> : <Login />} />
             <Route path='/thesis/:id/apply' element={user.email ? (user.role === "student" ? <ApplyForm virtualDate={date} /> : <NotFoundPage />) : <Login />} />
             <Route path='/applications' element={user.email ? (user.role === "teacher" ? <ApplicationsProfessor /> : <ApplicationsStudent />) : <Login />} />

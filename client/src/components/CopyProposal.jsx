@@ -18,7 +18,7 @@ import { userContext } from './Utils';
 
 
 
-function UpdateProposal(props) {
+function CopyProposal(props) {
 
   var mailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/; // Verify email
   const user = useContext(userContext);
@@ -308,8 +308,8 @@ function UpdateProposal(props) {
     
                   <div className="card bg-light cart" style={{ width: "45vw", marginLeft: "auto",marginRight: "auto" }}>
                   <article className="proposal-article" style={{maxWidth: "85vw", paddingLeft: "30px", paddingRight: "30px"}}>
-                      <h4 className="card-title mt-3 text-center">Update a thesis proposal</h4>
-                      <p className="text-center" style={{fontStyle: "italic"}}>Make changes or discard</p>
+                      <h4 className="card-title mt-3 text-center">Copy a thesis proposal</h4>
+                      <p className="text-center" style={{fontStyle: "italic"}}>Copy a thesis proposal starting from an existing one</p>
                       <p className="text-center" style={{fontStyle: "italic", fontSize: "73%"}}> (Required fildes are marked with *) </p>
                       <div className="form-group input-group" style={{ marginTop: "2px", marginBottom: "2px" }}>
                       <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Thesis title, this field is required">
@@ -476,7 +476,7 @@ function UpdateProposal(props) {
                       </div> 
 
                   <div className="form-group" style={{ marginTop: "2vh", display: 'flex' }}>
-                    <Button id="sendpb" style={{ marginLeft: "auto", marginRight: "auto", width: "150px", marginBottom: '10px' }} type="submit" className="blueButton" onClick={handleSubmit}> Update Proposal  </Button>
+                    <Button id="sendpb" style={{ marginLeft: "auto", marginRight: "auto", width: "150px", marginBottom: '10px' }} type="submit" className="blueButton" onClick={handleSubmit}> Upload Proposal  </Button>
                 <Button id="sendpb" style={{ marginLeft: "auto", marginRight: "auto", width: "150px", marginBottom: '10px' }} variant='danger' onClick={()=> {navigate("/")}}>Discard Changes  </Button>
                   </div>
 
@@ -495,5 +495,5 @@ function UpdateProposal(props) {
   
 
 
-export {UpdateProposal};
+export {CopyProposal};
 

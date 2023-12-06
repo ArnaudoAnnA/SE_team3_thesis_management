@@ -323,7 +323,7 @@ function InsertProposalForm(props) {
                       <p className="text-center" style={{fontStyle: "italic", fontSize: "73%"}}> (Required fildes are marked with *) </p>
                       <div className="form-group input-group" style={{ marginTop: "2px", marginBottom: "2px" }}>
                       <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Thesis title, this field is required">
-                        <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight: "1vw" }} width="16" height="16" fill="currentColor" className="bi bi-info-circle" viewBox="0 0 16 16">
+                        <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight: "1vw", color: inputErrorTitle ? "red": undefined }} width="16" height="16" fill="currentColor" className="bi bi-info-circle" viewBox="0 0 16 16">
                           <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                           <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
                         </svg>
@@ -332,7 +332,7 @@ function InsertProposalForm(props) {
                     </div>
                     <div className="form-group input-group" style={{  marginBottom: "2px", display: "flex", flexDirection: "row", position: "relative",alignItems: "stretch", flexWrap: "wrap",  }}>
                           <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Thesis type, this field is required">
-                      <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight:"1vw"}} width="16" height="16" fill="currentColor" className="bi bi-book-fill" viewBox="0 0 16 16">
+                      <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight:"1vw", color: inputErrorType ? "red": undefined}} width="16" height="16" fill="currentColor" className="bi bi-book-fill" viewBox="0 0 16 16">
                         <path d="M8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z" />
                       </svg>
                           </div>
@@ -367,7 +367,7 @@ function InsertProposalForm(props) {
                       </div> 
                       <div className="form-group input-group" style={{ marginTop: "2px", marginBottom: "2px" }}>
                       <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Required Knowledge, this field is required">
-                        <svg xmlns="http://www.w3.org/2000/svg"  style={{ marginRight:"1vw"}} width="16" height="16" fill="currentColor" className="bi bi-journal-bookmark-fill" viewBox="0 0 16 16">
+                        <svg xmlns="http://www.w3.org/2000/svg"  style={{ marginRight:"1vw", color: inputErrorKnowledge ? "red": undefined}} width="16" height="16" fill="currentColor" className="bi bi-journal-bookmark-fill" viewBox="0 0 16 16">
                           <path fillRule ="evenodd" d="M6 1h6v7a.5.5 0 0 1-.757.429L9 7.083 6.757 8.43A.5.5 0 0 1 6 8V1z" />
                           <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z" />
                           <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z" />
@@ -377,7 +377,7 @@ function InsertProposalForm(props) {
                     </div>
                       <div className="form-group input-group" style={{ marginTop: '4px'}}>
                           <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Thesis level, this field is required">
-                        <svg xmlns="http://www.w3.org/2000/svg"  style={{ marginRight:"1vw"}} width="16" height="16" fill="currentColor" className="bi bi-arrow-bar-up" viewBox="0 0 16 16">
+                        <svg xmlns="http://www.w3.org/2000/svg"  style={{ marginRight:"1vw", color: inputErrorLevel ? "red": undefined}} width="16" height="16" fill="currentColor" className="bi bi-arrow-bar-up" viewBox="0 0 16 16">
                           <path fillRule ="evenodd" d="M8 10a.5.5 0 0 0 .5-.5V3.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 3.707V9.5a.5.5 0 0 0 .5.5zm-7 2.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5z" />
                         </svg>
                           </div>
@@ -439,7 +439,7 @@ function InsertProposalForm(props) {
 
                     <div className="form-group input-group" style={{ marginTop: "4px", marginBottom: "2px" }}>
                       <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Cds/Programmes, this field is required">
-                        <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight:"1vw"}} width="16" height="16" fill="currentColor" className="bi bi-person-video3" viewBox="0 0 16 16">
+                        <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight:"1vw", color: inputErrorProgrammes ? "red": undefined}} width="16" height="16" fill="currentColor" className="bi bi-person-video3" viewBox="0 0 16 16">
                           <path d="M14 9.5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm-6 5.7c0 .8.8.8.8.8h6.4s.8 0 .8-.8-.8-3.2-4-3.2-4 2.4-4 3.2Z" />
                           <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h5.243c.122-.326.295-.668.526-1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v7.81c.353.23.656.496.91.783.059-.187.09-.386.09-.593V4a2 2 0 0 0-2-2H2Z" />
                         </svg>
