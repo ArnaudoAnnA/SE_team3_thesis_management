@@ -2,9 +2,8 @@
 
 import { initializeApp } from 'firebase/app';
 import { collection, addDoc, getFirestore, doc, query, getDocs, updateDoc, where, setDoc, deleteDoc, getDoc, limit, startAfter, orderBy } from 'firebase/firestore';
-import { SAMLAuthProvider, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { signInWithRedirect, SAMLAuthProvider, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { getStorage, ref, uploadBytes} from "firebase/storage";
-import { signInWithRedirect } from "firebase/auth";
 
 import dayjs from 'dayjs';
 import Teacher from './models/Teacher.js';
@@ -240,46 +239,6 @@ const changeVirtualDate = async (date) => {
   await setDoc(doc(db, "date", firstDoc.id), dateData);
 }
 
-
-
-/** Fetch the collection of all thesis without applying filters.<br>
- * 
- * Returns an object with two properties:
- * - status;
- * - thesis, null in case of error.
-*/
-// const getAllThesis = async () => {
-
-//   if (auth.currentUser) {
-//     try {
-//       if (isTeacher(auth.currentUser.email)) {
-//         //TO BE MODIFIED: Showing only his thesis
-//         const thesisSnapshot = await getDocs(thesisProposalsRef);
-//         const allThesis = [];
-//         thesisSnapshot.forEach((doc) => {
-//           allThesis.push(doc.data());
-//         });
-
-//         return { status: 200, thesis: allThesis }
-
-//       } else {
-//         //They are a student
-//         const thesisSnapshot = await getDocs(thesisProposalsRef);
-//         const allThesis = [];
-//         thesisSnapshot.forEach((doc) => {
-//           allThesis.push(doc.data());
-//         });
-
-//         return { status: 200, thesis: allThesis }
-//       }
-//     } catch (e) {
-//       console.log("Error:", e);
-//       return null; // or handle the error accordingly
-//     }
-//   } else {
-//     return CONSTANTS.notLogged;
-//   }
-// }
 
 //---------------------GET THESIS -----------------------------
 
