@@ -228,7 +228,7 @@ function BrowseForm(props) {
                     fontSize: "16px",
                     padding: "0.5% 2%"
                   }}
-                  onClick={(e) => errorAlert(e)}
+                  onClick={(e) => errorAlert()}
                 >
                   Decline
                 </Button>

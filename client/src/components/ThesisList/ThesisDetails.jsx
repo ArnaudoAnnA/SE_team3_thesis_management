@@ -21,8 +21,6 @@ function object_prop_to_td(key, value) {
         default:
             return value;
     }
-
-    return ret;
 }
 
 function ThesisDetails(props) {
@@ -106,7 +104,7 @@ function ThesisDetails(props) {
                 <hr />
                 <Table className="" >
                     <tbody>
-                        {FIELDS.map(f => <tr><th>{f.title}</th><td>{object_prop_to_td(f.DBfield, thesis[f.DBfield])}</td></tr>)}
+                        {FIELDS.map(f => <tr key={f.title}><th>{f.title}</th><td>{object_prop_to_td(f.DBfield, thesis[f.DBfield])}</td></tr>)}
                     </tbody>
                 </Table>
                 <hr />

@@ -7,7 +7,7 @@ import {useState} from 'react';
 
 
 /*--------- UTILITY FUNCTIONS ------------- */
-function thesis_obj_to_array(obj, columns)
+function data_obj_to_array(obj, columns)
 {
     let ret = [];
 
@@ -34,7 +34,7 @@ function thesis_obj_to_array(obj, columns)
  * @param {*} field_content
  * @returns a link to the specific item if exists, or the content of the field itself
  */
-function row_field_to_td(thesis_id, field_name, field_content)
+function row_field_to_td(data_id, field_name, field_content)
 {
     // TO DO: add links to professor, group, ...
 
@@ -52,25 +52,23 @@ function row_field_to_td(thesis_id, field_name, field_content)
 
 /* ------------------------------------- */
 
-function ThesisRow(props)
+function TableWithOrderByRow(props)
 {
     const navigate = useNavigate();
 
     return (
-        <tr key={props.row.id} onClick={() => navigate(`/thesis/${props.row.id}`)}>
+        <tr key={props.row.id} onClick={() => navigate(props.linkURL)}>
             {
-                props.columns.map((c,i) => <td key={c.DBfield}>{row_field_to_td(props.row.id, c.DBfield, props.row[c.DBfield] || " ")}</td>)
+                props.columns.map((c,i) => <td style={{paddingLeft: "3vw"}} key={c.DBfield}>{row_field_to_td(props.row.id, c.DBfield, props.row[c.DBfield] || " ")}</td>)
             }
-            <td><Link to={`/thesis/${props.row.id}`} className='text-info'>Details</Link></td>
-            <td className='text-info'>▷</td>
+            <td><Link to={props.linkURL} className='text-info' style={{width: "1px"}}>Details</Link></td>
+            <td className='text-info' style={{width: "1px"}}>▷</td>
         </tr>
     )
 }
 
 function InteractiveTh(props)
 {
-    let orderable = true;
-    if (props.col.DBfield == "coSupervisors" || props.col.DBfield == "groups") orderable = false;
 
     let temp = props.orderBy.find(i => i.DBfield == props.col.DBfield);
     let asc = temp.mode == "ASC" ? true : false;
@@ -84,20 +82,29 @@ function InteractiveTh(props)
     return <th key={props.col.DBfield}><Table borderless>
         <tbody>
         <tr>
-            <th>{props.col.title}</th>
             {
-                orderable ? <ToggleArrow/> : <th></th>
+                !props.isArray ? <ToggleArrow/> : <th></th>
             }
+            <th>{props.col.title}</th>
         </tr> 
         </tbody>
     </Table></th>
 }
 
 
-function ThesisTable(props)
+/**
+ * 
+ * @param {{columns: [{title: string, DBfield: string}, ...], 
+ * data: Array, 
+ * orderBy: [{DBfield: string, mode: string ("ASC"|"DESC") }, ...],
+ * orderByField: function(string, bool),
+ * detailsPageURL: string}} props 
+ *  
+ */
+function TableWithOrderBy(props)
 {
     const columns = props.columns;
-    const [thesis, setThesis] = useState(props.thesis);
+    const [data, setData] = useState(props.data);
     let key = 0;
 
 
@@ -107,15 +114,15 @@ function ThesisTable(props)
             <thead>
                 <tr>
                     {
-                        columns.map( col => <InteractiveTh key={col.title} col={col} orderBy={props.orderBy} orderByField={props.orderByField}/>)
+                        columns.map( col => <InteractiveTh key={col.title} col={col} orderBy={props.orderBy} orderByField={props.orderByField} isArray={data ? Array.isArray(data[0][col.DBfield]) : false}/>)
                     }
-                <th></th><th></th>
+                <th style={{width: "1px"}}></th><th style={{width: "1px"}}></th>
                 </tr>
             </thead>
 
             <tbody>
                 {
-                    thesis.map(r => <ThesisRow key={key++} row={r} columns={columns}/>)
+                    data.map(r => <TableWithOrderByRow key={key++} row={r} columns={columns} linkURL={props.detailsPageURL+r.id}/>)
                 }
             </tbody>
         </Table>
@@ -126,5 +133,5 @@ function ThesisTable(props)
 
 
 
-export {ThesisTable};
+export {TableWithOrderBy};
 

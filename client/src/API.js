@@ -1,11 +1,10 @@
 "use strict;"
 
 import { initializeApp } from 'firebase/app';
-import { collection, addDoc, getFirestore, doc, query, getDocs, updateDoc, where, setDoc, deleteDoc, getDoc, limit, QueryFieldFilterConstraint, startAfter, orderBy } from 'firebase/firestore';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { collection, addDoc, getFirestore, doc, query, getDocs, updateDoc, where, setDoc, deleteDoc, getDoc, limit, startAfter, orderBy } from 'firebase/firestore';
+import { SAMLAuthProvider, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { getStorage, ref, uploadBytes} from "firebase/storage";
-import { SAMLAuthProvider } from "firebase/auth";
-import { signInWithRedirect, getRedirectResult, signInWithPopup } from "firebase/auth";
+import { signInWithRedirect } from "firebase/auth";
 
 import dayjs from 'dayjs';
 import Teacher from './models/Teacher.js';
@@ -18,6 +17,7 @@ import StringUtils from './utils/StringUtils.js';
 import CONSTANTS from './utils/Constants.js';
 import MessageUtils from './utils/MessageUtils.js';
 import ApplicationUtils from './utils/ApplicationUtils.js';
+import { thesis } from './MOCKS.js';
 
 //DO NOT CANCEL
 const firebaseConfig = {
@@ -1079,7 +1079,7 @@ const insertProposal = async (thesisProposalData) => {
   }
 
   //Check that the teachers id is an id inside the teachers table
-  if (!isTeacherById(thesisProposalData.id)) {
+  if (!await isTeacherById(thesisProposalData.id)) {
     console.log("Validation failed: the proposed teacher is not present in our database");
     return { status: 400, err: "The proposed teacher is not present in our database" };
   }
@@ -1195,13 +1195,129 @@ const declineApplication = async (applicationId) => {
   }
 }
 
+let lastSTRdoc = null;
+let lastSTRqueryWhereConditions = null;
+
+const getSTRlist = async (orderBy, reload, entry_per_page) =>
+{
+  return {status: 200, STRlist: thesis};
+
+  if (!auth.currentUser) {
+    return CONSTANTS.notLogged;
+  }
+
+  if (await isStudent(auth.currentUser.email)) return CONSTANTS.unauthorized;
+
+  let whereConditions = [];
+
+  try {
+  
+    let index = -1;
+
+    //QUERY PREPARATION
+    // DIFFERENT QUERY BASING ON THE NEED TO LOAD DATA FROM THE BEGINNING OR NOT
+
+    // load of the first page
+    if (reload || !lastSTRdoc || !lastSTRqueryWhereConditions) {
+      // if the user is a teacher, show only the STR directed to him
+      if (await isTeacher(auth.currentUser.email)) {
+        let thisTeacherId = await getDocs(
+          query(teachersRef, where("email", "==", auth.currentUser.email))
+        ).then((snap) => snap.docs[0].data().id);
+        whereConditions.push(where("teacherId", "==", thisTeacherId));
+      }
+
+      // show only STR from the past
+      whereConditions.push(where("date", "<=", await getVirtualDate()));      //TO DO: check if the field name is correct
+      
+      //sorting
+      for (let f of orderByArray)
+      {
+        whereConditions.push(orderBy(f.DBfield, f.mode));
+      }
+
+      //pagination
+      whereConditions.push(limit(entry_per_page));
+
+      lastSTRqueryWhereConditions = whereConditions;
+      
+      // compose the query
+      let q = query(/*TO DO: ref to the STR table*/  ...whereConditions);
+    }else // when a new page is requested
+    {
+      let q = query(lastSTRqueryWhereConditions, startAfter(lastSTRdoc));
+    }
+
+    //QUERY EXECUTION
+
+    // prepare teacher array for name and surname
+    let teachersSnap = await getDocs(teachersRef);
+    let teachers = teachersSnap.docs.map((doc) => doc.data());
+
+    //run the query
+    let STRlist = await getDocs(q).then(async (snapshot) => {
+      lastSTRdoc = snapshot[snapshot.length-1];
+      let proposals = [];
+      snapshot.forEach((doc) => {
+        let proposal = doc.data();
+        let teacher = teachers.find(
+          (teacher) => teacher.id == proposal.teacherId
+        );
+        proposal.supervisor = teacher.name + " " + teacher.surname;
+        proposals.push(proposal);
+      });
+      return proposals;
+    });
+
+    return { status: 200, STRlist: STRlist };
+  } catch (error) {
+    console.log(error);
+    return { status: 500, err: error };
+  }
+}
+
+const getSTRlistLength = async () =>
+{
+  return {status: 200, length: thesis.length};
+
+  if (!auth.currentUser) {
+    return CONSTANTS.notLogged;
+  }
+
+  if (await isStudent(auth.currentUser.email)) return CONSTANTS.unauthorized;
+
+  /*------------QUERY PREPARATION ----------*/
+  let whereConditions = [];
+
+  if (await isTeacher(auth.currentUser.email)) {
+    let thisTeacherId = await getDocs(
+      query(teachersRef, where("email", "==", auth.currentUser.email))
+    ).then((snap) => snap.docs[0].data().id);
+    whereConditions.push(where("teacherId", "==", thisTeacherId));
+  }
+
+  // show only STR from the past
+  whereConditions.push(where("date", "<=", await getVirtualDate()));      //TO DO: check if the field name is correct
+
+  /*------------QUERY EXECUTION----------*/
+  let q = query(/*collection of STR*/ ...whereConditions);
+  let length = await getDocs(q)
+                      .then(d => d.data().count)
+                      .catch(e => {console.log(e); return -1;});
+  
+  if (length >= 0) return {status: 200, length: length};
+  else return {status: 500};
+      
+}
+
 const API = {
   getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser,
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplications, getApplicationDetails, getCVOfApplication, acceptApplication, declineApplication,
   removeAllProposals, insertProposal, loginWithSaml,
-  getApplicationsByState, getDegree
+  getApplicationsByState, getDegree,
+  getSTRlist, getSTRlistLength
 };
 
 

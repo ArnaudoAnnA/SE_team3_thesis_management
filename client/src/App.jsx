@@ -17,6 +17,7 @@ import { ApplyForm } from './components/ApplyForm.jsx';
 import { BrowseForm } from './components/browseApplication/BrowseForm.jsx';
 import { ApplicationsStudent } from './components/browseApplication/ApplicationsStudent.jsx';
 import { ApplicationsProfessor } from './components/browseApplication/ApplicationsProfessor.jsx';
+import { STRlist } from './components/startRequests/STRlist.jsx';
 
 
 
@@ -116,6 +117,7 @@ function Main() {
             {user.email ? <Route path='' element={<Home date={date}/>} /> :
               <Route path='' element={<Login />} />}
             {/** Add here other routes */}
+            <Route path='/STRlist_debug' element={<STRlist date={date}/>} />
             <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm /> : <NotFoundPage />) : <Login />} />
             <Route path='/thesis/:id' element={user.email ? <ThesisDetails /> : <Login />} />
             <Route path='/thesis/:id/apply' element={user.email ? (user.role === "student" ? <ApplyForm virtualDate={date} /> : <NotFoundPage />) : <Login />} />
@@ -155,12 +157,21 @@ function Header(props) {
 function Home(props) {
   const user = useContext(userContext);
   return (<>
-    <ThesisList date={props.date}/>
-    {user.role === "teacher" ?
-      <Button as={Link} to='/proposal' className="floating-button orangeButton">
-        New Proposal
-      </Button>
-      : ""}
+  {
+    user.role == "secretary" ?
+      <STRlist date={props.date} />
+      : <>
+          <ThesisList date={props.date}/>
+          {
+            user.role === "teacher" ?
+              <Button as={Link} to='/proposal' className="floating-button orangeButton">
+                New Proposal
+              </Button>
+              : ""
+          }
+        </>
+  }
+    
   </>);
 
 }

@@ -3,11 +3,10 @@ import { useEffect, useState } from "react";
 import {Alert, Container, Row, Col, Button} from 'react-bootstrap';
 import API from '../../API';
 import { FiltersForm } from "./FiltersForm";
-import { ThesisTable } from "./ThesisTable";
+import { TableWithOrderBy } from "../TableWithOrderBy";
 import ClipLoader from "react-spinners/ClipLoader";
 
 import contextState from "./contextState";
-import { orderBy } from "lodash";
 
 
 
@@ -95,9 +94,9 @@ function ThesisList(props)
 
     function orderByField(DBfield, asc)
     {
-        orderBy.filter(e => e.DBfield != DBfield);
-        orderBy.unshift({DBfield: DBfield, mode: asc ? "ASC" : "DESC"});
-        setOrderBy([...orderBy]);
+        let new_orderBy = orderBy.filter(e => e.DBfield != DBfield);
+        new_orderBy.unshift({DBfield: DBfield, mode: asc ? "ASC" : "DESC"});
+        setOrderBy(new_orderBy);
     }
     
 
@@ -188,7 +187,7 @@ function ThesisList(props)
                         
                         <p className="text-info">Number of items: {thesisNumber}</p>
                         <hr />
-                        <ThesisTable columns={COLUMNS} thesis={thesis} orderBy={orderBy} orderByField={orderByField}/>
+                        <TableWithOrderBy columns={COLUMNS} data={thesis} orderBy={orderBy} orderByField={orderByField} detailsPageURL={"/thesis/"}/>
                         {
                             <Row className="justify-content-center"><Col className="col-2 justify-content-center" style={{display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column"}}>
                             {

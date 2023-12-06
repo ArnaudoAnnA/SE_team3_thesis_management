@@ -21,6 +21,7 @@ export class Application {
         this.thesisTitle = thesisTitle
     }
 
+    /* property duplicated in an object => removed
     parse() {
         return {
             id: this.applicationId,
@@ -32,7 +33,7 @@ export class Application {
             teacherId: this.teacherId,
             thesisTitle: this.thesisTitle
         };
-    };
+    };*/
     parse(filePath){
         return {
             id: this.applicationId,
