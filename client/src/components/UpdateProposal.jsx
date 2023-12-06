@@ -4,7 +4,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 /*npm install dayjs @mui/x-date-pickers @mui/material @emotion/styled @emotion/react    --save */
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button,Alert, Container, Row, Col } from 'react-bootstrap';
@@ -23,6 +23,7 @@ function UpdateProposal(props) {
   var mailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/; // Verify email
   const user = useContext(userContext);
   const navigate = useNavigate();
+  const {id} = useParams();
   const types = [
     { value: 'Academic Research', label: 'Academic Research' },
     { value: 'Stage', label: 'Stage' },
@@ -169,7 +170,23 @@ function UpdateProposal(props) {
     });
   
   
-    console.log(deg)
+    API.getThesisWithId(id)
+    .then((res) => {
+      console.log(res);
+      setTitle(res.title);
+      setDegree(res.type);
+      setDesc(res.description);
+      setKnowledge(res.requiredKnowledge);
+      setLevel(res.level);
+      setTags(res.keywords);
+      setEmailTags(res.coSupervisors);
+      setpName(res.programmes);
+      setSelectedDate(dayjs(res.expirationDate));
+      setNot(res.notes);
+
+
+    })
+    .catch(e => console.log("Error in UpdateProposal/getApplicationDetails:" + e))
 
   }, []);
  
@@ -330,6 +347,7 @@ function UpdateProposal(props) {
                     <Autocomplete
                       options={types}
                       className={inputErrorType ? "red-border" : ""} 
+                      value={degree || null}
                       freeSolo
                       required
                       onChange={(ev) => {
