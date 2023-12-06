@@ -926,18 +926,17 @@ const getApplicationDetails = async (id) => {
  * 
  * @returns {{status: code, url: }} (which will trigger the download of the cv file)
  */
-const getCVOfApplication = (path) => {
+const getCVOfApplication = async (path) => {
   console.log(path)
   const cvRef = ref(storage, path)
 
-  getDownloadURL(cvRef)
-  .then(url => {
-    console.log(url)
-    return url
-  })
-  .catch(err => {
-    console.log(err)
-  })
+  try{
+    const url = await getDownloadURL(cvRef)
+    // console.log(url)
+    return MessageUtils.createMessage(200, "url", url);
+  } catch (e){
+    return MessageUtils.createMessage(404, "error", e);
+  }
 
 }
 
