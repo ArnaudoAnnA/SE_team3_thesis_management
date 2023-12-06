@@ -3,7 +3,7 @@
 import { initializeApp } from 'firebase/app';
 import { collection, addDoc, getFirestore, doc, query, getDocs, updateDoc, where, setDoc, deleteDoc, getDoc, limit, startAfter, orderBy } from 'firebase/firestore';
 import { signInWithRedirect, SAMLAuthProvider, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { getStorage, ref, uploadBytes} from "firebase/storage";
+import { getBlob, getDownloadURL, getStorage, getStream, ref, uploadBytes} from "firebase/storage";
 
 import dayjs from 'dayjs';
 import Teacher from './models/Teacher.js';
@@ -926,7 +926,18 @@ const getApplicationDetails = async (id) => {
  * 
  * @returns {{status: code, url: }} (which will trigger the download of the cv file)
  */
-const getCVOfApplication = (id) => {
+const getCVOfApplication = (path) => {
+  console.log(path)
+  const cvRef = ref(storage, path)
+
+  getDownloadURL(cvRef)
+  .then(url => {
+    console.log(url)
+    return url
+  })
+  .catch(err => {
+    console.log(err)
+  })
 
 }
 
