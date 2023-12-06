@@ -1348,6 +1348,18 @@ const getSTRlistLength = async () =>
       
 }
 
+/**
+ * API to accept/reject a new thesis request, Used only for secretaries users.
+ * @param {string} id id of the thesis to accept/reject
+ * @param {boolean} accept true to accept, false to reject
+ * @returns {{ status: code, error: err}} // return of the API
+ * Possible values for status: [200 (ok), 401 (unauthorized), 404 (non found), 500 (server error)]
+ */
+
+const acceptRejectThesis = async (id, accept) => {
+
+}
+
 const API = {
   getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField,
   changeVirtualDate, getVirtualDate,
