@@ -1176,6 +1176,11 @@ const archiveThesis = async (id) => {
     const thesisSnapshot = await getSnapshotThesis(id);
     if (thesisSnapshot.snapshot.ref == null) return { status: 404, err: "Thesis not found" };
     await updateDoc(thesisSnapshot.snapshot.ref, { archiveDate: await getVirtualDate() });
+    // decline all the applications for the thesis
+    const applications = await getDocs(query(applicationsRef, where("thesisId", "==", id)));
+    applications.forEach(async (doc) => {
+      await updateDoc(doc.ref, { accepted: false });
+    });
     return { status: 200 };
   } catch (error) {
     console.error("Error in calling Firebase:", error);
