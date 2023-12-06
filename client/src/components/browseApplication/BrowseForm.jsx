@@ -24,12 +24,12 @@ function BrowseForm(props) {
 
 
   const successAlert = () => {
-    
+
     API.acceptApplication(id)
       .then(() => {
-        
-        Swal.fire({  
-          title: 'Accepted!',  
+
+        Swal.fire({
+          title: 'Accepted!',
           text: 'Your have accepted the application!',
           icon: 'success'
         });
@@ -47,15 +47,15 @@ function BrowseForm(props) {
 
       });
   };
-  
-  
+
+
   const errorAlert = () => {
- 
+
     API.declineApplication(id)
       .then(() => {
 
-        Swal.fire({  
-          title: 'Declined!',  
+        Swal.fire({
+          title: 'Declined!',
           text: 'You have declined the application!',
           icon: 'error'
         });
@@ -72,14 +72,14 @@ function BrowseForm(props) {
         });
       });
   };
-  
-  useEffect( () => {
+
+  useEffect(() => {
     async function fetchApplicationDetails(id) {
 
       API.getApplicationDetails(id)
         .then((res) => {
           console.log(res);
-          
+
           setCareer(res.application.career);
           setTitle(res.application.title);
           setStudent(res.application.student);
@@ -126,20 +126,33 @@ function BrowseForm(props) {
     // fetchCareer();
     // fetchThesisDetails();
     fetchApplicationDetails(id);
-  },[]);
+  }, []);
 
-  useEffect(() => {
-    async function fetchCV(){
-      const url = await API.getCVOfApplication(cvPath)
-      setCvUrl(url)
-    }
-  },[cvPath])
 
-  // const downloadCv = () => {
-  //   const url = API.getCVOfApplication(cvPath)
-  //   console.log(url)
-    
-  // }
+
+  const downloadCv = async () => {
+    const msg = API.getCVOfApplication(cvPath).then((res) => {
+
+      console.log(res)
+      var element = document.createElement('a');
+      element.style.display = "none";
+      element.setAttribute('href', res.url)
+      element.setAttribute("target", "_blank");
+      document.body.appendChild(element)
+      element.click()
+      document.body.removeChild(element)
+    })
+      .catch((error) => {
+        // La chiamata API ha generato un errore
+        console.log(error);
+        Swal.fire({
+          title: 'Error',
+          text: 'An error occurred while downloading the cv. Please try again later.',
+          icon: 'error'
+        })
+
+      })
+  }
 
   return (
     <Container fluid className="vh-100" >
@@ -211,8 +224,8 @@ function BrowseForm(props) {
         </Row>
         <Row>
           <Container className='d-flex  mt-1' style={{ width: '50%', height: '10%' }}>
-            
-            <Button variant="secondary" className="bg-grey-light hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center" href={cvUrl}>
+
+            <Button variant="secondary" className="bg-grey-light hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center" onClick={() => { downloadCv() }}>
               <svg style={{ height: '2vw', width: '2vw', marginRight: "8px" }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" /></svg>
               <span>Download CV</span>
             </Button>
@@ -220,7 +233,7 @@ function BrowseForm(props) {
         </Row>
         <Row>
           <Container className='d-flex justify-content-center mt-4' style={{ marginBottom: "3%" }}>
-            {state  == 'Pending'  && (
+            {state == 'Pending' && (
               <>
                 <Button
                   type="submit"
