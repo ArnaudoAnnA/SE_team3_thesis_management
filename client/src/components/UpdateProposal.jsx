@@ -18,7 +18,7 @@ import { userContext } from './Utils';
 
 
 
-function InsertProposalForm(props) {
+function UpdateProposal(props) {
 
   var mailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/; // Verify email
   const user = useContext(userContext);
@@ -35,7 +35,7 @@ function InsertProposalForm(props) {
       text: 'You uploaded the thesis proposal.',
       icon: 'success'
     });
-    navigate("/");
+    //navigate("/");
   };
   
   const errorAlert = () => {
@@ -179,6 +179,7 @@ function InsertProposalForm(props) {
 
     event.preventDefault();
     var nomeRegex = /^[A-Za-z]+$/; // The word must contains words
+   
     if (title === '') {
 
       setErrorMsg('Check required fields!');
@@ -271,16 +272,12 @@ function InsertProposalForm(props) {
 
       };
 
-
-    if (title && degree && description && knowledge && level && pname !== '') {
-
-      API.insertProposal(predefinedProposalStructure)
-          .then(successAlert) 
-          .catch(errorAlert)
-
-    }
     
-    
+      /*API.insertProposal(predefinedProposalStructure)
+      .then(successAlert) 
+      .catch(errorAlert)*/
+ 
+
 
       return true;
 
@@ -291,13 +288,6 @@ function InsertProposalForm(props) {
      
       return (
         <Container>
-          <Row className="my-3">
-            <Col md={5} className="ml-2">
-              <Link to={`/`} className="btn blueButton btn-lg"> <i className="bi bi-arrow-90deg-left white"></i> </Link>
-            </Col>
-            <Col md={8}>
-            </Col>
-          </Row>
         {errorMsg ? (
           <Alert
             style={{ display: "flex", justifyContent: "center", width: "30%", marginLeft: "auto",marginRight: "auto", marginTop: "2vh", paddingLeft: "auto", paddingRight: "auto", textAlign:"center" }}
@@ -318,8 +308,8 @@ function InsertProposalForm(props) {
     
                   <div className="card bg-light cart" style={{ width: "45vw", marginLeft: "auto",marginRight: "auto" }}>
                   <article className="proposal-article" style={{maxWidth: "85vw", paddingLeft: "30px", paddingRight: "30px"}}>
-                      <h4 className="card-title mt-3 text-center">Insert a thesis proposal</h4>
-                      <p className="text-center" style={{fontStyle: "italic"}}>Get started with your proposal by inserting your data</p>
+                      <h4 className="card-title mt-3 text-center">Update a thesis proposal</h4>
+                      <p className="text-center" style={{fontStyle: "italic"}}>Make changes or discard</p>
                       <p className="text-center" style={{fontStyle: "italic", fontSize: "73%"}}> (Required fildes are marked with *) </p>
                       <div className="form-group input-group" style={{ marginTop: "2px", marginBottom: "2px" }}>
                       <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Thesis title, this field is required">
@@ -328,7 +318,7 @@ function InsertProposalForm(props) {
                           <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
                         </svg>
                       </div>
-                      <input required style={{ borderRadius: "6px", borderColor: inputErrorTitle ? "red": undefined }} name="" className="form-control" placeholder="Insert your Thesis title *" type="text" value={title} onChange={ev => setTitle(ev.target.value)} onClick={()=> {setInputErrorTitle(false)}}/>
+                      <input required style={{ borderRadius: "6px", borderColor: inputErrorTitle ? "red": undefined}} name="" className="form-control" placeholder="Insert your Thesis title *" type="text" value={title} onChange={ev => setTitle(ev.target.value)} onClick={()=> {setInputErrorTitle(false)}}/>
                     </div>
                     <div className="form-group input-group" style={{  marginBottom: "2px", display: "flex", flexDirection: "row", position: "relative",alignItems: "stretch", flexWrap: "wrap",  }}>
                           <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Thesis type, this field is required">
@@ -336,9 +326,10 @@ function InsertProposalForm(props) {
                         <path d="M8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z" />
                       </svg>
                           </div>
+         
                     <Autocomplete
                       options={types}
-                      className={inputErrorType ? "red-border" : "norm-border "}                         
+                      className={inputErrorType ? "red-border" : ""} 
                       freeSolo
                       required
                       onChange={(ev) => {
@@ -349,7 +340,7 @@ function InsertProposalForm(props) {
                         setDegree(ev.target.value);
                         console.log(ev.target.value);
                       }}
-                      renderInput={(params) => <TextField {...params} placeholder="Insert the Type *" variant="standard" style={{ paddingLeft: "2px", borderRadius: "6px", width: '100%', fontSize: "12px", borderWidth: "300px"}} onClick={()=> setInputErrorType(false)} />}
+                      renderInput={(params) => <TextField {...params} placeholder="Insert the Type *" variant="standard" style={{ paddingLeft: "2px", borderRadius: "6px", width: '100%', fontSize: "12px"}} onClick={()=> {setInputErrorType(false)}}/>}
                     />
                       </div>                 
                       <div className="form-group input-group" style={{display: "flex", marginBottom: "10px"}}>
@@ -358,8 +349,8 @@ function InsertProposalForm(props) {
                           style={{fontSize: "15px", width: "100%", marginLeft: "auto", marginRight: "auto", borderRadius: "3px", fontStyle: "italic", paddingLeft:"5px", borderColor:inputErrorDescription ? "red": "rgba(165, 165, 165, 0.42)"}}
                           value={description}
                           required
-                          onClick={()=> {setInputErrorDescription(false)}}
                           onChange={(e) => setDesc(e.target.value)}
+                          onClick={()=> {setInputErrorDescription(false)}}
                           rows="4"
                           cols="50"
                           placeholder="Insert your thesis description *"
@@ -381,7 +372,7 @@ function InsertProposalForm(props) {
                           <path fillRule ="evenodd" d="M8 10a.5.5 0 0 0 .5-.5V3.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 3.707V9.5a.5.5 0 0 0 .5.5zm-7 2.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5z" />
                         </svg>
                           </div>
-                          <select className="form-control" style={{borderRadius: "6px",  borderColor: inputErrorLevel ? "red": undefined}} value={level} onChange={ev => setLevel(ev.target.value)} onClick={()=> {setInputErrorLevel(false)}}>
+                          <select className="form-control" style={{borderRadius: "6px", borderColor: inputErrorLevel ? "red": undefined}} value={level} onChange={ev => setLevel(ev.target.value)} onClick={()=> {setInputErrorLevel(false)}}>
                               <option  style={{ fontWeight: "100" }} value="" disabled> --Insert Level-- *</option>
                               <option value= "Master">Master</option>
                               <option value= "Bachelor">Bachelor</option>
@@ -445,10 +436,10 @@ function InsertProposalForm(props) {
                         </svg>
                       </div>
                     <select
-                      style={{ borderRadius: "6px", borderColor: inputErrorProgrammes ? "red": undefined  }}
+                      style={{ borderRadius: "6px", borderColor: inputErrorProgrammes ? "red": undefined }}
                       className="form-control"
-                      onClick={()=> {setInputErrorProgrammes(false)}}
                       value={pname}
+                      onClick={()=> {setInputErrorProgrammes(false)}}
                       onChange={ev => setpName(ev.target.value)}>
                       <option  value="" disabled>--Insert Programmes-- *</option>
                       {deg && Object.keys(deg).map((optionKey) => (
@@ -483,13 +474,14 @@ function InsertProposalForm(props) {
                           placeholder="Insert your notes here.."
                         />
                       </div> 
-                       
-                      <div className="form-group" style={{marginTop: "2vh", display: 'flex'}}>
-                          <Button id="sendpb" style={{marginLeft: "auto", marginRight:"auto",  width: "150px", marginBottom: '10px'}} type="submit" className="blueButton" onClick={handleSubmit}> Upload Proposal  </Button>
-                      </div>     
-                                                                                      
-                  </article>
-                  </div> 
+
+                  <div className="form-group" style={{ marginTop: "2vh", display: 'flex' }}>
+                    <Button id="sendpb" style={{ marginLeft: "auto", marginRight: "auto", width: "150px", marginBottom: '10px' }} type="submit" className="blueButton" onClick={handleSubmit}> Update Proposal  </Button>
+                <Button id="sendpb" style={{ marginLeft: "auto", marginRight: "auto", width: "150px", marginBottom: '10px' }} variant='danger' onClick={()=> {navigate("/")}}>Discard Changes  </Button>
+                  </div>
+
+                </article>
+              </div> 
                   
                   </div> 
                
@@ -503,5 +495,5 @@ function InsertProposalForm(props) {
   
 
 
-export {InsertProposalForm};
+export {UpdateProposal};
 
