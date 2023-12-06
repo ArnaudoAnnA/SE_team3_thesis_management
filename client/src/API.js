@@ -1356,7 +1356,7 @@ const getSTRlistLength = async () =>
  * Possible values for status: [200 (ok), 401 (unauthorized), 404 (non found), 500 (server error)]
  */
 
-const acceptRejectThesis = async (id, accept) => {
+const acceptRejectRequest = async (id, accept) => {
 
 }
 
