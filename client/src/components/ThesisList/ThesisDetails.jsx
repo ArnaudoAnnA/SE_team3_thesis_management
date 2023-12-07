@@ -46,7 +46,7 @@ function ThesisDetails(props) {
         let textField;
         switch (mode) {
             case "delete":
-                textField = "Thesis archived successfully!";
+                textField = "Thesis deleted successfully!";
                 break;
             case "archive":
                 textField = "Thesis archived successfully!";

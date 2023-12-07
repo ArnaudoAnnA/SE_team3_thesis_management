@@ -34,7 +34,7 @@ function ApplyForm(props) {
       text: 'Your apply request was sent',
       icon: 'success'
     });
-    return true;
+    navigate(`/thesis/${id}`);
   };
   
   const errorAlert = (e) => {
