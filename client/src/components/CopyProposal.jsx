@@ -496,7 +496,7 @@ function CopyProposal(props) {
 
                   <div className="form-group" style={{ marginTop: "2vh", display: 'flex' }}>
                     <Button id="sendpb" style={{ marginLeft: "auto", marginRight: "auto", width: "150px", marginBottom: '10px' }} type="submit" className="blueButton" onClick={handleSubmit}> Upload Proposal  </Button>
-                <Button id="sendpb" style={{ marginLeft: "auto", marginRight: "auto", width: "150px", marginBottom: '10px' }} variant='danger' onClick={()=> {navigate("/")}}>Discard Changes  </Button>
+                <Button id="sendpb" style={{ marginLeft: "auto", marginRight: "auto", width: "150px", marginBottom: '10px' }} variant='danger' onClick={()=> {navigate(`/thesis/${id}`)}}>Discard Changes  </Button>
                   </div>
 
                 </article>

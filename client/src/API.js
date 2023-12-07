@@ -1203,13 +1203,38 @@ const archiveThesis = async (id) => {
  * @param {string} id id of the thesis to delete
  * @returns {{ status: code }} //if no errors occur
  * @returns {{ status: code, error: err}} //if errors occur
- * Possible values for status: [200 (ok), 401 (unauthorized), 500 (server error)]
+ * Possible values for status: [200 (ok), 400 (bad request), 401 (unauthorized), 500 (server error)]
  */
 const deleteProposal = async (id) => {
   if (!auth.currentUser) return { status: 401, error: "User not logged in" };
   if (!(await isTeacher(auth.currentUser.email))) return { status: 401, error: "User is not a teacher" };
 
   try {
+    //check if the thesis is already archived
+    const thesis = await getThesisWithId(id);
+    const today = await getVirtualDate();
+    //console.log("archiveDate: " + thesis.archiveDate);
+    //console.log("today: " + today);
+    if (thesis.archiveDate <= today) return { status: 400, error: `You can not delete a thesis that is already archived`};
+
+
+    //All the pending and rejected applications must become cancelled + email
+    const pendingApplications = await getApplicationsByStateByThesis("Pending", id);
+    const rejectedApplications = await getApplicationsByStateByThesis("Rejected", id);
+
+    pendingApplications.forEach( async (snap) => {
+      await updateDoc(snap.ref, { accepted: "Cancelled" });
+      //manda email allo user
+    })
+    //console.log(pendingApplications.length + " pending fatte");
+
+    rejectedApplications.forEach( async (snap) => {
+      await updateDoc(snap.ref, { accepted: "Cancelled" });
+    })
+    //console.log(rejectedApplications.length + " rejected fatte");
+
+
+    //delete thesis
     const snapshotThesis = await getSnapshotThesis(id);
     await deleteDoc(snapshotThesis.snapshot.ref);
     return { status: 200 };
@@ -1241,6 +1266,42 @@ const getSnapshotThesis = async (id) => {
     return { status: 500, error: `Error in calling Firebase: ${error}`};
   }
 
+}
+
+/**
+ * Retrieve the snapshot applications for a thesis by the applications' state
+ * @param {string} state the state of applications you are searching for
+ * @param {string} id the id of the thesis
+ * @return the applicationsSnapshots' array
+ * 
+ */
+const getApplicationsByStateByThesis = async (state, id) => {
+  if (!auth.currentUser) return { status: 401, error: "User not logged in" };
+
+  let stateValue = null;
+
+  if (state === "Accepted") {
+    stateValue = true;
+  } else if (state === "Rejected") {
+    stateValue = false;
+  }
+
+  //SELECT snapshot(A)
+  //FROM applications A
+  //WHERE A.accepted = stateValue && A.thesisId = id
+
+  const whereThesisId = where("thesisId", "==", Number(id));
+  const whereAccepted = where("accepted", "==", stateValue);
+
+  const qApplication = query(applicationsRef, whereThesisId, whereAccepted);
+
+  try {
+    const applicationsSnapshot = await getDocs(qApplication);
+    const applications = applicationsSnapshot.docs;
+    return applications;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 let lastSTRdoc = null;
