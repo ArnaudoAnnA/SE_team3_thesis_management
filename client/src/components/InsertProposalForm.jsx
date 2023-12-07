@@ -272,13 +272,15 @@ function InsertProposalForm(props) {
       };
 
 
-    if (title && degree && description && knowledge && level && pname !== '') {
+      if (title !== '' && degree !== '' && description !== '' && knowledge !== '' && level !== '' && pname !== '' &&
+      title !== null && degree !== null && description !== null && knowledge !== null && level !== null && pname !== null) {
 
       API.insertProposal(predefinedProposalStructure)
-          .then(successAlert) 
-          .catch(errorAlert)
+        .then(successAlert)
+        .catch(errorAlert);
 
     }
+  
     
     
 

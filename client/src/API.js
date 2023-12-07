@@ -1053,7 +1053,7 @@ const insertProposal = async (thesisProposalData) => {
   }
 
   //Check that the teachers id is an id inside the teachers table
-  if (!await isTeacherById(thesisProposalData.id)) {
+  if (!await isTeacherById(thesisProposalData.teacherId)) {
     console.log("Validation failed: the proposed teacher is not present in our database");
     return { status: 400, err: "The proposed teacher is not present in our database" };
   }

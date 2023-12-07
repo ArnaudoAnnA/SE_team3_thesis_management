@@ -34,7 +34,7 @@ function CopyProposal(props) {
       text: 'You uploaded the thesis proposal.',
       icon: 'success'
     });
-    //navigate("/");
+    navigate("/");
   };
   
   const errorAlert = () => {
@@ -268,6 +268,7 @@ function CopyProposal(props) {
       description: ${description}
       title: ${title}
       errorMsg: ${errorMsg} 
+      userID: ${user.id}
       selectedDate: ${selectedDate} `);
 
       const predefinedProposalStructure = {   
@@ -289,10 +290,16 @@ function CopyProposal(props) {
 
       };
 
-    
-      /*API.insertProposal(predefinedProposalStructure)
-      .then(successAlert) 
-      .catch(errorAlert)*/
+
+    if (title !== '' && degree !== '' && description !== '' && knowledge !== '' && level !== '' && pname !== '' &&
+      title !== null && degree !== null && description !== null && knowledge !== null && level !== null && pname !== null) {
+
+      API.insertProposal(predefinedProposalStructure)
+        .then(successAlert)
+        .catch(errorAlert);
+
+    }
+  
  
 
 

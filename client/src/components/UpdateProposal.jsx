@@ -36,7 +36,7 @@ function UpdateProposal(props) {
       text: 'You uploaded the thesis proposal.',
       icon: 'success'
     });
-    //navigate("/");
+    navigate("/");
   };
   
   const errorAlert = () => {
@@ -290,10 +290,14 @@ function UpdateProposal(props) {
       };
 
     
-      /*API.insertProposal(predefinedProposalStructure)
-      .then(successAlert) 
-      .catch(errorAlert)*/
- 
+   
+      if (title && degree && description && knowledge && level && pname !== '') {
+
+        API.insertProposal(predefinedProposalStructure)
+            .then(successAlert) 
+            .catch(errorAlert)
+  
+      }
 
 
       return true;
