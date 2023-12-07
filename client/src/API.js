@@ -1137,8 +1137,8 @@ const acceptApplication = async (applicationId) => {
       }
     });
     // archive the thesis
-    const thesisRef = doc(db, "thesisProposals", application.thesisId);
-    await updateDoc(thesisRef, { archiveDate: await getVirtualDate() });
+    const thesisSnapshot = await getSnapshotThesis(application.thesisId);
+    await updateDoc(thesisSnapshot.snapshot.ref, { archiveDate: await getVirtualDate() });
     return { status: 200 };
   } catch (error) {
     console.error("Error in calling Firebase:", error);
