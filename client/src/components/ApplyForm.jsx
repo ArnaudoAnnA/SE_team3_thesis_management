@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Alert, Card, Button, Badge, Form, Col, Container, Row, Table } from 'react-bootstrap';
 import { useState, useEffect, useCallback, useContext } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useDropzone} from 'react-dropzone';
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2'
@@ -21,6 +21,7 @@ function ApplyForm(props) {
 
   const user = useContext(userContext);
   const {id} = useParams();
+  const navigate = useNavigate();
 
   const onDrop = useCallback((files) => {
     handleOnChangeFile(files);
