@@ -48,6 +48,7 @@ const careersRef = DEBUG ? collection(db, "test-career") : collection(db, "caree
 const thesisProposalsRef = DEBUG ? collection(db, "test-thesisProposals") : collection(db, "thesisProposals");
 const applicationsRef = DEBUG ? collection(db, "test-applications") : collection(db, "applications");
 const dateRef = collection(db, "date");
+const mailRef = collection(db, "mail");
 
 const storageCurriculums = "curriculums/"
 
@@ -1227,6 +1228,16 @@ const deleteProposal = async (id) => {
       //manda email allo user
     })
     //console.log(pendingApplications.length + " pending fatte");
+
+    // sending a mail to the student to notify the application has been cancelled  
+    // TODO move in to the loop for pendingApplications and change the reciver email
+    const student = await getUserById(pendingApplications[0].data().studentId);
+    const thesisR = await getThesisWithId(id);
+    const subject = "Thesis proposal cancelled";
+    const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesisR.title}" has been removed by the teacher ${thesisR.supervisor} and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;
+    await addDoc(mailRef, { to: "ADD YOUR EMAIL", subject: subject, text: text });
+
+
 
     rejectedApplications.forEach( async (snap) => {
       await updateDoc(snap.ref, { accepted: "Cancelled" });
