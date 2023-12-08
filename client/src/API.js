@@ -3,7 +3,7 @@
 import { initializeApp } from 'firebase/app';
 import { collection, addDoc, getFirestore, doc, query, getDocs, updateDoc, where, setDoc, deleteDoc, getDoc, limit, startAfter, orderBy } from 'firebase/firestore';
 import { signInWithRedirect, SAMLAuthProvider, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { getStorage, ref, uploadBytes} from "firebase/storage";
+import { getBlob, getDownloadURL, getStorage, getStream, ref, uploadBytes} from "firebase/storage";
 
 import dayjs from 'dayjs';
 import Teacher from './models/Teacher.js';
@@ -48,6 +48,7 @@ const careersRef = DEBUG ? collection(db, "test-career") : collection(db, "caree
 const thesisProposalsRef = DEBUG ? collection(db, "test-thesisProposals") : collection(db, "thesisProposals");
 const applicationsRef = DEBUG ? collection(db, "test-applications") : collection(db, "applications");
 const dateRef = collection(db, "date");
+const mailRef = collection(db, "mail");
 
 const storageCurriculums = "curriculums/"
 
@@ -441,7 +442,7 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
       }
 
       // show only active thesis
-      whereConditions.push(where("archiveDate", ">=", await getVirtualDate()));
+      whereConditions.push(where("archiveDate", ">", await getVirtualDate()));
 
       // compose the query
       let q = query(thesisProposalsRef, ...whereConditions);
@@ -864,7 +865,17 @@ const getApplicationDetails = async (id) => {
  * 
  * @returns {{status: code, url: }} (which will trigger the download of the cv file)
  */
-const getCVOfApplication = (id) => {
+const getCVOfApplication = async (path) => {
+  console.log(path)
+  const cvRef = ref(storage, path)
+
+  try{
+    const url = await getDownloadURL(cvRef)
+    // console.log(url)
+    return MessageUtils.createMessage(200, "url", url);
+  } catch (e){
+    return MessageUtils.createMessage(404, "error", e);
+  }
 
 }
 
@@ -981,7 +992,7 @@ const insertProposal = async (thesisProposalData) => {
   }
 
   //Check that the teachers id is an id inside the teachers table
-  if (!await isTeacherById(thesisProposalData.id)) {
+  if (!await isTeacherById(thesisProposalData.teacherId)) {
     console.log("Validation failed: the proposed teacher is not present in our database");
     return { status: 400, err: "The proposed teacher is not present in our database" };
   }
@@ -1066,8 +1077,8 @@ const acceptApplication = async (applicationId) => {
       }
     });
     // archive the thesis
-    const thesisRef = doc(db, "thesisProposals", application.thesisId);
-    await updateDoc(thesisRef, { archiveDate: await getVirtualDate() });
+    const thesisSnapshot = await getSnapshotThesis(application.thesisId);
+    await updateDoc(thesisSnapshot.snapshot.ref, { archiveDate: await getVirtualDate() });
     return { status: 200 };
   } catch (error) {
     console.error("Error in calling Firebase:", error);
@@ -1115,6 +1126,11 @@ const archiveThesis = async (id) => {
     const thesisSnapshot = await getSnapshotThesis(id);
     if (thesisSnapshot.snapshot.ref == null) return { status: 404, err: "Thesis not found" };
     await updateDoc(thesisSnapshot.snapshot.ref, { archiveDate: await getVirtualDate() });
+    // decline all the applications for the thesis
+    const pendingApplications = await getApplicationsByStateByThesis("Pending", id);
+    pendingApplications.forEach(async (snap) => {
+      await updateDoc(snap.ref, { accepted: false });
+    });
     return { status: 200 };
   } catch (error) {
     console.error("Error in calling Firebase:", error);
@@ -1127,13 +1143,49 @@ const archiveThesis = async (id) => {
  * @param {string} id id of the thesis to delete
  * @returns {{ status: code }} //if no errors occur
  * @returns {{ status: code, error: err}} //if errors occur
- * Possible values for status: [200 (ok), 401 (unauthorized), 500 (server error)]
+ * Possible values for status: [200 (ok), 400 (bad request), 401 (unauthorized), 500 (server error)]
  */
 const deleteProposal = async (id) => {
   if (!auth.currentUser) return { status: 401, error: "User not logged in" };
   if (!(await isTeacher(auth.currentUser.email))) return { status: 401, error: "User is not a teacher" };
 
   try {
+    //check if the thesis is already archived
+    const thesis = await getThesisWithId(id);
+    const today = await getVirtualDate();
+    //console.log("archiveDate: " + thesis.archiveDate);
+    //console.log("today: " + today);
+    if (thesis.archiveDate <= today) return { status: 400, error: `You can not delete a thesis that is already archived`};
+
+
+    //All the pending and rejected applications must become cancelled + email
+    const pendingApplications = await getApplicationsByStateByThesis("Pending", id);
+    const rejectedApplications = await getApplicationsByStateByThesis("Rejected", id);
+
+    pendingApplications.forEach( async (snap) => {
+      await updateDoc(snap.ref, { accepted: "Cancelled" });
+      //manda email allo user
+    })
+    //console.log(pendingApplications.length + " pending fatte");
+
+    // sending a mail to the student to notify the application has been cancelled  
+    // TODO move in to the loop for pendingApplications and change the reciver email
+    if (pendingApplications.length>0) {
+      const student = await getUserById(pendingApplications[0].data().studentId);
+      const thesisR = await getThesisWithId(id);
+      const subject = "Thesis proposal cancelled";
+      const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesisR.title}" has been removed by the teacher ${thesisR.supervisor} and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;
+      await addDoc(mailRef, { to: "ADD YOUR EMAIL", subject: subject, text: text });
+    }
+
+
+    rejectedApplications.forEach( async (snap) => {
+      await updateDoc(snap.ref, { accepted: "Cancelled" });
+    })
+    //console.log(rejectedApplications.length + " rejected fatte");
+
+
+    //delete thesis
     const snapshotThesis = await getSnapshotThesis(id);
     await deleteDoc(snapshotThesis.snapshot.ref);
     return { status: 200 };
@@ -1165,6 +1217,42 @@ const getSnapshotThesis = async (id) => {
     return { status: 500, error: `Error in calling Firebase: ${error}`};
   }
 
+}
+
+/**
+ * Retrieve the snapshot applications for a thesis by the applications' state
+ * @param {string} state the state of applications you are searching for
+ * @param {string} id the id of the thesis
+ * @return the applicationsSnapshots' array
+ * 
+ */
+const getApplicationsByStateByThesis = async (state, id) => {
+  if (!auth.currentUser) return { status: 401, error: "User not logged in" };
+
+  let stateValue = null;
+
+  if (state === "Accepted") {
+    stateValue = true;
+  } else if (state === "Rejected") {
+    stateValue = false;
+  }
+
+  //SELECT snapshot(A)
+  //FROM applications A
+  //WHERE A.accepted = stateValue && A.thesisId = id
+
+  const whereThesisId = where("thesisId", "==", Number(id));
+  const whereAccepted = where("accepted", "==", stateValue);
+
+  const qApplication = query(applicationsRef, whereThesisId, whereAccepted);
+
+  try {
+    const applicationsSnapshot = await getDocs(qApplication);
+    const applications = applicationsSnapshot.docs;
+    return applications;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 let lastSTRdoc = null;
@@ -1280,6 +1368,18 @@ const getSTRlistLength = async () =>
   if (length >= 0) return {status: 200, length: length};
   else return {status: 500};
       
+}
+
+/**
+ * API to accept/reject a new thesis request, Used only for secretaries users.
+ * @param {string} id id of the thesis to accept/reject
+ * @param {boolean} accept true to accept, false to reject
+ * @returns {{ status: code, error: err}} // return of the API
+ * Possible values for status: [200 (ok), 401 (unauthorized), 404 (non found), 500 (server error)]
+ */
+
+const acceptRejectRequest = async (id, accept) => {
+
 }
 
 const API = {

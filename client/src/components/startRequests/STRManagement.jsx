@@ -1,20 +1,17 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { Alert, Card, Button, Badge, Form, Col, Container, Row, Table, Spinner } from 'react-bootstrap';
-import { useState, useEffect, useCallback, useContext } from 'react';
+import { Alert, Button, Col, Container, Row, Table, Spinner } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2'
 import API from "../../API";
-import Application from '../../models/Application';
-import { userContext } from '../Utils';
 
 
 
-function BrowseForm(props) {
+function STRManagement(props) {
   const [errorMsg, setErrorMsg] = useState('');
   const [cvPath, setCvPath] = useState();
-  const [cvUrl, setCvUrl] = useState()
   const [career, setCareer] = useState([]);
   const [title, setTitle] = useState('');
   const [student, setStudent] = useState();
@@ -23,139 +20,147 @@ function BrowseForm(props) {
   const navigate = useNavigate();
 
 
-  const successAlert = () => {
+  // const successAlert = () => {
 
-    API.acceptApplication(id)
-      .then(() => {
+  //   API.acceptApplication(id)
+  //     .then(() => {
 
-        Swal.fire({
-          title: 'Accepted!',
-          text: 'Your have accepted the application!',
-          icon: 'success'
-        });
+  //       Swal.fire({
+  //         title: 'Accepted!',
+  //         text: 'Your have accepted the application!',
+  //         icon: 'success'
+  //       });
 
-        navigate("/");
-      })
-      .catch((error) => {
-        // La chiamata API ha generato un errore
-        console.error("Error accepting application:", error);
-        Swal.fire({
-          title: 'Error',
-          text: 'An error occurred while accepting the application. Please try again later.',
-          icon: 'error'
-        });
+  //       navigate("/");
+  //     })
+  //     .catch((error) => {
+  //       // La chiamata API ha generato un errore
+  //       console.error("Error accepting application:", error);
+  //       Swal.fire({
+  //         title: 'Error',
+  //         text: 'An error occurred while accepting the application. Please try again later.',
+  //         icon: 'error'
+  //       });
 
-      });
-  };
-
-
-  const errorAlert = () => {
-
-    API.declineApplication(id)
-      .then(() => {
-
-        Swal.fire({
-          title: 'Declined!',
-          text: 'You have declined the application!',
-          icon: 'error'
-        });
-
-        navigate("/");
-      })
-      .catch((error) => {
-
-        console.error("Error declining application:", error);
-        Swal.fire({
-          title: 'Error',
-          text: 'An error occurred while declining the application. Please try again later.',
-          icon: 'error'
-        });
-      });
-  };
-
-  useEffect(() => {
-    async function fetchApplicationDetails(id) {
-
-      API.getApplicationDetails(id)
-        .then((res) => {
-          console.log(res);
-
-          setCareer(res.application.career);
-          setTitle(res.application.title);
-          setStudent(res.application.student);
-          setCvPath(res.application.curriculum);
-          setShowSpinner(false);
-        })
-        .catch(e => console.log("Error in BrowseForm/getApplicationDetails:" + e))
+  //     });
+  // };
 
 
-    }
+  // const errorAlert = () => {
 
-    // async function fetchCareer() {
-    //   if (user.id) {
-    //     await API.retrieveCareer(id)
-    //       .then((career) => {
-    //         // console.log(career)
-    //         career.sort((a, b) => {
-    //           if (a.date && b.date) {
-    //             return a.date.isAfter(b.date);
-    //           }
-    //           else if (!b.date)
-    //             return -1;
-    //           else {
-    //             return 1;
-    //           }
-    //         });
-    //         setCareer(career);
-    //         setShowSpinner(false);
-    //       })
-    //       .catch(e => console.log("Error in ApplyForm/retrieveCareerAPI:" + e))
-    //   }
+  //   API.declineApplication(id)
+  //     .then(() => {
 
-    // }
-    // async function fetchThesisDetails() {
-    //   API.getTitleAndTeacher(id)
-    //     .then((result) => {
-    //       setTitle(result.title);
-    //       setTeacher(result.teacher);
-    //       setShowSpinner(false);
-    //     })
-    //     .catch(e => console.log("Error in ApplyForm/getTitleAndTeacher:" + e))
-    // }
+  //       Swal.fire({
+  //         title: 'Declined!',
+  //         text: 'You have declined the application!',
+  //         icon: 'error'
+  //       });
 
-    // fetchCareer();
-    // fetchThesisDetails();
-    fetchApplicationDetails(id);
-  }, []);
+  //       navigate("/");
+  //     })
+  //     .catch((error) => {
+
+  //       console.error("Error declining application:", error);
+  //       Swal.fire({
+  //         title: 'Error',
+  //         text: 'An error occurred while declining the application. Please try again later.',
+  //         icon: 'error'
+  //       });
+  //     });
+  // };
+
+  // useEffect(() => {
+  //   async function fetchApplicationDetails(id) {
+
+  //     API.getApplicationDetails(id)
+  //       .then((res) => {
+  //         console.log(res);
+
+  //         setCareer(res.application.career);
+  //         setTitle(res.application.title);
+  //         setStudent(res.application.student);
+  //         setCvPath(res.application.curriculum);
+  //         setShowSpinner(false);
+  //       })
+  //       .catch(e => console.log("Error in BrowseForm/getApplicationDetails:" + e))
+
+
+  //   }
+
+  //   // async function fetchCareer() {
+  //   //   if (user.id) {
+  //   //     await API.retrieveCareer(id)
+  //   //       .then((career) => {
+  //   //         // console.log(career)
+  //   //         career.sort((a, b) => {
+  //   //           if (a.date && b.date) {
+  //   //             return a.date.isAfter(b.date);
+  //   //           }
+  //   //           else if (!b.date)
+  //   //             return -1;
+  //   //           else {
+  //   //             return 1;
+  //   //           }
+  //   //         });
+  //   //         setCareer(career);
+  //   //         setShowSpinner(false);
+  //   //       })
+  //   //       .catch(e => console.log("Error in ApplyForm/retrieveCareerAPI:" + e))
+  //   //   }
+
+  //   // }
+  //   // async function fetchThesisDetails() {
+  //   //   API.getTitleAndTeacher(id)
+  //   //     .then((result) => {
+  //   //       setTitle(result.title);
+  //   //       setTeacher(result.teacher);
+  //   //       setShowSpinner(false);
+  //   //     })
+  //   //     .catch(e => console.log("Error in ApplyForm/getTitleAndTeacher:" + e))
+  //   // }
+
+  //   // fetchCareer();
+  //   // fetchThesisDetails();
+  //   fetchApplicationDetails(id);
+  // }, []);
 
 
 
-  const downloadCv = async () => {
-    const msg = API.getCVOfApplication(cvPath).then((res) => {
+  // const downloadCv = async () => {
+  //   const msg = API.getCVOfApplication(cvPath).then((res) => {
 
-      console.log(res)
-      var element = document.createElement('a');
-      element.style.display = "none";
-      element.setAttribute('href', res.url)
-      element.setAttribute("target", "_blank");
-      document.body.appendChild(element)
-      element.click()
-      document.body.removeChild(element)
-    })
-      .catch((error) => {
-        // La chiamata API ha generato un errore
-        console.log(error);
-        Swal.fire({
-          title: 'Error',
-          text: 'An error occurred while downloading the cv. Please try again later.',
-          icon: 'error'
-        })
+  //     console.log(res)
+  //     var element = document.createElement('a');
+  //     element.style.display = "none";
+  //     element.setAttribute('href', res.url)
+  //     element.setAttribute("target", "_blank");
+  //     document.body.appendChild(element)
+  //     element.click()
+  //     document.body.removeChild(element)
+  //   })
+  //     .catch((error) => {
+  //       // La chiamata API ha generato un errore
+  //       console.log(error);
+  //       Swal.fire({
+  //         title: 'Error',
+  //         text: 'An error occurred while downloading the cv. Please try again later.',
+  //         icon: 'error'
+  //       })
 
-      })
-  }
+  //     })
+  // }
 
-  return (
-    <Container fluid className="vh-100" >
+  return ( <Container fluid className="vh-100" >  </Container>
+    
+  );
+
+}
+
+
+/*
+
+<Container fluid className="vh-100" >
       {errorMsg ? (
         <Alert id="applyAlert"
           style={{ marginLeft: "auto", marginRight: "auto", marginTop: "2vh" }}
@@ -266,10 +271,10 @@ function BrowseForm(props) {
       </>
 
     </Container >
-  );
 
-}
+*/
 
+/*
 function StudentCareer(props) {
 
   if (props.exams.length === 0)
@@ -316,5 +321,6 @@ function ExamRow(props) {
     </tr>
   );
 }
+*/
 
-export { BrowseForm };
+export { STRManagement };
