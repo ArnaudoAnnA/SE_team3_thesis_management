@@ -30,7 +30,7 @@ function ApplicationsStudent(props) {
 
         async function fetchApplicationsByState(state){
             if(user.id){
-                API.getApplicationsByState(state)
+                API.getApplicationsForStudent(state)
                 .then((res) => {
                     if (res.error) {
                         console.log("Error in ApplicationsStudent/getApplicationsByState:" + res.error);

@@ -44,7 +44,7 @@ function ApplicationsProfessor(props) {
         setState(STATES.LOADING);
         async function fetchApplicationsByState(state){
             if(user.id){
-                API.getApplications(state)
+                API.getApplicationsForProfessor(state)
                 .then((res) => {
                     console.log(res);
                     if (!res || !res.applications) {

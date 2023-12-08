@@ -382,7 +382,7 @@ const setValuesForField = (thesis, DBfield) => {
 }
 
 let THESIS_CACHE = [];
-let FILTER_FORM_VALUES = undefined;
+let FILTER_FORM_VALUES;
 
 /** Fetch the collection of ACTIVE thesis applying specified filters <br>
    * It doesn't return all the thesis, but only the ones in the given range of indexes.<br>
@@ -487,12 +487,12 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
       } else {
         // filter the thesis on title and expiration date
         if (filters.title !== undefined && filters.title !== '') {
-          // console.log(`filters.title: ${filters.title}`);
+          
           thesis = thesis.filter((proposal) => proposal.title.toLowerCase().includes(filters.title.toLowerCase()));
         }
 
         if (filters.expirationDate !== undefined && (filters.expirationDate.from !== '' || filters.expirationDate.to !== '')) {
-          // console.log(`Filters \nfrom: ${filters.expirationDate.from} to: ${filters.expirationDate.to}`);
+          
           thesis = thesis.filter((proposal) => {
             let from = filters.expirationDate.from;
             let to = filters.expirationDate.to;
@@ -552,7 +552,7 @@ const getThesisWithId = async (ID) => {
       let teacher = teachers.find(t => t.id == thesis.teacherId);
       if (!teacher) return MessageUtils.createMessage(404, "error", "No teacher found");
       thesis.supervisor = teacher.name + ' ' + teacher.surname;
-      //console.log(thesis);
+
       return thesis
     } else {
       console.log("Thesis not found");
@@ -573,33 +573,29 @@ const getThesisWithId = async (ID) => {
  * @return null
  */
 const addApplication = async (application) => {
-  //console.log(application.curriculum)
-  if (auth.currentUser) {
-    if (StringUtils.checkId(application.studentId, auth.currentUser.email)) {
-      try {
-        let fileRef
-        if (application.curriculum) {
-          fileRef = ref(storage, StringUtils.createApplicationPath(storageCurriculums, application.studentId, application.thesisId, application.curriculum.name))
-          await uploadBytes(fileRef, application.file)
-        }
+  
+  if (!auth.currentUser) return CONSTANTS.notLogged;
 
-        console.log(application.parse(fileRef ? fileRef.fullPath : null))
-        addDoc(applicationsRef, application.parse(fileRef ? fileRef.fullPath : null)).then(doc => {
-          console.log("Added application with id:" + doc.id)
-          return "Application sent"
-        })
-      } catch (e) {
-        console.log(e)
-        throw (e)
-      }
-    } else {
-      return CONSTANTS.unauthorized
+  if (!StringUtils.checkId(application.studentId, auth.currentUser.email)) return CONSTANTS.unauthorized;
+  
+  
+  try {
+    let fileRef
+    if (application.curriculum) {
+      fileRef = ref(storage, StringUtils.createApplicationPath(storageCurriculums, application.studentId, application.thesisId, application.curriculum.name))
+      await uploadBytes(fileRef, application.file)
     }
-    return;
+
+    console.log(application.parse(fileRef ? fileRef.fullPath : null))
+    addDoc(applicationsRef, application.parse(fileRef ? fileRef.fullPath : null)).then(doc => {
+      console.log("Added application with id:" + doc.id)
+      return "Application sent"
+    })
+  } catch (e) {
+    console.log(e)
+    throw (e)
   }
-  else {
-    return CONSTANTS.notLogged
-  }
+  
 }
 
 /**
@@ -633,7 +629,7 @@ const retrieveCareer = async (studentId) => {
  * Possible values for status: [200 (ok), 500 (internal server error), 404 (not found)].
  * Possible values for applications [array (in case of success), null (in case of error)]
  */
-const getApplications = async (status) => {
+const getApplicationsForProfessor = async (status) => {
   console.log(status)
   if (!auth.currentUser) {
     return MessageUtils.createMessage(500, "error", "Server error")
@@ -707,8 +703,6 @@ const getTitleAndTeacher = async (thesisId) => {
   } catch (e) {
     console.log(e)
   }
-
-  return;
 }
 
 /**
@@ -746,8 +740,6 @@ const getApplication = async (studentId, thesisId) => {
   } else {
     return CONSTANTS.notLogged
   }
-
-  return;
 }
 
 /**
@@ -756,121 +748,67 @@ const getApplication = async (studentId, thesisId) => {
  * @return the applications' array
  * 
  */
-const getApplicationsByState = async (state) => {
-  if (auth.currentUser) {
-    if (await isStudent(auth.currentUser.email)) {
+const getApplicationsForStudent = async (state) => {
+  if (!auth.currentUser) return CONSTANTS.notLogged;
 
-      const user = await API.getUser(auth.currentUser.email);
 
-      let stateValue = null;
+  if (!await isStudent(auth.currentUser.email)) return CONSTANTS.unauthorized;
 
-      if (state === "Accepted") {
-        stateValue = true;
-      } else if (state === "Rejected") {
-        stateValue = false;
+  const user = await API.getUser(auth.currentUser.email);
+
+  let stateValue = null;
+
+  if (state === "Accepted") {
+    stateValue = true;
+  } else if (state === "Rejected") {
+    stateValue = false;
+  }
+
+  //SELECT A.studentId, A.accepted, A.date, A.thesisId, P.title, P.description, T.name, T.surname
+  //FROM applications A, teachers T, thesisProposals P
+  //WHERE join && A.studentId=user.id && A.accepted=stateValue
+
+  const whereStudentId = where("studentId", "==", user.id);
+  const whereAccepted = where("accepted", "==", stateValue);
+
+  const qApplication = query(applicationsRef, whereStudentId, whereAccepted);
+
+  let applicationsArray = [];
+
+  try {
+    const applicationsSnapshot = await getDocs(qApplication)
+    const applications = applicationsSnapshot.docs;
+    for (let appl of applications) {
+
+      const thesis = await API.getThesisWithId(appl.data().thesisId);
+      if (thesis.error) return MessageUtils.createMessage(thesis.status, "error", thesis.error);
+
+      const whereTeacherId = where("id", "==", thesis.teacherId);
+      const qTeacher = query(teachersRef, whereTeacherId);
+      const teacherSnapshot = await getDocs(qTeacher);
+      if (teacherSnapshot.empty) return MessageUtils.createMessage(404, "error", "No teacher found");
+      const returnedObject = {
+        "studentId": appl.data().studentId,
+        "accepted": appl.data().accepted,
+        "date": appl.data().date,
+        "thesisId": appl.data().thesisId,
+        "thesisTitle": thesis.title,
+        "thesisDescription": thesis.description,
+        "thesisType": thesis.type,
+        "teacherName": teacherSnapshot.docs[0].data().name,
+        "teacherSurname": teacherSnapshot.docs[0].data().surname
       }
 
-      //SELECT A.studentId, A.accepted, A.date, A.thesisId, P.title, P.description, T.name, T.surname
-      //FROM applications A, teachers T, thesisProposals P
-      //WHERE join && A.studentId=user.id && A.accepted=stateValue
+      //console.log(returnedObject);
+      applicationsArray.push(returnedObject);
 
-      const whereStudentId = where("studentId", "==", user.id);
-      const whereAccepted = where("accepted", "==", stateValue);
-
-      const qApplication = query(applicationsRef, whereStudentId, whereAccepted);
-
-      let applicationsArray = [];
-
-      try {
-        const applicationsSnapshot = await getDocs(qApplication)
-        const applications = applicationsSnapshot.docs;
-        for (let i = 0; i < applications.length; i++) {
-
-          const thesis = await API.getThesisWithId(applications[i].data().thesisId);
-          if (thesis.error) return MessageUtils.createMessage(thesis.status, "error", thesis.error);
-
-          const whereTeacherId = where("id", "==", thesis.teacherId);
-          const qTeacher = query(teachersRef, whereTeacherId);
-          const teacherSnapshot = await getDocs(qTeacher);
-          if (teacherSnapshot.empty) return MessageUtils.createMessage(404, "error", "No teacher found");
-          const returnedObject = {
-            "studentId": applications[i].data().studentId,
-            "accepted": applications[i].data().accepted,
-            "date": applications[i].data().date,
-            "thesisId": applications[i].data().thesisId,
-            "thesisTitle": thesis.title,
-            "thesisDescription": thesis.description,
-            "thesisType": thesis.type,
-            "teacherName": teacherSnapshot.docs[0].data().name,
-            "teacherSurname": teacherSnapshot.docs[0].data().surname
-          }
-
-          //console.log(returnedObject);
-          applicationsArray.push(returnedObject);
-
-        }
-
-        //console.log("Chiamata Api per " + state + " con risultato: " + applicationsArray);
-        return applicationsArray;
-
-      } catch (error) {
-        console.log(error);
-      }
-
-    } else {
-      const user = await API.getUser(auth.currentUser.email);
-
-      let stateValue = null;
-
-      if (state === "Accepted") {
-        stateValue = true;
-      } else if (state === "Rejected") {
-        stateValue = false;
-      }
-
-      //SELECT A.studentId, A.accepted, A.date, A.thesisId, P.title, P.description, T.name, T.surname
-      //FROM applications A, teachers T, thesisProposals P
-      //WHERE join && A.studentId=user.id && A.accepted=stateValue
-
-      const whereTeacherId = where("id", "==", user.id);
-      const whereAccepted = where("accepted", "==", stateValue);
-
-      const qApplication = query(applicationsRef, whereTeacherId, whereAccepted);
-
-      let applicationsArray = [];
-
-      try {
-        const applicationsSnapshot = await getDocs(qApplication)
-        const applications = applicationsSnapshot.docs;
-        for (let i = 0; i < applications.length; i++) {
-
-          const thesis = await API.getThesisWithId(applications[i].data().thesisId);
-          if (thesis.error) return MessageUtils.createMessage(thesis.status, "error", thesis.error);
-          //const whereStudentId = where("studentId", "==", thesis.studentId);
-          //const qStudent = query(teachersRef, whereStudentId);
-          //const studentSnapshot = await getDocs(qStudent);
-          const returnedObject = {
-            "studentId": applications[i].data().studentId,
-            "accepted": applications[i].data().accepted,
-            "date": applications[i].data().date,
-            "thesisId": applications[i].data().thesisId,
-            "thesisTitle": thesis.title,
-            "thesisDescription": thesis.description,
-          }
-
-          applicationsArray.push(returnedObject);
-
-        }
-
-        //console.log("Chiamata Api per " + state + " con risultato: " + applicationsArray);
-        return applicationsArray;
-
-      } catch (error) {
-        console.log(error);
-      }
     }
-  } else {
-    return CONSTANTS.notLogged;
+
+    //console.log("Chiamata Api per " + state + " con risultato: " + applicationsArray);
+    return applicationsArray;
+
+  } catch (error) {
+    console.log(error);
   }
 
 }
@@ -981,6 +919,37 @@ const predefinedProposalStructure = {
   type: "",
 };
 
+const validateThesisProposalData = (data) => {
+
+  //Validation that the proposal meets the structure requirements
+  const keys1 = Object.keys(thesisProposalData);
+  const keys2 = Object.keys(predefinedProposalStructure);
+
+  // Check if both objects have the same number of keys
+  if (keys1.length !== keys2.length) {
+    console.log("part1")
+    return false;
+  }
+  // Check if all keys in obj1 exist in obj2 and have the same type
+  for (const key of keys1) {
+    if (!(key in predefinedProposalStructure) || typeof thesisProposalData[key] !== typeof predefinedProposalStructure[key]) {
+      console.log("part2")
+      console.log(key)
+      return false;
+    }
+  }
+
+  //null values validation
+  const keys = Object.keys(data);
+  for (const key of keys) {
+    if (key !== 'notes' && data[key] === null) {
+      console.log("part3")
+      return false;
+    }
+  }
+  return true;
+};
+
 // Sample data representing a thesis proposal
 /*const thesisProposalData = {
   archiveDate: new Date('2023-12-31'), // Replace with your timestamp
@@ -994,47 +963,17 @@ const predefinedProposalStructure = {
   notes: "Additional notes for the proposal.",
   programmes: "Programme name", // Replace with your programme
   requiredKnowledge: "Required knowledge for the proposal.",
-  teacherId: "d456789", // Replace with your teacher ID
+  teacherId: 0d456789", // Replace with your teacher ID
   title: "Thesis Proposal Title",
   type: "Type of thesis", // Replace with your type
 };*/
+
+
 
 const insertProposal = async (thesisProposalData) => {
   console.log("Logged teacher = " + auth.currentUser.email);
   if (!auth.currentUser) return { status: 401, err: "User not logged in" };
   if (!(await isTeacher(auth.currentUser.email))) return { status: 401, err: "User is not a teacher" };
-
-
-  const validateThesisProposalData = (data) => {
-
-    //Validation that the proposal meets the structure requirements
-    const keys1 = Object.keys(thesisProposalData);
-    const keys2 = Object.keys(predefinedProposalStructure);
-
-    // Check if both objects have the same number of keys
-    if (keys1.length !== keys2.length) {
-      console.log("part1")
-      return false;
-    }
-    // Check if all keys in obj1 exist in obj2 and have the same type
-    for (const key of keys1) {
-      if (!(key in predefinedProposalStructure) || typeof thesisProposalData[key] !== typeof predefinedProposalStructure[key]) {
-        console.log("part2")
-        console.log(key)
-        return false;
-      }
-    }
-
-    //null values validation
-    const keys = Object.keys(data);
-    for (const key of keys) {
-      if (key !== 'notes' && data[key] === null) {
-        console.log("part3")
-        return false;
-      }
-    }
-    return true;
-  };
 
   if (!validateThesisProposalData(thesisProposalData)) {
     console.log("Validation failed: proposal data doesnt comply with required structure");
@@ -1347,9 +1286,9 @@ const API = {
   getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser, loginWithSaml,
-  addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplications, getApplicationDetails, getCVOfApplication, acceptApplication, declineApplication,
+  addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplicationsForProfessor, getApplicationDetails, getCVOfApplication, acceptApplication, declineApplication,
   removeAllProposals, insertProposal, archiveThesis, deleteProposal,
-  getApplicationsByState, getDegree,
+  getApplicationsForStudent, getDegree,
   getSTRlist, getSTRlistLength
 };
 
