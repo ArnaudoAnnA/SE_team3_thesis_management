@@ -1368,8 +1368,6 @@ const getSTRlistLength = async () =>
       
 }
 
-const insert
-
 /**
  * API to accept/reject a new thesis request, Used only for secretaries users.
  * @param {string} id id of the thesis to accept/reject
