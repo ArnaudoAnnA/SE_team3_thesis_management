@@ -1052,6 +1052,30 @@ const getDegree = async () => {
   }
 };
 
+const getTecher = async () => {
+  try {
+    const q = query(teachersRef);
+    const snapshot = await getDocs(q);
+
+    const titles = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: data.id,
+        name: data.name,
+        surname: data.surname,
+      };
+    });
+    
+    // Ora puoi accedere a id, name e surname per ciascun insegnante nell'array teachers.
+    
+
+    return titles.length > 0 ? titles : null;
+  } catch (error) {
+    console.error("Error in calling Firebase:", error);
+    return null;
+  }
+};
+
 /**
  * Accept an application and decline all the others for the same thesis
  * @param {string} applicationId id of the accepted application
@@ -1381,7 +1405,7 @@ const acceptRejectRequest = async (id, accept) => {
 }
 
 const API = {
-  getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField,
+  getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField,getTecher,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser, loginWithSaml,
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplicationsForProfessor, getApplicationDetails, getCVOfApplication, acceptApplication, declineApplication,

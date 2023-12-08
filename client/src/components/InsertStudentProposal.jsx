@@ -18,6 +18,7 @@ import { userContext } from './Utils';
 
 
 
+
 function InsertStudentProposal(props) {
 
 
@@ -54,7 +55,6 @@ function InsertStudentProposal(props) {
   const [inputErrorDescription, setInputErrorDescription] = useState(false);
   const [inputErrorKnowledge, setInputErrorKnowledge] = useState(false);
   const [inputErrorLevel, setInputErrorLevel] = useState(false);
-  const [inputErrorProgrammes, setInputErrorProgrammes] = useState(false);
   const [note, setNot] = useState('');
   const [pname, setpName] = useState('');
   const [profname, setprofname] = useState('');
@@ -62,23 +62,16 @@ function InsertStudentProposal(props) {
   const [degree, setDegree] = useState('')
   const [description, setDesc] = useState('')
   const [title, setTitle] = useState('')
+  const [values, setValues] = useState([])
   const [errorMsg, setErrorMsg] = useState('')
-  const [deg, setDeg] = useState()
+
 
   useEffect(() => {
     const now = dayjs();
-    API.getDegree()
-    .then((d) => {
-      console.log("Result:", d);
-      setDeg(d);
-    })
-    .catch((e) => {
-      console.error("Error API:", e);
 
-    });
+    API.getTecher().then((e)=> setValues(e))
+    
   
-  
-    console.log(deg)
 
   }, []);
  
@@ -109,7 +102,7 @@ function InsertStudentProposal(props) {
     if (profname === '') {
 
         setErrorMsg('Check required fields!');
-        setInputErrorType(true);
+        setInputErrorKnowledge(true);
         window.scrollTo(0, 0);
   
   
@@ -132,14 +125,6 @@ function InsertStudentProposal(props) {
 
 
     } 
-    if (pname === '') {
-
-      setErrorMsg('Check required fields!');
-      window.scrollTo(0, 0);
-      setInputErrorProgrammes(true);
-
-
-    }  
 
   
    
@@ -147,9 +132,10 @@ function InsertStudentProposal(props) {
 
     console.log(`
       note: ${note}
-      pname: ${pname}
       level: ${level}
       degree: ${degree}
+      studentId: ${user.id}
+      profId: ${profname}
       description: ${description}
       title: ${title}
       errorMsg: ${errorMsg} 
@@ -157,15 +143,13 @@ function InsertStudentProposal(props) {
 
       const predefinedProposalStructure = {   
 
-        archiveDate: "",   
-        coSupervisors: emailTags,   
-        description: description,   
-        requestDate: require('dayjs')().format('YYYY-MM-DD'),       
+        archiveDate: "",     
+        description: description,         
         level: level,   
         notes: note,  
-        profName: profname,
-        programmes: pname,     
-        studentId: user.id,   
+        profName: profname,   
+        studentId: user.id,
+        profId: profname,   
         title: title,     
 
       };
@@ -274,7 +258,24 @@ function InsertStudentProposal(props) {
                           <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z" />
                         </svg>
                       </div>
-                      <input required style={{ borderRadius: "6px", borderColor: inputErrorKnowledge ? "red": undefined }} name="" className="form-control" placeholder="Insert the Theacher's Name *" type="text" value={profname} onChange={ev => setprofname(ev.target.value)} onClick={()=> {setInputErrorKnowledge(false)}}/>
+                    <select
+                      required
+                      style={{ borderRadius: "6px", borderColor: inputErrorKnowledge ? "red" : undefined }}
+                      className="form-control"
+                      value={profname}
+                      onChange={(ev) => setprofname(ev.target.value)}
+                      onClick={() => {
+                        setInputErrorKnowledge(false);
+                      }}
+                    >
+                      <option value="" disabled>--Insert Teacher's Name-- *</option>
+                      {values.map((teacher) => (
+                        <option key={teacher.id} value={teacher.id}>
+                          {teacher.name} {teacher.surname}
+                        </option>
+                      ))}
+
+                    </select>
                     </div>
                       <div className="form-group input-group" style={{ marginTop: '4px'}}>
                           <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Thesis level, this field is required">
@@ -289,28 +290,7 @@ function InsertStudentProposal(props) {
 
                           </select>
                       </div>
-                  
-                    <div className="form-group input-group" style={{ marginTop: "4px", marginBottom: "2px" }}>
-                      <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Cds/Programmes, this field is required">
-                        <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight:"1vw", color: inputErrorProgrammes ? "red": undefined}} width="16" height="16" fill="currentColor" className="bi bi-person-video3" viewBox="0 0 16 16">
-                          <path d="M14 9.5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm-6 5.7c0 .8.8.8.8.8h6.4s.8 0 .8-.8-.8-3.2-4-3.2-4 2.4-4 3.2Z" />
-                          <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h5.243c.122-.326.295-.668.526-1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v7.81c.353.23.656.496.91.783.059-.187.09-.386.09-.593V4a2 2 0 0 0-2-2H2Z" />
-                        </svg>
-                      </div>
-                    <select
-                      style={{ borderRadius: "6px", borderColor: inputErrorProgrammes ? "red": undefined  }}
-                      className="form-control"
-                      onClick={()=> {setInputErrorProgrammes(false)}}
-                      value={pname}
-                      onChange={ev => setpName(ev.target.value)}>
-                      <option  value="" disabled>--Insert Programmes-- *</option>
-                      {deg && Object.keys(deg).map((optionKey) => (
-                        <option key={deg[optionKey]} value={deg[optionKey]}>
-                          {deg[optionKey]}
-                        </option>
-                      ))}
-                    </select>
-                    </div>  
+                   
                     <div className="form-group input-group" style={{display: "flex", marginBottom: "2px", flexDirection: "column", flexWrap: "wrap"}}>
                       <p style={{ paddingTop: "2px", marginBottom: "1px", marginLeft: "auto", marginRight: "auto", fontWeight: "300" }}>Notes</p>
                         <textarea
