@@ -53,19 +53,21 @@ function STRlist(props)
             })
         .catch(e =>{console.log(e); setState(STATES.error)} );
 
-        if (state!= STATES.error) API.getSTRlist(orderBy, true, entry_per_page)
-                                    .then((ret) =>
-                                    {
-                                        if (ret.status == 200)
-                                        {
-                                            setSTRlist(ret.STRlist);
-                                            setState(STATES.ready);
-                                        }else 
-                                        {
-                                            setState(STATES.error);
-                                        }
-                                    })
-                                    .catch(e =>{console.log(e); setState(STATES.error)});
+        if (state!= STATES.error && STRlistLength != 0) API.getSTRlist(orderBy, true, entry_per_page)
+                                                        .then((ret) =>
+                                                        {
+                                                            if (ret.status == 200)
+                                                            {
+                                                                setSTRlist(ret.STRlist);
+                                                                setState(STATES.ready);
+                                                            }else 
+                                                            {
+                                                                setState(STATES.error);
+                                                            }
+                                                        })
+                                                        .catch(e =>{console.log(e); setState(STATES.error)});
+
+        else if(STRlistLength == 0) setSTRlist([]);
     }
 
     function load_more()

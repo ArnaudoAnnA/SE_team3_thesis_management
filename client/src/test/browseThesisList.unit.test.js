@@ -2,6 +2,8 @@
 
 import { describe, expect, test } from '@jest/globals';
 import API from '../API.js';
+import dayjs from 'dayjs';
+import { thesis } from '../MOCKS.js';
 
 const studentCredentials = {
     email: "s234567@studenti.polito.it",
@@ -22,6 +24,32 @@ describe('Testing professor seeing active thesis proposals', () => {
         expect(response.status).toBe(200);
         expect(response.thesis).toBeInstanceOf(Array);
         expect(response.thesis.length).toBeLessThanOrEqual(1);
+    });
+
+    test('Professor logged in: should return list only active (not archived) thesis', async () => {
+        await API.logOut();
+        await API.logIn(professorEmail.email, professorEmail.password);
+        const response = await API.getThesis(null, null, null, 100);
+        expect(response.status).toBe(200);
+        expect(response.thesis).toBeInstanceOf(Array);
+        expect(response.thesis.length).toBeLessThanOrEqual(100);
+
+        async function check_thesis_dates()
+        {
+            let curr_date = await API.getVirtualDate();
+            response.thesis.forEach(t =>
+                {
+                    expect(dayjs(t.expirationDate).isBefore(dayjs(curr_date))).toBeTruthy();
+                });
+        }
+
+        check_thesis_dates();
+        API.changeVirtualDate(dayjs(await API.getVirtualDate()).add(6, 'month'));
+        check_thesis_dates();
+        API.changeVirtualDate(dayjs(await API.getVirtualDate()).add(2, 'year'));
+        check_thesis_dates();
+        API.changeVirtualDate(dayjs(await API.getVirtualDate()).subtract(4, 'year'));
+        check_thesis_dates();
     });
 
 });

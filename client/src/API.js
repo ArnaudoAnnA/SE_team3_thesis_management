@@ -49,6 +49,7 @@ const thesisProposalsRef = DEBUG ? collection(db, "test-thesisProposals") : coll
 const applicationsRef = DEBUG ? collection(db, "test-applications") : collection(db, "applications");
 const dateRef = collection(db, "date");
 const mailRef = collection(db, "mail");
+const thesisRequestsRef = collection(db, "thesisRequests");
 
 const storageCurriculums = "curriculums/"
 
@@ -1260,19 +1261,17 @@ let lastSTRqueryWhereConditions = null;
 
 const getSTRlist = async (orderBy, reload, entry_per_page) =>
 {
-  return {status: 200, STRlist: thesis};
+  //return {status: 200, STRlist: thesis};
 
   if (!auth.currentUser) {
-    return CONSTANTS.notLogged;
+    return {status: CONSTANTS.notLogged};
   }
 
-  if (await isStudent(auth.currentUser.email)) return CONSTANTS.unauthorized;
+  //if (await isStudent(auth.currentUser.email)) return CONSTANTS.unauthorized;
 
   let whereConditions = [];
 
   try {
-  
-    let index = -1;
 
     //QUERY PREPARATION
     // DIFFERENT QUERY BASING ON THE NEED TO LOAD DATA FROM THE BEGINNING OR NOT
@@ -1302,7 +1301,7 @@ const getSTRlist = async (orderBy, reload, entry_per_page) =>
       lastSTRqueryWhereConditions = whereConditions;
       
       // compose the query
-      let q = query(/*TO DO: ref to the STR table*/  ...whereConditions);
+      let q = query(thesisRequestsRef,  ...whereConditions);
     }else // when a new page is requested
     {
       let q = query(lastSTRqueryWhereConditions, startAfter(lastSTRdoc));
@@ -1338,13 +1337,13 @@ const getSTRlist = async (orderBy, reload, entry_per_page) =>
 
 const getSTRlistLength = async () =>
 {
-  return {status: 200, length: thesis.length};
+  //return {status: 200, length: thesis.length};
 
   if (!auth.currentUser) {
-    return CONSTANTS.notLogged;
+    return {status: CONSTANTS.notLogged};
   }
 
-  if (await isStudent(auth.currentUser.email)) return CONSTANTS.unauthorized;
+  //if (await isStudent(auth.currentUser.email)) return CONSTANTS.unauthorized;
 
   /*------------QUERY PREPARATION ----------*/
   let whereConditions = [];
@@ -1357,18 +1356,19 @@ const getSTRlistLength = async () =>
   }
 
   // show only STR from the past
-  whereConditions.push(where("date", "<=", await getVirtualDate()));      //TO DO: check if the field name is correct
+  whereConditions.push(where("requestDate", "<=", await getVirtualDate()));      //TO DO: check if the field name is correct
 
   /*------------QUERY EXECUTION----------*/
-  let q = query(/*collection of STR*/ ...whereConditions);
-  let length = await getDocs(q)
-                      .then(d => d.data().count)
-                      .catch(e => {console.log(e); return -1;});
+  let q = query(thesisRequestsRef, ...whereConditions);
+  let snapshot = await getDocs(q);
+  let length = snapshot.data().count;
   
   if (length >= 0) return {status: 200, length: length};
   else return {status: 500};
       
 }
+
+const insert
 
 /**
  * API to accept/reject a new thesis request, Used only for secretaries users.

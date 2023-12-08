@@ -122,7 +122,7 @@ function Main() {
             {/** Add here other routes */}
             <Route path='/STRlist_debug' element={<STRlist date={date}/>} />
             <Route path='/manageSTR_debug' element={<STRManagement/>} />
-            <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm /> : <NotFoundPage />) : <Login />} />
+            <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm /> : ( user.role == "student" ? <>/*componente di Emilio*/</> : <NotFoundPage />)) : <Login />} />
             <Route path='/upproposal/:id' element={user.email ? (user.role === "teacher" ? <UpdateProposal /> : <NotFoundPage />) : <Login />} />
             <Route path='/cpproposal/:id' element={user.email ? (user.role === "teacher" ? <CopyProposal /> : <NotFoundPage />) : <Login />} />
             <Route path='/thesis/:id' element={user.email ? <ThesisDetails /> : <Login />} />
@@ -165,15 +165,15 @@ function Home(props) {
   return (<>
   {
     user.role == "secretary" ?
-      <STRlist date={props.date} />
+      <>
+        <STRlist date={props.date} />
+      </>  
       : <>
           <ThesisList date={props.date}/>
           {
-            user.role === "teacher" ?
-              <Button as={Link} to='/proposal' className="floating-button orangeButton">
-                New Proposal
-              </Button>
-              : ""
+            <Button as={Link} to='proposal' className="floating-button orangeButton">
+              New Proposal
+            </Button>
           }
         </>
   }
