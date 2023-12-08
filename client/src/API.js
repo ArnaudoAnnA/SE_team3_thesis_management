@@ -1188,9 +1188,9 @@ const archiveThesis = async (id) => {
     if (thesisSnapshot.snapshot.ref == null) return { status: 404, err: "Thesis not found" };
     await updateDoc(thesisSnapshot.snapshot.ref, { archiveDate: await getVirtualDate() });
     // decline all the applications for the thesis
-    const applications = await getDocs(query(applicationsRef, where("thesisId", "==", id)));
-    applications.forEach(async (doc) => {
-      await updateDoc(doc.ref, { accepted: false });
+    const pendingApplications = await getApplicationsByStateByThesis("Pending", id);
+    pendingApplications.forEach(async (snap) => {
+      await updateDoc(snap.ref, { accepted: false });
     });
     return { status: 200 };
   } catch (error) {
@@ -1231,12 +1231,13 @@ const deleteProposal = async (id) => {
 
     // sending a mail to the student to notify the application has been cancelled  
     // TODO move in to the loop for pendingApplications and change the reciver email
-    const student = await getUserById(pendingApplications[0].data().studentId);
-    const thesisR = await getThesisWithId(id);
-    const subject = "Thesis proposal cancelled";
-    const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesisR.title}" has been removed by the teacher ${thesisR.supervisor} and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;
-    await addDoc(mailRef, { to: "ADD YOUR EMAIL", subject: subject, text: text });
-
+    if (pendingApplications.length>0) {
+      const student = await getUserById(pendingApplications[0].data().studentId);
+      const thesisR = await getThesisWithId(id);
+      const subject = "Thesis proposal cancelled";
+      const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesisR.title}" has been removed by the teacher ${thesisR.supervisor} and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;
+      await addDoc(mailRef, { to: "ADD YOUR EMAIL", subject: subject, text: text });
+    }
 
 
     rejectedApplications.forEach( async (snap) => {
