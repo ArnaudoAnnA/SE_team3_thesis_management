@@ -63,11 +63,32 @@ function ThesisDetails(props) {
         navigate("/");
     };
 
+    const errorAlert = (mode) => {
+        let textField;
+        switch (mode) {
+            case "delete":
+                textField = "An error occurred while deleting the thesis. Please try again later.";
+                break;
+            case "archive":
+                textField = "An error occurred while archiving the thesis. Please try again later.";
+                break;
+            default:
+                textField = "";
+        }
+
+        Swal.fire({
+            title: 'Error!',
+            text: textField,
+            icon: 'error'
+        });
+    };
+
     async function deleteThesis() {
         API.deleteProposal(id)
             .then((res) => {
                 if (res.error) {
                     console.log("Error in ThesisDetails/deleteThesis:" + res.error);
+                    errorAlert("delete");
                 } else {
                     setShowModal(false);
                     successAlert("delete");
@@ -75,6 +96,7 @@ function ThesisDetails(props) {
             })
             .catch(e => {
                 console.log("Error in ThesisDetails/deleteThesis:" + e);
+                errorAlert("delete");
             })
     };
 
@@ -83,6 +105,7 @@ function ThesisDetails(props) {
             .then((res) => {
                 if (res.error) {
                     console.log("Error in ThesisDetails/archiveThesis:" + res.error);
+                    errorAlert("archive");
                 } else {
                     setShowArchiveModal(false);
                     successAlert("archive");
@@ -90,6 +113,7 @@ function ThesisDetails(props) {
             })
             .catch(e => {
                 console.log("Error in ThesisDetails/archiveThesis:" + e);
+                errorAlert("archive");
             })
     };
 
