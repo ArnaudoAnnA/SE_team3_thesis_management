@@ -442,7 +442,7 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
       }
 
       // show only active thesis
-      whereConditions.push(where("archiveDate", ">=", await getVirtualDate()));
+      whereConditions.push(where("archiveDate", ">", await getVirtualDate()));
 
       // compose the query
       let q = query(thesisProposalsRef, ...whereConditions);
