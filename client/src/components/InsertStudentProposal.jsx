@@ -18,9 +18,9 @@ import { userContext } from './Utils';
 
 
 
-function InsertProposalForm(props) {
+function InsertStudentProposal(props) {
 
-  var mailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/; // Verify email
+
   const user = useContext(userContext);
   const navigate = useNavigate();
   const types = [
@@ -32,7 +32,7 @@ function InsertProposalForm(props) {
   const successAlert = () => {
     Swal.fire({  
       title: 'Finished!',  
-      text: 'You uploaded the thesis proposal.',
+      text: 'You uploaded the thesis request.',
       icon: 'success'
     });
     navigate("/");
@@ -47,94 +47,7 @@ function InsertProposalForm(props) {
     return false;
   };
  
-
-  const [tags, setTags] = useState([])
-  const [emailTags, setEmailTags] = useState([]);
-
-  function handleKeyDown(e){
-    if(e.key !== 'Enter') return
-    e.preventDefault(); 
-    const value = e.target.value.trim();
-    if(!value.trim()) return
-    if(!tags.includes(value)) {
-      setTags([...tags, value])
-    }else{
-      setErrorMsg('Keyword already exists.');
-      window.scrollTo(0, 0);
-
-    }
-
-    e.target.value = ''
-  }
   
-  function removeTag(index){
-    setTags(tags.filter((el, i) => i !== index))
-  }
-  
-  function handleBlur(e) {
-    const value = e.target.value.trim();
-    if (!value.trim()) return;
-    if (!tags.includes(value)) {
-      setTags([...tags, value]);
-    } else {
-      setErrorMsg('Keyword already exists.');
-      window.scrollTo(0, 0);
-    }
-    e.target.value = '';
-  }
-
-
-  function handleMailKeyDown(e) {
-    if (e.key !== 'Enter') return;
-    e.preventDefault();
-    const value = e.target.value.trim();
-    
-    if (!value.trim()) return;
-  
-    if (!value.match(mailRegex)) {
-      setErrorMsg('Not a valid email address.');
-      window.scrollTo(0, 0);
-      return false;
-    }
-  
-    if (!emailTags.includes(value)) {
-      setEmailTags([...emailTags, value]);
-   
-    }else{
-      setErrorMsg('Co-Supervisor already exists.');
-      window.scrollTo(0, 0);
-
-    }
-  
-    e.target.value = '';
-  }
-  
-  
-
-  function removeTagMail(index) {
-    setEmailTags(emailTags.filter((el, i) => i !== index));
-  }
-
-  function handleMailBlur(e) {
-    const value = e.target.value.trim();
-  
-    if (!value) return;
-  
-    if (!value.match(mailRegex)) {
-      setErrorMsg('Not a valid email address.');
-      window.scrollTo(0, 0);
-      return false;
-    }
-  
-    if (!emailTags.includes(value)) {
-      setEmailTags([...emailTags, value]);
-    } else {
-      setErrorMsg('Co-Supervisor already exists.');
-      window.scrollTo(0, 0);
-    }
-  
-    e.target.value = '';
-  }  
 
   const [inputErrorTitle, setInputErrorTitle] = useState(false);
   const [inputErrorType, setInputErrorType] = useState(false);
@@ -144,20 +57,16 @@ function InsertProposalForm(props) {
   const [inputErrorProgrammes, setInputErrorProgrammes] = useState(false);
   const [note, setNot] = useState('');
   const [pname, setpName] = useState('');
+  const [profname, setprofname] = useState('');
   const [level, setLevel] = useState('');
-  const [knowledge, setKnowledge] = useState('')
-  const [email, setEmail] = useState([])
   const [degree, setDegree] = useState('')
   const [description, setDesc] = useState('')
   const [title, setTitle] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
-  const [selectedDate, setSelectedDate] = useState(new dayjs());
   const [deg, setDeg] = useState()
 
   useEffect(() => {
     const now = dayjs();
-    const sixMonthsLater = now.add(6, 'month');
-    setSelectedDate(sixMonthsLater)
     API.getDegree()
     .then((d) => {
       console.log("Result:", d);
@@ -178,7 +87,7 @@ function InsertProposalForm(props) {
   const handleSubmit = (event) => {
 
     event.preventDefault();
-    var nomeRegex = /^[A-Za-z]+$/; // The word must contains words
+
     if (title === '') {
 
       setErrorMsg('Check required fields!');
@@ -196,6 +105,16 @@ function InsertProposalForm(props) {
 
 
     } 
+
+    if (profname === '') {
+
+        setErrorMsg('Check required fields!');
+        setInputErrorType(true);
+        window.scrollTo(0, 0);
+  
+  
+  
+      } 
     if (description === '') {
 
       setErrorMsg('Check required fields!');
@@ -204,14 +123,7 @@ function InsertProposalForm(props) {
 
 
     } 
-     if (knowledge === '') {
 
-      setErrorMsg('Check required fields!');
-      setInputErrorKnowledge(true);
-      window.scrollTo(0, 0);
-
-
-    } 
     if (level === '') {
 
       setErrorMsg('Check required fields!');
@@ -229,12 +141,6 @@ function InsertProposalForm(props) {
 
     }  
 
-    if (new dayjs() > selectedDate) {
-      setErrorMsg("Date cannot be before today!")
-      window.scrollTo(0, 0);
-      setSelectedDate(new dayjs())
-      return false;
-    }
   
    
   // if everything is ok return true but in out case we send the data, console log to check everything is ok
@@ -242,32 +148,25 @@ function InsertProposalForm(props) {
     console.log(`
       note: ${note}
       pname: ${pname}
-      keywords: ${tags}
       level: ${level}
-      knowledge: ${knowledge}
-      email: ${emailTags}
       degree: ${degree}
       description: ${description}
       title: ${title}
       errorMsg: ${errorMsg} 
-      selectedDate: ${selectedDate} `);
+       `);
 
       const predefinedProposalStructure = {   
 
-        archiveDate: dayjs(selectedDate).toISOString(),   
+        archiveDate: "",   
         coSupervisors: emailTags,   
         description: description,   
-        expirationDate: dayjs(selectedDate).toISOString(),   
-        groups: [],   
-        id: 0,  
-        keywords: tags,   
+        requestDate: require('dayjs')().format('YYYY-MM-DD'),       
         level: level,   
-        notes: note,   
-        programmes: pname,   
-        requiredKnowledge: knowledge,   
-        teacherId: user.id,   
-        title: title,   
-        type: degree,   
+        notes: note,  
+        profName: profname,
+        programmes: pname,     
+        studentId: user.id,   
+        title: title,     
 
       };
 
@@ -320,8 +219,8 @@ function InsertProposalForm(props) {
     
                   <div className="card bg-light cart" style={{ width: "45vw", marginLeft: "auto",marginRight: "auto" }}>
                   <article className="proposal-article" style={{maxWidth: "85vw", paddingLeft: "30px", paddingRight: "30px"}}>
-                      <h4 className="card-title mt-3 text-center">Insert a thesis proposal</h4>
-                      <p className="text-center" style={{fontStyle: "italic"}}>Get started with your proposal by inserting your data</p>
+                      <h4 className="card-title mt-3 text-center">Insert a thesis request</h4>
+                      <p className="text-center" style={{fontStyle: "italic"}}>Get started with your request by inserting your data</p>
                       <p className="text-center" style={{fontStyle: "italic", fontSize: "73%"}}> (Required fildes are marked with *) </p>
                       <div className="form-group input-group" style={{ marginTop: "2px", marginBottom: "2px" }}>
                       <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Thesis title, this field is required">
@@ -368,14 +267,14 @@ function InsertProposalForm(props) {
                         />
                       </div> 
                       <div className="form-group input-group" style={{ marginTop: "2px", marginBottom: "2px" }}>
-                      <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Required Knowledge, this field is required">
+                      <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Theacher's name, this field is required">
                         <svg xmlns="http://www.w3.org/2000/svg"  style={{ marginRight:"1vw", color: inputErrorKnowledge ? "red": undefined}} width="16" height="16" fill="currentColor" className="bi bi-journal-bookmark-fill" viewBox="0 0 16 16">
                           <path fillRule ="evenodd" d="M6 1h6v7a.5.5 0 0 1-.757.429L9 7.083 6.757 8.43A.5.5 0 0 1 6 8V1z" />
                           <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z" />
                           <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z" />
                         </svg>
                       </div>
-                      <input required style={{ borderRadius: "6px", borderColor: inputErrorKnowledge ? "red": undefined }} name="" className="form-control" placeholder="Insert the Required Knowledge *" type="text" value={knowledge} onChange={ev => setKnowledge(ev.target.value)} onClick={()=> {setInputErrorKnowledge(false)}}/>
+                      <input required style={{ borderRadius: "6px", borderColor: inputErrorKnowledge ? "red": undefined }} name="" className="form-control" placeholder="Insert the Theacher's Name *" type="text" value={profname} onChange={ev => setprofname(ev.target.value)} onClick={()=> {setInputErrorKnowledge(false)}}/>
                     </div>
                       <div className="form-group input-group" style={{ marginTop: '4px'}}>
                           <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Thesis level, this field is required">
@@ -390,55 +289,7 @@ function InsertProposalForm(props) {
 
                           </select>
                       </div>
-                      <div className="form-group input-group" style={{ marginTop: "2px", marginBottom: "2px", display: 'flex', alignItems: 'center' }}>
-
-                      <div style={{ display: 'flex', flexDirection: "column", flex: 1 }}>
-                        <div className="tags-input-container" style={{ display: 'flex', flexDirection: "row", flexWrap: "wrap" }}>
-                          {tags.map((tag, index) => (
-                            <div className="tag-item" key={index} style={{ cursor: "pointer", marginBottom: "2px", marginRight: "5px", borderBlockColor: "black" }}>
-                              <span className="text">{tag}</span>
-                              <span className="close" onClick={() => removeTag(index)}>&times;</span>
-                            </div>
-                          ))}
-                        </div>
-                        <div style={{display: 'flex', flexDirection: 'row', marginTop: '2px'}}>
-                          <div data-bs-toggle="tooltip" data-bs-placement="left" title="Keywords">
-                            <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight: "1vw" , marginTop: "2% "}} width="16" height="16" fill="currentColor" className="bi bi-file-word-fill" viewBox="0 0 16 16">
-                              <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM5.485 4.879l1.036 4.144.997-3.655a.5.5 0 0 1 .964 0l.997 3.655 1.036-4.144a.5.5 0 0 1 .97.242l-1.5 6a.5.5 0 0 1-.967.01L8 7.402l-1.018 3.73a.5.5 0 0 1-.967-.01l-1.5-6a.5.5 0 1 1 .97-.242z" />
-                            </svg>
-                          </div>
-                          <input  onKeyDown={handleKeyDown}  onBlur={handleBlur} style={{ borderRadius: "3px", marginTop: "2px", marginBottom: "2px", borderWidth: "1px", flex: 1 }} type="text" className="form-control" placeholder="Insert Keywords and press Enter.." />
-                        </div>
-                      </div>
-                    </div>
-
                   
-                    <div className="form-group input-group" style={{ marginTop: "2px", marginBottom: "2px", display: 'flex', alignItems: 'center' }}>
-                      <div style={{ display: 'flex', flexDirection: "column", flex: 1 }}>
-                        <div className="tags-input-container" style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
-                          {emailTags.map((tag, index) => (
-                            <div className="tag-item" key={index} style={{ cursor: 'pointer', marginBottom: '2px', marginRight: '5px', borderBlockColor: 'black' }}>
-                              <span className="text">{tag}</span>
-                              <span className="close" onClick={() => removeTagMail(index)}>
-                                &times;
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'row', marginTop: '2px', alignItems: 'center' }}>
-                          <div data-bs-toggle="tooltip" data-bs-placement="left" title="Co-Supervisors' mails">
-                            <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight: "1vw" }} width="16" height="16" fill="currentColor" className="bi bi-envelope-at-fill" viewBox="0 0 16 16">
-                              <path d="M2 2A2 2 0 0 0 .05 3.555L8 8.414l7.95-4.859A2 2 0 0 0 14 2H2Zm-2 9.8V4.698l5.803 3.546L0 11.801Zm6.761-2.97-6.57 4.026A2 2 0 0 0 2 14h6.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.606-3.446l-.367-.225L8 9.586l-1.239-.757ZM16 9.671V4.697l-5.803 3.546.338.208A4.482 4.482 0 0 1 12.5 8c1.414 0 2.675.652 3.5 1.671Z" />
-                              <path d="M15.834 12.244c0 1.168-.577 2.025-1.587 2.025-.503 0-1.002-.228-1.12-.648h-.043c-.118.416-.543.643-1.015.643-.77 0-1.259-.542-1.259-1.434v-.529c0-.844.481-1.4 1.26-1.4.585 0 .87.333.953.63h.03v-.568h.905v2.19c0 .272.18.42.411.42.315 0 .639-.415.639-1.39v-.118c0-1.277-.95-2.326-2.484-2.326h-.04c-1.582 0-2.64 1.067-2.64 2.724v.157c0 1.867 1.237 2.654 2.57 2.654h.045c.507 0 .935-.07 1.18-.18v.731c-.219.1-.643.175-1.237.175h-.044C10.438 16 9 14.82 9 12.646v-.214C9 10.36 10.421 9 12.485 9h.035c2.12 0 3.314 1.43 3.314 3.034v.21Zm-4.04.21v.227c0 .586.227.8.581.8.31 0 .564-.17.564-.743v-.367c0-.516-.275-.708-.572-.708-.346 0-.573.245-.573.791Z" />
-                            </svg>
-                          </div>
-                          <input style={{ borderRadius: '6px', flex: 1 }} name="" className="form-control" placeholder="Insert Co-Supervisors' mails and press Enter.." type="text" onKeyDown={handleMailKeyDown}  onBlur={handleMailBlur} />
-                        </div>
-                      </div>
-                    </div>
-
-
-
                     <div className="form-group input-group" style={{ marginTop: "4px", marginBottom: "2px" }}>
                       <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Cds/Programmes, this field is required">
                         <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight:"1vw", color: inputErrorProgrammes ? "red": undefined}} width="16" height="16" fill="currentColor" className="bi bi-person-video3" viewBox="0 0 16 16">
@@ -460,20 +311,6 @@ function InsertProposalForm(props) {
                       ))}
                     </select>
                     </div>  
-                  <div style={{ display: "flex" }}>
-                  <p style={{ paddingTop: "2px", marginBottom: "3px", marginLeft: "auto", marginRight: "auto", fontWeight: "300" }}>Expected Expiration Date (may change) *</p>
-                  </div>
-                  <div style={{display: "flex"}}>
-                    <div style={{marginLeft: "auto", paddingBottom: "5px", marginRight: "auto"}}>
-                      <LocalizationProvider dateAdapter={AdapterDayjs} >
-                        <DatePicker value={selectedDate}
-                          onChange={(newDate) => {
-                            setSelectedDate(newDate);
-                            console.log('Nuova data:', newDate);
-                          }} />
-                      </LocalizationProvider>
-                    </div>
-                    </div>
                     <div className="form-group input-group" style={{display: "flex", marginBottom: "2px", flexDirection: "column", flexWrap: "wrap"}}>
                       <p style={{ paddingTop: "2px", marginBottom: "1px", marginLeft: "auto", marginRight: "auto", fontWeight: "300" }}>Notes</p>
                         <textarea
@@ -487,7 +324,7 @@ function InsertProposalForm(props) {
                       </div> 
                        
                       <div className="form-group" style={{marginTop: "2vh", display: 'flex'}}>
-                          <Button id="sendpb" style={{marginLeft: "auto", marginRight:"auto",  width: "150px", marginBottom: '10px'}} type="submit" className="blueButton" onClick={handleSubmit}> Upload Proposal  </Button>
+                          <Button id="sendpb" style={{marginLeft: "auto", marginRight:"auto",  width: "150px", marginBottom: '10px'}} type="submit" className="blueButton" onClick={handleSubmit}> Upload Request  </Button>
                       </div>     
                                                                                       
                   </article>
@@ -505,5 +342,5 @@ function InsertProposalForm(props) {
   
 
 
-export {InsertProposalForm};
+export {InsertStudentProposal};
 
