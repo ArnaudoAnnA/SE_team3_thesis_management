@@ -1,8 +1,4 @@
 import React, { useEffect } from 'react';
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-/*npm install dayjs @mui/x-date-pickers @mui/material @emotion/styled @emotion/react    --save */
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -56,7 +52,6 @@ function InsertStudentProposal(props) {
   const [inputErrorKnowledge, setInputErrorKnowledge] = useState(false);
   const [inputErrorLevel, setInputErrorLevel] = useState(false);
   const [note, setNot] = useState('');
-  const [pname, setpName] = useState('');
   const [profname, setprofname] = useState('');
   const [level, setLevel] = useState('');
   const [degree, setDegree] = useState('')
@@ -158,9 +153,9 @@ function InsertStudentProposal(props) {
       if (title !== '' && degree !== '' && description !== '' && knowledge !== '' && level !== '' && pname !== '' &&
       title !== null && degree !== null && description !== null && knowledge !== null && level !== null && pname !== null) {
 
-      API.insertProposal(predefinedProposalStructure)
+      /*API.insertProposal(predefinedProposalStructure)
         .then(successAlert)
-        .catch((e)=> errorAlert(e));
+        .catch((e)=> errorAlert(e));*/
 
     }
   
@@ -292,7 +287,7 @@ function InsertStudentProposal(props) {
                       </div>
                    
                     <div className="form-group input-group" style={{display: "flex", marginBottom: "2px", flexDirection: "column", flexWrap: "wrap"}}>
-                      <p style={{ paddingTop: "2px", marginBottom: "1px", marginLeft: "auto", marginRight: "auto", fontWeight: "300" }}>Notes</p>
+                      <p style={{ paddingTop: "2px", marginBottom: "1px", marginLeft: "auto", marginRight: "auto", fontWeight: "300" }}>Notes (optional)</p>
                         <textarea
                           style={{fontSize: "15px", width: "100%", marginLeft: "auto", marginRight: "auto", borderRadius: "3px", fontStyle: "italic", paddingLeft:"5px", borderColor: "rgba(165, 165, 165, 0.42)"}}
                           value={note}
