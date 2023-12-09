@@ -1402,10 +1402,10 @@ const predefinedSTRStructure = {
   notes: "notes",  
   type: "stage",
   profName: "Mario Rossi",   
-  studentId: user.id,
+  studentId: "s123456",
   profId: "d345678",   
   title: "title",
-  requestDate: dayjs.format("YYYY/MM/DD"),
+  requestDate: "YYYY/MM/DD",
   approved: false,
 };
 
@@ -1528,9 +1528,6 @@ const getSTRWithId = async (id) => {
  */
 
 const acceptRejectSTR = async (id, accept) => {
-
-const acceptRejectRequest = async (id, accept) => {
-  //Check if the user is a secretary
 }
 
 const API = {
@@ -1540,7 +1537,7 @@ const API = {
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplicationsForProfessor, getApplicationDetails, getCVOfApplication, acceptApplication, declineApplication,
   removeAllProposals, insertProposal, archiveThesis, deleteProposal,
   getApplicationsForStudent, getDegree,
-  getSTRlist, getSTRlistLength, insertSTR, predefinedSTRStructure, getSTRWithId, acceptSTR
+  getSTRlist, getSTRlistLength, insertSTR, predefinedSTRStructure, getSTRWithId, acceptRejectSTR
 };
 
 
