@@ -1194,7 +1194,7 @@ const deleteProposal = async (id) => {
     //console.log(pendingApplications.length + " pending fatte");
 
     // sending a mail to the student to notify the application has been cancelled  
-    // TODO move in to the loop for pendingApplications and change the reciver email
+    // TODO move in to the loop for pendingApplications and change the receiver email
     if (pendingApplications.length>0) {
       const student = await getUserById(pendingApplications[0].data().studentId);
       const thesisR = await getThesisWithId(id);
@@ -1393,15 +1393,52 @@ const getSTRlistLength = async () =>
 }
 
 /**
+ * API to retrieve the student request detail given its id, Used only for secretaries users.
+ * @param {string} id id of the student request
+ * @returns {{ status: code, STR: {}}} // return of the API if no errors occur
+ * @returns {{ status: code, error: err}} // return of the API if errors occur
+ * Possible values for status: [200 (ok), 401 (unauthorized), 404 (non found), 500 (server error)]
+ */
+
+const getSTRWithId = async (id) => {
+  if (!auth.currentUser) return { status: 401, error: "User not logged in" };
+  //TO DO: Check if the user is a secretary
+
+  //QUERY CONDITIONS
+  const whereCond1 = where("id", "==", Number(id))
+  const qSTR = query(thesisRequestsRef, whereCond1)
+
+  try {
+    const STRSnapshot = await getDocs(qSTR);
+    if (!STRSnapshot.empty) {
+      const STR = STRSnapshot.docs[0].data();
+      /*let teachersSnap = await getDocs(teachersRef);
+      let teachers = teachersSnap.docs.map(doc => doc.data());
+      let teacher = teachers.find(t => t.id == thesis.teacherId);
+      if (!teacher) return MessageUtils.createMessage(404, "error", "No teacher found");
+      thesis.supervisor = teacher.name + ' ' + teacher.surname;*/
+      return {status:200, STR: STR}
+    } else {
+      console.log("STR not found");
+      return {status:404, error: "STR not found"}
+    }
+  } catch (e) {
+    console.log("Error:", e);
+    return {status: 500, error: "Error in calling Firebase:" + e}
+  }
+}
+
+/**
  * API to accept/reject a new thesis request, Used only for secretaries users.
  * @param {string} id id of the thesis to accept/reject
  * @param {boolean} accept true to accept, false to reject
- * @returns {{ status: code, error: err}} // return of the API
+ * @returns {{ status: code }} //return of the API if no errors occur
+ * @returns {{ status: code, error: err}} //return of the API if errors occur
  * Possible values for status: [200 (ok), 401 (unauthorized), 404 (non found), 500 (server error)]
  */
 
 const acceptRejectRequest = async (id, accept) => {
-
+  //Check if the user is a secretary
 }
 
 const API = {
@@ -1411,7 +1448,7 @@ const API = {
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplicationsForProfessor, getApplicationDetails, getCVOfApplication, acceptApplication, declineApplication,
   removeAllProposals, insertProposal, archiveThesis, deleteProposal,
   getApplicationsForStudent, getDegree,
-  getSTRlist, getSTRlistLength
+  getSTRlist, getSTRlistLength, getSTRWithId, acceptRejectRequest
 };
 
 

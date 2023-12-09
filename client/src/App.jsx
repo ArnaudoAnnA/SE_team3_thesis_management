@@ -122,16 +122,17 @@ function Main() {
               <Route path='' element={<Login />} />}
             {/** Add here other routes */}
             <Route path='/STRlist_debug' element={<STRlist date={date}/>} />
-            <Route path='/manageSTR_debug' element={<STRManagement/>} />
+            <Route path='/STRlist_debug/:id' element={<STRManagement/>} />
+
             <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm /> : ( user.role == "student" ? <InsertStudentProposal /> : <NotFoundPage />)) : <Login />} />
             <Route path='/upproposal/:id' element={user.email ? (user.role === "teacher" ? <UpdateProposal /> : <NotFoundPage />) : <Login />} />
             <Route path='/cpproposal/:id' element={user.email ? (user.role === "teacher" ? <CopyProposal /> : <NotFoundPage />) : <Login />} />
-            <Route path='/thesis/:id' element={user.email ? <ThesisDetails /> : <Login />} />
+            <Route path='/thesis/:id' element={user.email ? (user.role === "teacher" || user.role == "student" ? <ThesisDetails /> : <NotFoundPage /> ) : <Login />} />
             <Route path='/thesis/:id/apply' element={user.email ? (user.role === "student" ? <ApplyForm virtualDate={date} /> : <NotFoundPage />) : <Login />} />
-            <Route path='/applications' element={user.email ? (user.role === "teacher" ? <ApplicationsProfessor /> : <ApplicationsStudent />) : <Login />} />
+            <Route path='/applications' element={user.email ? (user.role === "teacher" ? <ApplicationsProfessor /> : (user.role === "student" ? <ApplicationsStudent /> : <NotFoundPage />)) : <Login />} />
             <Route path='/applications/:id/:state' element={user.email ? (user.role === "teacher" ? <BrowseForm /> : <NotFoundPage />) : <Login />} />
             <Route path='/browse' element={user.email ? (user.role === "teacher" ? <BrowseForm /> : <NotFoundPage />) : <Login />} />
-
+            
           </Route>
           <Route path='*' element={<NotFoundPage />} />
         </Routes>
