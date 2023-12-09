@@ -516,6 +516,8 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
     // when a new page is requested
     else
       index = THESIS_CACHE.findIndex((proposal) => proposal.id === lastThesisID);
+      console.log("Index:", index); //torna -1
+
 
     // If the ID is not found, index will be -1
     let page = [];
@@ -931,7 +933,7 @@ const predefinedProposalStructure = {
   type: "",
 };
 
-const validateThesisProposalData = (data) => {
+const validateThesisProposalData = (thesisProposalData) => {
 
   //Validation that the proposal meets the structure requirements
   const keys1 = Object.keys(thesisProposalData);
@@ -952,9 +954,9 @@ const validateThesisProposalData = (data) => {
   }
 
   //null values validation
-  const keys = Object.keys(data);
+  const keys = Object.keys(thesisProposalData);
   for (const key of keys) {
-    if (key !== 'notes' && data[key] === null) {
+    if (key !== 'notes' && thesisProposalData[key] === null) {
       console.log("part3")
       return false;
     }
