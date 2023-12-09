@@ -10,10 +10,14 @@ import API from "../../API";
 
 
 function STRManagement(props) {
-  const [errorMsg, setErrorMsg] = useState('');
-  const [STR, setSTR] = useState({});
+
+  const STATES = {LOADING: "Loading...", ERROR: "Some error occoured...", READY: "ready"};
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const [errorMsg, setErrorMsg] = useState('');
+  const [STR, setSTR] = useState({});
+  const [state, setState] = useState(STATES.LOADING);
 
   const successAlert = (mode) => {
     let textField;
@@ -83,53 +87,72 @@ function STRManagement(props) {
 
   useEffect(() => {
     API.getSTRWithId(id)
-        .then(t => setSTR(t))
-        .catch(); //TO DO: define error state
+        .then(t => {
+                    if (!t.error) {
+                      setSTR(t.STR);
+                      console.log(STR);
+                      setState(STATES.READY);
+                    } else {
+                      console.log("Error in STRManagement/getSTRWithId:" + e);
+                      setState(STATES.ERROR);
+                    }
+                  })
+        .catch(e => {
+          console.log("Error in STRManagement/getSTRWithId:" + e);
+          setState(STATES.ERROR);
+        });
 }, []);
 
-  return ( <Container fluid className="vh-100" > 
-            <>
-                <Button
-                  type="submit"
-                  className='brwbtt blueButton'
-                  style={{
-                    marginRight: "3px",
-                    fontSize: "16px",
-                    padding: "0.5% 2%"
-                  }}
-                  onClick={() => sendToProfessor()}
-                >
-                  Send to professor
-                </Button>
-                <Button
-                  variant="warning"
-                  className='brwbtt orangeButton'
-                  style={{
-                    fontSize: "16px",
-                    padding: "0.5% 2%"
-                  }}
-                  onClick={() => declineProposal()}
-                >
-                  Decline
-                </Button>
-              </>
+  return ( <Container fluid className="vh-100" >
+              {
+                state === STATES.READY ? <> {/*
+                  <h6><i>{STR.supervisor}</i></h6>
+                  <hr />
+                  <Table className="" >
+                      <tbody>
+                          {FIELDS.map(f => <tr key={f.title}><th>{f.title}</th><td>{object_prop_to_td(f.DBfield, STR[f.DBfield])}</td></tr>)}
+                      </tbody>
+                  </Table>
+                  <hr />
+                  <h2>Description</h2>
+                  <p>{STR.description}</p>
+                  {STR.notes ? <>
+                      <h4><i>Notes:</i></h4>
+                      <p>{STR.notes}</p>
+                  </> : ""
+                  }*/}
+                  
+                  <Button
+                    type="submit"
+                    className='brwbtt blueButton'
+                    style={{
+                      marginRight: "3px",
+                      fontSize: "16px",
+                      padding: "0.5% 2%"
+                    }}
+                    onClick={() => sendToProfessor()}
+                  >
+                    Send to professor
+                  </Button>
+                  <Button
+                    variant="warning"
+                    className='brwbtt orangeButton'
+                    style={{
+                      fontSize: "16px",
+                      padding: "0.5% 2%"
+                    }}
+                    onClick={() => declineProposal()}
+                  >
+                    Decline
+                  </Button>
+                  
+                </> : ( state===STATES.LOADING ? 
+                          <Spinner animation="border" role="status"/> : 
+                          <Alert style={{textDecoration: "underline"}}> Some errors occurred </Alert>)
+              }
            </Container>
-    
   );
 
 }
-
-/*
-      {errorMsg ? (
-        <Alert id="applyAlert"
-          style={{ marginLeft: "auto", marginRight: "auto", marginTop: "2vh" }}
-          variant="danger"
-          onClose={() => setErrorMsg('')}
-          dismissible
-        >
-          {errorMsg}
-        </Alert>
-      ) : null}
-*/
 
 export { STRManagement };

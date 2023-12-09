@@ -160,7 +160,6 @@ function InsertProposalForm(props) {
     setSelectedDate(sixMonthsLater)
     API.getDegree()
     .then((d) => {
-      console.log("Result:", d);
       setDeg(d);
     })
     .catch((e) => {
