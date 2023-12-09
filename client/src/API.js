@@ -1395,6 +1395,7 @@ const getSTRlistLength = async () =>
       
 }
 
+/*
 const predefinedSTRStructure = {   
 
   acceptanceDate: "",     
@@ -1408,6 +1409,7 @@ const predefinedSTRStructure = {
   requestDate: dayjs.format("YYYY/MM/DD"),
   approved: false,
 };
+*/
 
 function validateSTRData(STRData)
 {
@@ -1524,14 +1526,46 @@ const getSTRWithId = async (id) => {
  * @param {boolean} accept true to accept, false to reject
  * @returns {{ status: code }} //return of the API if no errors occur
  * @returns {{ status: code, error: err}} //return of the API if errors occur
- * Possible values for status: [200 (ok), 401 (unauthorized), 404 (non found), 500 (server error)]
+ * Possible values for status: [200 (ok),400 (already accepted/rejected), 401 (unauthorized), 404 (non found), 500 (server error)]
  */
 
 const acceptRejectSTR = async (id, accept) => {
 
-const acceptRejectRequest = async (id, accept) => {
-  //Check if the user is a secretary
-}
+  //check if the if the user is logged
+  if (!auth.currentUser) return { status: 401, error: "User not logged in" };
+
+  //check if the user is a secretary
+  //TO DO: Check if the user is a secretary. Secretaries table in DB?? RETURN 401
+
+  //Find the document with the given id in the thesisRequests collection
+  const whereCond1 = where("id", "==", Number(id))
+  const qSTR = query(thesisRequestsRef, whereCond1)
+
+  try {
+    const STRSnapshot = await getDocs(qSTR);
+    if (!STRSnapshot.empty) {
+      const STR = STRSnapshot.docs[0].data();
+      //If the request was already accepted and we try to accept it again, return an error
+      if (STR.approved && accept) return {status:400, error: "Thesis request already accepted"};
+      //If the request was already rejected and we try to reject it again, return an error
+      if (!STR.approved && !accept) return {status:400, error: "Thesis request already rejected"};
+      //If accepted, update the acceptanceDate field with the current date, otherwise leave it null
+      if (accept){
+        STR.approvalDate = await getVirtualDate();
+      } else { STR.approvalDate = null; }
+      STR.approved = accept;
+      //update the document with the acceptance/rejection
+      await updateDoc(STRSnapshot.docs[0].ref, STR);
+      return {status:200} //OK
+    } else {
+      console.log("Thesis request not found");
+      return {status:404, error: "Thesis request not found"}
+    }
+  } catch (e) {
+    console.log("Error:", e);
+    return {status: 500, error: "Error in calling Firebase:" + e}
+  }
+};
 
 const API = {
   getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField,getTecher,
@@ -1540,11 +1574,14 @@ const API = {
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplicationsForProfessor, getApplicationDetails, getCVOfApplication, acceptApplication, declineApplication,
   removeAllProposals, insertProposal, archiveThesis, deleteProposal,
   getApplicationsForStudent, getDegree,
-  getSTRlist, getSTRlistLength, insertSTR, predefinedSTRStructure, getSTRWithId, acceptSTR
+  getSTRlist, getSTRlistLength, insertSTR, /*predefinedSTRStructure, acceptSTR,*/ getSTRWithId, acceptRejectSTR
 };
 
 
 export default API;
+/*
+console.log("Testing acceptRejectSTR");
+console.log(await acceptRejectSTR("0", false));
 
 /*
 console.log("Rejected:");
