@@ -4,6 +4,7 @@ import teachs from "./teachers.js";
 import cars from "./careers.js";
 import thesis from "./thesisProposals.js";
 import degs from "./degrees.js";
+import str from './thesisRequests.js'
 
 import dayjs from "dayjs";
 
@@ -19,3 +20,4 @@ export const teachers = teachs;
 export const careers = cars;
 export const thesisProposals = thesis;
 export const degrees = degs;
+export const thesisRequests = str;

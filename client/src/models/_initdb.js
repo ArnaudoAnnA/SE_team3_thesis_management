@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { collection, addDoc, getFirestore, query, limit, getDocs, deleteDoc } from 'firebase/firestore';
-import { applications, degrees, students, careers, teachers, thesisProposals, date } from './initial_data/_initialData.js';
+import { applications, degrees, students, careers, teachers, thesisProposals, date, thesisRequests } from './initial_data/_initialData.js';
 import dayjs from 'dayjs';
 
 const firebaseConfig = {
@@ -72,6 +72,7 @@ await deleteCollection(db, "career");
 await deleteCollection(db, "degrees");
 await deleteCollection(db, "teachers");
 await deleteCollection(db, "thesisProposals");
+await deleteCollection(db, "thesisRequests");
 
 // Import data to firestore
 await populateCollection(db, date, 'date');
@@ -81,6 +82,7 @@ await populateCollection(db, degrees, 'degrees');
 await populateCollection(db, careers, 'career');
 await populateCollection(db, applications, 'applications');
 await populateCollection(db, thesisProposals, 'thesisProposals');
+await populateCollection(db, thesisRequests, 'thesisRequests');
 
 /* --------------------------------------------------------------------- */
 

@@ -1372,13 +1372,13 @@ const getSTRlistLength = async () =>
 const predefinedSTRStructure = {   
 
   acceptanceDate: "",     
-  description: "descr",           
-  notes: "notes",  
-  type: "stage",
-  profName: "Mario Rossi",   
+  description: description,           
+  notes: note,  
+  type: "",
+  profName: "",   
   studentId: user.id,
-  profId: "d345678",   
-  title: "title",
+  profId: "",   
+  title: title,
   requestDate: dayjs.format("YYYY/MM/DD"),
   approved: false,
 };
@@ -1414,20 +1414,6 @@ function validateSTRData(STRData)
   return true;
 }
 
-/**
- * @param {{acceptanceDate: string,     
- * description: string,           
- * notes: string,  
- * type: string,
- * profName: string,   
- * studentId: string,
- * profId: string,   
- * title: string,
- * requestDate: dayjs.format("YYYY/MM/DD"),
- * approved: boolean
- * }} STRData 
- * @returns
- */
 const insertSTR = async (STRData) => {
   if (!auth.currentUser) return { status: 401, err: "User not logged in" };
   console.log("Logged user = " + auth.currentUser.email);
@@ -1444,14 +1430,30 @@ const insertSTR = async (STRData) => {
     console.log("Validation failed: proposal data doesnt comply with required structure");
     return { status: 400, err: "Proposal data doesnt comply with required structure" };
   }
+
   
 
   try {
-    const docRef = await addDoc(thesisRequestsRef, STRData);
-    console.log("Thesis request added with ID: ", docRef.id);
+    //first we get the groups from the teacher and the supervisors
+    var groupsAux = [];
+    const userGroups = await getGroupsById(STRData.teacherId);
+    groupsAux.push(userGroups);
+
+    for (const cs in STRData.coSupervisors) {
+      const g = await getGroups(STRData.coSupervisors[cs]);
+      if (g) { groupsAux.push(g) };
+    }
+
+    console.log("Found groups: " + groupsAux);
+
+    //We update the STRData with the obtained groups and calculated id
+    STRData.groups = groupsAux;
+    STRData.id = await getNextThesisId();
+    const docRef = await addDoc(thesisProposalsRef, STRData);
+    console.log("Thesis proposal added with ID: ", docRef.id);
     return { status: 200, id: docRef.id };
   } catch (error) {
-    console.error("Error adding thesis request: ", error);
+    console.error("Error adding thesis proposal: ", error);
     return { status: 500 }; // or handle the error accordingly
   }
 };

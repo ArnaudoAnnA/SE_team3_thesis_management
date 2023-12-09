@@ -155,26 +155,11 @@ function InsertStudentProposal(props) {
       errorMsg: ${errorMsg} 
        `);
 
-      const predefinedProposalStructure = {   
-
-        archiveDate: "",   
-        coSupervisors: emailTags,   
-        description: description,   
-        requestDate: require('dayjs')().format('YYYY-MM-DD'),       
-        level: level,   
-        notes: note,  
-        profName: profname,
-        programmes: pname,     
-        studentId: user.id,   
-        title: title,     
-
-      };
-
 
       if (title !== '' && degree !== '' && description !== '' && knowledge !== '' && level !== '' && pname !== '' &&
       title !== null && degree !== null && description !== null && knowledge !== null && level !== null && pname !== null) {
 
-      API.insertProposal(predefinedProposalStructure)
+      API.insertProposal(API.predefinedSTRStructure)
         .then(successAlert)
         .catch((e)=> errorAlert(e));
 

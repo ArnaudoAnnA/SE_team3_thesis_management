@@ -19,7 +19,7 @@ import { ApplicationsStudent } from './components/browseApplication/Applications
 import { ApplicationsProfessor } from './components/browseApplication/ApplicationsProfessor.jsx';
 import { UpdateProposal } from './components/UpdateProposal.jsx';
 import { CopyProposal } from './components/CopyProposal.jsx';
-import { InsertStudentProposal } from './components/InsertStudentProposal.jsx';
+import { InsertStudentProposal } from './components/startRequests/InsertStudentProposal.jsx';
 import { STRlist } from './components/startRequests/STRlist.jsx';
 import { STRManagement } from './components/startRequests/STRManagement.jsx';
 
