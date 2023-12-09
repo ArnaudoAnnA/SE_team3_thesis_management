@@ -53,12 +53,12 @@ function InsertStudentProposal(props) {
   const [inputErrorType, setInputErrorType] = useState(false);
   const [inputErrorDescription, setInputErrorDescription] = useState(false);
   const [inputErrorKnowledge, setInputErrorKnowledge] = useState(false);
-  const [inputErrorLevel, setInputErrorLevel] = useState(false);
+  const [inputErrortype, setInputErrortype] = useState(false);
   const [inputErrorProgrammes, setInputErrorProgrammes] = useState(false);
   const [note, setNot] = useState('');
   const [pname, setpName] = useState('');
   const [profname, setprofname] = useState('');
-  const [level, setLevel] = useState('');
+  const [type, settype] = useState('');
   const [degree, setDegree] = useState('')
   const [description, setDesc] = useState('')
   const [title, setTitle] = useState('')
@@ -124,10 +124,10 @@ function InsertStudentProposal(props) {
 
     } 
 
-    if (level === '') {
+    if (type === '') {
 
       setErrorMsg('Check required fields!');
-      setInputErrorLevel(true);
+      setInputErrortype(true);
       window.scrollTo(0, 0);
 
 
@@ -148,7 +148,7 @@ function InsertStudentProposal(props) {
     console.log(`
       note: ${note}
       pname: ${pname}
-      level: ${level}
+      type: ${type}
       degree: ${degree}
       description: ${description}
       title: ${title}
@@ -156,8 +156,8 @@ function InsertStudentProposal(props) {
        `);
 
 
-      if (title !== '' && degree !== '' && description !== '' && knowledge !== '' && level !== '' && pname !== '' &&
-      title !== null && degree !== null && description !== null && knowledge !== null && level !== null && pname !== null) {
+      if (title !== '' && degree !== '' && description !== '' && knowledge !== '' && type !== '' && pname !== '' &&
+      title !== null && degree !== null && description !== null && knowledge !== null && type !== null && pname !== null) {
 
       API.insertProposal(API.predefinedSTRStructure)
         .then(successAlert)
