@@ -1532,30 +1532,30 @@ const getSTRWithId = async (id) => {
 const acceptRejectSTR = async (id, accept) => {
 
   //check if the if the user is logged
-  if (!auth.currentUser) return { status: 401, error: "User not logged in" };
+  //if (!auth.currentUser) return { status: 401, error: "User not logged in" };
 
   //check if the user is a secretary
   //TO DO: Check if the user is a secretary. Secretaries table in DB?? RETURN 401
 
-  //Find the document with the given id in the thesisRequests collection
-  const whereCond1 = where("id", "==", Number(id))
-  const qSTR = query(thesisRequestsRef, whereCond1)
-
   try {
-    const STRSnapshot = await getDocs(qSTR);
+    //We define the document to update and get it from the DB
+    const STRdoc = doc(db, "thesisRequests", id);
+    const STRSnapshot = await getDoc(STRdoc);
     if (!STRSnapshot.empty) {
-      const STR = STRSnapshot.docs[0].data();
-      //If the request was already accepted and we try to accept it again, return an error
+      const STR = STRSnapshot.data();
+
+      //If the try to accept an accepted request/reject a rejected request, return error
       if (STR.approved && accept) return {status:400, error: "Thesis request already accepted"};
-      //If the request was already rejected and we try to reject it again, return an error
       if (!STR.approved && !accept) return {status:400, error: "Thesis request already rejected"};
+
       //If accepted, update the acceptanceDate field with the current date, otherwise leave it null
       if (accept){
         STR.approvalDate = await getVirtualDate();
       } else { STR.approvalDate = null; }
+      
       STR.approved = accept;
       //update the document with the acceptance/rejection
-      await updateDoc(STRSnapshot.docs[0].ref, STR);
+      await updateDoc(STRdoc, STR);
       return {status:200} //OK
     } else {
       console.log("Thesis request not found");
@@ -1581,7 +1581,7 @@ const API = {
 export default API;
 /*
 console.log("Testing acceptRejectSTR");
-console.log(await acceptRejectSTR("0", false));
+console.log(await acceptRejectSTR("0jhBCrUcQPheqHsY9NoH", false));
 
 /*
 console.log("Rejected:");
