@@ -68,19 +68,17 @@ function InsertStudentProposal(props) {
     const now = dayjs();
     API.getDegree()
     .then((d) => {
-      console.log("Result:", d);
+  
       setDeg(d);
     })
     .catch((e) => {
       console.error("Error API:", e);
 
     });
-  
-  
+    
     
     API.getTecher().then((e)=> setValues(e))
 
-    console.log(deg)
 
   }, []);
  
@@ -140,19 +138,36 @@ function InsertStudentProposal(props) {
 
     console.log(`
       note: ${note}
-      pname: ${pname}
+      pname: ${profname.name + ' ' + profname.surname}
       type: ${type}
-      teacherId: ${profname}
+      teacherId: ${profname.id}
+      userId: ${user.id}
       description: ${description}
       title: ${title}
+      requestDate: ${dayjs().format("YYYY/MM/DD")}
       errorMsg: ${errorMsg} 
        `);
 
 
+       const predefinedSTRStructure = {   
+
+        acceptanceDate: "",     
+        description: description,           
+        notes: note,  
+        type: type,
+        profName: profname.name + ' ' + profname.surname,   
+        studentId: user.id,
+        profId: profname.id,   
+        title: title,
+        requestDate: dayjs().format("YYYY/MM/DD"),
+        approved: false,
+      };
+      
+
       if (title !== ''  && description !== '' && profname !== '' && type !== '' && pname !== '' &&
       title !== null  && description !== null && profname !== null && type !== null && pname !== null) {
 
-      API.insertProposal(API.predefinedSTRStructure)
+      API.insertProposal(predefinedSTRStructure)
         .then(successAlert)
         .catch((e)=> errorAlert(e));
 
@@ -257,7 +272,7 @@ function InsertStudentProposal(props) {
                       style={{ borderRadius: "6px", borderColor: inputErrorName ? "red" : undefined }}
                       className="form-control"
                       value={profname}
-                      onChange={(ev) => setprofname(ev.target.value)}
+                      onChange={(ev) => setprofname(values.find(teacher => teacher.id === ev.target.value) || {})}
                       onClick={() => {
                         setInputErrorName(false);
                       }}
