@@ -271,7 +271,7 @@ function InsertStudentProposal(props) {
                       required
                       style={{ borderRadius: "6px", borderColor: inputErrorName ? "red" : undefined }}
                       className="form-control"
-                      value={profname}
+                      value={profname.id || ''}
                       onChange={(ev) => setprofname(values.find(teacher => teacher.id === ev.target.value) || {})}
                       onClick={() => {
                         setInputErrorName(false);
