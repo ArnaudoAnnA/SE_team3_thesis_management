@@ -1395,7 +1395,7 @@ const getSTRlistLength = async () =>
       
 }
 
-/*
+
 const predefinedSTRStructure = {   
 
   acceptanceDate: "",     
@@ -1409,7 +1409,7 @@ const predefinedSTRStructure = {
   requestDate: "YYYY/MM/DD",
   approved: false,
 };
-*/
+
 
 function validateSTRData(STRData)
 {
