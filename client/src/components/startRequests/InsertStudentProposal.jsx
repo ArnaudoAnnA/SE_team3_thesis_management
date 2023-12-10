@@ -52,17 +52,16 @@ function InsertStudentProposal(props) {
   const [inputErrorTitle, setInputErrorTitle] = useState(false);
   const [inputErrorType, setInputErrorType] = useState(false);
   const [inputErrorDescription, setInputErrorDescription] = useState(false);
-  const [inputErrorKnowledge, setInputErrorKnowledge] = useState(false);
-  const [inputErrortype, setInputErrortype] = useState(false);
+  const [inputErrorName, setInputErrorName] = useState(false);
   const [inputErrorProgrammes, setInputErrorProgrammes] = useState(false);
   const [note, setNot] = useState('');
   const [pname, setpName] = useState('');
   const [profname, setprofname] = useState('');
-  const [type, settype] = useState('');
-  const [degree, setDegree] = useState('')
+  const [type, setType] = useState('');
   const [description, setDesc] = useState('')
   const [title, setTitle] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
+  const [values, setValues] = useState([])
   const [deg, setDeg] = useState()
 
   useEffect(() => {
@@ -78,6 +77,9 @@ function InsertStudentProposal(props) {
     });
   
   
+    
+    API.getTecher().then((e)=> setValues(e))
+
     console.log(deg)
 
   }, []);
@@ -96,20 +98,11 @@ function InsertStudentProposal(props) {
 
 
     } 
-    if (degree === '') {
-
-      setErrorMsg('Check required fields!');
-      setInputErrorType(true);
-      window.scrollTo(0, 0);
-
-
-
-    } 
 
     if (profname === '') {
 
         setErrorMsg('Check required fields!');
-        setInputErrorType(true);
+        setInputErrorName(true);
         window.scrollTo(0, 0);
   
   
@@ -127,7 +120,7 @@ function InsertStudentProposal(props) {
     if (type === '') {
 
       setErrorMsg('Check required fields!');
-      setInputErrortype(true);
+      setInputErrorType(true);
       window.scrollTo(0, 0);
 
 
@@ -149,15 +142,15 @@ function InsertStudentProposal(props) {
       note: ${note}
       pname: ${pname}
       type: ${type}
-      degree: ${degree}
+      teacherId: ${profname}
       description: ${description}
       title: ${title}
       errorMsg: ${errorMsg} 
        `);
 
 
-      if (title !== '' && degree !== '' && description !== '' && knowledge !== '' && type !== '' && pname !== '' &&
-      title !== null && degree !== null && description !== null && knowledge !== null && type !== null && pname !== null) {
+      if (title !== ''  && description !== '' && profname !== '' && type !== '' && pname !== '' &&
+      title !== null  && description !== null && profname !== null && type !== null && pname !== null) {
 
       API.insertProposal(API.predefinedSTRStructure)
         .then(successAlert)
@@ -228,11 +221,11 @@ function InsertStudentProposal(props) {
                       freeSolo
                       required
                       onChange={(ev) => {
-                        setDegree(ev.target.value);
+                        setType(ev.target.value);
                         console.log(ev.target.value);
                       }}
                       onBlur={(ev) => {
-                        setDegree(ev.target.value);
+                        setType(ev.target.value);
                         console.log(ev.target.value);
                       }}
                       renderInput={(params) => <TextField {...params} placeholder="Insert the Type *" variant="standard" style={{ paddingLeft: "2px", borderRadius: "6px", width: '100%', fontSize: "12px", borderWidth: "300px"}} onClick={()=> setInputErrorType(false)} />}
@@ -253,28 +246,31 @@ function InsertStudentProposal(props) {
                       </div> 
                       <div className="form-group input-group" style={{ marginTop: "2px", marginBottom: "2px" }}>
                       <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Theacher's name, this field is required">
-                        <svg xmlns="http://www.w3.org/2000/svg"  style={{ marginRight:"1vw", color: inputErrorKnowledge ? "red": undefined}} width="16" height="16" fill="currentColor" className="bi bi-journal-bookmark-fill" viewBox="0 0 16 16">
+                        <svg xmlns="http://www.w3.org/2000/svg"  style={{ marginRight:"1vw", color: inputErrorName ? "red": undefined}} width="16" height="16" fill="currentColor" className="bi bi-journal-bookmark-fill" viewBox="0 0 16 16">
                           <path fillRule ="evenodd" d="M6 1h6v7a.5.5 0 0 1-.757.429L9 7.083 6.757 8.43A.5.5 0 0 1 6 8V1z" />
                           <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z" />
                           <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z" />
                         </svg>
                       </div>
-                      <input required style={{ borderRadius: "6px", borderColor: inputErrorKnowledge ? "red": undefined }} name="" className="form-control" placeholder="Insert the Theacher's Name *" type="text" value={profname} onChange={ev => setprofname(ev.target.value)} onClick={()=> {setInputErrorKnowledge(false)}}/>
-                    </div>
-                      <div className="form-group input-group" style={{ marginTop: '4px'}}>
-                          <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Thesis level, this field is required">
-                        <svg xmlns="http://www.w3.org/2000/svg"  style={{ marginRight:"1vw", color: inputErrorLevel ? "red": undefined}} width="16" height="16" fill="currentColor" className="bi bi-arrow-bar-up" viewBox="0 0 16 16">
-                          <path fillRule ="evenodd" d="M8 10a.5.5 0 0 0 .5-.5V3.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 3.707V9.5a.5.5 0 0 0 .5.5zm-7 2.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5z" />
-                        </svg>
-                          </div>
-                          <select className="form-control" style={{borderRadius: "6px",  borderColor: inputErrorLevel ? "red": undefined}} value={level} onChange={ev => setLevel(ev.target.value)} onClick={()=> {setInputErrorLevel(false)}}>
-                              <option  style={{ fontWeight: "100" }} value="" disabled> --Insert Level-- *</option>
-                              <option value= "Master">Master</option>
-                              <option value= "Bachelor">Bachelor</option>
+                    <select
+                      required
+                      style={{ borderRadius: "6px", borderColor: inputErrorName ? "red" : undefined }}
+                      className="form-control"
+                      value={profname}
+                      onChange={(ev) => setprofname(ev.target.value)}
+                      onClick={() => {
+                        setInputErrorName(false);
+                      }}
+                    >
+                      <option value="" disabled>--Insert Teacher's Name-- *</option>
+                      {values.map((teacher) => (
+                        <option key={teacher.id} value={teacher.id}>
+                          {teacher.name} {teacher.surname}
+                        </option>
+                      ))}
 
-                          </select>
-                      </div>
-                  
+                    </select>
+                  </div>
                     <div className="form-group input-group" style={{ marginTop: "4px", marginBottom: "2px" }}>
                       <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Cds/Programmes, this field is required">
                         <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight:"1vw", color: inputErrorProgrammes ? "red": undefined}} width="16" height="16" fill="currentColor" className="bi bi-person-video3" viewBox="0 0 16 16">
