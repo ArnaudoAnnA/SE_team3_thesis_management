@@ -172,21 +172,23 @@ function UpdateProposal(props) {
   
     API.getThesisWithId(id)
     .then((res) => {
-      console.log(res);
-      setTitle(res.title);
-      setDegree(res.type);
-      setDesc(res.description);
-      setKnowledge(res.requiredKnowledge);
-      setLevel(res.level);
-      setTags(res.keywords);
-      setEmailTags(res.coSupervisors);
-      setpName(res.programmes);
-      setSelectedDate(dayjs(res.expirationDate));
-      setNot(res.notes);
-
-
+      if (!res.error) {
+        console.log(res.thesis);
+        setTitle(res.thesis.title);
+        setDegree(res.thesis.type);
+        setDesc(res.thesis.description);
+        setKnowledge(res.thesis.requiredKnowledge);
+        setLevel(res.thesis.level);
+        setTags(res.thesis.keywords);
+        setEmailTags(res.thesis.coSupervisors);
+        setpName(res.thesis.programmes);
+        setSelectedDate(dayjs(res.thesis.expirationDate));
+        setNot(res.thesis.notes);
+      } else {
+        console.log("Error in UpdateProposal/getThesisWithId:" + res.error);
+      }
     })
-    .catch(e => console.log("Error in UpdateProposal/getApplicationDetails:" + e))
+    .catch(e => console.log("Error in UpdateProposal/getThesisWithId:" + e))
 
   }, []);
  
