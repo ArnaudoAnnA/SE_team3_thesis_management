@@ -1630,6 +1630,7 @@ const API = {
 
 export default API;
 
+/*
 console.log("Testing updateProposal");
 console.log(await updateProposal(99999, {title: "New title", description: "New description"}));
 
