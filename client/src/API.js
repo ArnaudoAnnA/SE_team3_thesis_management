@@ -50,12 +50,24 @@ const applicationsRef = DEBUG ? collection(db, "test-applications") : collection
 const dateRef = collection(db, "date");
 const mailRef = collection(db, "mail");
 const thesisRequestsRef = collection(db, "thesisRequests");
+const secretariesRef = collection(db, "secretaries");
 
 const storageCurriculums = "curriculums/"
 
 
 /*--------------- Utils APIs -------------------------- */
 
+/**
+ * Return if the user is a secretary
+ * @param email the email of the user
+ * @return true if the user is a secretary, false otherwise
+ */
+const isSecretary = async (email) => {
+  const whereCond = where("email", "==", email)
+  const q = query(secretariesRef, whereCond)
+  const snapshot = await getDocs(q)
+  return snapshot.docs[0] ? true : false
+}
 /**
  * Return if the user is a teacher
  * @param email the email of the user
@@ -1494,7 +1506,7 @@ const insertSTR = async (STRData) => {
 
 const getSTRWithId = async (id) => {
   if (!auth.currentUser) return { status: 401, error: "User not logged in" };
-  //TO DO: Check if the user is a secretary
+  if(!isSecretary(auth.currentUser.email)) return { status: 401, error: "User is not a secretary" };
 
   //QUERY CONDITIONS
   const whereCond1 = where("id", "==", Number(id))
@@ -1542,10 +1554,10 @@ const getSTRWithId = async (id) => {
 const acceptRejectSTR = async (id, accept) => {
 
   //check if the if the user is logged
-  //if (!auth.currentUser) return { status: 401, error: "User not logged in" };
+  if (!auth.currentUser) return { status: 401, error: "User not logged in" };
 
   //check if the user is a secretary
-  //TO DO: Check if the user is a secretary. Secretaries table in DB?? RETURN 401
+  if(!isSecretary(auth.currentUser.email)) return { status: 401, error: "User is not a secretary" };
 
   try {
     //We define the document to update and get it from the DB
@@ -1631,7 +1643,7 @@ const API = {
 export default API;
 
 /*
-console.log("Testing updateProposal");
+console.log("Testing isSecretary");
 console.log(await updateProposal(99999, {title: "New title", description: "New description"}));
 
 /*
