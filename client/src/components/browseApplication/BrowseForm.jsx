@@ -134,6 +134,14 @@ function BrowseForm(props) {
     const msg = API.getCVOfApplication(cvPath).then((res) => {
 
       console.log(res)
+      if(res.status != 200){
+        Swal.fire({
+          title: 'Error',
+          text: 'An error occurred while downloading the cv. Please try again later.',
+          icon: 'error'
+        })
+        return
+      }
       var element = document.createElement('a');
       element.style.display = "none";
       element.setAttribute('href', res.url)
