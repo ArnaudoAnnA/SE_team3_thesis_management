@@ -8,14 +8,37 @@ import Swal from 'sweetalert2'
 import API from "../../API";
 
 
+function object_prop_to_td(key, value) {
+  let ret;
+  switch (key) {
+      case "requestDate":
+          return dayjs(value).format("YYYY/MM/DD");
+
+      case "coSupervisors":
+          let key = 0;
+          return value.map(e => <div key={key++}>{e}</div>);
+
+      default:
+          return value;
+  }
+}
+
 
 function STRManagement(props) {
 
   const STATES = {LOADING: "Loading...", ERROR: "Some error occoured...", READY: "ready"};
+  const FIELDS = [
+    { DBfield: "supervisor", title: "Supervisor" },
+    { DBfield: "requestDate", title: "Request date" },
+    //{ DBfield: "coSupervisors", title: "Co-supervisors" },
+    { DBfield: "programmes", title: "Programmes" },
+    //{ DBfield: "type", title: "Type" },
+   // { DBfield: "level", title: "Level" },
+  ];
+
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [errorMsg, setErrorMsg] = useState('');
   const [STR, setSTR] = useState({});
   const [state, setState] = useState(STATES.LOADING);
 
@@ -90,7 +113,6 @@ function STRManagement(props) {
         .then(t => {
                     if (!t.error) {
                       setSTR(t.STR);
-                      console.log(STR);
                       setState(STATES.READY);
                     } else {
                       console.log("Error in STRManagement/getSTRWithId:" + e);
@@ -105,46 +127,51 @@ function STRManagement(props) {
 
   return ( <Container fluid className="vh-100" >
               {
-                state === STATES.READY ? <> {/*
-                  <h6><i>{STR.supervisor}</i></h6>
+                state === STATES.READY ? <> 
+                  <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: "2rem" }}>
+                    <h1>{STR.title}</h1>
+                  </div>
+                  <h6><i>Proposed by: {STR.student}</i></h6> 
                   <hr />
                   <Table className="" >
                       <tbody>
-                          {FIELDS.map(f => <tr key={f.title}><th>{f.title}</th><td>{object_prop_to_td(f.DBfield, STR[f.DBfield])}</td></tr>)}
+                          {FIELDS.map(f => <tr key={f.title}> <th>{f.title}</th> <td>{object_prop_to_td(f.DBfield, STR[f.DBfield])}</td> </tr>)}
                       </tbody>
                   </Table>
                   <hr />
-                  <h2>Description</h2>
-                  <p>{STR.description}</p>
+                  <h2> Description </h2>
+                  <p> {STR.description} </p>
                   {STR.notes ? <>
-                      <h4><i>Notes:</i></h4>
-                      <p>{STR.notes}</p>
+                      <h4><i> Notes: </i></h4>
+                      <p> {STR.notes} </p>
                   </> : ""
-                  }*/}
+                  }
                   
-                  <Button
-                    type="submit"
-                    className='brwbtt blueButton'
-                    style={{
-                      marginRight: "3px",
-                      fontSize: "16px",
-                      padding: "0.5% 2%"
-                    }}
-                    onClick={() => sendToProfessor()}
-                  >
-                    Send to professor
-                  </Button>
-                  <Button
-                    variant="warning"
-                    className='brwbtt orangeButton'
-                    style={{
-                      fontSize: "16px",
-                      padding: "0.5% 2%"
-                    }}
-                    onClick={() => declineProposal()}
-                  >
-                    Decline
-                  </Button>
+                  <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-around", marginTop: "2rem" }}>
+                    <Button
+                      type="submit"
+                      className='brwbtt blueButton'
+                      style={{
+                        marginRight: "3px",
+                        fontSize: "16px",
+                        padding: "0.5% 2%"
+                      }}
+                      onClick={() => sendToProfessor()}
+                    >
+                      Send to professor
+                    </Button>
+                    <Button
+                      variant="warning"
+                      className='brwbtt orangeButton'
+                      style={{
+                        fontSize: "16px",
+                        padding: "0.5% 2%"
+                      }}
+                      onClick={() => declineProposal()}
+                    >
+                      Decline
+                    </Button>
+                  </div>
                   
                 </> : ( state===STATES.LOADING ? 
                           <Spinner animation="border" role="status"/> : 

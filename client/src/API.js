@@ -1504,11 +1504,21 @@ const getSTRWithId = async (id) => {
     const STRSnapshot = await getDocs(qSTR);
     if (!STRSnapshot.empty) {
       const STR = STRSnapshot.docs[0].data();
-      /*let teachersSnap = await getDocs(teachersRef);
+
+      //find the supervisor's name and surname
+      let teachersSnap = await getDocs(teachersRef);
       let teachers = teachersSnap.docs.map(doc => doc.data());
-      let teacher = teachers.find(t => t.id == thesis.teacherId);
+      let teacher = teachers.find(t => t.id == STR.teacherId);
       if (!teacher) return MessageUtils.createMessage(404, "error", "No teacher found");
-      thesis.supervisor = teacher.name + ' ' + teacher.surname;*/
+      STR.supervisor = teacher.name + ' ' + teacher.surname;
+
+      //find the student's name and surname
+      let studentsSnap = await getDocs(studentsRef);
+      let students = studentsSnap.docs.map(doc => doc.data());
+      let student = students.find(t => t.id == STR.studentId);
+      if (!student) return MessageUtils.createMessage(404, "error", "No student found");
+      STR.student = student.name + ' ' + student.surname;
+
       return {status:200, STR: STR}
     } else {
       console.log("STR not found");
