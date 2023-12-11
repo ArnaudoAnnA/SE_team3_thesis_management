@@ -1444,9 +1444,9 @@ function validateSTRData(STRData)
   }
 
   //null values validation
-  const keys = Object.keys(data);
+  const keys = Object.keys(STRData);
   for (const key of keys) {
-    if ((key !== 'notes' || key != 'acceptanceDate') && data[key] === null) {
+    if ((key !== 'notes' || key != 'acceptanceDate') && STRData[key] === null) {
       console.log("part3")
       return false;
     }
@@ -1474,10 +1474,10 @@ const insertSTR = async (STRData) => {
   
   if (!(await isStudent(auth.currentUser.email))) return { status: 401, err: "User is not a student" };
 
-  STRData.studentId = user.id;
+  /*STRData.studentId = user.id;
   STRData.acceptanceDate = "";
   STRData.requestDate = dayjs.format("YYYY/MM/DD");
-  STRData.approved = false;
+  STRData.approved = false;*/
 
 
   if (!validateSTRData(STRData)) {

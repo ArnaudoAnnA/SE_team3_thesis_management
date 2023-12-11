@@ -167,7 +167,7 @@ function InsertStudentProposal(props) {
       if (title !== ''  && description !== '' && profname !== '' && type !== '' && pname !== '' &&
       title !== null  && description !== null && profname !== null && type !== null && pname !== null) {
 
-      API.insertProposal(predefinedSTRStructure)
+      API.insertSTR(predefinedSTRStructure)
         .then(successAlert)
         .catch((e)=> errorAlert(e));
 

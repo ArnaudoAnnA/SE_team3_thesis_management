@@ -278,8 +278,6 @@ function UpdateProposal(props) {
         coSupervisors: emailTags,   
         description: description,   
         expirationDate: dayjs(selectedDate).toISOString(),   
-        groups: [],   
-        id: 0,  
         keywords: tags,   
         level: level,   
         notes: note,   
@@ -295,7 +293,7 @@ function UpdateProposal(props) {
    
       if (title && degree && description && knowledge && level && pname !== '') {
 
-        API.insertProposal(predefinedProposalStructure)
+        API.updateProposal(id,predefinedProposalStructure)
             .then(successAlert) 
             .catch(errorAlert)
   
