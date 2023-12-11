@@ -185,9 +185,9 @@ function CopyProposal(props) {
         setSelectedDate(dayjs(res.thesis.expirationDate));
         setNot(res.thesis.notes);
       } else {
-        console.log("Error in UpdateProposal/getThesisWithId:" + res.error);
+        console.log("Error in CopyProposal/getThesisWithId:" + res.error);
       }})
-    .catch(e => console.log("Error in CopyProposal/getApplicationDetails:" + e))
+    .catch(e => console.log("Error in CopyProposal/getThesisWithId:" + e))
 
   }, []);
  
