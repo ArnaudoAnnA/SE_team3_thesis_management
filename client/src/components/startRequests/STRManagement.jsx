@@ -110,12 +110,12 @@ function STRManagement(props) {
 
   useEffect(() => {
     API.getSTRWithId(id)
-        .then(t => {
-                    if (!t.error) {
-                      setSTR(t.STR);
+        .then(str => {
+                    if (!str.error) {
+                      setSTR(str.STR);
                       setState(STATES.READY);
                     } else {
-                      console.log("Error in STRManagement/getSTRWithId:" + e);
+                      console.log("Error in STRManagement/getSTRWithId: " + str.error);
                       setState(STATES.ERROR);
                     }
                   })

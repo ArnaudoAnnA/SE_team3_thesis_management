@@ -557,14 +557,14 @@ const getThesisWithId = async (ID) => {
       if (!teacher) return MessageUtils.createMessage(404, "error", "No teacher found");
       thesis.supervisor = teacher.name + ' ' + teacher.surname;
 
-      return thesis
+      return {status:200, thesis: thesis}
     } else {
       console.log("Thesis not found");
-      return null; // or handle accordingly if thesis not found
+      return {status:404, error: "Thesis not found"}
     }
   } catch (e) {
-    console.log("Error:", e)
-    return null; // or handle the error accordingly
+    console.log("Error:", e);
+    return {status: 500, error: "Error in calling Firebase:" + e}
   }
 }
 
@@ -787,7 +787,7 @@ const getApplicationsForStudent = async (state) => {
       const thesis = await API.getThesisWithId(appl.data().thesisId);
       if (thesis.error) return MessageUtils.createMessage(thesis.status, "error", thesis.error);
 
-      const whereTeacherId = where("id", "==", thesis.teacherId);
+      const whereTeacherId = where("id", "==", thesis.thesis.teacherId);
       const qTeacher = query(teachersRef, whereTeacherId);
       const teacherSnapshot = await getDocs(qTeacher);
       if (teacherSnapshot.empty) return MessageUtils.createMessage(404, "error", "No teacher found");
@@ -796,9 +796,9 @@ const getApplicationsForStudent = async (state) => {
         "accepted": appl.data().accepted,
         "date": appl.data().date,
         "thesisId": appl.data().thesisId,
-        "thesisTitle": thesis.title,
-        "thesisDescription": thesis.description,
-        "thesisType": thesis.type,
+        "thesisTitle": thesis.thesis.title,
+        "thesisDescription": thesis.thesis.description,
+        "thesisType": thesis.thesis.type,
         "teacherName": teacherSnapshot.docs[0].data().name,
         "teacherSurname": teacherSnapshot.docs[0].data().surname
       }
@@ -1182,7 +1182,8 @@ const deleteProposal = async (id) => {
     const today = await getVirtualDate();
     //console.log("archiveDate: " + thesis.archiveDate);
     //console.log("today: " + today);
-    if (thesis.archiveDate <= today) return { status: 400, error: `You can not delete a thesis that is already archived`};
+    if (thesis.error) return MessageUtils.createMessage(thesis.status, "error", thesis.error);
+    if (thesis.thesis.archiveDate <= today) return { status: 400, error: `You can not delete a thesis that is already archived`};
 
 
     //All the pending and rejected applications must become cancelled + email
@@ -1199,9 +1200,8 @@ const deleteProposal = async (id) => {
     // TODO move in to the loop for pendingApplications and change the receiver email
     if (pendingApplications.length>0) {
       const student = await getUserById(pendingApplications[0].data().studentId);
-      const thesisR = await getThesisWithId(id);
       const subject = "Thesis proposal cancelled";
-      const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesisR.title}" has been removed by the teacher ${thesisR.supervisor} and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;
+      const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed by the teacher ${thesis.thesis.supervisor} and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;
       await addDoc(mailRef, { to: "ADD YOUR EMAIL", subject: subject, text: text });
     }
 
