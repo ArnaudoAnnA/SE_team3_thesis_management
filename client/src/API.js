@@ -1577,6 +1577,46 @@ const acceptRejectSTR = async (id, accept) => {
   }
 };
 
+/**
+ * API to accept/reject a new thesis request, Used only for secretaries users.
+ * @param {int} id id of the thesis to update
+ * @param {object} thesisProposalData object containing the new data of the proposal
+ * @returns {{ status: code }} //return of the API if no errors occur
+ * @returns {{ status: code, error: err}} //return of the API if errors occur
+ * Possible values for status: [200 (ok),400 (bad request), 401 (unauthorized), 404 (non found), 500 (server error)]
+ */
+
+const updateProposal = async (id, thesisProposalData) => {
+  
+  if (!auth.currentUser) return { status: 401, err: "User not logged in" };
+  if (!(await isTeacher(auth.currentUser.email))) return { status: 401, err: "User is not a teacher" };
+  /*
+  if (!validateThesisProposalData(thesisProposalData)) {
+    console.log("Validation failed: proposal data doesnt comply with required structure");
+    return { status: 400, err: "Proposal data doesnt comply with required structure" };
+  }
+  */
+  try {
+    //Retrieve the thesis object with the given id using a query to firebase
+    const whereId = where("id", "==", Number(id));
+    const qThesis = query(thesisProposalsRef, whereId);
+    const thesisSnapshot = await getDocs(qThesis);
+    if (thesisSnapshot.empty) return { status: 404, err: "Thesis not found" };
+    const thesis = thesisSnapshot.docs[0].data();
+    
+    //save the ref to the document
+    const docRef =thesisSnapshot.docs[0].ref;
+
+    //Update the document with the new argument data
+    await updateDoc(docRef, thesisProposalData);
+
+    return { status: 200, id: docRef.id };
+  } catch (error) {
+    console.error("Error adding thesis proposal: ", error);
+    return { status: 500 }; // or handle the error accordingly
+  }
+};
+
 const API = {
   getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField,getTecher,
   changeVirtualDate, getVirtualDate,
@@ -1584,14 +1624,14 @@ const API = {
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplicationsForProfessor, getApplicationDetails, getCVOfApplication, acceptApplication, declineApplication,
   removeAllProposals, insertProposal, archiveThesis, deleteProposal,
   getApplicationsForStudent, getDegree,
-  getSTRlist, getSTRlistLength, insertSTR, predefinedSTRStructure, getSTRWithId, acceptRejectSTR
+  getSTRlist, getSTRlistLength, insertSTR, predefinedSTRStructure, getSTRWithId, acceptRejectSTR, updateProposal
 };
 
 
 export default API;
-/*
-console.log("Testing acceptRejectSTR");
-console.log(await acceptRejectSTR("0jhBCrUcQPheqHsY9NoH", false));
+
+console.log("Testing updateProposal");
+console.log(await updateProposal(99999, {title: "New title", description: "New description"}));
 
 /*
 console.log("Rejected:");
