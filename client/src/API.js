@@ -1213,18 +1213,18 @@ const deleteProposal = async (id) => {
 
     pendingApplications.forEach( async (snap) => {
       await updateDoc(snap.ref, { accepted: "Cancelled" });
-      //manda email allo user
+
+      // send an email to the user to notify the application has been cancelled
+      const student = await getUserById(snap.data().studentId);
+      const subject = "Thesis proposal cancelled";
+      const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed by the teacher ${thesis.thesis.supervisor} and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;
+      sendEmail(student.email, subject, text);
     })
     //console.log(pendingApplications.length + " pending fatte");
 
-    // sending a mail to the student to notify the application has been cancelled  
-    // TODO move in to the loop for pendingApplications and change the receiver email
+    // debug_purpose
     if (pendingApplications.length>0) {
-      sendEmail(["chndavide@gmail.com", "salvoacquaviva99@gmail.com"], "Delete proposal", "Your proposal has been deleted")
-      // const student = await getUserById(pendingApplications[0].data().studentId);
-      // const subject = "Thesis proposal cancelled";
-      // const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed by the teacher ${thesis.thesis.supervisor} and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;
-      // await addDoc(mailRef, { to: "ADD YOUR EMAIL", subject: subject, text: text });
+      sendEmail("chndavide@gmail.com", "Thesis proposal cancelled", `Dear Davide Chen,\n\n We regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed by the teacher ${thesis.thesis.supervisor} and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`)
     }
 
 
@@ -1611,9 +1611,8 @@ const acceptRejectSTR = async (id, accept) => {
     const res = await getSTRWithId(id);
     if (!res.error) {
 
-      //If the try to accept an accepted request/reject a rejected request, return error
-      if (res.STR.approved && accept) return {status:400, error: "Thesis request already accepted"};
-      if (!res.STR.approved && !accept) return {status:400, error: "Thesis request already rejected"};
+      //If the user tries to accept/reject an accepted/rejected request, return error
+      if (res.STR.approved !== null ) return {status: 400, error: "Thesis request already accepted/rejected"}
 
       //If accepted, update the acceptanceDate field with the current date, otherwise leave it null
       if (accept){
