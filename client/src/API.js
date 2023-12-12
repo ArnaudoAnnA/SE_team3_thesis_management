@@ -1219,10 +1219,11 @@ const deleteProposal = async (id) => {
     // sending a mail to the student to notify the application has been cancelled  
     // TODO move in to the loop for pendingApplications and change the receiver email
     if (pendingApplications.length>0) {
-      const student = await getUserById(pendingApplications[0].data().studentId);
-      const subject = "Thesis proposal cancelled";
-      const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed by the teacher ${thesis.thesis.supervisor} and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;
-      await addDoc(mailRef, { to: "ADD YOUR EMAIL", subject: subject, text: text });
+      sendEmail(["chndavide@gmail.com", "salvoacquaviva99@gmail.com"], "Delete proposal", "Your proposal has been deleted")
+      // const student = await getUserById(pendingApplications[0].data().studentId);
+      // const subject = "Thesis proposal cancelled";
+      // const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed by the teacher ${thesis.thesis.supervisor} and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;
+      // await addDoc(mailRef, { to: "ADD YOUR EMAIL", subject: subject, text: text });
     }
 
 
