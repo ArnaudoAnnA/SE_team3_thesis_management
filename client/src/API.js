@@ -1378,7 +1378,7 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) =>
         let teacher = teachers.find(
           (teacher) => teacher.id == proposal.teacherId
         );
-        proposal.supervisor = [teacher.id, teacher.name + " " + teacher.surname];
+        proposal.supervisor = teacher.id + " - - " + teacher.name + " " + teacher.surname;
         proposals.push(proposal);
       });
       return { status: 200, STRlist: proposals };
