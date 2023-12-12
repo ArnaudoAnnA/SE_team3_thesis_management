@@ -607,7 +607,8 @@ const addApplication = async (application, teacher) => {
     let fileRef
     if (application.curriculum) {
       fileRef = ref(storage, StringUtils.createApplicationPath(storageCurriculums, application.studentId, application.thesisId, application.curriculum.name))
-      await uploadBytes(fileRef, application.file)
+      // console.log(application.file)
+      await uploadBytes(fileRef, application.curriculum)
     }
 
     console.log(application.parse(fileRef ? fileRef.fullPath : null))
