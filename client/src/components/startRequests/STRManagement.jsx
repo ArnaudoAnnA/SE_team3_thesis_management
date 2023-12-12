@@ -84,29 +84,39 @@ function STRManagement(props) {
     });
   };
 
-  // const sendToProfessor = () => {
-  //   API.()
-  //     .then(() => {
-  //        successAlert("send");
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error in STRManagement/xxx_API:", error);
-  //       errorAlert("send");
-  //     });
-  // };
+  const sendToProfessor = () => {
+    API.acceptRejectSTR(id, true)
+      .then((res) => {
+          if (!res.error) {
+            successAlert("send");
+          } else {
+            console.error("Error in STRManagement/acceptRejectSTR_API:", res.error);
+            errorAlert("send");
+          }
+      })
+      .catch((error) => {
+        console.error("Error in STRManagement/acceptRejectSTR_API:", error);
+        errorAlert("send");
+      });
+  };
 
 
-  // const declineProposal = () => {
+  const declineProposal = () => {
 
-  //   API.()
-  //     .then(() => {
-  //         successAlert("decline");
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error in STRManagement/xxx_API:", error);
-  //       errorAlert("decline");
-  //     });
-  // };
+    API.acceptRejectSTR(id, false)
+      .then((res) => {
+          if (!res.error) {
+            successAlert("decline");
+          } else {
+            console.error("Error in STRManagement/acceptRejectSTR_API:", res.error);
+            errorAlert("decline");
+          }
+      })
+      .catch((error) => {
+        console.error("Error in STRManagement/acceptRejectSTR_API:", error);
+        errorAlert("decline");
+      });
+  };
 
   useEffect(() => {
     API.getSTRWithId(id)

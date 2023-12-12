@@ -5,7 +5,7 @@ const thesisRequests = [
         "approved": true,
         "title": "Instrumenting Kubernetes 5G services with eBPF probes and other beautiful things",
         "description": "Description for Thesis Request 1",
-        "programmes": "Master of Design in Graphic Design",
+        "programmes": "Design in Graphic Design",
         "level": "master",
         "id": 0,
         "studentId": "s345678",
@@ -23,7 +23,7 @@ const thesisRequests = [
         "studentId": "s345678",
         "teacherId": "d123456",
         "description": "Description for Thesis Request 2",
-        "programmes": "Master of Engineering in Civil Engineering",
+        "programmes": "Engineering in Civil Engineering",
         "title": "Sviluppo e containerizzazione di microservizi di monitoraggio e analisi dei consumi energetici su cluster Kubernetes",
         "id": 1,
 
@@ -38,7 +38,7 @@ const thesisRequests = [
         "teacherId": "d234567",
         "title": "Endless scalability of CPU-hungry applications across multiple federated clusters (Liqo/Aruba)",
         "type": "academic research",
-        "programmes": "Bachelor of Engineering in Electrical Engineering",
+        "programmes": "Engineering in Electrical Engineering",
         "notes": "Additional notes for Thesis Request 1",
         "id": 2
     },
@@ -54,7 +54,7 @@ const thesisRequests = [
         "studentId": "s890123",
         "teacherId": "d234567",
         "title": "Formal Verification of Safety-Critical Software Systems Using Model Checking Techniques",
-        "programmes": "Bachelor of Architecture",
+        "programmes": "Architecture",
     },
     {
         "requestDate": "2023-12-06",
@@ -68,14 +68,14 @@ const thesisRequests = [
         "type": "stage",
         "notes": "Additional notes for Thesis Request 1",
         "title": "Automatic and Optimal Configuration of Secure Communications in Virtualized Networks",
-        "programmes": "Master of Design in Graphic Design",
+        "programmes": "Design in Graphic Design",
     },
     {
         "requestDate": "2023-12-06",
         "approvalDate": "2023-12-31",
         "approved": true,
         "description": "Description for Thesis Request 2",
-        "programmes": "Master of Engineering in Civil Engineering",
+        "programmes": "Engineering in Civil Engineering",
         "notes": "Additional notes for Thesis Request 2",
         "title": "Utilizing Machine Learning Techniques for Predictive Maintenance of Metallurgical Equipment",
         "level": "master",
@@ -95,7 +95,7 @@ const thesisRequests = [
         "id": 6,
         "title": "Enhancing Software Quality Through Automated Testing and Continuous Integration",
         "notes": "Additional notes for Thesis Request 1",
-        "programmes": "Bachelor of Engineering in Electrical Engineering",
+        "programmes": "Engineering in Electrical Engineering",
         "type": "academic research"
     },
     {
@@ -103,7 +103,7 @@ const thesisRequests = [
         "approvalDate": "2023-12-31",
         "approved": true,
         "description": "Description for Thesis Request 2",
-        "programmes": "Bachelor of Architecture",
+        "programmes": "Architecture",
         "studentId": "s789012",
         "teacherId": "d456789",
         "title": "Definizione dell’infrastruttura di comunicazione e computing per l’operatività di droni/rover su Marte (POLITO/PIC4SER)",
@@ -123,7 +123,7 @@ const thesisRequests = [
         "teacherId": "d567890",
         "level": "bachelor",
         "description": "Description for Thesis Request 1",
-        "programmes": "Bachelor of Engineering in Electrical Engineering",
+        "programmes": "Engineering in Electrical Engineering",
         "notes": "Additional notes for Thesis Request 1",
     },
     {
@@ -135,7 +135,7 @@ const thesisRequests = [
         "id": 9,
         "type": "stage",
         "notes": "Additional notes for Thesis Request 2",
-        "programmes": "Bachelor of Engineering in Electrical Engineering",
+        "programmes": "Engineering in Electrical Engineering",
         "title": "Formal Methods for Software Specification and Verification: Ensuring System Correctness and Reliability",
         "studentId": "s012345",
         "teacherId": "d567890",
@@ -149,7 +149,7 @@ const thesisRequests = [
         "notes": "",
         "description": "Tesi in azienda",
         "type": "Stage",
-        "programmes": "Bachelor of Architecture",
+        "programmes": "Architecture",
         "studentId": "s012345",
         "teacherId": "d345678",
         "level": "bachelor"
@@ -164,7 +164,7 @@ const thesisRequests = [
         "teacherId": "d567890",
         "title": "Optimizing Deep Learning Models for Edge Devices",
         "type": "academic research",
-        "programmes": "Bachelor of Engineering in Electrical Engineering",
+        "programmes": "Engineering in Electrical Engineering",
         "notes": "Additional notes for Thesis Request 2",
         "id": 26
     },
@@ -178,7 +178,7 @@ const thesisRequests = [
         "teacherId": "d345678",
         "title": "Autonomous Robot Navigation using Machine Learning",
         "type": "academic research",
-        "programmes": "Bachelor of Engineering in Electrical Engineering",
+        "programmes": "Engineering in Electrical Engineering",
         "notes": "Additional notes for Thesis Request 3",
         "id": 27
     },
@@ -192,7 +192,7 @@ const thesisRequests = [
         "teacherId": "d234567",
         "title": "Enhancing Network Security with Blockchain",
         "type": "academic research",
-        "programmes": "Bachelor of Engineering in Electrical Engineering",
+        "programmes": "Engineering in Electrical Engineering",
         "notes": "Additional notes for Thesis Request 4",
         "id": 28
     },
@@ -206,7 +206,7 @@ const thesisRequests = [
         "teacherId": "d456789",
         "title": "Scalable Cloud Solutions for Web Applications",
         "type": "academic research",
-        "programmes": "Bachelor of Engineering in Electrical Engineering",
+        "programmes": "Engineering in Electrical Engineering",
         "notes": "Additional notes for Thesis Request 5",
         "id": 29
     }

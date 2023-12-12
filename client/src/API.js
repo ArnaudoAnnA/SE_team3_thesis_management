@@ -59,6 +59,17 @@ const storageCurriculums = "curriculums/"
 /*--------------- Utils APIs -------------------------- */
 
 /**
+ * Return if the user is a secretary
+ * @param email the email of the user
+ * @return true if the user is a secretary, false otherwise
+ */
+const isSecretary = async (email) => {
+  const whereCond = where("email", "==", email)
+  const q = query(secretariesRef, whereCond)
+  const snapshot = await getDocs(q)
+  return snapshot.docs[0] ? true : false
+}
+/**
  * Return if the user is a teacher
  * @param email the email of the user
  * @return true if the user is a teacher, false otherwise
@@ -1441,9 +1452,9 @@ function validateSTRData(STRData)
   }
 
   //null values validation
-  const keys = Object.keys(data);
+  const keys = Object.keys(STRData);
   for (const key of keys) {
-    if ((key !== 'notes' || key != 'acceptanceDate') && data[key] === null) {
+    if ((key !== 'notes' || key != 'acceptanceDate') && STRData[key] === null) {
       console.log("part3")
       return false;
     }
@@ -1471,10 +1482,10 @@ const insertSTR = async (STRData) => {
   
   if (!(await isStudent(auth.currentUser.email))) return { status: 401, err: "User is not a student" };
 
-  STRData.studentId = user.id;
+  /*STRData.studentId = user.id;
   STRData.acceptanceDate = "";
   STRData.requestDate = dayjs.format("YYYY/MM/DD");
-  STRData.approved = false;
+  STRData.approved = false;*/
 
 
   if (!validateSTRData(STRData)) {
@@ -1503,7 +1514,7 @@ const insertSTR = async (STRData) => {
 
 const getSTRWithId = async (id) => {
   if (!auth.currentUser) return { status: 401, error: "User not logged in" };
-  //TO DO: Check if the user is a secretary
+  if(!isSecretary(auth.currentUser.email)) return { status: 401, error: "User is not a secretary" };
 
   //QUERY CONDITIONS
   const whereCond1 = where("id", "==", Number(id))
@@ -1540,6 +1551,29 @@ const getSTRWithId = async (id) => {
 }
 
 /**
+ * Get the snapshot of the STR by the STR id
+ * @param {string} id id of the STR
+ * @returns {{ status: code, snapshot: snapshot}} //if no errors occur
+ * @returns {{ status: code, error: err}} //if errors occur
+ * Possible values for status: [200 (ok), 401 (unauthorized), 404 (non found), 500 (server error)]
+ */
+const getSnapshotSTR = async (id) => {
+  if (!auth.currentUser) return { status: 401, error: "User not logged in" };
+
+  const whereSTRId = where("id", "==", Number(id));
+
+  const qSTR = query(thesisRequestsRef, whereSTRId);
+  try {
+    const STRSnapshot = await getDocs(qSTR);
+    if (STRSnapshot.empty) return { status: 404, error: `No STR found`};
+    return { status: 200, snapshot: STRSnapshot.docs[0]};
+  } catch (error) {
+    return { status: 500, error: `Error in calling Firebase: ${error}`};
+  }
+
+}
+
+/**
  * API to accept/reject a new thesis request, Used only for secretaries users.
  * @param {string} id id of the thesis to accept/reject
  * @param {boolean} accept true to accept, false to reject
@@ -1551,30 +1585,31 @@ const getSTRWithId = async (id) => {
 const acceptRejectSTR = async (id, accept) => {
 
   //check if the if the user is logged
-  //if (!auth.currentUser) return { status: 401, error: "User not logged in" };
+  if (!auth.currentUser) return { status: 401, error: "User not logged in" };
 
   //check if the user is a secretary
-  //TO DO: Check if the user is a secretary. Secretaries table in DB?? RETURN 401
+  if(!isSecretary(auth.currentUser.email)) return { status: 401, error: "User is not a secretary" };
 
   try {
-    //We define the document to update and get it from the DB
-    const STRdoc = doc(db, "thesisRequests", id);
-    const STRSnapshot = await getDoc(STRdoc);
-    if (!STRSnapshot.empty) {
-      const STR = STRSnapshot.data();
+    const res = await getSTRWithId(id);
+    if (!res.error) {
 
       //If the try to accept an accepted request/reject a rejected request, return error
-      if (STR.approved && accept) return {status:400, error: "Thesis request already accepted"};
-      if (!STR.approved && !accept) return {status:400, error: "Thesis request already rejected"};
+      if (res.STR.approved && accept) return {status:400, error: "Thesis request already accepted"};
+      if (!res.STR.approved && !accept) return {status:400, error: "Thesis request already rejected"};
 
       //If accepted, update the acceptanceDate field with the current date, otherwise leave it null
       if (accept){
-        STR.approvalDate = await getVirtualDate();
-      } else { STR.approvalDate = null; }
+        res.STR.approvalDate = await getVirtualDate();
+      } else { 
+        res.STR.approvalDate = null; 
+      }
       
-      STR.approved = accept;
+      res.STR.approved = accept;
+
+      const STRSnapshot = await getSnapshotSTR(id);
       //update the document with the acceptance/rejection
-      await updateDoc(STRdoc, STR);
+      await updateDoc(STRSnapshot.snapshot.ref, res.STR);
       return {status:200} //OK
     } else {
       console.log("Thesis request not found");
@@ -1586,6 +1621,46 @@ const acceptRejectSTR = async (id, accept) => {
   }
 };
 
+/**
+ * API to accept/reject a new thesis request, Used only for secretaries users.
+ * @param {int} id id of the thesis to update
+ * @param {object} thesisProposalData object containing the new data of the proposal
+ * @returns {{ status: code }} //return of the API if no errors occur
+ * @returns {{ status: code, error: err}} //return of the API if errors occur
+ * Possible values for status: [200 (ok),400 (bad request), 401 (unauthorized), 404 (non found), 500 (server error)]
+ */
+
+const updateProposal = async (id, thesisProposalData) => {
+  
+  if (!auth.currentUser) return { status: 401, err: "User not logged in" };
+  if (!(await isTeacher(auth.currentUser.email))) return { status: 401, err: "User is not a teacher" };
+  /*
+  if (!validateThesisProposalData(thesisProposalData)) {
+    console.log("Validation failed: proposal data doesnt comply with required structure");
+    return { status: 400, err: "Proposal data doesnt comply with required structure" };
+  }
+  */
+  try {
+    //Retrieve the thesis object with the given id using a query to firebase
+    const whereId = where("id", "==", Number(id));
+    const qThesis = query(thesisProposalsRef, whereId);
+    const thesisSnapshot = await getDocs(qThesis);
+    if (thesisSnapshot.empty) return { status: 404, err: "Thesis not found" };
+    const thesis = thesisSnapshot.docs[0].data();
+    
+    //save the ref to the document
+    const docRef =thesisSnapshot.docs[0].ref;
+
+    //Update the document with the new argument data
+    await updateDoc(docRef, thesisProposalData);
+
+    return { status: 200, id: docRef.id };
+  } catch (error) {
+    console.error("Error adding thesis proposal: ", error);
+    return { status: 500 }; // or handle the error accordingly
+  }
+};
+
 const API = {
   getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField,getTecher,
   changeVirtualDate, getVirtualDate,
@@ -1593,16 +1668,16 @@ const API = {
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplicationsForProfessor, getApplicationDetails, getCVOfApplication, acceptApplication, declineApplication,
   removeAllProposals, insertProposal, archiveThesis, deleteProposal,
   getApplicationsForStudent, getDegree,
-  getSTRlist, getSTRlistLength, insertSTR, predefinedSTRStructure, getSTRWithId, acceptRejectSTR
+  getSTRlist, getSTRlistLength, insertSTR, predefinedSTRStructure, getSTRWithId, acceptRejectSTR, updateProposal
 };
 
 
 export default API;
-/*
-console.log("Testing acceptRejectSTR");
-console.log(await acceptRejectSTR("0jhBCrUcQPheqHsY9NoH", false));
 
 /*
+console.log("Testing isSecretary");
+console.log(await updateProposal(99999, {title: "New title", description: "New description"}));
+
 console.log("Rejected:");
 await getApplicationsByState("Rejected", "s901234"); //3
 
