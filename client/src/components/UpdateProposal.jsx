@@ -39,10 +39,10 @@ function UpdateProposal(props) {
     navigate("/");
   };
   
-  const errorAlert = () => {
+  const errorAlert = (e) => {
     Swal.fire({  
       title: 'Error!',  
-      text: 'Something happened.',
+      text: e,
       icon: 'error'
     });
     return false;
@@ -294,8 +294,14 @@ function UpdateProposal(props) {
       if (title && degree && description && knowledge && level && pname !== '') {
 
         API.updateProposal(id,predefinedProposalStructure)
-            .then(successAlert) 
-            .catch(errorAlert)
+        .then((res) => {
+          if(!res.error) {
+            successAlert();
+          } else {
+            errorAlert(res.error);
+          }
+        })
+        .catch((e)=> errorAlert(e));
   
       }
 
