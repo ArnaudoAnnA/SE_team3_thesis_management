@@ -70,8 +70,11 @@ function ApplyForm(props) {
         
     }
     async function fetchThesisDetails(){
+        // console.log("fetching thesis details")
         API.getTitleAndTeacher(id)
         .then((result) => {
+            console.log(result)
+            // console.log(result.teacher)
             setTitle(result.title);
             setTeacher(result.teacher);
         })
@@ -100,8 +103,12 @@ function ApplyForm(props) {
         const application = new Application(null, user.id, Number(id), null, file, props.virtualDate, teacher.id, title);
         console.log(application)
         
-        API.addApplication(application)
-            .then(() => successAlert())
+        API.addApplication(application, teacher)
+            .then(() => {
+                // console.log(teacher)
+                // API.sendEmail([teacher.email], "New Application", "A new student applied to your thesis")
+                successAlert()
+            })
             .catch((e) => errorAlert(e))
     }
     

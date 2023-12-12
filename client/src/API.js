@@ -596,7 +596,7 @@ const getThesisWithId = async (ID) => {
  * @param application the application object (look model/Application)
  * @return null
  */
-const addApplication = async (application) => {
+const addApplication = async (application, teacher) => {
   
   if (!auth.currentUser) return CONSTANTS.notLogged;
 
@@ -612,6 +612,10 @@ const addApplication = async (application) => {
 
     console.log(application.parse(fileRef ? fileRef.fullPath : null))
     addDoc(applicationsRef, application.parse(fileRef ? fileRef.fullPath : null)).then(doc => {
+      sendEmail(teacher.email, 
+        CONSTANTS.newApplication.title,
+        CONSTANTS.newApplication.message
+      )
       console.log("Added application with id:" + doc.id)
       return "Application sent"
     })
@@ -714,15 +718,11 @@ const getTitleAndTeacher = async (thesisId) => {
     const qTeacher = query(teachersRef, whereTheacherId)
     const teacherSnapshot = await getDocs(qTeacher)
     const teacher = teacherSnapshot.docs[0].data()
-
-    return {
+    const obj = {
       title: thesis.title,
-      teacher: {
-        name: teacher.name,
-        surname: teacher.surname,
-        id: teacher.id
-      }
+      teacher: new Teacher(teacher.id, teacher.surname, teacher.name, teacher.email, teacher.cod_group, teacher.cod_department)
     }
+    return obj
 
   } catch (e) {
     console.log(e)
@@ -1661,6 +1661,23 @@ const updateProposal = async (id, thesisProposalData) => {
   }
 };
 
+
+const sendEmail = async (to, subject, text) => {
+  if(!auth.currentUser) return MessageUtils.createMessage(401, "error", "User not logged in")
+  const email = MessageUtils.createEmail(to, subject, text);
+  console.log(email);
+  try {
+    const docRef = await addDoc(mailRef, email);
+    console.log("Email added with ID: ", docRef.id);
+    return MessageUtils.createMessage(200, "id", docRef.id);
+  } catch (error) {
+    console.error("Error adding email: ", error);
+    return MessageUtils.createMessage(500, "error", error);
+  }
+
+}
+
+
 const API = {
   getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField,getTecher,
   changeVirtualDate, getVirtualDate,
@@ -1669,6 +1686,7 @@ const API = {
   removeAllProposals, insertProposal, archiveThesis, deleteProposal,
   getApplicationsForStudent, getDegree,
   getSTRlist, getSTRlistLength, insertSTR, predefinedSTRStructure, getSTRWithId, acceptRejectSTR, updateProposal
+  , sendEmail
 };
 
 
