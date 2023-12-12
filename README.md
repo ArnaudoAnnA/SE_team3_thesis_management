@@ -17,6 +17,7 @@ To add other users, go in firebase -> authentication -> users -> add user
 | email | password | type | 
 | :--- | :--- | :--- |
 | d345678@polito.it | p6bTzUftxNHG5y | professor |
+| d234567@polito.it | SHbw&A!vXji56s | professor |
 | s901234@studenti.polito.it | 7eNfF7Ssxvctd7 | student |
 | s123456@studenti.polito.it | %@xm6wQf2hkHXy | student |
 | u000001@polito.it          | PJNkzwt7V!&N6B | secretary |

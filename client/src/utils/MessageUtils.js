@@ -4,7 +4,18 @@ const createMessage = (status, fieldName, obj) => {
        [fieldName]: obj,
     }
 }
+
+const createEmail = (receivers, subject, body) => {
+    return {
+        "to": receivers,
+        "message": {
+            "subject": subject,
+            "text": body
+        }
+    }
+}
 const MessageUtils = {
-    createMessage
+    createMessage,
+    createEmail
 }
 export default MessageUtils;

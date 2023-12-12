@@ -596,7 +596,7 @@ const getThesisWithId = async (ID) => {
  * @param application the application object (look model/Application)
  * @return null
  */
-const addApplication = async (application) => {
+const addApplication = async (application, teacher) => {
   
   if (!auth.currentUser) return CONSTANTS.notLogged;
 
@@ -607,11 +607,16 @@ const addApplication = async (application) => {
     let fileRef
     if (application.curriculum) {
       fileRef = ref(storage, StringUtils.createApplicationPath(storageCurriculums, application.studentId, application.thesisId, application.curriculum.name))
-      await uploadBytes(fileRef, application.file)
+      // console.log(application.file)
+      await uploadBytes(fileRef, application.curriculum)
     }
 
     console.log(application.parse(fileRef ? fileRef.fullPath : null))
     addDoc(applicationsRef, application.parse(fileRef ? fileRef.fullPath : null)).then(doc => {
+      sendEmail(teacher.email, 
+        CONSTANTS.newApplication.title,
+        CONSTANTS.newApplication.message
+      )
       console.log("Added application with id:" + doc.id)
       return "Application sent"
     })
@@ -714,15 +719,11 @@ const getTitleAndTeacher = async (thesisId) => {
     const qTeacher = query(teachersRef, whereTheacherId)
     const teacherSnapshot = await getDocs(qTeacher)
     const teacher = teacherSnapshot.docs[0].data()
-
-    return {
+    const obj = {
       title: thesis.title,
-      teacher: {
-        name: teacher.name,
-        surname: teacher.surname,
-        id: teacher.id
-      }
+      teacher: new Teacher(teacher.id, teacher.surname, teacher.name, teacher.email, teacher.cod_group, teacher.cod_department)
     }
+    return obj
 
   } catch (e) {
     console.log(e)
@@ -1212,17 +1213,18 @@ const deleteProposal = async (id) => {
 
     pendingApplications.forEach( async (snap) => {
       await updateDoc(snap.ref, { accepted: "Cancelled" });
-      //manda email allo user
+
+      // send an email to the user to notify the application has been cancelled
+      const student = await getUserById(snap.data().studentId);
+      const subject = "Thesis proposal cancelled";
+      const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed by the teacher ${thesis.thesis.supervisor} and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;
+      sendEmail(student.email, subject, text);
     })
     //console.log(pendingApplications.length + " pending fatte");
 
-    // sending a mail to the student to notify the application has been cancelled  
-    // TODO move in to the loop for pendingApplications and change the receiver email
+    // debug_purpose
     if (pendingApplications.length>0) {
-      const student = await getUserById(pendingApplications[0].data().studentId);
-      const subject = "Thesis proposal cancelled";
-      const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed by the teacher ${thesis.thesis.supervisor} and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;
-      await addDoc(mailRef, { to: "ADD YOUR EMAIL", subject: subject, text: text });
+      sendEmail("chndavide@gmail.com", "Thesis proposal cancelled", `Dear Davide Chen,\n\n We regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed by the teacher ${thesis.thesis.supervisor} and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`)
     }
 
 
@@ -1552,7 +1554,7 @@ const getSTRWithId = async (id) => {
       let students = studentsSnap.docs.map(doc => doc.data());
       let student = students.find(t => t.id == STR.studentId);
       if (!student) return MessageUtils.createMessage(404, "error", "No student found");
-      STR.student = student.name + ' ' + student.surname;
+      STR.student = student.name + ' ' + student.surname + ', ' + student.id;
 
       return {status:200, STR: STR}
     } else {
@@ -1609,9 +1611,8 @@ const acceptRejectSTR = async (id, accept) => {
     const res = await getSTRWithId(id);
     if (!res.error) {
 
-      //If the try to accept an accepted request/reject a rejected request, return error
-      if (res.STR.approved && accept) return {status:400, error: "Thesis request already accepted"};
-      if (!res.STR.approved && !accept) return {status:400, error: "Thesis request already rejected"};
+      //If the user tries to accept/reject an accepted/rejected request, return error
+      if (res.STR.approved !== null ) return {status: 400, error: "Thesis request already accepted/rejected"}
 
       //If accepted, update the acceptanceDate field with the current date, otherwise leave it null
       if (accept){
@@ -1676,6 +1677,23 @@ const updateProposal = async (id, thesisProposalData) => {
   }
 };
 
+
+const sendEmail = async (to, subject, text) => {
+  if(!auth.currentUser) return MessageUtils.createMessage(401, "error", "User not logged in")
+  const email = MessageUtils.createEmail(to, subject, text);
+  console.log(email);
+  try {
+    const docRef = await addDoc(mailRef, email);
+    console.log("Email added with ID: ", docRef.id);
+    return MessageUtils.createMessage(200, "id", docRef.id);
+  } catch (error) {
+    console.error("Error adding email: ", error);
+    return MessageUtils.createMessage(500, "error", error);
+  }
+
+}
+
+
 const API = {
   getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField,getTecher,
   changeVirtualDate, getVirtualDate,
@@ -1684,6 +1702,7 @@ const API = {
   removeAllProposals, insertProposal, archiveThesis, deleteProposal,
   getApplicationsForStudent, getDegree,
   getSTRlist, getSTRlistLength, insertSTR, predefinedSTRStructure, getSTRWithId, acceptRejectSTR, updateProposal
+  , sendEmail
 };
 
 

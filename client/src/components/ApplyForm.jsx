@@ -70,8 +70,11 @@ function ApplyForm(props) {
         
     }
     async function fetchThesisDetails(){
+        // console.log("fetching thesis details")
         API.getTitleAndTeacher(id)
         .then((result) => {
+            console.log(result)
+            // console.log(result.teacher)
             setTitle(result.title);
             setTeacher(result.teacher);
         })
@@ -100,8 +103,12 @@ function ApplyForm(props) {
         const application = new Application(null, user.id, Number(id), null, file, props.virtualDate, teacher.id, title);
         console.log(application)
         
-        API.addApplication(application)
-            .then(() => successAlert())
+        API.addApplication(application, teacher)
+            .then(() => {
+                // console.log(teacher)
+                // API.sendEmail([teacher.email], "New Application", "A new student applied to your thesis")
+                successAlert()
+            })
             .catch((e) => errorAlert(e))
     }
     
@@ -110,8 +117,11 @@ function ApplyForm(props) {
 
   const handleOnChangeFile = (files) => {
     if (files.length===1) {
-        if (files[0].name.endsWith("pdf") || files[0].name.endsWith("doc") || files[0].name.endsWith("docx"))
+        if (files[0].name.endsWith("pdf") || files[0].name.endsWith("doc") || files[0].name.endsWith("docx")){
+            // console.log(files[0])
             setFile(files[0]);
+        }
+        
         else
             setErrorMsg("We're sorry, but the file format you uploaded is not supported. Please make sure to upload the file in the correct format (.pdf, .doc, .docx)");
     } else 
