@@ -966,11 +966,8 @@ const titleAlreadyExist = async (thesis, mode, thesisId) => {
     thesisExists = thesisList.filter(t => t.id !== Number(thesisId)).find(t => t.title === thesis.title);
   }
 
-  if (thesisExists) {
-    return true;
-  } else {
-    return false;
-  }
+  if (thesisExists) return true;
+  return false;
 }
 
 const validateThesisProposalData = (thesisProposalData) => {
@@ -1038,7 +1035,7 @@ const insertProposal = async (thesisProposalData) => {
       return { status: 400, error: "A thesis with this title already exists" };
     } else {
       //first we get the groups from the teacher and the supervisors
-      var groupsAux = [];
+      let groupsAux = [];
       const userGroups = await getGroupsById(thesisProposalData.teacherId);
       groupsAux.push(userGroups);
 
@@ -1116,9 +1113,29 @@ const getTecher = async () => {
 };
 
 /**
+ * Get the snapshot of the thesis by the thesis id
+ * @param {string} id id of the thesis
+ * Possible values for status: [200 (ok), 401 (unauthorized), 404 (non found), 500 (server error)]
+ */
+async function getSnapshotThesis(id) {
+  if (!auth.currentUser) return { status: 401, error: "User not logged in" };
+
+  const whereThesisId = where("id", "==", Number(id));
+
+  const qThesis = query(thesisProposalsRef, whereThesisId);
+  try {
+    let thesisSnapshot = await getDocs(qThesis);
+    if (thesisSnapshot.empty) return { status: 404, error: `No thesis found`};
+    return { status: 200, snapshot: thesisSnapshot.docs[0]};
+  } catch (error) {
+    return { status: 500, error: `Error in calling Firebase: ${error}`};
+  }
+
+}
+
+/**
  * Accept an application and decline all the others for the same thesis
  * @param {string} applicationId id of the accepted application
- * @returns {{ status: code }}
  * Possible values for status: [200 (ok), 400 (bad request), 401 (unauthorized), 404 (not found), 500 (server error)]
  */
 
@@ -1141,7 +1158,7 @@ const acceptApplication = async (applicationId) => {
       }
     });
     // archive the thesis
-    const thesisSnapshot = await getSnapshotThesis(application.thesisId);
+    let thesisSnapshot = await getSnapshotThesis(application.thesisId);
     await updateDoc(thesisSnapshot.snapshot.ref, { archiveDate: await getVirtualDate() });
     return { status: 200 };
   } catch (error) {
@@ -1153,7 +1170,6 @@ const acceptApplication = async (applicationId) => {
 /**
  * Decline an application
  * @param {string} applicationId id of the declined application
- * @returns {{ status: code }}
  * Possible values for status: [200 (ok), 400 (bad request), 401 (unauthorized), 404 (not found), 500 (server error)]
  */
 const declineApplication = async (applicationId) => {
@@ -1254,30 +1270,6 @@ const deleteProposal = async (id) => {
     const snapshotThesis = await getSnapshotThesis(id);
     await deleteDoc(snapshotThesis.snapshot.ref);
     return { status: 200 };
-  } catch (error) {
-    return { status: 500, error: `Error in calling Firebase: ${error}`};
-  }
-
-}
-
-
-/**
- * Get the snapshot of the thesis by the thesis id
- * @param {string} id id of the thesis
- * @returns {{ status: code, snapshot: snapshot}} //if no errors occur
- * @returns {{ status: code, error: err}} //if errors occur
- * Possible values for status: [200 (ok), 401 (unauthorized), 404 (non found), 500 (server error)]
- */
-const getSnapshotThesis = async (id) => {
-  if (!auth.currentUser) return { status: 401, error: "User not logged in" };
-
-  const whereThesisId = where("id", "==", Number(id));
-
-  const qThesis = query(thesisProposalsRef, whereThesisId);
-  try {
-    const thesisSnapshot = await getDocs(qThesis);
-    if (thesisSnapshot.empty) return { status: 404, error: `No thesis found`};
-    return { status: 200, snapshot: thesisSnapshot.docs[0]};
   } catch (error) {
     return { status: 500, error: `Error in calling Firebase: ${error}`};
   }

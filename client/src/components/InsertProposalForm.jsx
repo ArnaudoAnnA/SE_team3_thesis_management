@@ -20,7 +20,7 @@ import { userContext } from './Utils';
 
 function InsertProposalForm(props) {
 
-  var mailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/; // Verify email
+  let mailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/; // Verify email
   const user = useContext(userContext);
   const navigate = useNavigate();
   const types = [
@@ -177,7 +177,7 @@ function InsertProposalForm(props) {
   const handleSubmit = (event) => {
 
     event.preventDefault();
-    var nomeRegex = /^[A-Za-z]+$/; // The word must contains words
+    let nomeRegex = /^[A-Za-z]+$/; // The word must contains words
     if (title === '') {
 
       setErrorMsg('Check required fields!');
