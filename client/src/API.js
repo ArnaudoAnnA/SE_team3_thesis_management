@@ -954,6 +954,19 @@ const predefinedProposalStructure = {
   type: "",
 };
 
+const titleAlreadyExist = async (title) => {
+  if (!auth.currentUser) return { status: 401, err: "User not logged in" };
+
+  let thesisSnap = await getDocs(thesisProposalsRef);
+  let thesis = thesisSnap.docs.map(doc => doc.data());
+  let thesisExists = thesis.find(t => t.title === title);
+  if (thesisExists) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 const validateThesisProposalData = (thesisProposalData) => {
 
   //Validation that the proposal meets the structure requirements
@@ -1003,46 +1016,43 @@ const validateThesisProposalData = (thesisProposalData) => {
   type: "Type of thesis", // Replace with your type
 };*/
 
-
-
 const insertProposal = async (thesisProposalData) => {
-  console.log("Logged teacher = " + auth.currentUser.email);
+  //console.log("Logged teacher = " + auth.currentUser.email);
   if (!auth.currentUser) return { status: 401, err: "User not logged in" };
   if (!(await isTeacher(auth.currentUser.email))) return { status: 401, err: "User is not a teacher" };
 
   if (!validateThesisProposalData(thesisProposalData)) {
     console.log("Validation failed: proposal data doesnt comply with required structure");
-    return { status: 400, err: "Proposal data doesnt comply with required structure" };
-  }
-
-  //Check that the teachers id is an id inside the teachers table
-  if (!await isTeacherById(thesisProposalData.teacherId)) {
-    console.log("Validation failed: the proposed teacher is not present in our database");
-    return { status: 400, err: "The proposed teacher is not present in our database" };
+    return { status: 400, error: "Proposal data doesnt comply with required structure" };
   }
 
   try {
-    //first we get the groups from the teacher and the supervisors
-    var groupsAux = [];
-    const userGroups = await getGroupsById(thesisProposalData.teacherId);
-    groupsAux.push(userGroups);
 
-    for (const cs in thesisProposalData.coSupervisors) {
-      const g = await getGroups(thesisProposalData.coSupervisors[cs]);
-      if (g) { groupsAux.push(g) };
+    if (await titleAlreadyExist(thesisProposalData.title)) {
+      return { status: 400, error: "A thesis with this title already exists" };
+    } else {
+      //first we get the groups from the teacher and the supervisors
+      var groupsAux = [];
+      const userGroups = await getGroupsById(thesisProposalData.teacherId);
+      groupsAux.push(userGroups);
+
+      for (const cs in thesisProposalData.coSupervisors) {
+        const g = await getGroups(thesisProposalData.coSupervisors[cs]);
+        if (g) { groupsAux.push(g) };
+      }
+
+      console.log("Found groups: " + groupsAux);
+
+      //We update the thesisProposalData with the obtained groups and calculated id
+      thesisProposalData.groups = groupsAux;
+      thesisProposalData.id = await getNextThesisId();
+      const docRef = await addDoc(thesisProposalsRef, thesisProposalData);
+      console.log("Thesis proposal added with ID: ", docRef.id);
+      return { status: 200, id: docRef.id };
     }
-
-    console.log("Found groups: " + groupsAux);
-
-    //We update the thesisProposalData with the obtained groups and calculated id
-    thesisProposalData.groups = groupsAux;
-    thesisProposalData.id = await getNextThesisId();
-    const docRef = await addDoc(thesisProposalsRef, thesisProposalData);
-    console.log("Thesis proposal added with ID: ", docRef.id);
-    return { status: 200, id: docRef.id };
   } catch (error) {
     console.error("Error adding thesis proposal: ", error);
-    return { status: 500 }; // or handle the error accordingly
+    return { status: 500, error: error }; // or handle the error accordingly
   }
 };
 
@@ -1495,7 +1505,7 @@ function validateSTRData(STRData)
  */
 const insertSTR = async (STRData) => {
   if (!auth.currentUser) return { status: 401, err: "User not logged in" };
-  console.log("Logged user = " + auth.currentUser.email);
+  //console.log("Logged user = " + auth.currentUser.email);
   
   if (!(await isStudent(auth.currentUser.email))) return { status: 401, err: "User is not a student" };
 
@@ -1508,6 +1518,11 @@ const insertSTR = async (STRData) => {
   if (!validateSTRData(STRData)) {
     console.log("Validation failed: proposal data doesnt comply with required structure");
     return { status: 400, err: "Proposal data doesnt comply with required structure" };
+  }
+
+  //Check that the teachers id is an id inside the teachers table
+  if (!await isTeacherById(STRData.profId)) {
+    return { status: 400, err: "The proposed teacher is not present in our database" };
   }
   
 
