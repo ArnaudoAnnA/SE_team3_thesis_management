@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
-import { collection, addDoc, getFirestore, query, limit, getDocs, deleteDoc } from 'firebase/firestore';
-import { applications, degrees, students, careers, teachers, thesisProposals, date, thesisRequests } from './initial_data/_initialData.js';
+import { collection, addDoc, getFirestore, query, limit, getDocs, deleteDoc, doc, setDoc } from 'firebase/firestore';
+import { applications, degrees, students, careers, teachers, thesisProposals, date, thesisRequests, secretaries } from './initial_data/_initialData.js';
 import dayjs from 'dayjs';
 
 const firebaseConfig = {
@@ -31,12 +31,34 @@ async function populateCollection(db, jsonData, collectionName) {
   });
 }
 
+async function populateCollectionWithCustomId(db, jsonData, collectionName) {
+  console.log('Populating collection', collectionName)
+  return new Promise((resolve, reject) => {
+    insertDataWithCustomId(db, jsonData, collectionName, resolve).catch(reject);
+  });
+}
+
 async function insertData(db, jsonData, collectionName, resolve) {
   console.log('importing data to firestore...');
   const collectionRef = collection(db, collectionName);
   for (const item of jsonData) {
     addDoc(collectionRef, item).then((docRef) => {
       console.log(`Document written with ID: ${docRef.id}`);
+      resolve();
+    }).catch((error) => {
+      console.error(`Error adding document: ${error}`);
+    });
+  }
+}
+
+async function insertDataWithCustomId(db, jsonData, collectionName, resolve) {
+  console.log('importing data to firestore...');
+  const collectionRef = collection(db, collectionName);
+  for (const item of jsonData) {
+    console.log(item)
+    const newDoc = doc(db, collectionName, item.id)
+    setDoc(newDoc, item).then((docRef) => {
+      console.log(`Document written with ID: ${docRef}`);
       resolve();
     }).catch((error) => {
       console.error(`Error adding document: ${error}`);
@@ -73,6 +95,7 @@ await deleteCollection(db, "degrees");
 await deleteCollection(db, "teachers");
 await deleteCollection(db, "thesisProposals");
 await deleteCollection(db, "thesisRequests");
+await deleteCollection(db, "secretaries");
 
 // Import data to firestore
 await populateCollection(db, date, 'date');
@@ -83,6 +106,7 @@ await populateCollection(db, careers, 'career');
 await populateCollection(db, applications, 'applications');
 await populateCollection(db, thesisProposals, 'thesisProposals');
 await populateCollection(db, thesisRequests, 'thesisRequests');
+await populateCollectionWithCustomId(db, secretaries, 'secretaries');
 
 /* --------------------------------------------------------------------- */
 
