@@ -117,8 +117,11 @@ function ApplyForm(props) {
 
   const handleOnChangeFile = (files) => {
     if (files.length===1) {
-        if (files[0].name.endsWith("pdf") || files[0].name.endsWith("doc") || files[0].name.endsWith("docx"))
+        if (files[0].name.endsWith("pdf") || files[0].name.endsWith("doc") || files[0].name.endsWith("docx")){
+            // console.log(files[0])
             setFile(files[0]);
+        }
+        
         else
             setErrorMsg("We're sorry, but the file format you uploaded is not supported. Please make sure to upload the file in the correct format (.pdf, .doc, .docx)");
     } else 

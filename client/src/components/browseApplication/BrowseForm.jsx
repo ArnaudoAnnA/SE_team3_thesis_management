@@ -13,7 +13,7 @@ import { userContext } from '../Utils';
 
 function BrowseForm(props) {
   const [errorMsg, setErrorMsg] = useState('');
-  const [cvPath, setCvPath] = useState();
+  const [cvPath, setCvPath] = useState(null);
   const [cvUrl, setCvUrl] = useState()
   const [career, setCareer] = useState([]);
   const [title, setTitle] = useState('');
@@ -230,7 +230,9 @@ function BrowseForm(props) {
             )}
           </Container>
         </Row>
-        <Row>
+        {
+          cvPath &&
+          <Row>
           <Container className='d-flex  mt-1' style={{ width: '50%', height: '10%' }}>
 
             <Button variant="secondary" className="bg-grey-light hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center" onClick={() => { downloadCv() }}>
@@ -239,6 +241,8 @@ function BrowseForm(props) {
             </Button>
           </Container>
         </Row>
+        }
+        
         <Row>
           <Container className='d-flex justify-content-center mt-4' style={{ marginBottom: "3%" }}>
             {state == 'Pending' && (
