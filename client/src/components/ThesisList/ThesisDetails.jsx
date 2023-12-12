@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
-import { Button, Container, Dropdown, DropdownButton, Modal, Table, Col, Row } from "react-bootstrap";
+import { Alert, Button, Container, Dropdown, DropdownButton, Modal, Table, Col, Row, Spinner } from "react-bootstrap";
 import { useEffect, useState, useContext } from "react";
 import API from '../../API'
 import { Arrow90degLeft } from "react-bootstrap-icons";
@@ -27,6 +27,8 @@ function object_prop_to_td(key, value) {
 function ThesisDetails(props) {
     /*-------- COSTANTS --------------- */
     const { id } = useParams();
+
+    const STATES = {LOADING: "Loading...", ERROR: "Some error occoured...", READY: "ready"};
     const FIELDS = [
         { DBfield: "expirationDate", title: "Exipiration date" },
         { DBfield: "coSupervisors", title: "Co-supervisors" },
@@ -122,6 +124,7 @@ function ThesisDetails(props) {
     const [appliedTwice, setAppliedTwice] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [showArchiveModal, setShowArchiveModal] = useState(false);
+    const [state, setState] = useState(STATES.LOADING);
 
     /* ------ CONTEXTS ----------------- */
     const user = useContext(userContext);
@@ -137,8 +140,19 @@ function ThesisDetails(props) {
 
     useEffect(() => {
         API.getThesisWithId(id)
-            .then(t => setThesis(t))
-            .catch(); //TO DO: define error state
+            .then(t => {
+                            if (!t.error) {
+                                setThesis(t.thesis);
+                                setState(STATES.READY);  
+                            } else {
+                                console.log("Error in ThesisDetail/getThesisWithId:" + t.error);
+                                setState(STATES.ERROR);
+                            }        
+                        })
+            .catch(e => {
+                console.log("Error in ThesisDetail/getThesisWithId:" + e);
+                setState(STATES.ERROR);
+            });
 
         async function checkApplyTwice() {
             const app = await API.getApplication(user.id, id);
@@ -160,7 +174,7 @@ function ThesisDetails(props) {
 
     return <Container>
         {
-            thesis ? <>
+            state === STATES.READY ? <>
                 <Modal
                     show={showModal}
                     onHide={() => handleCloseModal()}
@@ -256,7 +270,9 @@ function ThesisDetails(props) {
                 }
 
             </>
-                : "" //TO DO: loading
+                : ( state===STATES.LOADING ? 
+                    <Spinner animation="border" role="status"/> : 
+                    <Alert style={{textDecoration: "underline"}}> Some errors occurred </Alert>)
         }
 
     </Container>;

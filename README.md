@@ -19,6 +19,7 @@ To add other users, go in firebase -> authentication -> users -> add user
 | d345678@polito.it | p6bTzUftxNHG5y | professor |
 | s901234@studenti.polito.it | 7eNfF7Ssxvctd7 | student |
 | s123456@studenti.polito.it | %@xm6wQf2hkHXy | student |
+| u000001@polito.it          | PJNkzwt7V!&N6B | secretary |
 
 ## Docker
 The project can be run in a docker container. To do so, first make sure the docker daemon is running, then run the following commands in the client folder:

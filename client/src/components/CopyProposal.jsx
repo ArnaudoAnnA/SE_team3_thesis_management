@@ -172,21 +172,22 @@ function CopyProposal(props) {
 
     API.getThesisWithId(id)
     .then((res) => {
-      console.log(res);
-      setTitle(res.title);
-      setDegree(res.type);
-      setDesc(res.description);
-      setKnowledge(res.requiredKnowledge);
-      setLevel(res.level);
-      setTags(res.keywords);
-      setEmailTags(res.coSupervisors);
-      setpName(res.programmes);
-      setSelectedDate(dayjs(res.expirationDate));
-      setNot(res.notes);
-
-
-    })
-    .catch(e => console.log("Error in CopyProposal/getApplicationDetails:" + e))
+      if (!res.error) {
+        console.log(res.thesis);
+        setTitle(res.thesis.title);
+        setDegree(res.thesis.type);
+        setDesc(res.thesis.description);
+        setKnowledge(res.thesis.requiredKnowledge);
+        setLevel(res.thesis.level);
+        setTags(res.thesis.keywords);
+        setEmailTags(res.thesis.coSupervisors);
+        setpName(res.thesis.programmes);
+        setSelectedDate(dayjs(res.thesis.expirationDate));
+        setNot(res.thesis.notes);
+      } else {
+        console.log("Error in CopyProposal/getThesisWithId:" + res.error);
+      }})
+    .catch(e => console.log("Error in CopyProposal/getThesisWithId:" + e))
 
   }, []);
  
@@ -276,11 +277,11 @@ function CopyProposal(props) {
         archiveDate: dayjs(selectedDate).toISOString(),   
         coSupervisors: emailTags,   
         description: description,   
-        expirationDate: dayjs(selectedDate).toISOString(),   
-        groups: [],   
-        id: 0,  
+        expirationDate: dayjs(selectedDate).toISOString(),    
         keywords: tags,   
-        level: level,   
+        level: level, 
+        id: 0,
+        groups: [],  
         notes: note,   
         programmes: pname,   
         requiredKnowledge: knowledge,   
