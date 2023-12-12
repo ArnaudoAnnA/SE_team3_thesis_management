@@ -206,9 +206,9 @@ function ThesisDetails(props) {
                     </Modal.Footer>
                 </Modal>
 
-                <Row>
+                <Row style={{marginTop: "1rem", marginBottom: "1rem"}}>
                     <Col className="col-1"><Link to={nextpage} state={{ activeKey: activeKey }}><Button className="blueButton"><Arrow90degLeft /></Button></Link></Col>
-                    {user.role == 'teacher' ? null : <>
+                    {user.role == 'student' ? <>
                         <Col className="col-7"></Col>
                         <Col className="col-4 d-flex justify-content-end">
                             {appliedTwice ?
@@ -222,7 +222,7 @@ function ThesisDetails(props) {
                                 : <Link to={'/thesis/' + thesis.id + '/apply'}><Button className="blueButton">Apply</Button></Link>
                             }
                         </Col>
-                    </>}
+                    </> : null}
                 </Row>
 
                 <hr size={10} />

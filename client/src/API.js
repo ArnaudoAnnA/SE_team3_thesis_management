@@ -1552,7 +1552,7 @@ const getSTRWithId = async (id) => {
       let students = studentsSnap.docs.map(doc => doc.data());
       let student = students.find(t => t.id == STR.studentId);
       if (!student) return MessageUtils.createMessage(404, "error", "No student found");
-      STR.student = student.name + ' ' + student.surname;
+      STR.student = student.name + ' ' + student.surname + ', ' + student.id;
 
       return {status:200, STR: STR}
     } else {
