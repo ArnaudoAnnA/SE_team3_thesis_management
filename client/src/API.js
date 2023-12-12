@@ -1302,8 +1302,8 @@ const getApplicationsByStateByThesis = async (state, id) => {
   }
 }
 
-let lastSTRdoc = null;
-let lastSTRqueryWhereConditions = null;
+let lastSTRdoc;
+let lastSTRqueryWhereConditions;
 
 const getSTRlist = async (orderByArray, reload, entry_per_page) =>
 {
@@ -1316,29 +1316,41 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) =>
   //if (await isStudent(auth.currentUser.email)) return CONSTANTS.unauthorized;
 
   let whereConditions = [];
+  let q;
 
   try {
+
+    // prepare teacher array for name and surname
+    let teachersSnap = await getDocs(teachersRef);
+    let teachers = teachersSnap.docs.map((doc) => doc.data());
 
     //QUERY PREPARATION
     // DIFFERENT QUERY BASING ON THE NEED TO LOAD DATA FROM THE BEGINNING OR NOT
 
     // load of the first page
     if (reload || !lastSTRdoc || !lastSTRqueryWhereConditions) {
+      /* TO DO: uncomment when the story for the teacher is done
+
       // if the user is a teacher, show only the STR directed to him
       if (await isTeacher(auth.currentUser.email)) {
         let thisTeacherId = await getDocs(
           query(teachersRef, where("email", "==", auth.currentUser.email))
         ).then((snap) => snap.docs[0].data().id);
         whereConditions.push(where("teacherId", "==", thisTeacherId));
-      }
+      }*/
 
       // show only STR from the past
-      whereConditions.push(where("date", "<=", await getVirtualDate()));      //TO DO: check if the field name is correct
+      whereConditions.push(orderBy("requestDate"));
+      whereConditions.push(where("requestDate", "<=", await getVirtualDate()));     
       
+      //show only pending STR
+      whereConditions.push(where("approved", "==", null));
+
       //sorting
       for (let f of orderByArray)
       {
-        whereConditions.push(orderBy(f.DBfield, f.mode));
+        if (f.DBfield == "supervisor") whereConditions.push(orderBy("teacherId", f.mode.toLowerCase()));
+        else if(f.DBfield != "requestDate") whereConditions.push(orderBy(f.DBfield, f.mode.toLowerCase()));
       }
 
       //pagination
@@ -1346,36 +1358,34 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) =>
 
       //save it for future "load more" function
       lastSTRqueryWhereConditions = whereConditions;
-      
-      // compose the query
-      let q = query(thesisRequestsRef,  ...whereConditions);
     }else // when a new page is requested
     {
-      let q = query(lastSTRqueryWhereConditions, startAfter(lastSTRdoc));
+      whereConditions = lastSTRqueryWhereConditions;
+      whereConditions.push(startAfter(lastSTRdoc));
     }
 
+    q = query(thesisRequestsRef, ...whereConditions);
+
+    
     //QUERY EXECUTION
 
-    // prepare teacher array for name and surname
-    let teachersSnap = await getDocs(teachersRef);
-    let teachers = teachersSnap.docs.map((doc) => doc.data());
-
     //run the query
-    let STRlist = await getDocs(q).then(async (snapshot) => {
-      lastSTRdoc = snapshot[snapshot.length-1];
+    let ret = await getDocs(q).then(async (snapshot) => {
+      lastSTRdoc = snapshot.docs[snapshot.docs.length-1];
       let proposals = [];
-      snapshot.forEach((doc) => {
+      snapshot.docs.forEach((doc) => {
         let proposal = doc.data();
         let teacher = teachers.find(
           (teacher) => teacher.id == proposal.teacherId
         );
-        proposal.supervisor = teacher.name + " " + teacher.surname;
+        proposal.supervisor = [teacher.id, teacher.name + " " + teacher.surname];
         proposals.push(proposal);
       });
-      return proposals;
-    });
+      return { status: 200, STRlist: proposals };
+    })
+    .catch(e => {console.log(e); return {status: 500}});
 
-    return { status: 200, STRlist: STRlist };
+    return ret;
   } catch (error) {
     console.log(error);
     return { status: 500, err: error };
@@ -1395,15 +1405,20 @@ const getSTRlistLength = async () =>
   /*------------QUERY PREPARATION ----------*/
   let whereConditions = [];
 
+  /* TO DO: uncomment when the story for the teacher is done
+
   if (await isTeacher(auth.currentUser.email)) {
     let thisTeacherId = await getDocs(
       query(teachersRef, where("email", "==", auth.currentUser.email))
     ).then((snap) => snap.docs[0].data().id);
     whereConditions.push(where("teacherId", "==", thisTeacherId));
-  }
+  }*/
 
   // show only STR from the past
   whereConditions.push(where("requestDate", "<=", await getVirtualDate()));      //TO DO: check if the field name is correct
+
+  //show only pending STR
+  whereConditions.push(where("approved", "==", null));
 
   /*------------QUERY EXECUTION----------*/
   let q = query(thesisRequestsRef, ...whereConditions);
@@ -1537,7 +1552,7 @@ const getSTRWithId = async (id) => {
       let students = studentsSnap.docs.map(doc => doc.data());
       let student = students.find(t => t.id == STR.studentId);
       if (!student) return MessageUtils.createMessage(404, "error", "No student found");
-      STR.student = student.name + ' ' + student.surname;
+      STR.student = student.name + ' ' + student.surname + ', ' + student.id;
 
       return {status:200, STR: STR}
     } else {

@@ -1,5 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { Arrow90degLeft } from "react-bootstrap-icons";
 import { Alert, Button, Col, Container, Row, Table, Spinner } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
@@ -138,10 +139,15 @@ function STRManagement(props) {
   return ( <Container fluid className="vh-100" >
               {
                 state === STATES.READY ? <> 
-                  <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: "2rem" }}>
+                  <Row style={{ marginTop: "1rem", marginBottom: "1rem" }}>
+                    <Col className="col-1"><Link to='/'><Button className="blueButton"><Arrow90degLeft /></Button></Link></Col>
+                  </Row>
+
+                  <hr size={10} />
+                  <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: "1rem" }}>
                     <h1>{STR.title}</h1>
                   </div>
-                  <h6><i>Proposed by: {STR.student}</i></h6> 
+                  <h6><i> <b> Proposed by: </b> {STR.student}</i></h6> 
                   <hr />
                   <Table className="" >
                       <tbody>

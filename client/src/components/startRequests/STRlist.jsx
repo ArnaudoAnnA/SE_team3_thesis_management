@@ -1,9 +1,10 @@
 
-import { Alert, Container, Row, Col } from 'react-bootstrap';
+import { Alert, Container, Row, Col, Button } from 'react-bootstrap';
 import {TableWithOrderBy} from '../TableWithOrderBy';
 import { useEffect, useState } from 'react';
 import API from '../../API';
 import dayjs from 'dayjs';
+import ClipLoader from "react-spinners/ClipLoader";
 
 /**
  * 
@@ -35,16 +36,18 @@ function STRlist(props)
     const [STRlistLength, setSTRListLength] = useState(0);
 
     /*------------VARIABLES----------------*/
-    let entry_per_page = window.innerHeight / 100;
+    let entry_per_page = Math.floor(window.innerHeight / 100);
 
     /*------------FUNCTIONS----------------*/
     async function load_from_start()
     {
+        let temp = 0;
         await API.getSTRlistLength()
         .then(ret =>
             {
                 if (ret.status == 200)
                 {
+                    temp = ret.length;
                     setSTRListLength(ret.length);
                 }else 
                 {
@@ -53,7 +56,7 @@ function STRlist(props)
             })
         .catch(e =>{console.log(e); setState(STATES.error)} );
 
-        if (state!= STATES.error && STRlistLength != 0) API.getSTRlist(orderBy, true, entry_per_page)
+        if (state!= STATES.error && temp != 0) API.getSTRlist(orderBy, true, entry_per_page)
                                                         .then((ret) =>
                                                         {
                                                             if (ret.status == 200)
@@ -67,7 +70,7 @@ function STRlist(props)
                                                         })
                                                         .catch(e =>{console.log(e); setState(STATES.error)});
 
-        else if(STRlistLength == 0) setSTRlist([]);
+        else if(temp == 0) {setState(STATES.ready); setSTRlist([]);}
     }
 
     function load_more()
@@ -110,7 +113,7 @@ function STRlist(props)
             <>
             <hr />
                 <p className="text-info">Number of items: {STRlistLength}</p>
-                <TableWithOrderBy columns={COLUMNS} data={STRlist} orderBy={orderBy} orderByField={orderByField} detailsPageURL={"/thesis_requests/"}/>
+                <TableWithOrderBy columns={COLUMNS} data={STRlist} orderBy={orderBy} orderByField={orderByField} detailsPageURL={"/STRlist/"}/>
                 <Row className="justify-content-center"><Col className="col-2 justify-content-center" style={{display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column"}}>
                 {
                     state == STATES.show_more ? 

@@ -1,8 +1,8 @@
 const thesisRequests = [
     {
-        "requestDate": "2023-12-06",
-        "approvalDate": "2023-12-31",
-        "approved": true,
+        "requestDate": "2021-05-06",
+        "approvalDate": "",
+        "approved": null,
         "title": "Instrumenting Kubernetes 5G services with eBPF probes and other beautiful things",
         "description": "Description for Thesis Request 1",
         "programmes": "Design in Graphic Design",
@@ -29,9 +29,9 @@ const thesisRequests = [
 
     },
     {
-        "requestDate": "2023-12-06",
-        "approvalDate": "2023-12-31",
-        "approved": true,
+        "requestDate": "2020-11-06",
+        "approvalDate": "",
+        "approved": null,
         "description": "Description for Thesis Request 1",
         "level": "bachelor",
         "studentId": "s123456",
@@ -57,9 +57,9 @@ const thesisRequests = [
         "programmes": "Architecture",
     },
     {
-        "requestDate": "2023-12-06",
-        "approvalDate": "2023-12-31",
-        "approved": true,
+        "requestDate": "2021-01-06",
+        "approvalDate": "",
+        "approved": null,
         "level": "master",
         "id": 4,
         "description": "Description for Thesis Request 1",
@@ -85,9 +85,9 @@ const thesisRequests = [
         "type": "academic research"
     },
     {
-        "requestDate": "2023-12-06",
-        "approvalDate": "2023-12-31",
-        "approved": true,
+        "requestDate": "2022-12-06",
+        "approvalDate": "",
+        "approved": null,
         "studentId": "s890123",
         "teacherId": "d456789",
         "description": "Description for Thesis Request 1",
@@ -99,9 +99,9 @@ const thesisRequests = [
         "type": "academic research"
     },
     {
-        "requestDate": "2023-12-06",
-        "approvalDate": "2023-12-31",
-        "approved": true,
+        "requestDate": "2021-08-06",
+        "approvalDate": "",
+        "approved": null,
         "description": "Description for Thesis Request 2",
         "programmes": "Architecture",
         "studentId": "s789012",
@@ -113,9 +113,9 @@ const thesisRequests = [
         "level": "bachelor",
     },
     {
-        "requestDate": "2023-12-06",
-        "approvalDate": "2023-12-31",
-        "approved": true,
+        "requestDate": "2020-12-06",
+        "approvalDate": "",
+        "approved": null,
         "type": "academic research",
         "title": "Evaluation of Sustainable Construction Materials for Eco-Friendly Building Design",
         "id": 8,
@@ -127,9 +127,9 @@ const thesisRequests = [
         "notes": "Additional notes for Thesis Request 1",
     },
     {
-        "requestDate": "2023-12-06",
-        "approvalDate": "2023-12-31",
-        "approved": true,
+        "requestDate": "2023-11-06",
+        "approvalDate": "",
+        "approved": null,
         "level": "bachelor",
         "description": "Description for Thesis Request 2",
         "id": 9,
@@ -142,8 +142,8 @@ const thesisRequests = [
     },
     {
         "requestDate": "2023-12-06",
-        "approvalDate": "2023-12-31",
-        "approved": true,
+        "approvalDate": "",
+        "approved": null,
         "title": "Reply: Investigation of AI-Powered Robotics for Automated Manufacturing Processes",
         "id": 25,
         "notes": "",
@@ -170,8 +170,8 @@ const thesisRequests = [
     },
     {
         "requestDate": "2023-12-06",
-        "approvalDate": "2023-12-31",
-        "approved": true,
+        "approvalDate": "",
+        "approved": null,
         "description": "Description for Thesis Request 3",
         "level": "bachelor",
         "studentId": "s567890",
@@ -198,8 +198,8 @@ const thesisRequests = [
     },
     {
         "requestDate": "2023-12-06",
-        "approvalDate": "2023-12-31",
-        "approved": true,
+        "approvalDate": "",
+        "approved": null,
         "description": "Description for Thesis Request 5",
         "level": "bachelor",
         "studentId": "s234567",
