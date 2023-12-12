@@ -17,6 +17,7 @@ import CONSTANTS from './utils/Constants.js';
 import MessageUtils from './utils/MessageUtils.js';
 import ApplicationUtils from './utils/ApplicationUtils.js';
 import { thesis } from './MOCKS.js';
+import Secretary from './models/Secretary.js';
 
 //DO NOT CANCEL
 const firebaseConfig = {
@@ -50,6 +51,7 @@ const applicationsRef = DEBUG ? collection(db, "test-applications") : collection
 const dateRef = collection(db, "date");
 const mailRef = collection(db, "mail");
 const thesisRequestsRef = collection(db, "thesisRequests");
+const secretariesRef = collection(db, "secretaries");
 
 const storageCurriculums = "curriculums/"
 
@@ -142,6 +144,13 @@ const getUser = async (email) => {
   const whereCond = where("email", "==", email)
   const qStudent = query(studentsRef, whereCond)
   const qTeacher = query(teachersRef, whereCond)
+  const secretaryRef = doc(secretariesRef, email)
+  const secSnap = await getDoc(secretaryRef)
+  if(secSnap.exists()){
+    user = new Secretary(secSnap.data().id, secSnap.data().surname, secSnap.data().name, secSnap.data().email)
+    return user
+  }
+
 
   const studentSnapshot = await getDocs(qStudent)
   const teacherSnapshot = await getDocs(qTeacher)
