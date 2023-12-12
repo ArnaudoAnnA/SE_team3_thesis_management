@@ -3,20 +3,18 @@
 import { initializeApp } from 'firebase/app';
 import { collection, addDoc, getFirestore, doc, query, getDocs, updateDoc, where, setDoc, deleteDoc, getDoc, limit, startAfter, orderBy } from 'firebase/firestore';
 import { signInWithRedirect, SAMLAuthProvider, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { getBlob, getDownloadURL, getStorage, getStream, ref, uploadBytes} from "firebase/storage";
+import { getDownloadURL, getStorage, ref, uploadBytes} from "firebase/storage";
 
 import dayjs from 'dayjs';
 import Teacher from './models/Teacher.js';
 import Student from './models/Student.js';
 import Career from './models/Career.js';
 import Application from './models/Application.js';
-import ThesisProposal from './models/ThesisProposal.js';
 
 import StringUtils from './utils/StringUtils.js';
 import CONSTANTS from './utils/Constants.js';
 import MessageUtils from './utils/MessageUtils.js';
 import ApplicationUtils from './utils/ApplicationUtils.js';
-import { thesis } from './MOCKS.js';
 import Secretary from './models/Secretary.js';
 
 //DO NOT CANCEL
@@ -535,8 +533,10 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
     }
     // when a new page is requested
     else
+    {
       index = THESIS_CACHE.findIndex((proposal) => proposal.id === lastThesisID);
       console.log("Index:", index); //torna -1
+    }
 
 
     // If the ID is not found, index will be -1
@@ -1341,9 +1341,11 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) =>
         whereConditions.push(where("teacherId", "==", thisTeacherId));
       }*/
 
+      /*
       // show only STR from the past
       whereConditions.push(orderBy("requestDate"));
-      whereConditions.push(where("requestDate", "<=", await getVirtualDate()));     
+      whereConditions.push(where("requestDate", "<=", await getVirtualDate())); 
+      */    
       
       //show only pending STR
       whereConditions.push(where("approved", "==", null));
@@ -1352,7 +1354,7 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) =>
       for (let f of orderByArray)
       {
         if (f.DBfield == "supervisor") whereConditions.push(orderBy("teacherId", f.mode.toLowerCase()));
-        else if(f.DBfield != "requestDate") whereConditions.push(orderBy(f.DBfield, f.mode.toLowerCase()));
+        else whereConditions.push(orderBy(f.DBfield, f.mode.toLowerCase()));
       }
 
       //pagination
@@ -1416,8 +1418,11 @@ const getSTRlistLength = async () =>
     whereConditions.push(where("teacherId", "==", thisTeacherId));
   }*/
 
+  /*
   // show only STR from the past
   whereConditions.push(where("requestDate", "<=", await getVirtualDate()));      //TO DO: check if the field name is correct
+  */
+
 
   //show only pending STR
   whereConditions.push(where("approved", "==", null));
@@ -1531,7 +1536,7 @@ const insertSTR = async (STRData) => {
 
 const getSTRWithId = async (id) => {
   if (!auth.currentUser) return { status: 401, error: "User not logged in" };
-  if(!isSecretary(auth.currentUser.email)) return { status: 401, error: "User is not a secretary" };
+  if(! (await isSecretary(auth.currentUser.email) || await isTeacher(auth.currentUser.email))) return { status: 401, error: "User is not a secretary" };
 
   //QUERY CONDITIONS
   const whereCond1 = where("id", "==", Number(id))
@@ -1605,7 +1610,7 @@ const acceptRejectSTR = async (id, accept) => {
   if (!auth.currentUser) return { status: 401, error: "User not logged in" };
 
   //check if the user is a secretary
-  if(!isSecretary(auth.currentUser.email)) return { status: 401, error: "User is not a secretary" };
+  if(!await isSecretary(auth.currentUser.email)) return { status: 401, error: "User is not a secretary" };
 
   try {
     const res = await getSTRWithId(id);

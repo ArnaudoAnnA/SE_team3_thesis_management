@@ -121,7 +121,7 @@ function Main() {
             {user.email ? <Route path='' element={<Home date={date}/>} /> :
               <Route path='' element={<Login />} />}
             {/** Add here other routes */}
-            {/*<Route path='/STRlist' element={user.email ? (user.role === "secretary" ? <STRlist date={date}/> : <NotFoundPage />) : <Login />} />*/}
+            <Route path='/STRlist' element={user.email ? (user.role === "secretary" ? <STRlist date={date}/> : <NotFoundPage />) : <Login />} />
             <Route path='/STRlist/:id' element={user.email ? (user.role === "secretary" ? <STRManagement /> : <NotFoundPage />) : <Login />} />
             <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm /> : ( user.role == "student" ? <InsertStudentProposal /> : <NotFoundPage />)) : <Login />} />
             <Route path='/upproposal/:id' element={user.email ? (user.role === "teacher" ? <UpdateProposal /> : <NotFoundPage />) : <Login />} />
