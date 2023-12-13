@@ -50,8 +50,8 @@ const thesisProposalsRef = DEBUG ? collection(db, "test-thesisProposals") : coll
 const applicationsRef = DEBUG ? collection(db, "test-applications") : collection(db, "applications");
 const dateRef = collection(db, "date");
 const mailRef = collection(db, "mail");
-const thesisRequestsRef = collection(db, "thesisRequests");
-const secretariesRef = collection(db, "secretaries");
+const thesisRequestsRef = collection(db, "thesisRequests"); // : collection(db, 'test-thesisRequests');
+const secretariesRef = collection(db, "secretaries"); // : collection(db, 'test-secretaries');
 
 const storageCurriculums = "curriculums/"
 
