@@ -20,7 +20,7 @@ import { userContext } from './Utils';
 
 function CopyProposal(props) {
 
-  var mailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/; // Verify email
+  let mailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/; // Verify email
   const user = useContext(userContext);
   const { id } = useParams();
   const navigate = useNavigate();
@@ -37,10 +37,10 @@ function CopyProposal(props) {
     navigate("/");
   };
   
-  const errorAlert = () => {
+  const errorAlert = (e) => {
     Swal.fire({  
       title: 'Error!',  
-      text: 'Something happened.',
+      text: e,
       icon: 'error'
     });
     return false;
@@ -196,7 +196,7 @@ function CopyProposal(props) {
   const handleSubmit = (event) => {
 
     event.preventDefault();
-    var nomeRegex = /^[A-Za-z]+$/; // The word must contains words
+    let nomeRegex = /^[A-Za-z]+$/; // The word must contains words
    
     if (title === '') {
 
@@ -295,10 +295,15 @@ function CopyProposal(props) {
     if (title !== '' && degree !== '' && description !== '' && knowledge !== '' && level !== '' && pname !== '' &&
       title !== null && degree !== null && description !== null && knowledge !== null && level !== null && pname !== null) {
 
-      API.insertProposal(predefinedProposalStructure)
-        .then(successAlert)
-        .catch(errorAlert);
-
+        API.insertProposal(predefinedProposalStructure)
+        .then((res) => {
+          if(!res.error) {
+            successAlert();
+          } else {
+            errorAlert(res.error);
+          }
+        })
+        .catch((e)=> errorAlert(e));
     }
   
  

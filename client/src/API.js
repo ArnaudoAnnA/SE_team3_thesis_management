@@ -3,20 +3,18 @@
 import { initializeApp } from 'firebase/app';
 import { collection, addDoc, getFirestore, doc, query, getDocs, updateDoc, where, setDoc, deleteDoc, getDoc, limit, startAfter, orderBy } from 'firebase/firestore';
 import { signInWithRedirect, SAMLAuthProvider, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { getBlob, getDownloadURL, getStorage, getStream, ref, uploadBytes} from "firebase/storage";
+import { getDownloadURL, getStorage, ref, uploadBytes} from "firebase/storage";
 
 import dayjs from 'dayjs';
 import Teacher from './models/Teacher.js';
 import Student from './models/Student.js';
 import Career from './models/Career.js';
 import Application from './models/Application.js';
-import ThesisProposal from './models/ThesisProposal.js';
 
 import StringUtils from './utils/StringUtils.js';
 import CONSTANTS from './utils/Constants.js';
 import MessageUtils from './utils/MessageUtils.js';
 import ApplicationUtils from './utils/ApplicationUtils.js';
-import { thesis } from './MOCKS.js';
 import Secretary from './models/Secretary.js';
 
 //DO NOT CANCEL
@@ -535,8 +533,10 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) =>
     }
     // when a new page is requested
     else
+    {
       index = THESIS_CACHE.findIndex((proposal) => proposal.id === lastThesisID);
       console.log("Index:", index); //torna -1
+    }
 
 
     // If the ID is not found, index will be -1
@@ -954,6 +954,22 @@ const predefinedProposalStructure = {
   type: "",
 };
 
+const titleAlreadyExist = async (thesis, mode, thesisId) => {
+  if (!auth.currentUser) return { status: 401, err: "User not logged in" };
+
+  let thesisSnap = await getDocs(thesisProposalsRef);
+  let thesisList = thesisSnap.docs.map(doc => doc.data());
+  let thesisExists = null;
+  if (mode==="insert") {
+    thesisExists = thesisList.find(t => t.title === thesis.title);
+  } else {
+    thesisExists = thesisList.filter(t => t.id !== Number(thesisId)).find(t => t.title === thesis.title);
+  }
+
+  if (thesisExists) return true;
+  return false;
+}
+
 const validateThesisProposalData = (thesisProposalData) => {
 
   //Validation that the proposal meets the structure requirements
@@ -1003,46 +1019,43 @@ const validateThesisProposalData = (thesisProposalData) => {
   type: "Type of thesis", // Replace with your type
 };*/
 
-
-
 const insertProposal = async (thesisProposalData) => {
-  console.log("Logged teacher = " + auth.currentUser.email);
+  //console.log("Logged teacher = " + auth.currentUser.email);
   if (!auth.currentUser) return { status: 401, err: "User not logged in" };
   if (!(await isTeacher(auth.currentUser.email))) return { status: 401, err: "User is not a teacher" };
 
   if (!validateThesisProposalData(thesisProposalData)) {
     console.log("Validation failed: proposal data doesnt comply with required structure");
-    return { status: 400, err: "Proposal data doesnt comply with required structure" };
-  }
-
-  //Check that the teachers id is an id inside the teachers table
-  if (!await isTeacherById(thesisProposalData.teacherId)) {
-    console.log("Validation failed: the proposed teacher is not present in our database");
-    return { status: 400, err: "The proposed teacher is not present in our database" };
+    return { status: 400, error: "Proposal data doesnt comply with required structure" };
   }
 
   try {
-    //first we get the groups from the teacher and the supervisors
-    var groupsAux = [];
-    const userGroups = await getGroupsById(thesisProposalData.teacherId);
-    groupsAux.push(userGroups);
 
-    for (const cs in thesisProposalData.coSupervisors) {
-      const g = await getGroups(thesisProposalData.coSupervisors[cs]);
-      if (g) { groupsAux.push(g) };
+    if (await titleAlreadyExist(thesisProposalData, "insert", null)) {
+      return { status: 400, error: "A thesis with this title already exists" };
+    } else {
+      //first we get the groups from the teacher and the supervisors
+      let groupsAux = [];
+      const userGroups = await getGroupsById(thesisProposalData.teacherId);
+      groupsAux.push(userGroups);
+
+      for (const cs in thesisProposalData.coSupervisors) {
+        const g = await getGroups(thesisProposalData.coSupervisors[cs]);
+        if (g) { groupsAux.push(g) };
+      }
+
+      console.log("Found groups: " + groupsAux);
+
+      //We update the thesisProposalData with the obtained groups and calculated id
+      thesisProposalData.groups = groupsAux;
+      thesisProposalData.id = await getNextThesisId();
+      const docRef = await addDoc(thesisProposalsRef, thesisProposalData);
+      console.log("Thesis proposal added with ID: ", docRef.id);
+      return { status: 200, id: docRef.id };
     }
-
-    console.log("Found groups: " + groupsAux);
-
-    //We update the thesisProposalData with the obtained groups and calculated id
-    thesisProposalData.groups = groupsAux;
-    thesisProposalData.id = await getNextThesisId();
-    const docRef = await addDoc(thesisProposalsRef, thesisProposalData);
-    console.log("Thesis proposal added with ID: ", docRef.id);
-    return { status: 200, id: docRef.id };
   } catch (error) {
     console.error("Error adding thesis proposal: ", error);
-    return { status: 500 }; // or handle the error accordingly
+    return { status: 500, error: error }; // or handle the error accordingly
   }
 };
 
@@ -1100,9 +1113,29 @@ const getTecher = async () => {
 };
 
 /**
+ * Get the snapshot of the thesis by the thesis id
+ * @param {string} id id of the thesis
+ * Possible values for status: [200 (ok), 401 (unauthorized), 404 (non found), 500 (server error)]
+ */
+async function getSnapshotThesis(id) {
+  if (!auth.currentUser) return { status: 401, error: "User not logged in" };
+
+  const whereThesisId = where("id", "==", Number(id));
+
+  const qThesis = query(thesisProposalsRef, whereThesisId);
+  try {
+    let thesisSnapshot = await getDocs(qThesis);
+    if (thesisSnapshot.empty) return { status: 404, error: `No thesis found`};
+    return { status: 200, snapshot: thesisSnapshot.docs[0]};
+  } catch (error) {
+    return { status: 500, error: `Error in calling Firebase: ${error}`};
+  }
+
+}
+
+/**
  * Accept an application and decline all the others for the same thesis
  * @param {string} applicationId id of the accepted application
- * @returns {{ status: code }}
  * Possible values for status: [200 (ok), 400 (bad request), 401 (unauthorized), 404 (not found), 500 (server error)]
  */
 
@@ -1125,7 +1158,7 @@ const acceptApplication = async (applicationId) => {
       }
     });
     // archive the thesis
-    const thesisSnapshot = await getSnapshotThesis(application.thesisId);
+    let thesisSnapshot = await getSnapshotThesis(application.thesisId);
     await updateDoc(thesisSnapshot.snapshot.ref, { archiveDate: await getVirtualDate() });
     return { status: 200 };
   } catch (error) {
@@ -1137,7 +1170,6 @@ const acceptApplication = async (applicationId) => {
 /**
  * Decline an application
  * @param {string} applicationId id of the declined application
- * @returns {{ status: code }}
  * Possible values for status: [200 (ok), 400 (bad request), 401 (unauthorized), 404 (not found), 500 (server error)]
  */
 const declineApplication = async (applicationId) => {
@@ -1244,30 +1276,6 @@ const deleteProposal = async (id) => {
 
 }
 
-
-/**
- * Get the snapshot of the thesis by the thesis id
- * @param {string} id id of the thesis
- * @returns {{ status: code, snapshot: snapshot}} //if no errors occur
- * @returns {{ status: code, error: err}} //if errors occur
- * Possible values for status: [200 (ok), 401 (unauthorized), 404 (non found), 500 (server error)]
- */
-const getSnapshotThesis = async (id) => {
-  if (!auth.currentUser) return { status: 401, error: "User not logged in" };
-
-  const whereThesisId = where("id", "==", Number(id));
-
-  const qThesis = query(thesisProposalsRef, whereThesisId);
-  try {
-    const thesisSnapshot = await getDocs(qThesis);
-    if (thesisSnapshot.empty) return { status: 404, error: `No thesis found`};
-    return { status: 200, snapshot: thesisSnapshot.docs[0]};
-  } catch (error) {
-    return { status: 500, error: `Error in calling Firebase: ${error}`};
-  }
-
-}
-
 /**
  * Retrieve the snapshot applications for a thesis by the applications' state
  * @param {string} state the state of applications you are searching for
@@ -1341,9 +1349,11 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) =>
         whereConditions.push(where("teacherId", "==", thisTeacherId));
       }*/
 
+      /*
       // show only STR from the past
       whereConditions.push(orderBy("requestDate"));
-      whereConditions.push(where("requestDate", "<=", await getVirtualDate()));     
+      whereConditions.push(where("requestDate", "<=", await getVirtualDate())); 
+      */    
       
       //show only pending STR
       whereConditions.push(where("approved", "==", null));
@@ -1352,7 +1362,7 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) =>
       for (let f of orderByArray)
       {
         if (f.DBfield == "supervisor") whereConditions.push(orderBy("teacherId", f.mode.toLowerCase()));
-        else if(f.DBfield != "requestDate") whereConditions.push(orderBy(f.DBfield, f.mode.toLowerCase()));
+        else whereConditions.push(orderBy(f.DBfield, f.mode.toLowerCase()));
       }
 
       //pagination
@@ -1380,7 +1390,7 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) =>
         let teacher = teachers.find(
           (teacher) => teacher.id == proposal.teacherId
         );
-        proposal.supervisor = [teacher.id, teacher.name + " " + teacher.surname];
+        proposal.supervisor = teacher.id + " - - " + teacher.name + " " + teacher.surname;
         proposals.push(proposal);
       });
       return { status: 200, STRlist: proposals };
@@ -1416,8 +1426,11 @@ const getSTRlistLength = async () =>
     whereConditions.push(where("teacherId", "==", thisTeacherId));
   }*/
 
+  /*
   // show only STR from the past
   whereConditions.push(where("requestDate", "<=", await getVirtualDate()));      //TO DO: check if the field name is correct
+  */
+
 
   //show only pending STR
   whereConditions.push(where("approved", "==", null));
@@ -1495,7 +1508,7 @@ function validateSTRData(STRData)
  */
 const insertSTR = async (STRData) => {
   if (!auth.currentUser) return { status: 401, err: "User not logged in" };
-  console.log("Logged user = " + auth.currentUser.email);
+  //console.log("Logged user = " + auth.currentUser.email);
   
   if (!(await isStudent(auth.currentUser.email))) return { status: 401, err: "User is not a student" };
 
@@ -1508,6 +1521,11 @@ const insertSTR = async (STRData) => {
   if (!validateSTRData(STRData)) {
     console.log("Validation failed: proposal data doesnt comply with required structure");
     return { status: 400, err: "Proposal data doesnt comply with required structure" };
+  }
+
+  //Check that the teachers id is an id inside the teachers table
+  if (!await isTeacherById(STRData.profId)) {
+    return { status: 400, err: "The proposed teacher is not present in our database" };
   }
   
 
@@ -1531,7 +1549,7 @@ const insertSTR = async (STRData) => {
 
 const getSTRWithId = async (id) => {
   if (!auth.currentUser) return { status: 401, error: "User not logged in" };
-  if(!isSecretary(auth.currentUser.email)) return { status: 401, error: "User is not a secretary" };
+  if(! (await isSecretary(auth.currentUser.email) || await isTeacher(auth.currentUser.email))) return { status: 401, error: "User is not a secretary" };
 
   //QUERY CONDITIONS
   const whereCond1 = where("id", "==", Number(id))
@@ -1605,7 +1623,7 @@ const acceptRejectSTR = async (id, accept) => {
   if (!auth.currentUser) return { status: 401, error: "User not logged in" };
 
   //check if the user is a secretary
-  if(!isSecretary(auth.currentUser.email)) return { status: 401, error: "User is not a secretary" };
+  if(!await isSecretary(auth.currentUser.email)) return { status: 401, error: "User is not a secretary" };
 
   try {
     const res = await getSTRWithId(id);
@@ -1648,8 +1666,8 @@ const acceptRejectSTR = async (id, accept) => {
 
 const updateProposal = async (id, thesisProposalData) => {
   
-  if (!auth.currentUser) return { status: 401, err: "User not logged in" };
-  if (!(await isTeacher(auth.currentUser.email))) return { status: 401, err: "User is not a teacher" };
+  if (!auth.currentUser) return { status: 401, error: "User not logged in" };
+  if (!(await isTeacher(auth.currentUser.email))) return { status: 401, error: "User is not a teacher" };
   /*
   if (!validateThesisProposalData(thesisProposalData)) {
     console.log("Validation failed: proposal data doesnt comply with required structure");
@@ -1661,19 +1679,23 @@ const updateProposal = async (id, thesisProposalData) => {
     const whereId = where("id", "==", Number(id));
     const qThesis = query(thesisProposalsRef, whereId);
     const thesisSnapshot = await getDocs(qThesis);
-    if (thesisSnapshot.empty) return { status: 404, err: "Thesis not found" };
+    if (thesisSnapshot.empty) return { status: 404, error: "Thesis not found" };
     const thesis = thesisSnapshot.docs[0].data();
-    
-    //save the ref to the document
-    const docRef =thesisSnapshot.docs[0].ref;
 
-    //Update the document with the new argument data
-    await updateDoc(docRef, thesisProposalData);
+    if (await titleAlreadyExist(thesisProposalData, "update", id)) {
+      return { status: 400, error: "A thesis with this title already exists" };
+    } else {
+      //save the ref to the document
+      const docRef = thesisSnapshot.docs[0].ref;
 
-    return { status: 200, id: docRef.id };
+      //Update the document with the new argument data
+      await updateDoc(docRef, thesisProposalData);
+
+      return { status: 200, id: docRef.id };
+    }
   } catch (error) {
     console.error("Error adding thesis proposal: ", error);
-    return { status: 500 }; // or handle the error accordingly
+    return { status: 500, error: error }; // or handle the error accordingly
   }
 };
 
@@ -1699,10 +1721,10 @@ const API = {
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser, loginWithSaml,
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplicationsForProfessor, getApplicationDetails, getCVOfApplication, acceptApplication, declineApplication,
-  removeAllProposals, insertProposal, archiveThesis, deleteProposal,
+  removeAllProposals, insertProposal, archiveThesis, deleteProposal, updateProposal,
   getApplicationsForStudent, getDegree,
-  getSTRlist, getSTRlistLength, insertSTR, predefinedSTRStructure, getSTRWithId, acceptRejectSTR, updateProposal
-  , sendEmail
+  getSTRlist, getSTRlistLength, insertSTR, predefinedSTRStructure, getSTRWithId, acceptRejectSTR,
+  sendEmail
 };
 
 

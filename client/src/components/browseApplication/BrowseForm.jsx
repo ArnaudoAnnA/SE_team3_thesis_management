@@ -142,7 +142,7 @@ function BrowseForm(props) {
         })
         return
       }
-      var element = document.createElement('a');
+      let element = document.createElement('a');
       element.style.display = "none";
       element.setAttribute('href', res.url)
       element.setAttribute("target", "_blank");

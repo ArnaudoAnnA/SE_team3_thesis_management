@@ -20,7 +20,7 @@ import { userContext } from './Utils';
 
 function UpdateProposal(props) {
 
-  var mailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/; // Verify email
+  let mailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/; // Verify email
   const user = useContext(userContext);
   const navigate = useNavigate();
   const {id} = useParams();
@@ -39,10 +39,10 @@ function UpdateProposal(props) {
     navigate("/");
   };
   
-  const errorAlert = () => {
+  const errorAlert = (e) => {
     Swal.fire({  
       title: 'Error!',  
-      text: 'Something happened.',
+      text: e,
       icon: 'error'
     });
     return false;
@@ -197,7 +197,7 @@ function UpdateProposal(props) {
   const handleSubmit = (event) => {
 
     event.preventDefault();
-    var nomeRegex = /^[A-Za-z]+$/; // The word must contains words
+    let nomeRegex = /^[A-Za-z]+$/; // The word must contains words
    
     if (title === '') {
 
@@ -294,8 +294,14 @@ function UpdateProposal(props) {
       if (title && degree && description && knowledge && level && pname !== '') {
 
         API.updateProposal(id,predefinedProposalStructure)
-            .then(successAlert) 
-            .catch(errorAlert)
+        .then((res) => {
+          if(!res.error) {
+            successAlert();
+          } else {
+            errorAlert(res.error);
+          }
+        })
+        .catch((e)=> errorAlert(e));
   
       }
 
