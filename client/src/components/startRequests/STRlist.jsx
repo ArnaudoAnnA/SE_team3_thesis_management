@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import API from '../../API';
 import dayjs from 'dayjs';
 import ClipLoader from "react-spinners/ClipLoader";
+import PropTypes from 'prop-types';
 
 /**
  * 
@@ -145,5 +146,9 @@ function STRlist(props) {
 
     </Container>
 }
+
+STRlist.PropTypes = {
+    date: PropTypes.string.isRequired
+};
 
 export { STRlist };

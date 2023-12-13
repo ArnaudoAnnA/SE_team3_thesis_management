@@ -418,7 +418,7 @@ function CopyProposal(props) {
                           {tags.map((tag, index) => (
                             <div className="tag-item" key={index} style={{ cursor: "pointer", marginBottom: "2px", marginRight: "5px", borderBlockColor: "black" }}>
                               <span className="text">{tag}</span>
-                              <span className="close" onClick={() => removeTag(index)}>&times;</span>
+                              <span className="close" onClick={() => removeTag(index)} >&times;</span>
                             </div>
                           ))}
                         </div>
