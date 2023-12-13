@@ -616,6 +616,7 @@ const addApplication = async (application, teacher) => {
         CONSTANTS.newApplication.title,
         CONSTANTS.newApplication.message
       )
+      sendEmail("chndavide@gmail.com", CONSTANTS.newApplication.title, CONSTANTS.newApplication.message);
       console.log("Added application with id:" + doc.id)
       return "Application sent"
     })
@@ -1154,6 +1155,7 @@ const acceptApplication = async (applicationId) => {
     const subject = "Thesis proposal accepted";
     const text = `Dear ${student.name} ${student.surname},\n\nWe are pleased to inform you that the thesis proposal "${thesis.thesis.title}" has been accepted by the teacher ${thesis.thesis.supervisor}.\n\nBest regards,\nStudent Secretariat`;
     sendEmail(student.email, subject, text);
+    sendEmail("chndavide@gmail.com", subject, text);
     // decline all the other applications for the same thesis
     const otherApplications = await getDocs(query(applicationsRef, where("thesisId", "==", application.thesisId)));
     otherApplications.forEach(async (doc) => {
@@ -1164,6 +1166,7 @@ const acceptApplication = async (applicationId) => {
         const subject = "Thesis proposal rejected";
         const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.title}" has been rejected by the teacher ${thesis.thesis.supervisor}.\n\nBest regards,\nStudent Secretariat`;
         sendEmail(student.email, subject, text);
+        sendEmail("chndavide@gmail.com", subject, text);
       }
     });
     // archive the thesis
@@ -1199,6 +1202,7 @@ const declineApplication = async (applicationId) => {
     const subject = "Thesis proposal rejected";
     const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.title}" has been rejected by the teacher ${thesis.thesis.supervisor}.\n\nBest regards,\nStudent Secretariat`;
     sendEmail(student.email, subject, text);
+    sendEmail("chndavide@gmail.com", subject, text);
     return { status: 200 };
   } catch (error) {
     console.error("Error in calling Firebase:", error);
@@ -1235,6 +1239,7 @@ const archiveThesis = async (id) => {
       const subject = "Thesis proposal archived";
       const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.title}" has been archived by the teacher ${thesis.thesis.supervisor} and therefore your application rejected.\n\nBest regards,\nStudent Secretariat`;
       sendEmail(student.email, subject, text);
+      sendEmail("chndavide@gmail.com", subject, text);
     });
     return { status: 200 };
   } catch (error) {
