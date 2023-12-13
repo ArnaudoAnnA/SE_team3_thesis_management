@@ -1210,7 +1210,9 @@ const declineApplication = async (applicationId) => {
 /**
  * Archive a thesis
  * @param {string} thesisId id of the thesis to archive
- * @returns {{ status: code }}
+ * 
+ * returns {{ status: code }}
+ * 
  * Possible values for status: [200 (ok), 401 (unauthorized), 404 (not found) 500 (server error)]
  */
 const archiveThesis = async (id) => {
@@ -1316,6 +1318,8 @@ const getApplicationsByStateByThesis = async (state, id) => {
     stateValue = true;
   } else if (state === "Rejected") {
     stateValue = false;
+  } else if (state === "Cancelled") {
+    stateValue = "Cancelled";
   }
 
   //SELECT snapshot(A)
@@ -1372,7 +1376,7 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) => {
         whereConditions.push(where("teacherId", "==", thisTeacherId));
       }*/
 
-      /*
+      /* ATTENTION: this code has been commented out because of it makes uneffective the ordering
       // show only STR from the past
       whereConditions.push(orderBy("requestDate"));
       whereConditions.push(where("requestDate", "<=", await getVirtualDate())); 
@@ -1447,7 +1451,7 @@ const getSTRlistLength = async () => {
     whereConditions.push(where("teacherId", "==", thisTeacherId));
   }*/
 
-  /*
+  /* ATTENTION: this code has been commented out because of it makes uneffective the ordering
   // show only STR from the past
   whereConditions.push(where("requestDate", "<=", await getVirtualDate()));      //TO DO: check if the field name is correct
   */
@@ -1564,8 +1568,11 @@ const insertSTR = async (STRData) => {
 /**
  * API to retrieve the student request detail given its id, Used only for secretaries users.
  * @param {string} id id of the student request
- * @returns {{ status: code, STR: {}}} // return of the API if no errors occur
- * @returns {{ status: code, error: err}} // return of the API if errors occur
+ * 
+ * returns {{ status: code, STR: {}}} // return of the API if no errors occur
+ * 
+ * returns {{ status: code, error: err}} // return of the API if errors occur
+ * 
  * Possible values for status: [200 (ok), 401 (unauthorized), 404 (non found), 500 (server error)]
  */
 
@@ -1610,8 +1617,11 @@ const getSTRWithId = async (id) => {
 /**
  * Get the snapshot of the STR by the STR id
  * @param {string} id id of the STR
- * @returns {{ status: code, snapshot: snapshot}} //if no errors occur
- * @returns {{ status: code, error: err}} //if errors occur
+ * 
+ * returns {{ status: code, snapshot: snapshot}} //if no errors occur
+ * 
+ * returns {{ status: code, error: err}} //if errors occur
+ * 
  * Possible values for status: [200 (ok), 401 (unauthorized), 404 (non found), 500 (server error)]
  */
 const getSnapshotSTR = async (id) => {
@@ -1681,8 +1691,11 @@ const acceptRejectSTR = async (id, accept) => {
  * API to accept/reject a new thesis request, Used only for secretaries users.
  * @param {int} id id of the thesis to update
  * @param {object} thesisProposalData object containing the new data of the proposal
- * @returns {{ status: code }} //return of the API if no errors occur
- * @returns {{ status: code, error: err}} //return of the API if errors occur
+ * 
+ * returns {{ status: code }} //return of the API if no errors occur
+ * 
+ * returns {{ status: code, error: err}} //return of the API if errors occur
+ * 
  * Possible values for status: [200 (ok),400 (bad request), 401 (unauthorized), 404 (non found), 500 (server error)]
  */
 

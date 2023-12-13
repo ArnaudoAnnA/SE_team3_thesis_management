@@ -4,7 +4,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 /*npm install dayjs @mui/x-date-pickers @mui/material @emotion/styled @emotion/react    --save */
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button,Alert, Container, Row, Col } from 'react-bootstrap';
@@ -21,6 +21,7 @@ import { userContext } from '../Utils';
 function InsertStudentProposal(props) {
 
 
+  const date = props.date;
   const user = useContext(userContext);
   const navigate = useNavigate();
   const types = [
@@ -53,9 +54,7 @@ function InsertStudentProposal(props) {
   const [inputErrorType, setInputErrorType] = useState(false);
   const [inputErrorDescription, setInputErrorDescription] = useState(false);
   const [inputErrorName, setInputErrorName] = useState(false);
-  const [inputErrorProgrammes, setInputErrorProgrammes] = useState(false);
   const [note, setNot] = useState('');
-  const [pname, setpName] = useState('');
   const [profname, setprofname] = useState('');
   const [type, setType] = useState('');
   const [description, setDesc] = useState('')
@@ -66,16 +65,6 @@ function InsertStudentProposal(props) {
 
   useEffect(() => {
     const now = dayjs();
-    API.getDegree()
-    .then((d) => {
-  
-      setDeg(d);
-    })
-    .catch((e) => {
-      console.error("Error API:", e);
-
-    });
-    
     
     API.getTecher().then((e)=> setValues(e))
 
@@ -122,14 +111,6 @@ function InsertStudentProposal(props) {
       window.scrollTo(0, 0);
 
 
-    } 
-    if (pname === '') {
-
-      setErrorMsg('Check required fields!');
-      window.scrollTo(0, 0);
-      setInputErrorProgrammes(true);
-
-
     }  
 
   
@@ -144,7 +125,7 @@ function InsertStudentProposal(props) {
       userId: ${user.id}
       description: ${description}
       title: ${title}
-      requestDate: ${dayjs().format("YYYY/MM/DD")}
+      requestDate: ${date}
       errorMsg: ${errorMsg} 
        `);
 
@@ -158,7 +139,7 @@ function InsertStudentProposal(props) {
         studentId: user.id,
         teacherId: profname.id,   
         title: title,
-        requestDate: dayjs().format("YYYY/MM/DD"),
+        requestDate: date,
         approved: false,
       };
       
@@ -284,28 +265,7 @@ function InsertStudentProposal(props) {
                       ))}
 
                     </select>
-                  </div>
-                    <div className="form-group input-group" style={{ marginTop: "4px", marginBottom: "2px" }}>
-                      <div className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Cds/Programmes, this field is required">
-                        <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight:"1vw", color: inputErrorProgrammes ? "red": undefined}} width="16" height="16" fill="currentColor" className="bi bi-person-video3" viewBox="0 0 16 16">
-                          <path d="M14 9.5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm-6 5.7c0 .8.8.8.8.8h6.4s.8 0 .8-.8-.8-3.2-4-3.2-4 2.4-4 3.2Z" />
-                          <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h5.243c.122-.326.295-.668.526-1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v7.81c.353.23.656.496.91.783.059-.187.09-.386.09-.593V4a2 2 0 0 0-2-2H2Z" />
-                        </svg>
-                      </div>
-                    <select
-                      style={{ borderRadius: "6px", borderColor: inputErrorProgrammes ? "red": undefined  }}
-                      className="form-control"
-                      onClick={()=> {setInputErrorProgrammes(false)}}
-                      value={pname}
-                      onChange={ev => setpName(ev.target.value)}>
-                      <option  value="" disabled>--Insert Programmes-- *</option>
-                      {deg && Object.keys(deg).map((optionKey) => (
-                        <option key={deg[optionKey]} value={deg[optionKey]}>
-                          {deg[optionKey]}
-                        </option>
-                      ))}
-                    </select>
-                    </div>  
+                  </div> 
                     <div className="form-group input-group" style={{display: "flex", marginBottom: "2px", flexDirection: "column", flexWrap: "wrap"}}>
                       <p style={{ paddingTop: "2px", marginBottom: "1px", marginLeft: "auto", marginRight: "auto", fontWeight: "300" }}>Notes</p>
                         <textarea
