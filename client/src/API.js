@@ -1548,12 +1548,12 @@ const insertSTR = async (STRData) => {
 
   if (!validateSTRData(STRData)) {
     console.log("Validation failed: proposal data doesnt comply with required structure");
-    throw { status: 400, err: "Proposal data doesnt comply with required structure" };
+    return { status: 400, err: "Proposal data doesnt comply with required structure" };
   }
 
   //Check that the teachers id is an id inside the teachers table
   if (!await isTeacherById(STRData.teacherId)) {
-    throw { status: 400, err: "The proposed teacher is not present in our database" };
+    return { status: 400, err: "The proposed teacher is not present in our database" };
   }
   const student = await getUserById(STRData.studentId);
   console.log(student);
