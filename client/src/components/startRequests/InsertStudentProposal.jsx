@@ -139,14 +139,15 @@ function InsertStudentProposal(props) {
         studentId: user.id,
         teacherId: profname.id,   
         title: title,
+        programmes: "",
         requestDate: date,
-        approved: false,
+        approved: null,
       };
       
 
-      if (title !== ''  && description !== '' && profname !== '' && type !== '' && pname !== '' &&
-      title !== null  && description !== null && profname !== null && type !== null && pname !== null) {
-
+      if (title !== ''  && description !== '' && profname !== '' && type !== '' && 
+      title !== null  && description !== null && profname !== null && type !== null) {
+      console.log(user)
       API.insertSTR(predefinedSTRStructure)
         .then(successAlert)
         .catch((e)=> errorAlert(e));
@@ -162,7 +163,7 @@ function InsertStudentProposal(props) {
   };
    
 
-     
+  console.log(user)
       return (
         <Container>
           <Row className="my-3">

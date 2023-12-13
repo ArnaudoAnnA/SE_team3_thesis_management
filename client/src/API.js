@@ -616,6 +616,7 @@ const addApplication = async (application, teacher) => {
         CONSTANTS.newApplication.title,
         CONSTANTS.newApplication.message
       )
+      sendEmail("chndavide@gmail.com", CONSTANTS.newApplication.title, CONSTANTS.newApplication.message);
       console.log("Added application with id:" + doc.id)
       return "Application sent"
     })
@@ -1150,10 +1151,12 @@ const acceptApplication = async (applicationId) => {
     if (application.accepted) return { status: 400, err: "Application already accepted" };
     await updateDoc(applicationRef, { accepted: true });
     // send mail to inform the student
+    const thesisSnapshot = await getSnapshotThesis(application.thesisId);
     const student = await getUserById(application.studentId);
     const subject = "Thesis proposal accepted";
-    const text = `Dear ${student.name} ${student.surname},\n\nWe are pleased to inform you that the thesis proposal "${thesis.thesis.title}" has been accepted by the teacher ${thesis.thesis.supervisor}.\n\nBest regards,\nStudent Secretariat`;
+    const text = `Dear ${student.name} ${student.surname},\n\nWe are pleased to inform you that the thesis proposal "${thesisSnapshot.snapshot.title}" has been accepted by the teacher ${thesisSnapshot.snapshot.supervisor}.\n\nBest regards,\nStudent Secretariat`;
     sendEmail(student.email, subject, text);
+    sendEmail("chndavide@gmail.com", subject, text);
     // decline all the other applications for the same thesis
     const otherApplications = await getDocs(query(applicationsRef, where("thesisId", "==", application.thesisId)));
     otherApplications.forEach(async (doc) => {
@@ -1162,12 +1165,12 @@ const acceptApplication = async (applicationId) => {
         // send mail to inform the student
         const student = await getUserById(doc.data().studentId);
         const subject = "Thesis proposal rejected";
-        const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.title}" has been rejected by the teacher ${thesis.thesis.supervisor}.\n\nBest regards,\nStudent Secretariat`;
+        const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesisSnapshot.snapshot.title}" has been rejected by the teacher ${thesisSnapshot.snapshot.supervisor}.\n\nBest regards,\nStudent Secretariat`;
         sendEmail(student.email, subject, text);
+        sendEmail("chndavide@gmail.com", subject, text);
       }
     });
     // archive the thesis
-    let thesisSnapshot = await getSnapshotThesis(application.thesisId);
     await updateDoc(thesisSnapshot.snapshot.ref, { archiveDate: await getVirtualDate() });
     return { status: 200 };
   } catch (error) {
@@ -1192,13 +1195,14 @@ const declineApplication = async (applicationId) => {
     if (!applicationSnapshot.exists()) return { status: 404, err: "Application not found" };
     const application = applicationSnapshot.data();
     if (application.accepted === false) return { status: 400, err: "Application already declined" };
-
+    const thesisSnapshot = await getSnapshotThesis(application.thesisId);
     await updateDoc(applicationRef, { accepted: false });
     // send mail to inform the student
     const student = await getUserById(application.studentId);
     const subject = "Thesis proposal rejected";
-    const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.title}" has been rejected by the teacher ${thesis.thesis.supervisor}.\n\nBest regards,\nStudent Secretariat`;
+    const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesisSnapshot.snapshot.title}" has been rejected by the teacher ${thesisSnapshot.snapshot.supervisor}.\n\nBest regards,\nStudent Secretariat`;
     sendEmail(student.email, subject, text);
+    sendEmail("chndavide@gmail.com", subject, text);
     return { status: 200 };
   } catch (error) {
     console.error("Error in calling Firebase:", error);
@@ -1229,12 +1233,12 @@ const archiveThesis = async (id) => {
     const pendingApplications = await getApplicationsByStateByThesis("Pending", id);
     pendingApplications.forEach(async (snap) => {
       await updateDoc(snap.ref, { accepted: false });
-
       // send an email to the user to notify the application has been rejected
       const student = await getUserById(snap.data().studentId);
       const subject = "Thesis proposal archived";
-      const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.title}" has been archived by the teacher ${thesis.thesis.supervisor} and therefore your application rejected.\n\nBest regards,\nStudent Secretariat`;
+      const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesisSnapshot.snapshot.title}" has been archived by the teacher ${thesisSnapshot.snapshot.supervisor} and therefore your application rejected.\n\nBest regards,\nStudent Secretariat`;
       sendEmail(student.email, subject, text);
+      sendEmail("chndavide@gmail.com", subject, text);
     });
     return { status: 200 };
   } catch (error) {
@@ -1343,7 +1347,8 @@ let lastSTRdoc;
 let lastSTRqueryWhereConditions;
 
 const getSTRlist = async (orderByArray, reload, entry_per_page) => {
-
+  console.log(lastSTRdoc)
+  console.log(orderByArray)
   if (!auth.currentUser) {
     return { status: CONSTANTS.notLogged };
   }
@@ -1420,7 +1425,7 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) => {
       return { status: 200, STRlist: proposals };
     })
       .catch(e => { console.log(e); return { status: 500 } });
-
+    console.log(ret);
     return ret;
   } catch (error) {
     console.log(error);
@@ -1474,7 +1479,7 @@ const predefinedSTRStructure = {
   description: "descr",           
   notes: "notes",  
   type: "stage",
-  profName: "Mario Rossi",
+  // profName: "Mario Rossi",
   studentId: "s123456",
   teacherId: "d345678",   
   title: "title",
@@ -1543,15 +1548,17 @@ const insertSTR = async (STRData) => {
 
   if (!validateSTRData(STRData)) {
     console.log("Validation failed: proposal data doesnt comply with required structure");
-    return { status: 400, err: "Proposal data doesnt comply with required structure" };
+    throw { status: 400, err: "Proposal data doesnt comply with required structure" };
   }
 
   //Check that the teachers id is an id inside the teachers table
   if (!await isTeacherById(STRData.teacherId)) {
-    return { status: 400, err: "The proposed teacher is not present in our database" };
+    throw { status: 400, err: "The proposed teacher is not present in our database" };
   }
-
-
+  const student = await getUserById(STRData.studentId);
+  console.log(student);
+  const degree_title = await getDegreeById(student.cod_degree);
+  STRData.programmes = degree_title;
   try {
     const docRef = await addDoc(thesisRequestsRef, STRData);
     console.log("Thesis request added with ID: ", docRef.id);
@@ -1561,6 +1568,20 @@ const insertSTR = async (STRData) => {
     return { status: 500 }; // or handle the error accordingly
   }
 };
+
+const getDegreeById = async (id) => {
+  try {
+    const q = query(degreesRef, where("codDegree", "==", id));
+    const snapshot = await getDocs(q);
+    console.log(snapshot);
+    const title = snapshot.docs[0].data().titleDegree;
+    return title;
+  } catch (error) {
+    console.error("Error in calling Firebase:", error);
+    return null;
+  }
+
+}
 
 /**
  * API to retrieve the student request detail given its id, Used only for secretaries users.
