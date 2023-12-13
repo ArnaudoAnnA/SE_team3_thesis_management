@@ -1349,7 +1349,7 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) =>
         whereConditions.push(where("teacherId", "==", thisTeacherId));
       }*/
 
-      /*
+      /* ATTENTION: this code has been commented out because of it makes uneffective the ordering
       // show only STR from the past
       whereConditions.push(orderBy("requestDate"));
       whereConditions.push(where("requestDate", "<=", await getVirtualDate())); 
@@ -1426,7 +1426,7 @@ const getSTRlistLength = async () =>
     whereConditions.push(where("teacherId", "==", thisTeacherId));
   }*/
 
-  /*
+  /* ATTENTION: this code has been commented out because of it makes uneffective the ordering
   // show only STR from the past
   whereConditions.push(where("requestDate", "<=", await getVirtualDate()));      //TO DO: check if the field name is correct
   */

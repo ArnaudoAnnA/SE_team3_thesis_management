@@ -1,62 +1,60 @@
 # Edit thesis proposal
 
-This file contains a report about the FE testing on the procedure of editing an already-present thesis proposal.
+This file contains a report about the FE manual testing on the procedure of editing an already-present thesis proposal.
 
-# Teachers view
+# Teacher's Home page
 
-The accept/decline applications component should be accesible only by teachers so we are going to try to access it using the teacher account and look through the applications to our thesis proposals.
+The edit button component should be accesible only by teachers in their own thesis' details page. So, logging using valid theacher's credetial is mandatory.
 
-Results:
+Then, we click on the thesis we want to edit. 
 
-When logged into the teacher account we can access the applications section by clicking in the navigation bar. 
+![Screenshot](./screenshots_editProposal/teacherAccessThesisDetails.png)
 
-![Screenshot](./screenshots_accept/main.png)
+## Thesis details
 
-A new page appears and we can see the Pending, Accepted and Rejected student applications. 
+In the top-right corner we can see a combobox "edit" allowing to perform different action to the displayed thesis: click on update.
 
-![Screenshot](./screenshots_accept/pending.png)
-![Screenshot](./screenshots_accept/accepted.png)
-![Screenshot](./screenshots_accept/rejected.png)
+![Screenshot](./screenshots_editProposal/editCombobox.png)
 
-## Application details
+## Edit page
 
-By clicking on each student we can access the details of its application. 
+We are then displayed with a form allowing to modify all the details displayed in the previous page.
 
-![Screenshot](./screenshots_accept/studentDetails.png)
+![Screenshot](./screenshots_editProposal/editProposal.png)
 
-If we click on a pending application, its details and 2 buttons to Accept/decline the application are shown
-![Screenshot](./screenshots_accept/decision.png)
+We can edit the description by typing "FE test".
 
-## Accepting/declining an application
 
-Using the buttons we can accept or decline the application, which appears in the corresponding section after accepting/declining it. (For this test we are going to accept an application)
 
-![Screenshot](./screenshots_accept/decision2.png)
+## Saving changes
 
-In this case, the application coming from Simone Marino for the "Autonomous Robot Navigation using Machine Learning" thesis that we accepted is shown in the accepted applications.
+We just click on the corresponding button:
 
-![Screenshot](./screenshots_accept/result.png)
+![Screenshot](./screenshots_editProposal/updateProposalButton.png)
 
-## Back to all applications
+We are then back to the home page, and a success message is displayed. We can close it with a click on "Ok".
+We can open again the thesis details page and check the modified description.
 
-In this test we are going to try going back to the applications with the back button.
+![Screenshot](./screenshots_editProposal/finishedAlert.png)
+![Screenshot](./screenshots_editProposal/updateResult.png)
 
-RESULTS:
-![Screenshot](./screenshots_accept/back.png)
-![Screenshot](./screenshots_accept/accepted.png)
+## Discard changes
+
+We go again in the edit thesis page and we delete "FE test" from the description.
+After that, we click on the "Discard changes"button, in the right-bottom corner. 
+
+![Screenshot](./screenshots_editProposal/discardChangesButton.png)
+
+We are prompted out from the edit thesis page. We are automatically redirected to the thesis details page, where 
+we can find the info unmodified.
 
 # Mobile CSS Testing
-
-In this part there's a test regarding the mobile part of the application into 3 devices:
-- Galaxy Fold
-- iPad Air
-- iPhone 12
-
 The CSS is responsive and it adapts in the different dimensions of the devices:
 
 ### Galaxy fold
-![Screenshot](./screenshots_accept/galaxy_fold.png)
+![Screenshot](./screenshots_editProposal/galaxyFold_editButton.png)
+![Screenshot](./screenshots_editProposal/galaxyFold_updateProposal.png)
 ### iPad Air
-![Screenshot](./screenshots_accept/ipad_air.png)
-### iPhone 12
-![Screenshot](./screenshots_accept/iphone_12.png)
+![Screenshot](./screenshots_editProposal/ipadAir_editButton.png)
+![Screenshot](./screenshots_editProposal/ipadAir_updateProposal.png)
+
