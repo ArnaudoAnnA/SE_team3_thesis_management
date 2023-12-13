@@ -244,6 +244,22 @@ const thesisProposals = [
     "expirationDate": "2024-12-10T09:00:00.000Z",
     "archiveDate": "2024-06-10T09:00:00.000Z",
     "id": 29
+  },
+  {
+    "keywords": ["keyword30", "tag30"],
+    "description": "Description for Thesis Proposal 30",
+    "coSupervisors": ["alice@example.com", "d567890@polito.it"],
+    "level": "bachelor",
+    "groups": ["FM", "METENG"],
+    "requiredKnowledge": "Required knowledge for Thesis Proposal 30",
+    "teacherId": "d345678",
+    "title": "THESIS DEMO 3",
+    "type": "academic research",
+    "programmes": "Engineering in Electrical Engineering",
+    "notes": "Additional notes for Thesis Proposal 30",
+    "expirationDate": "2024-12-10T09:00:00.000Z",
+    "archiveDate": "2024-06-10T09:00:00.000Z",
+    "id": 30
   }
 ]
 
