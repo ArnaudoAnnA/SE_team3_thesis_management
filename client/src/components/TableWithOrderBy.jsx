@@ -114,6 +114,9 @@ function TableWithOrderBy(props)
             <thead>
                 <tr>
                     {
+                        console.log(data)
+                    }
+                    {
                         columns.map( col => <InteractiveTh key={col.title} col={col} orderBy={props.orderBy} orderByField={props.orderByField} isArray={data && data[0] ? Array.isArray(data[0][col.DBfield]) : false}/>)
                     }
                 <th style={{width: "1px"}}></th><th style={{width: "1px"}}></th>

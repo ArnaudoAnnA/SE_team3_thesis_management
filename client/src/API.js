@@ -1348,7 +1348,8 @@ let lastSTRdoc;
 let lastSTRqueryWhereConditions;
 
 const getSTRlist = async (orderByArray, reload, entry_per_page) => {
-
+  console.log(lastSTRdoc)
+  console.log(orderByArray)
   if (!auth.currentUser) {
     return { status: CONSTANTS.notLogged };
   }
@@ -1425,7 +1426,7 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) => {
       return { status: 200, STRlist: proposals };
     })
       .catch(e => { console.log(e); return { status: 500 } });
-
+    console.log(ret);
     return ret;
   } catch (error) {
     console.log(error);
@@ -1479,7 +1480,7 @@ const predefinedSTRStructure = {
   description: "descr",           
   notes: "notes",  
   type: "stage",
-  profName: "Mario Rossi",
+  // profName: "Mario Rossi",
   studentId: "s123456",
   teacherId: "d345678",   
   title: "title",
@@ -1548,15 +1549,17 @@ const insertSTR = async (STRData) => {
 
   if (!validateSTRData(STRData)) {
     console.log("Validation failed: proposal data doesnt comply with required structure");
-    return { status: 400, err: "Proposal data doesnt comply with required structure" };
+    throw { status: 400, err: "Proposal data doesnt comply with required structure" };
   }
 
   //Check that the teachers id is an id inside the teachers table
   if (!await isTeacherById(STRData.teacherId)) {
-    return { status: 400, err: "The proposed teacher is not present in our database" };
+    throw { status: 400, err: "The proposed teacher is not present in our database" };
   }
-
-
+  const student = await getUserById(STRData.studentId);
+  console.log(student);
+  const degree_title = await getDegreeById(student.cod_degree);
+  STRData.programmes = degree_title;
   try {
     const docRef = await addDoc(thesisRequestsRef, STRData);
     console.log("Thesis request added with ID: ", docRef.id);
@@ -1566,6 +1569,20 @@ const insertSTR = async (STRData) => {
     return { status: 500 }; // or handle the error accordingly
   }
 };
+
+const getDegreeById = async (id) => {
+  try {
+    const q = query(degreesRef, where("codDegree", "==", id));
+    const snapshot = await getDocs(q);
+    console.log(snapshot);
+    const title = snapshot.docs[0].data().titleDegree;
+    return title;
+  } catch (error) {
+    console.error("Error in calling Firebase:", error);
+    return null;
+  }
+
+}
 
 /**
  * API to retrieve the student request detail given its id, Used only for secretaries users.
