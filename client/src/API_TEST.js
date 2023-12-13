@@ -39,7 +39,7 @@ const insert_unique_test = async function test (id) {
   const obj = {
     user: "Hello"
   };
-  const colRef = collection(db, "asd")
+
   const docRef = doc(db, "students", id)
   try {
     await setDoc(docRef, obj)
@@ -85,7 +85,7 @@ const get_test_2 = async function get_test () {
 }
 
 const delete_test = async function delete_test (id) {
-  const colRef = collection(db, "asd")
+  
   const docRef = doc(db, "students", id)
   try {
     await deleteDoc(docRef)

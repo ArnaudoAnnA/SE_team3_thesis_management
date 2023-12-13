@@ -965,8 +965,7 @@ const titleAlreadyExist = async (thesis, mode, thesisId) => {
     thesisExists = thesisList.filter(t => t.id !== Number(thesisId)).find(t => t.title === thesis.title);
   }
 
-  if (thesisExists) return true;
-  return false;
+  return (thesisExists != undefined && thesisExists != []);
 }
 
 const validateThesisProposalData = (thesisProposalData) => {
@@ -1342,13 +1341,12 @@ let lastSTRdoc;
 let lastSTRqueryWhereConditions;
 
 const getSTRlist = async (orderByArray, reload, entry_per_page) => {
-  //return {status: 200, STRlist: thesis};
 
   if (!auth.currentUser) {
     return { status: CONSTANTS.notLogged };
   }
 
-  //if (await isStudent(auth.currentUser.email)) return CONSTANTS.unauthorized;
+  if (await isStudent(auth.currentUser.email)) return CONSTANTS.unauthorized;
 
   let whereConditions = [];
   let q;
@@ -1429,13 +1427,12 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) => {
 }
 
 const getSTRlistLength = async () => {
-  //return {status: 200, length: thesis.length};
 
   if (!auth.currentUser) {
     return { status: CONSTANTS.notLogged };
   }
 
-  //if (await isStudent(auth.currentUser.email)) return CONSTANTS.unauthorized;
+  if (await isStudent(auth.currentUser.email)) return CONSTANTS.unauthorized;
 
   /*------------QUERY PREPARATION ----------*/
   let whereConditions = [];
@@ -1713,7 +1710,6 @@ const updateProposal = async (id, thesisProposalData) => {
     const qThesis = query(thesisProposalsRef, whereId);
     const thesisSnapshot = await getDocs(qThesis);
     if (thesisSnapshot.empty) return { status: 404, error: "Thesis not found" };
-    const thesis = thesisSnapshot.docs[0].data();
 
     if (await titleAlreadyExist(thesisProposalData, "update", id)) {
       return { status: 400, error: "A thesis with this title already exists" };
