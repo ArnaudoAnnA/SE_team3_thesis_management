@@ -9,6 +9,24 @@ const applications = [
     "teacherId": "d123456"
   },
   {
+    "studentId": "s345678",
+    "accepted": null,
+    "date": "2022-12-05T16:40:00.000Z",
+    "thesisId": 0,
+    "curriculum": null,
+    "thesisTitle": "Instrumenting Kubernetes 5G services with eBPF probes",
+    "teacherId": "d123456"
+  },
+  {
+    "studentId": "s678901",
+    "accepted": false,
+    "date": "2022-12-05T16:40:00.000Z",
+    "thesisId": 0,
+    "curriculum": null,
+    "thesisTitle": "Instrumenting Kubernetes 5G services with eBPF probes",
+    "teacherId": "d123456"
+  },
+  {
     "curriculum": null,
     "date": "2023-02-20T09:45:00.000Z",
     "accepted": null,
