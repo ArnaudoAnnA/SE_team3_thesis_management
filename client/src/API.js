@@ -121,7 +121,7 @@ const signUp = async (email, password) => {
 const logIn = async (email, password) => {
   await signInWithEmailAndPassword(auth, email, password)
     .then((userCredentials) => {
-      console.log(userCredentials)
+      if (!DEBUG) console.log(userCredentials)
       return userCredentials
     })
     .catch((error) => {
@@ -142,7 +142,7 @@ const loginWithSaml = () => {
 
 const logOut = async () => {
   signOut(auth).then(() => {
-    console.log("signed out")
+    if (!DEBUG) console.log("signed out")
   }).catch((error) => {
     console.log(error)
   })
@@ -1742,7 +1742,7 @@ const API = {
   getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField, getTecher,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser, loginWithSaml,
-  addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplicationsForProfessor, getApplicationDetails, getCVOfApplication, acceptApplication, declineApplication,
+  addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplicationsForProfessor, getApplicationDetails, getCVOfApplication, acceptApplication, declineApplication, getApplicationsByStateByThesis,
   removeAllProposals, insertProposal, archiveThesis, deleteProposal, updateProposal,
   getApplicationsForStudent, getDegree,
   getSTRlist, getSTRlistLength, insertSTR, predefinedSTRStructure, getSTRWithId, acceptRejectSTR,
