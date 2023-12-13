@@ -87,7 +87,7 @@ async function deleteQueryBatch(q, resolve) {
 /* ---------------------------------------------------------------------- */
 
 // Delete all collections
-/* await deleteCollection(db, "date");
+await deleteCollection(db, "date");
 await deleteCollection(db, "students");
 await deleteCollection(db, "applications");
 await deleteCollection(db, "career");
@@ -106,7 +106,7 @@ await populateCollection(db, careers, 'career');
 await populateCollection(db, applications, 'applications');
 await populateCollection(db, thesisProposals, 'thesisProposals');
 await populateCollection(db, thesisRequests, 'thesisRequests');
-await populateCollectionWithCustomId(db, secretaries, 'secretaries'); */
+await populateCollectionWithCustomId(db, secretaries, 'secretaries');
 
 /* --------------------------------------------------------------------- */
 
@@ -115,21 +115,21 @@ await populateCollectionWithCustomId(db, secretaries, 'secretaries'); */
 
 
 // Delete all collections
-await deleteCollection(db, "test-students");
-await deleteCollection(db, "test-applications");
-await deleteCollection(db, "test-career");
-await deleteCollection(db, "test-degrees");
-await deleteCollection(db, "test-teachers");
-await deleteCollection(db, "test-thesisProposals");
-await deleteCollection(db, "test-thesisRequests");
-await deleteCollection(db, "test-secretaries");
+// await deleteCollection(db, "test-students");
+// await deleteCollection(db, "test-applications");
+// await deleteCollection(db, "test-career");
+// await deleteCollection(db, "test-degrees");
+// await deleteCollection(db, "test-teachers");
+// await deleteCollection(db, "test-thesisProposals");
+// await deleteCollection(db, "test-thesisRequests");
+// await deleteCollection(db, "test-secretaries");
 
 // Import data to firestore
-await populateCollection(db, students, 'test-students');
-await populateCollection(db, teachers, 'test-teachers');
-await populateCollection(db, degrees, 'test-degrees');
-await populateCollection(db, careers, 'test-career');
-await populateCollection(db, applications, 'test-applications');
-await populateCollection(db, thesisProposals, 'test-thesisProposals');
-await populateCollection(db, thesisRequests, 'test-thesisRequests');
-await populateCollectionWithCustomId(db, secretaries, 'test-secretaries');
+// await populateCollection(db, students, 'test-students');
+// await populateCollection(db, teachers, 'test-teachers');
+// await populateCollection(db, degrees, 'test-degrees');
+// await populateCollection(db, careers, 'test-career');
+// await populateCollection(db, applications, 'test-applications');
+// await populateCollection(db, thesisProposals, 'test-thesisProposals');
+// await populateCollection(db, thesisRequests, 'test-thesisRequests');
+// await populateCollectionWithCustomId(db, secretaries, 'test-secretaries');
