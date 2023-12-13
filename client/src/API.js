@@ -1314,6 +1314,8 @@ const getApplicationsByStateByThesis = async (state, id) => {
     stateValue = true;
   } else if (state === "Rejected") {
     stateValue = false;
+  } else if (state === "Cancelled") {
+    stateValue = "Cancelled";
   }
 
   //SELECT snapshot(A)
