@@ -27,7 +27,7 @@ const firebaseConfig = {
   appId: "1:30091770849:web:ba560e3f3a2a0769c2b0a0"
 };
 
-const DEBUG = false;
+const DEBUG = true;
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -1224,7 +1224,7 @@ const archiveThesis = async (id) => {
     const thesisSnapshot = await getSnapshotThesis(id);
     console.log(thesisSnapshot.snapshot)
 
-    if (thesisSnapshot.snapshot.ref == null) return { status: 404, err: "Thesis not found" };
+    if (thesisSnapshot.status == 404) return { status: 404, err: "Thesis not found" };
     await updateDoc(thesisSnapshot.snapshot.ref, { archiveDate: dayjs(await getVirtualDate()).toISOString() });
     // decline all the applications for the thesis
     const pendingApplications = await getApplicationsByStateByThesis("Pending", id);
