@@ -1467,16 +1467,17 @@ const getSTRlistLength = async () => {
 
 const predefinedSTRStructure = {
 
-  acceptanceDate: "",
-  description: "descr",
-  notes: "notes",
+  approvalDate: "",     
+  description: "descr",           
+  notes: "notes",  
   type: "stage",
   profName: "Mario Rossi",
   studentId: "s123456",
-  profId: "d345678",
+  teacherId: "d345678",   
   title: "title",
   requestDate: "YYYY/MM/DD",
   approved: false,
+  programmes: "programmes"
 };
 
 
@@ -1502,7 +1503,7 @@ function validateSTRData(STRData) {
   //null values validation
   const keys = Object.keys(STRData);
   for (const key of keys) {
-    if ((key !== 'notes' || key != 'acceptanceDate') && STRData[key] === null) {
+    if ((key !== 'notes' || key != 'approvalDate') && STRData[key] === null) {
       console.log("part3")
       return false;
     }
@@ -1511,16 +1512,17 @@ function validateSTRData(STRData) {
 }
 
 /**
- * @param {{acceptanceDate: string,     
+ * @param {{approvalDate: string,     
  * description: string,           
  * notes: string,  
  * type: string,
  * profName: string,   
  * studentId: string,
- * profId: string,   
+ * teacherId: string,   
  * title: string,
  * requestDate: dayjs.format("YYYY/MM/DD"),
  * approved: boolean
+ * programmes: string
  * }} STRData 
  * @returns
  */
@@ -1531,7 +1533,7 @@ const insertSTR = async (STRData) => {
   if (!(await isStudent(auth.currentUser.email))) return { status: 401, err: "User is not a student" };
 
   /*STRData.studentId = user.id;
-  STRData.acceptanceDate = "";
+  STRData.approvalDate = "";
   STRData.requestDate = dayjs.format("YYYY/MM/DD");
   STRData.approved = false;*/
 
@@ -1542,7 +1544,7 @@ const insertSTR = async (STRData) => {
   }
 
   //Check that the teachers id is an id inside the teachers table
-  if (!await isTeacherById(STRData.profId)) {
+  if (!await isTeacherById(STRData.teacherId)) {
     return { status: 400, err: "The proposed teacher is not present in our database" };
   }
 
@@ -1583,7 +1585,7 @@ const getSTRWithId = async (id) => {
       let teachers = teachersSnap.docs.map(doc => doc.data());
       let teacher = teachers.find(t => t.id == STR.teacherId);
       if (!teacher) return MessageUtils.createMessage(404, "error", "No teacher found");
-      STR.supervisor = teacher.name + ' ' + teacher.surname;
+      STR.supervisor = teacher.name + ' ' + teacher.surname + ', ' + teacher.id;
 
       //find the student's name and surname
       let studentsSnap = await getDocs(studentsRef);
@@ -1632,7 +1634,7 @@ const getSnapshotSTR = async (id) => {
  * @param {boolean} accept true to accept, false to reject
  * @returns {{ status: code }} //return of the API if no errors occur
  * @returns {{ status: code, error: err}} //return of the API if errors occur
- * Possible values for status: [200 (ok),400 (already accepted/rejected), 401 (unauthorized), 404 (non found), 500 (server error)]
+ * Possible values for status: [200 (ok),400 (already approved/rejected), 401 (unauthorized), 404 (non found), 500 (server error)]
  */
 
 const acceptRejectSTR = async (id, accept) => {

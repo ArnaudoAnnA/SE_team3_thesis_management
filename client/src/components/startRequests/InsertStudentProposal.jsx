@@ -151,13 +151,12 @@ function InsertStudentProposal(props) {
 
        const predefinedSTRStructure = {   
 
-        acceptanceDate: "",     
+        approvalDate: "",     
         description: description,           
         notes: note,  
-        type: type,
-        profName: profname.name + ' ' + profname.surname,   
+        type: type, 
         studentId: user.id,
-        profId: profname.id,   
+        teacherId: profname.id,   
         title: title,
         requestDate: dayjs().format("YYYY/MM/DD"),
         approved: false,
