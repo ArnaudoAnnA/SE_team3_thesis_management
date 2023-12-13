@@ -31,10 +31,8 @@ function STRManagement(props) {
   const FIELDS = [
     { DBfield: "supervisor", title: "Supervisor" },
     { DBfield: "requestDate", title: "Request date" },
-    //{ DBfield: "coSupervisors", title: "Co-supervisors" },
+    { DBfield: "type", title: "Type" },
     { DBfield: "programmes", title: "Programmes" },
-    //{ DBfield: "type", title: "Type" },
-   // { DBfield: "level", title: "Level" },
   ];
 
   const { id } = useParams();
