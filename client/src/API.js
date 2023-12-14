@@ -1154,9 +1154,9 @@ const acceptApplication = async (applicationId) => {
     const thesisSnapshot = await getSnapshotThesis(application.thesisId);
     const student = await getUserById(application.studentId);
     const subject = "Thesis proposal accepted";
-    const text = `Dear ${student.name} ${student.surname},\n\nWe are pleased to inform you that the thesis proposal "${thesisSnapshot.snapshot.title}" has been accepted by the teacher ${thesisSnapshot.snapshot.supervisor}.\n\nBest regards,\nStudent Secretariat`;
-    sendEmail(student.email, subject, text);
-    sendEmail("chndavide@gmail.com", subject, text);
+    const text = `Dear ${student.name} ${student.surname},\n\nWe are pleased to inform you that your application for the thesis proposal "${thesisSnapshot.snapshot.data().title}" has been accepted.\n\nBest regards,\nStudent Secretariat`;
+    // sendEmail(student.email, subject, text);
+    sendEmail("vincenzo.cosi96@gmail.com", subject, text);
     // decline all the other applications for the same thesis
     const otherApplications = await getDocs(query(applicationsRef, where("thesisId", "==", application.thesisId)));
     otherApplications.forEach(async (doc) => {
@@ -1165,7 +1165,7 @@ const acceptApplication = async (applicationId) => {
         // send mail to inform the student
         const student = await getUserById(doc.data().studentId);
         const subject = "Thesis proposal rejected";
-        const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesisSnapshot.snapshot.title}" has been rejected by the teacher ${thesisSnapshot.snapshot.supervisor}.\n\nBest regards,\nStudent Secretariat`;
+        const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that your application for the thesis proposal "${thesisSnapshot.snapshot.data().title}" has been rejected.\n\nBest regards,\nStudent Secretariat`;
         sendEmail(student.email, subject, text);
         sendEmail("chndavide@gmail.com", subject, text);
       }
@@ -1200,7 +1200,7 @@ const declineApplication = async (applicationId) => {
     // send mail to inform the student
     const student = await getUserById(application.studentId);
     const subject = "Thesis proposal rejected";
-    const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesisSnapshot.snapshot.title}" has been rejected by the teacher ${thesisSnapshot.snapshot.supervisor}.\n\nBest regards,\nStudent Secretariat`;
+    const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that your application for the thesis proposal "${thesisSnapshot.snapshot.data().title}" has been rejected.\n\nBest regards,\nStudent Secretariat`;
     sendEmail(student.email, subject, text);
     sendEmail("chndavide@gmail.com", subject, text);
     return { status: 200 };
@@ -1236,7 +1236,7 @@ const archiveThesis = async (id) => {
       // send an email to the user to notify the application has been rejected
       const student = await getUserById(snap.data().studentId);
       const subject = "Thesis proposal archived";
-      const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesisSnapshot.snapshot.title}" has been archived by the teacher ${thesisSnapshot.snapshot.supervisor} and therefore your application rejected.\n\nBest regards,\nStudent Secretariat`;
+      const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesisSnapshot.snapshot.data().title}" has been archived and therefore your application rejected.\n\nBest regards,\nStudent Secretariat`;
       sendEmail(student.email, subject, text);
       sendEmail("chndavide@gmail.com", subject, text);
     });
@@ -1278,14 +1278,14 @@ const deleteProposal = async (id) => {
       // send an email to the user to notify the application has been cancelled
       const student = await getUserById(snap.data().studentId);
       const subject = "Thesis proposal cancelled";
-      const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed by the teacher ${thesis.thesis.supervisor} and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;
+      const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.data().title}" has been removed and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;
       sendEmail(student.email, subject, text);
     })
     //console.log(pendingApplications.length + " pending fatte");
 
     // debug_purpose
     if (pendingApplications.length > 0) {
-      sendEmail("chndavide@gmail.com", "Thesis proposal cancelled", `Dear Davide Chen,\n\n We regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed by the teacher ${thesis.thesis.supervisor} and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`)
+      sendEmail("chndavide@gmail.com", "Thesis proposal cancelled", `Dear Davide Chen,\n\n We regret to inform you that the thesis proposal "${thesis.thesis.data().title}" has been removed and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`)
     }
 
 
