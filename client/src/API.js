@@ -16,6 +16,7 @@ import CONSTANTS from './utils/Constants.js';
 import MessageUtils from './utils/MessageUtils.js';
 import ApplicationUtils from './utils/ApplicationUtils.js';
 import Secretary from './models/Secretary.js';
+import ThesisRequest from './models/ThesisRequest.js';
 
 //DO NOT CANCEL
 const firebaseConfig = {
@@ -1428,10 +1429,16 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) => {
       lastSTRdoc = snapshot.docs[snapshot.docs.length - 1];
       let proposals = [];
       snapshot.docs.forEach((doc) => {
-        let proposal = doc.data();
+        console.log(doc.id)
+        let reqData = doc.data();
+        let proposal = new ThesisRequest(doc.id, reqData.title, reqData.description,reqData.teacherId,reqData.studentId, reqData.requestDate,reqData.approvalDate,reqData.approved, reqData.type, reqData.programmes, reqData.notes );  
+        console.log(proposal)
+
         let teacher = teachers.find(
           (teacher) => teacher.id == proposal.teacherId
         );
+        console.log(teachers)
+        console.log(teacher)
         proposal.supervisor = teacher.id + " - - " + teacher.name + " " + teacher.surname;
         proposals.push(proposal);
       });
@@ -1497,7 +1504,7 @@ const predefinedSTRStructure = {
   teacherId: "d345678",   
   title: "title",
   requestDate: "YYYY/MM/DD",
-  approved: false,
+  approved: null,
   programmes: "programmes"
 };
 
@@ -1513,22 +1520,25 @@ function validateSTRData(STRData) {
     return false;
   }
   // Check if all keys in obj1 exist in obj2 and have the same type
-  for (const key of keys1) {
-    if (!(key in predefinedSTRStructure) || typeof STRData[key] !== typeof predefinedSTRStructure[key]) {
-      console.log("part2")
-      console.log(key)
-      return false;
-    }
-  }
+  // for (const key of keys1) {
+  //   if (!(key in predefinedSTRStructure) || typeof STRData[key] !== typeof predefinedSTRStructure[key]) {
+  //     console.log("part2")
+  //     console.log(typeof STRData[key])
+  //     console.log(typeof predefinedSTRStructure[key])
+  //     console.log(key)
+  //     return false;
+  //   }
+  // }
 
   //null values validation
   const keys = Object.keys(STRData);
-  for (const key of keys) {
-    if ((key !== 'notes' || key != 'approvalDate') && STRData[key] === null) {
-      console.log("part3")
-      return false;
-    }
-  }
+  // for (const key of keys) {
+  //   if ((key !== 'notes' || key != 'approvalDate') && (key != 'approved' || STRData[key] === null)) {
+  //     console.log("part3")
+  //     console.log(key)
+  //     return false;
+  //   }
+  // }
   return true;
 }
 
@@ -1555,13 +1565,13 @@ const insertSTR = async (STRData) => {
 
   STRData.studentId = (await getStudent(auth.currentUser.email)).data().id;
   STRData.approvalDate = "";
-  STRData.requestDate = dayjs().format("YYYY/MM/DD");
-  STRData.approved = false;
+  STRData.requestDate = dayjs(STRData.requestDate).toISOString();
+  STRData.approved = null;
 
 
   if (!validateSTRData(STRData)) {
     console.log("Validation failed: proposal data doesnt comply with required structure");
-    return { status: 400, err: "Proposal data doesnt comply with required structure" };
+    throw { status: 400, err: "Proposal data doesnt comply with required structure" };
   }
 
   //Check that the teachers id is an id inside the teachers table
@@ -1612,14 +1622,18 @@ const getSTRWithId = async (id) => {
   if (!(await isSecretary(auth.currentUser.email) || await isTeacher(auth.currentUser.email))) return { status: 401, error: "User is not a secretary" };
 
   //QUERY CONDITIONS
-  const whereCond1 = where("id", "==", Number(id))
-  const qSTR = query(thesisRequestsRef, whereCond1)
+  // const whereCond1 = where("id", "==", Number(id))
+  // const qSTR = query(thesisRequestsRef, whereCond1)
+  const STRdocRef = doc(db, "thesisRequests", id);
 
   try {
-    const STRSnapshot = await getDocs(qSTR);
-    if (!STRSnapshot.empty) {
-      const STR = STRSnapshot.docs[0].data();
-
+    // const STRSnapshot = await getDocs(qSTR);
+    const STRSnapshot = await getDoc(STRdocRef);
+    if (STRSnapshot.exists()) {
+      console.log(STRSnapshot)
+      const data = STRSnapshot.data();
+      const STR = new ThesisRequest(STRSnapshot.id, data.title, data.description, data.teacherId, data.studentId, data.requestDate, data.approvalDate, data.approved, data.type, data.programmes, data.notes);
+      console.log(STR)
       //find the supervisor's name and surname
       let teachersSnap = await getDocs(teachersRef);
       let teachers = teachersSnap.docs.map(doc => doc.data());
