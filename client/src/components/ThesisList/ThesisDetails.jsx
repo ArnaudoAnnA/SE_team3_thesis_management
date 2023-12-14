@@ -156,13 +156,14 @@ function ThesisDetails(props) {
 
         async function checkApplyTwice() {
             const app = await API.getApplication(user.id, id);
-            if ((typeof app) == "string") {
+            console.log(app)
+            if (app.status == 401) {
                 //unauthorized or notLogged
-                errorAlert(app);
+                errorAlert(app.error);
                 return;
             }
 
-            if (app) {
+            if (app.status == 200 && app.application != null) {
                 setAppliedTwice(true);
             } else {
                 setAppliedTwice(false);

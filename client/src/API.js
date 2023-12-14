@@ -605,9 +605,13 @@ const getThesisWithId = async (ID) => {
  */
 const addApplication = async (application, teacher) => {
 
-  if (!auth.currentUser) return CONSTANTS.notLogged;
+  if (!auth.currentUser){
+    throw MessageUtils.createMessage(401, "error", "Not logged in");
+  } 
 
-  if (!StringUtils.checkId(application.studentId, auth.currentUser.email)) return CONSTANTS.unauthorized;
+  if (!isStudent(auth.currentUser.email)) {
+    throw MessageUtils.createMessage(401, "error", "Unauthorized");
+  }
 
 
   try {
@@ -747,7 +751,7 @@ const getTitleAndTeacher = async (thesisId) => {
  */
 const getApplication = async (studentId, thesisId) => {
   if (auth.currentUser) {
-    if (StringUtils.checkId(studentId, auth.currentUser.email)) {
+    if (isStudent(auth.currentUser.email)) {
       const whereThesisId = where("thesisId", "==", Number(thesisId))
       const whereStudentId = where("studentId", "==", studentId)
 
@@ -760,18 +764,19 @@ const getApplication = async (studentId, thesisId) => {
           console.log("there is already a record")
           const app = applicationSnapshot.docs[0].data()
           const id = applicationSnapshot.docs[0].id
-          return new Application(id, app.studentId, app.thesisId, app.accepted, app.curriculum, app.date, app.teacherId, app.thesisTitle)
+          const application = new Application(id, app.studentId, app.thesisId, app.accepted, app.curriculum, app.date, app.teacherId, app.thesisTitle)
+          return MessageUtils.createMessage(200, "application", application)
         }
         console.log("No records")
-        return null
+        return MessageUtils.createMessage(404, "error", "No records found")
       } catch (error) {
         console.log(e)
       }
     } else {
-      return CONSTANTS.unauthorized
+      return MessageUtils.createMessage(401, "error", "Unauthorized")
     }
   } else {
-    return CONSTANTS.notLogged
+    return MessageUtils.createMessage(401, "error", "Not logged in")
   }
 }
 

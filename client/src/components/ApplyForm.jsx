@@ -91,13 +91,13 @@ function ApplyForm(props) {
 
     //Checks
     const app = await API.getApplication(user.id, id);
-    if((typeof app) == "string"){
+    if(app.status == 401){
         errorAlert(app);
         return;
     }
     console.log(app)
 
-    if (app) {
+    if (app.status != 404) {
         errorAlert("You can't apply at the same thesis twice");
     } else {
         const application = new Application(null, user.id, Number(id), null, file, props.virtualDate, teacher.id, title);
