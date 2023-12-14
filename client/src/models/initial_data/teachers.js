@@ -4,7 +4,7 @@ const teachers = [
     "cod_department": "GH789",
     "name": "Test",
     "surname": "Professor",
-    "cod_group": "FM",
+    "cod_group": "SOFTENG",
     "id": "d000000"
   },
   {
