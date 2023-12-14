@@ -1,5 +1,13 @@
 const teachers = [
   {
+    "email": "professore.team3@gmail.com",
+    "cod_department": "GH789",
+    "name": "Test",
+    "surname": "Professor",
+    "cod_group": "FM",
+    "id": "d000000"
+  },
+  {
     "email": "d234567@polito.it",
     "cod_department": "GH789",
     "name": "Alice",
