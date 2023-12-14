@@ -59,5 +59,26 @@ If a student forgots to fill the form and clicks on the "upload request" button,
 
 ![Tablet](./screenshots_insertRequest/insertStudentRequestFormNotFilledTablet.png)
 
-### Clicling on Upload Request with a title that is already present in the database of thesis proposals
+### Clicling on Upload Request with the form filled correctly
 
+![Alt text](./screenshots_insertRequest/formFilledCorrectly.png)
+
+![Alt text](./screenshots_insertRequest/confirmationScreen.png)
+
+Secretary view:
+
+#### Desktop
+
+![Desktop](./screenshots_insertRequest/insertStudentRequestFormFilledCorrectlyDesktop.png)
+
+#### Mobile
+
+![Mobile](./screenshots_insertRequest/insertStudentRequestFormFilledCorrectlyMobile.png)
+
+#### Tablet
+
+![Tablet](./screenshots_insertRequest/insertStudentRequestFormFilledCorrectlyTablet.png)
+
+## Conclusions
+
+The Insert Student Request component works as expected. The form is validated correctly and the user is notified if the form is not filled correctly. The form is responsive and works correctly in all the devices. 
