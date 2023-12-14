@@ -91,6 +91,14 @@ const isStudent = async (email) => {
   return snapshot.docs[0] ? true : false
 }
 
+const getStudent = async (email) =>
+{
+  const whereCond = where("email", "==", email)
+  const q = query(studentsRef, whereCond)
+  const snapshot = await getDocs(q);
+  return snapshot.docs[0];
+}
+
 /**
  * Return if the user is a teacher
  * @param id the id of the teacher
@@ -1540,10 +1548,10 @@ const insertSTR = async (STRData) => {
 
   if (!(await isStudent(auth.currentUser.email))) return { status: 401, err: "User is not a student" };
 
-  /*STRData.studentId = user.id;
+  STRData.studentId = (await getStudent(auth.currentUser.email)).data().id;
   STRData.approvalDate = "";
-  STRData.requestDate = dayjs.format("YYYY/MM/DD");
-  STRData.approved = false;*/
+  STRData.requestDate = dayjs().format("YYYY/MM/DD");
+  STRData.approved = false;
 
 
   if (!validateSTRData(STRData)) {
