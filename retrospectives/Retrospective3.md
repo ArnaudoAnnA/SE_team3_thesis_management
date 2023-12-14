@@ -1,4 +1,4 @@
-RETROSPECTIVE 3 (Team 3)
+TEMPLATE FOR RETROSPECTIVE (Team ##)
 =====================================
 
 The retrospective should include _at least_ the following
@@ -12,19 +12,19 @@ sections:
 
 ### Macro statistics
 
-- Number of stories committed vs. done
+- Number of stories committed vs done 
 
 
 
-- Total points committed vs. done
+- Total points committed vs done 
 
 
 
-- Nr of hours planned vs. spent (as a team)
+- Nr of hours planned vs spent (as a team)
 
 
 
-**Remember** a story is done ONLY if it fits the Definition of Done:
+**Remember**  a story is done ONLY if it fits the Definition of Done:
  
 - Unit Tests passing
 - Manual FE testing
@@ -32,7 +32,7 @@ sections:
 - Code present on VCS
 - End-to-End tests performed
 
-> Please refine your DoD if required (you cannot remove items!) 
+> Please refine your DoD 
 
 ### Detailed statistics
 
@@ -49,7 +49,7 @@ sections:
 | _#91_   |        |    3   |            |              |
 | _#15_   |        |    1   |            |              |
 | _#92_   |        |    8   |            |              |
-
+   
 - _#0_ corresponds to ...
 - _#8_ : Update Proposal
 - _#9_ : Notify Application Decision
@@ -69,21 +69,31 @@ sections:
 - Estimated Hours Standard deviation: 
 - Actual Hours Standard deviation: 
 
-- Total task estimation error ratio [(sum of total hours estimation / sum of total hours spent) - 1]:  |(/)-1|  = || = % 
+- Total task estimation error ratio [(sum of total hours estimation / sum of total hours spent) - 1]:  |(/)-1|  = || = %
 
-  ## QUALITY MEASURES 
+  
+## QUALITY MEASURES 
 
-- Unit Testing: 
-  - Total hours estimated: 
-  - Total hours spent: 
-  - Nr of automated unit test cases: 
+- Unit Testing:
+  - Total hours estimated
+  - Total hours spent
+  - Nr of automated unit test cases 
+  - Coverage (if available)
 - E2E testing:
-  - Total hours estimated: 
-  - Total hours spent: 
+  - Total hours estimated
+  - Total hours spent
 - Code review 
-  - Total hours estimated: 
-  - Total hours spent: 
-
+  - Total hours estimated 
+  - Total hours spent
+- Technical Debt management:
+  - Total hours estimated 
+  - Total hours spent
+  - Hours estimated for remediation by SonarQube
+  - Hours estimated for remediation by SonarQube only for the selected and planned issues 
+  - Hours spent on remediation 
+  - debt ratio (as reported by SonarQube under "Measures-Maintainability")
+  - rating for each quality characteristic reported in SonarQube under "Measures" (namely reliability, security, maintainability )
+  
 ## ASSESSMENT
 
 - What caused your errors in estimation (if any)?
@@ -94,8 +104,8 @@ sections:
 
 
 - Which improvement goals set in the previous retrospective were you able to achieve? 
-
   
+
 - Which ones you were not able to achieve? Why?
 
 
