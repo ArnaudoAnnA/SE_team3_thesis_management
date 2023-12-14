@@ -96,7 +96,7 @@ const thesisProposals = [
     "type": "academic research"
   },
   {
-    "teacherId": "d456789",
+    "teacherId": "d000000",
     "requiredKnowledge": "Required knowledge for Thesis Proposal 1",
     "description": "Description for Thesis Proposal 1",
     "groups": ["SOFTENG"],

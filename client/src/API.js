@@ -2,7 +2,7 @@
 
 import { initializeApp } from 'firebase/app';
 import { collection, addDoc, getFirestore, doc, query, getDocs, updateDoc, where, setDoc, deleteDoc, getDoc, limit, startAfter, orderBy } from 'firebase/firestore';
-import { signInWithRedirect, SAMLAuthProvider, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { signInWithRedirect, SAMLAuthProvider, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, confirmPasswordReset } from "firebase/auth";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 import dayjs from 'dayjs';
@@ -1673,13 +1673,19 @@ const getSTRWithId = async (id) => {
 const getSnapshotSTR = async (id) => {
   if (!auth.currentUser) return { status: 401, error: "User not logged in" };
 
-  const whereSTRId = where("id", "==", Number(id));
+  // TODO: use collection reference for debug
+  const docRef = doc(db, "thesisRequests", id);
+  
+  // const whereSTRId = where("id", "==", Number(id));
+  //const qSTR = query(thesisRequestsRef, whereSTRId);
 
-  const qSTR = query(thesisRequestsRef, whereSTRId);
   try {
-    const STRSnapshot = await getDocs(qSTR);
-    if (STRSnapshot.empty) return { status: 404, error: `No STR found` };
-    return { status: 200, snapshot: STRSnapshot.docs[0] };
+    const STRSnapshot = await (await getDoc(docRef))
+
+    console.log(JSON.stringify(STRSnapshot, null, 2)) 
+
+    if (!STRSnapshot.exists()) return { status: 404, error: `No STR found` };
+    return { status: 200, snapshot: STRSnapshot };
   } catch (error) {
     return { status: 500, error: `Error in calling Firebase: ${error}` };
   }
@@ -1704,29 +1710,47 @@ const acceptRejectSTR = async (id, accept) => {
   if (!await isSecretary(auth.currentUser.email)) return { status: 401, error: "User is not a secretary" };
 
   try {
-    const res = await getSTRWithId(id);
-    if (!res.error) {
+    // const res = await getSTRWithId(id);
+    // if (!res.error) {
 
-      //If the user tries to accept/reject an accepted/rejected request, return error
-      if (res.STR.approved !== null) return { status: 400, error: "Thesis request already accepted/rejected" }
+    //   //If the user tries to accept/reject an accepted/rejected request, return error
+    //   if (res.STR.approved !== null) return { status: 400, error: "Thesis request already accepted/rejected" }
 
-      //If accepted, update the acceptanceDate field with the current date, otherwise leave it null
+
+    //   //If accepted, update the acceptanceDate field with the current date, otherwise leave it null
+    //   if (accept) {
+    //     res.STR.approvalDate = await getVirtualDate();
+    //   } else {
+    //     res.STR.approvalDate = null;
+    //   }
+
+    //   res.STR.approved = accept;
+
+    //   console.log('STR is ' + id)
+
+      //const STRSnapshot = await getSnapshotSTR(id);
+      //update the document with the acceptance/rejection
+      
+      // TODO clean this 
+
+      const docRef = doc(db, "thesisRequests", id);
+      const newData = { 
+        "approved": accept,
+        "approvalDate": ""
+      };
+
       if (accept) {
-        res.STR.approvalDate = await getVirtualDate();
+        newData.approvalDate = await getVirtualDate();
       } else {
-        res.STR.approvalDate = null;
+        newData.approvalDate = null;
       }
 
-      res.STR.approved = accept;
-
-      const STRSnapshot = await getSnapshotSTR(id);
-      //update the document with the acceptance/rejection
-      await updateDoc(STRSnapshot.snapshot.ref, res.STR);
+      await updateDoc(docRef, newData);
       return { status: 200 } //OK
-    } else {
-      console.log("Thesis request not found");
-      return { status: 404, error: "Thesis request not found" }
-    }
+    // } else {
+    //   console.log("Thesis request not found");
+    //   return { status: 404, error: "Thesis request not found" }
+    // }
   } catch (e) {
     console.log("Error:", e);
     return { status: 500, error: "Error in calling Firebase:" + e }
