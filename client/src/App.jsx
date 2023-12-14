@@ -123,9 +123,9 @@ function Main() {
             {/** Add here other routes */}
             <Route path='/STRlist' element={user.email ? (user.role === "secretary" ? <STRlist date={date}/> : <NotFoundPage />) : <Login />} />
             <Route path='/STRlist/:id' element={user.email ? (user.role === "secretary" ? <STRManagement /> : <NotFoundPage />) : <Login />} />
-            <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm /> : ( user.role == "student" ? <InsertStudentProposal date={date}/> : <NotFoundPage />)) : <Login />} />
-            <Route path='/upproposal/:id' element={user.email ? (user.role === "teacher" ? <UpdateProposal /> : <NotFoundPage />) : <Login />} />
-            <Route path='/cpproposal/:id' element={user.email ? (user.role === "teacher" ? <CopyProposal /> : <NotFoundPage />) : <Login />} />
+            <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm date={date}/> : ( user.role == "student" ? <InsertStudentProposal date={date}/> : <NotFoundPage />)) : <Login />} />
+            <Route path='/upproposal/:id' element={user.email ? (user.role === "teacher" ? <UpdateProposal date = {date}/> : <NotFoundPage />) : <Login />} />
+            <Route path='/cpproposal/:id' element={user.email ? (user.role === "teacher" ? <CopyProposal date = {date}/> : <NotFoundPage />) : <Login />} />
             <Route path='/thesis/:id' element={user.email ? (user.role === "teacher" || user.role == "student" ? <ThesisDetails /> : <NotFoundPage /> ) : <Login />} />
             <Route path='/thesis/:id/apply' element={user.email ? (user.role === "student" ? <ApplyForm virtualDate={date} /> : <NotFoundPage />) : <Login />} />
             <Route path='/applications' element={user.email ? (user.role === "teacher" ? <ApplicationsProfessor /> : (user.role === "student" ? <ApplicationsStudent /> : <NotFoundPage />)) : <Login />} />

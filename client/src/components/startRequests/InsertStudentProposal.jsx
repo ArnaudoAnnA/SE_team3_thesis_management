@@ -64,7 +64,7 @@ function InsertStudentProposal(props) {
   const [deg, setDeg] = useState()
 
   useEffect(() => {
-    const now = dayjs();
+    const now = dayjs(props.date);
     
     API.getTecher().then((e)=> setValues(e))
 
@@ -150,7 +150,7 @@ function InsertStudentProposal(props) {
       console.log(user)
       API.insertSTR(predefinedSTRStructure)
         .then(successAlert)
-        .catch((e)=> errorAlert(e));
+        .catch((e)=> errorAlert(e.err));
 
     }
   
@@ -163,7 +163,7 @@ function InsertStudentProposal(props) {
   };
    
 
-  console.log(user)
+  // console.log(user)
       return (
         <Container>
           <Row className="my-3">

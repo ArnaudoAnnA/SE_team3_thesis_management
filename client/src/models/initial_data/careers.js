@@ -1,5 +1,13 @@
 const careers = [
   {
+    "titleCourse": "Test Course",
+    "cfu": 8,
+    "date": "2022-11-29T15:15:06.465Z",
+    "codCourse": "Cod Test Course",
+    "grade": 23,
+    "id": "s000000"
+  },
+  {
     "titleCourse": "Information Systems Course",
     "cfu": 8,
     "date": "2022-11-29T15:15:06.465Z",

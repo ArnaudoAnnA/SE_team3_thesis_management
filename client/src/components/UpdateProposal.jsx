@@ -156,7 +156,7 @@ function UpdateProposal(props) {
   const [deg, setDeg] = useState()
 
   useEffect(() => {
-    const now = dayjs();
+    const now = dayjs(props.date);
     const sixMonthsLater = now.add(6, 'month');
     setSelectedDate(sixMonthsLater)
     API.getDegree()
@@ -249,7 +249,7 @@ function UpdateProposal(props) {
 
     }  
 
-    if (new dayjs() > selectedDate) {
+    if (new dayjs(props.date) > selectedDate) {
       setErrorMsg("Date cannot be before today!")
       window.scrollTo(0, 0);
       setSelectedDate(new dayjs())
