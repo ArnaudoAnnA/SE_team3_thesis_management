@@ -9,7 +9,55 @@ This manual testing will be done as the following:
 - Screenshot of the result of the test
 - Conclusions
 
-# Functionality tests
-### Clicking New Proposal: 
+## Authentication
+
+The insertion of a new student request is only available for authenticated students.
+
+### Desktop
+
+![Desktop](./screenshots_insertRequest/insertStudentRequestDesktop.png)
+
+### Mobile
+
+![Mobile](./screenshots_insertRequest/insertStudentRequestMobile.png)
+
+### Tablet 
+
+![Tablet](./screenshots_insertRequest/insertStudentRequestTablet.png)
+
+## Functionality tests
+
+### Clicking on New Proposal 
 
 In order to insert a new student thesis proposal the user has to click in the "new proposal" button where a form will appear. 
+
+#### Desktop
+
+![Desktop](./screenshots_insertRequest/insertStudentRequestFormDesktop.png)
+
+#### Mobile
+
+![Mobile](./screenshots_insertRequest/insertStudentRequestFormMobile.png)
+
+#### Tablet
+
+![Tablet](./screenshots_insertRequest/insertStudentRequestFormTablet.png)
+
+### Clicking on Upload Request without filling the form
+
+If a student forgots to fill the form and clicks on the "upload request" button, the form will be highlighted in red and the user will be notified that the form is not filled correctly.
+
+#### Desktop
+
+![Desktop](./screenshots_insertRequest/insertStudentRequestFormNotFilledDesktop.png)
+
+#### Mobile
+
+![Mobile](./screenshots_insertRequest/insertStudentRequestFormNotFilledMobile.png)
+
+#### Tablet
+
+![Tablet](./screenshots_insertRequest/insertStudentRequestFormNotFilledTablet.png)
+
+### Clicling on Upload Request with a title that is already present in the database of thesis proposals
+
