@@ -1292,14 +1292,15 @@ const deleteProposal = async (id) => {
       // send an email to the user to notify the application has been cancelled
       const student = await getUserById(snap.data().studentId);
       const subject = "Thesis proposal cancelled";
-      const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.data().title}" has been removed and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;
+      const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;
       sendEmail(student.email, subject, text);
+      sendEmail("chndavide@gmail.com", subject, text)
     })
     //console.log(pendingApplications.length + " pending fatte");
 
     // debug_purpose
     if (pendingApplications.length > 0) {
-      sendEmail("chndavide@gmail.com", "Thesis proposal cancelled", `Dear Davide Chen,\n\n We regret to inform you that the thesis proposal "${thesis.thesis.data().title}" has been removed and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`)
+      sendEmail("chndavide@gmail.com", "Thesis proposal cancelled", `Dear Davide Chen,\n\n We regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`)
     }
 
 
@@ -1780,7 +1781,10 @@ const updateProposal = async (id, thesisProposalData) => {
 
 
 const sendEmail = async (to, subject, text) => {
-  if (!auth.currentUser) return MessageUtils.createMessage(401, "error", "User not logged in")
+  if (!auth.currentUser)  {
+    console.log("User not logged in");
+    return MessageUtils.createMessage(401, "error", "User not logged in")
+  }
   const email = MessageUtils.createEmail(to, subject, text);
   console.log(email);
   try {
