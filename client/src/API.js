@@ -91,6 +91,14 @@ const isStudent = async (email) => {
   return snapshot.docs[0] ? true : false
 }
 
+const getStudent = async (email) =>
+{
+  const whereCond = where("email", "==", email)
+  const q = query(studentsRef, whereCond)
+  const snapshot = await getDocs(q);
+  return snapshot.docs[0];
+}
+
 /**
  * Return if the user is a teacher
  * @param id the id of the teacher
@@ -1347,7 +1355,8 @@ let lastSTRdoc;
 let lastSTRqueryWhereConditions;
 
 const getSTRlist = async (orderByArray, reload, entry_per_page) => {
-
+  console.log(lastSTRdoc)
+  console.log(orderByArray)
   if (!auth.currentUser) {
     return { status: CONSTANTS.notLogged };
   }
@@ -1424,7 +1433,7 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) => {
       return { status: 200, STRlist: proposals };
     })
       .catch(e => { console.log(e); return { status: 500 } });
-
+    console.log(ret);
     return ret;
   } catch (error) {
     console.log(error);
@@ -1478,7 +1487,7 @@ const predefinedSTRStructure = {
   description: "descr",           
   notes: "notes",  
   type: "stage",
-  profName: "Mario Rossi",
+  // profName: "Mario Rossi",
   studentId: "s123456",
   teacherId: "d345678",   
   title: "title",
@@ -1539,10 +1548,10 @@ const insertSTR = async (STRData) => {
 
   if (!(await isStudent(auth.currentUser.email))) return { status: 401, err: "User is not a student" };
 
-  /*STRData.studentId = user.id;
+  STRData.studentId = (await getStudent(auth.currentUser.email)).data().id;
   STRData.approvalDate = "";
-  STRData.requestDate = dayjs.format("YYYY/MM/DD");
-  STRData.approved = false;*/
+  STRData.requestDate = dayjs().format("YYYY/MM/DD");
+  STRData.approved = false;
 
 
   if (!validateSTRData(STRData)) {
@@ -1554,8 +1563,10 @@ const insertSTR = async (STRData) => {
   if (!await isTeacherById(STRData.teacherId)) {
     return { status: 400, err: "The proposed teacher is not present in our database" };
   }
-
-
+  const student = await getUserById(STRData.studentId);
+  console.log(student);
+  const degree_title = await getDegreeById(student.cod_degree);
+  STRData.programmes = degree_title;
   try {
     const docRef = await addDoc(thesisRequestsRef, STRData);
     console.log("Thesis request added with ID: ", docRef.id);
@@ -1565,6 +1576,20 @@ const insertSTR = async (STRData) => {
     return { status: 500 }; // or handle the error accordingly
   }
 };
+
+const getDegreeById = async (id) => {
+  try {
+    const q = query(degreesRef, where("codDegree", "==", id));
+    const snapshot = await getDocs(q);
+    console.log(snapshot);
+    const title = snapshot.docs[0].data().titleDegree;
+    return title;
+  } catch (error) {
+    console.error("Error in calling Firebase:", error);
+    return null;
+  }
+
+}
 
 /**
  * API to retrieve the student request detail given its id, Used only for secretaries users.

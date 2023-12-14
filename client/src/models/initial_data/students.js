@@ -1,5 +1,15 @@
 const students =[
   {
+    "email": "studente.team3@gmail.com",
+    "enrollment_year": "2023",
+    "surname": "Test",
+    "nationality": "Italian",
+    "cod_degree": "AB123CD",
+    "id": "s000000",
+    "name": "User",
+    "gender": "Male"
+  },
+  {
     "email": "s345678@studenti.polito.it",
     "enrollment_year": "2023",
     "surname": "Ricci",

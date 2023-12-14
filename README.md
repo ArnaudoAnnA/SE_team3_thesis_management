@@ -21,6 +21,17 @@ To add other users, go in firebase -> authentication -> users -> add user
 | s901234@studenti.polito.it | 7eNfF7Ssxvctd7 | student |
 | s123456@studenti.polito.it | %@xm6wQf2hkHXy | student |
 | u000001@polito.it          | PJNkzwt7V!&N6B | secretary |
+| studente.team3@gmail.com | FYUVzFWJ0dskB | student |
+| professore.team3@gmail.com | ^E3rFGVjP6qr%u | teacher |
+
+### Gmail credentials 
+
+The emails are received only by these two accounts
+
+| email | password | type | 
+| studente.team3@gmail.com | Team3Rocks! | student |
+| professore.team3@gmail.com | Team3Rocks! | teacher |
+
 
 ## Docker
 The project can be run in a docker container. To do so, first make sure the docker daemon is running, then run the following commands in the client folder:

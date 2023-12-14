@@ -166,9 +166,7 @@ function Home(props) {
   return (<>
   {
     user.role == "secretary" ?
-      <>
         <STRlist date={props.date} />
-      </>  
       : <>
           <ThesisList date={props.date}/>
           {
