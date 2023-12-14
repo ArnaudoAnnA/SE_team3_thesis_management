@@ -1171,6 +1171,7 @@ const acceptApplication = async (applicationId) => {
     const text = `Dear ${student.name} ${student.surname},\n\nWe are pleased to inform you that your application for the thesis proposal "${thesisSnapshot.snapshot.data().title}" has been accepted.\n\nBest regards,\nStudent Secretariat`;
     // sendEmail(student.email, subject, text);
     sendEmail("vincenzo.cosi96@gmail.com", subject, text);
+    sendEmail("chndavide@gmail.com", subject, text);
     // decline all the other applications for the same thesis
     const otherApplications = await getDocs(query(applicationsRef, where("thesisId", "==", application.thesisId)));
     otherApplications.forEach(async (doc) => {
