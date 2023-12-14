@@ -13,15 +13,17 @@ sections:
 ### Macro statistics
 
 - Number of stories committed vs done 
+
 10/10
 
-
 - Total points committed vs done 
+
 28/28
 
 
 - Nr of hours planned vs spent (as a team)
-107h 35m/116h 20m
+
+116h 30m / 107h 35m
 
 
 **Remember**  a story is done ONLY if it fits the Definition of Done:
@@ -40,9 +42,9 @@ sections:
 |--------|---------|--------|------------|--------------|
 | _#0_   |      14   |    -   |     51h 15m    |      45h 35m    |
 | _#8_   |    6     |    3   |     12h 30m       |     9h        |
-| _#9_   |    1     |    3   |       1h     |       1h       |    
-| _#10_   |    5    |    2   |      7h 30m      |     7h 30m         |    
-| _#11_   |     3   |    3   |       5h     |       4h 30m       |    
+| _#9_   |    1     |    2   |       1h     |       1h       |    
+| _#10_   |    5    |    3   |      7h 30m      |     7h 30m         |    
+| _#11_   |     3   |    2   |       5h     |       4h 30m       |    
 | _#12_       |    4    |    2   |      3h      |       2h 40m       |    
 | _#13_            |    1    |    2   |    2h        |     2h         |
 | _#14_           |     1   |    2   |      2h      |      1h 30m        |
@@ -65,11 +67,11 @@ sections:
 > place technical tasks corresponding to story `#0` and leave out story points (not applicable in this case)
 
 - Estimated Hours per task average: ~2h
-- Actual Hours per task average: ~1h 45m
+- Actual Hours per task average: ~1h 55m
 - Estimated Hours Standard deviation:  14h 30m
 - Actual Hours Standard deviation: 14h
 
-- Total task estimation error ratio [(sum of total hours estimation / sum of total hours spent) - 1]:  |(/)-1|  = || = 8%
+- Total task estimation error ratio [(sum of total hours estimation / sum of total hours spent) - 1]:  |(6990/6455)-1|  = |0,082| = 8,2%
 
   
 ## QUALITY MEASURES 
@@ -108,12 +110,15 @@ sections:
   We learned that sometimes things doesn't go as planned and that we have to be flexible and adapt to the situation. We also learned that we have to be more careful when estimating the hours for each task.
 
 - Which improvement goals set in the previous retrospective were you able to achieve? 
+  
   We are improved in the estimation of the hours for each task.
 
 - Which ones you were not able to achieve? Why?
 
+  None
 
 - Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)
+  
   Improve even more the estimation of the hours for each task.
   Plan some time to prepare the demo and the presentation of the project.
 
