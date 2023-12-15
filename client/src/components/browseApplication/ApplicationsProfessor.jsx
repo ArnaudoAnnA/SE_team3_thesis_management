@@ -116,7 +116,7 @@ function ApplicationsProfessor(props) {
                                     <td colSpan="3">{state  ? <Alert style={{textAlign: "center", width: "50%", marginLeft: "auto", marginRight: "auto"}}>{state}</Alert>: ""}</td>
                                 </tr>
                             ) : (
-                                applications.map((app) => <tr key={app.thesisId}><AppTable app={app} activeKey={key} /></tr>)
+                                applications.map((app) => <tr key={app.thesisId}><td><AppTable app={app} activeKey={key} /></td></tr>)
                             )}
                         </tbody>
 
@@ -157,7 +157,7 @@ function AppTable(props) {
 
     return (
             <>
-                <h1 className='profAppl'> {props.app.thesisTitle}</h1>
+                <h3 className='profAppl'> {props.app.thesisTitle}</h3>
                 <p className= "text-info change-bg-on-hover profAppl" style={{textAlign: "start", cursor: "pointer", paddingLeft: "2%"}} onClick={(e) => setViewStudents((v) => !v)}>
                     {"View applications" + (viewStudents ? " ▽ " : " ▷")}
                 </p>
@@ -190,8 +190,6 @@ function AppTable(props) {
                     </tbody>
 
                 </Table> : ""} 
-           
-                <hr ></hr>
     
 
                 </>

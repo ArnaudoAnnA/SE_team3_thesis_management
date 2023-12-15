@@ -228,7 +228,7 @@ function ThesisDetails(props) {
 
                 <hr size={10} />
                 <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                    <h1>{thesis.title}</h1>
+                    <h3>{thesis.title}</h3>
                     {user.role == 'teacher' && (
                         <>
                             <DropdownButton id="dropdown-basic-button" title="Edit ▼" variant="warning">

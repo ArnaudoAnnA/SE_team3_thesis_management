@@ -40,6 +40,8 @@ function row_field_to_td(data_id, field_name, field_content)
 
     if (field_name == "expirationDate") return dayjs(field_content).format('YYYY/MM/DD');
 
+    if(field_name == "title") return <h3>{field_content}</h3>
+
     if (Array.isArray(field_content)) 
     {
         let counter = 0;
