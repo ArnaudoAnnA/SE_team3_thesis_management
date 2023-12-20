@@ -2,7 +2,7 @@
 
 import { initializeApp } from 'firebase/app';
 import { collection, addDoc, getFirestore, doc, query, getDocs, updateDoc, where, setDoc, deleteDoc, getDoc, limit, startAfter, orderBy } from 'firebase/firestore';
-import { signInWithRedirect, SAMLAuthProvider, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, confirmPasswordReset } from "firebase/auth";
+import { signInWithRedirect, SAMLAuthProvider, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "firebase/auth";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 import dayjs from 'dayjs';
@@ -610,7 +610,7 @@ const addApplication = async (application, teacher) => {
     throw MessageUtils.createMessage(401, "error", "Not logged in");
   } 
 
-  if (!isStudent(auth.currentUser.email)) {
+  if (!await isStudent(auth.currentUser.email)) {
     throw MessageUtils.createMessage(401, "error", "Unauthorized");
   }
 
@@ -752,7 +752,7 @@ const getTitleAndTeacher = async (thesisId) => {
  */
 const getApplication = async (studentId, thesisId) => {
   if (auth.currentUser) {
-    if (isStudent(auth.currentUser.email)) {
+    if (await isStudent(auth.currentUser.email)) {
       const whereThesisId = where("thesisId", "==", Number(thesisId))
       const whereStudentId = where("studentId", "==", studentId)
 
@@ -1518,9 +1518,10 @@ function validateSTRData(STRData) {
 
   // Check if both objects have the same number of keys
   if (keys1.length !== keys2.length) {
-    console.log("part1")
+    console.log("Error in validating STR data: the object has a wrong number of keys");
     return false;
   }
+
   // Check if all keys in obj1 exist in obj2 and have the same type
   // for (const key of keys1) {
   //   if (!(key in predefinedSTRStructure) || typeof STRData[key] !== typeof predefinedSTRStructure[key]) {
@@ -1573,7 +1574,7 @@ const insertSTR = async (STRData) => {
 
   if (!validateSTRData(STRData)) {
     console.log("Validation failed: proposal data doesnt comply with required structure");
-    throw { status: 400, err: "Proposal data doesnt comply with required structure" };
+    return { status: 400, err: "Proposal data doesnt comply with required structure" };
   }
 
   //Check that the teachers id is an id inside the teachers table
