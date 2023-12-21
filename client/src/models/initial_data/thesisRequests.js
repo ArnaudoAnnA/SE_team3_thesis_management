@@ -6,8 +6,7 @@ const thesisRequests = [
         "title": "Instrumenting Kubernetes 5G services with eBPF probes and other beautiful things",
         "description": "Description for Thesis Request 1",
         "programmes": "Design in Graphic Design",
-        "id": 0,
-        "studentId": "s345678",
+                "studentId": "s345678",
         "teacherId": "d123456",
         "notes": "Additional notes for Thesis Request 1",
         "type": "academic research"
@@ -23,8 +22,7 @@ const thesisRequests = [
         "description": "Description for Thesis Request 2",
         "programmes": "Engineering in Civil Engineering",
         "title": "Sviluppo e containerizzazione di microservizi di monitoraggio e analisi dei consumi energetici su cluster Kubernetes",
-        "id": 1,
-
+        
     },
     {
         "requestDate": "2020-11-06",
@@ -37,15 +35,13 @@ const thesisRequests = [
         "type": "academic research",
         "programmes": "Engineering in Electrical Engineering",
         "notes": "Additional notes for Thesis Request 1",
-        "id": 2
-    },
+            },
     {
         "requestDate": "2023-12-06",
         "approvalDate": "2023-12-31",
         "approved": true,
         "type": "stage",
-        "id": 3,
-        "description": "Description for Thesis Request 2",
+                "description": "Description for Thesis Request 2",
         "notes": "Additional notes for Thesis Request 2",
         "studentId": "s890123",
         "teacherId": "d234567",
@@ -56,8 +52,7 @@ const thesisRequests = [
         "requestDate": "2021-01-06",
         "approvalDate": "",
         "approved": null,
-        "id": 4,
-        "description": "Description for Thesis Request 1",
+                "description": "Description for Thesis Request 1",
         "studentId": "s345678",
         "teacherId": "d345678",
         "type": "stage",
@@ -73,8 +68,7 @@ const thesisRequests = [
         "programmes": "Engineering in Civil Engineering",
         "notes": "Additional notes for Thesis Request 2",
         "title": "Utilizing Machine Learning Techniques for Predictive Maintenance of Metallurgical Equipment",
-        "id": 5,
-        "studentId": "s345678",
+                "studentId": "s345678",
         "teacherId": "d345678",
         "type": "academic research"
     },
@@ -85,8 +79,7 @@ const thesisRequests = [
         "studentId": "s890123",
         "teacherId": "d456789",
         "description": "Description for Thesis Request 1",
-       "id": 6,
-        "title": "Enhancing Software Quality Through Automated Testing and Continuous Integration",
+               "title": "Enhancing Software Quality Through Automated Testing and Continuous Integration",
         "notes": "Additional notes for Thesis Request 1",
         "programmes": "Engineering in Electrical Engineering",
         "type": "academic research"
@@ -100,8 +93,7 @@ const thesisRequests = [
         "studentId": "s789012",
         "teacherId": "d456789",
         "title": "Definizione dell’infrastruttura di comunicazione e computing per l’operatività di droni/rover su Marte (POLITO/PIC4SER)",
-        "id": 7,
-        "type": "academic research",
+                "type": "academic research",
         "notes": "Additional notes for Thesis Request 2",
     },
     {
@@ -110,8 +102,7 @@ const thesisRequests = [
         "approved": null,
         "type": "academic research",
         "title": "Evaluation of Sustainable Construction Materials for Eco-Friendly Building Design",
-        "id": 8,
-        "studentId": "s789012",
+                "studentId": "s789012",
         "teacherId": "d567890",
        "description": "Description for Thesis Request 1",
         "programmes": "Engineering in Electrical Engineering",
@@ -122,8 +113,7 @@ const thesisRequests = [
         "approvalDate": "",
         "approved": null,
        "description": "Description for Thesis Request 2",
-        "id": 9,
-        "type": "stage",
+                "type": "stage",
         "notes": "Additional notes for Thesis Request 2",
         "programmes": "Engineering in Electrical Engineering",
         "title": "Formal Methods for Software Specification and Verification: Ensuring System Correctness and Reliability",
@@ -135,8 +125,7 @@ const thesisRequests = [
         "approvalDate": "",
         "approved": null,
         "title": "Reply: Investigation of AI-Powered Robotics for Automated Manufacturing Processes",
-        "id": 25,
-        "notes": "",
+                "notes": "",
         "description": "Tesi in azienda",
         "type": "Stage",
         "programmes": "Architecture",
@@ -154,8 +143,7 @@ const thesisRequests = [
         "type": "academic research",
         "programmes": "Engineering in Electrical Engineering",
         "notes": "Additional notes for Thesis Request 2",
-        "id": 26
-    },
+            },
     {
         "requestDate": "2023-12-06",
         "approvalDate": "",
@@ -167,8 +155,7 @@ const thesisRequests = [
         "type": "academic research",
         "programmes": "Engineering in Electrical Engineering",
         "notes": "Additional notes for Thesis Request 3",
-        "id": 27
-    },
+            },
     {
         "requestDate": "2023-12-06",
         "approvalDate": "2023-12-31",
@@ -180,8 +167,7 @@ const thesisRequests = [
         "type": "academic research",
         "programmes": "Engineering in Electrical Engineering",
         "notes": "Additional notes for Thesis Request 4",
-        "id": 28
-    },
+            },
     {
         "requestDate": "2023-12-06",
         "approvalDate": "",
@@ -193,8 +179,7 @@ const thesisRequests = [
         "type": "academic research",
         "programmes": "Engineering in Electrical Engineering",
         "notes": "Additional notes for Thesis Request 5",
-        "id": 29
-    }
+            }
 ]
 
 export default thesisRequests;
