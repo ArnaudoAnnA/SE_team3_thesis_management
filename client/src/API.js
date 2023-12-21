@@ -872,7 +872,9 @@ const getApplicationsForStudent = async (state) => {
  */
 const getApplicationDetails = async (id) => {
   if (!auth.currentUser) return MessageUtils.createMessage(401, "error", "Not logged in");
-  const applicationRef = doc(db, "applications", id);
+
+  const collectionName = DEBUG ? "test-applications" : "applications";
+  const applicationRef = doc(db, collectionName, id);
   const applicationSnapshot = await getDoc(applicationRef)
   if (!applicationSnapshot.exists()) return MessageUtils.createMessage(404, "error", "Application not found");
   const application = applicationSnapshot.data();
@@ -1434,7 +1436,7 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) => {
       snapshot.docs.forEach((doc) => {
         console.log(doc.id)
         let reqData = doc.data();
-        let proposal = new ThesisRequest(doc.id, reqData.title, reqData.description,reqData.teacherId,reqData.studentId, reqData.requestDate,reqData.approvalDate,reqData.approved, reqData.type, reqData.programmes, reqData.notes );  
+        let proposal = new ThesisRequest(reqData.title, reqData.description,reqData.teacherId,reqData.studentId, reqData.requestDate,reqData.approvalDate,reqData.approved, reqData.type, reqData.programmes, reqData.notes );  
         console.log(proposal)
 
         let teacher = teachers.find(
@@ -1628,7 +1630,8 @@ const getSTRWithId = async (id) => {
   //QUERY CONDITIONS
   // const whereCond1 = where("id", "==", Number(id))
   // const qSTR = query(thesisRequestsRef, whereCond1)
-  const STRdocRef = doc(db, "thesisRequests", id);
+  const collectionName = DEBUG ? "test-thesisRequests" : "thesisRequests";
+  const STRdocRef = doc(db, collectionName, id);
 
   try {
     // const STRSnapshot = await getDocs(qSTR);
@@ -1636,7 +1639,7 @@ const getSTRWithId = async (id) => {
     if (STRSnapshot.exists()) {
       console.log(STRSnapshot)
       const data = STRSnapshot.data();
-      const STR = new ThesisRequest(STRSnapshot.id, data.title, data.description, data.teacherId, data.studentId, data.requestDate, data.approvalDate, data.approved, data.type, data.programmes, data.notes);
+      const STR = new ThesisRequest(data.title, data.description, data.teacherId, data.studentId, data.requestDate, data.approvalDate, data.approved, data.type, data.programmes, data.notes);
       console.log(STR)
       //find the supervisor's name and surname
       let teachersSnap = await getDocs(teachersRef);
@@ -1664,35 +1667,6 @@ const getSTRWithId = async (id) => {
 }
 
 /**
- * Get the snapshot of the STR by the STR id
- * @param {string} id id of the STR
- * 
- * returns {{ status: code, snapshot: snapshot}} //if no errors occur
- * 
- * returns {{ status: code, error: err}} //if errors occur
- * 
- * Possible values for status: [200 (ok), 401 (unauthorized), 404 (non found), 500 (server error)]
- */
-const getSnapshotSTR = async (id) => {
-  if (!auth.currentUser) return { status: 401, error: "User not logged in" };
-
-  // TODO: use collection reference for debug
-  const docRef = doc(db, "thesisRequests", id);
-
-  try {
-    const STRSnapshot = await (await getDoc(docRef))
-
-    console.log(JSON.stringify(STRSnapshot, null, 2)) 
-
-    if (!STRSnapshot.exists()) return { status: 404, error: `No STR found` };
-    return { status: 200, snapshot: STRSnapshot };
-  } catch (error) {
-    return { status: 500, error: `Error in calling Firebase: ${error}` };
-  }
-
-}
-
-/**
  * API to accept/reject a new thesis request, Used only for secretaries users.
  * @param {string} id id of the thesis to accept/reject
  * @param {boolean} accept true to accept, false to reject
@@ -1710,7 +1684,8 @@ const acceptRejectSTR = async (id, accept) => {
   if (!await isSecretary(auth.currentUser.email)) return { status: 401, error: "User is not a secretary" };
 
   try {
-      const docRef = doc(db, "thesisRequests", id);
+      const collectionName = DEBUG ? "test-thesisRequests" : "thesisRequests";
+      const docRef = doc(db, collectionName, id);
       const newData = { 
         "approved": accept,
         "approvalDate": ""
