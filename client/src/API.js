@@ -1677,9 +1677,6 @@ const getSnapshotSTR = async (id) => {
 
   // TODO: use collection reference for debug
   const docRef = doc(db, "thesisRequests", id);
-  
-  // const whereSTRId = where("id", "==", Number(id));
-  //const qSTR = query(thesisRequestsRef, whereSTRId);
 
   try {
     const STRSnapshot = await (await getDoc(docRef))
@@ -1712,29 +1709,6 @@ const acceptRejectSTR = async (id, accept) => {
   if (!await isSecretary(auth.currentUser.email)) return { status: 401, error: "User is not a secretary" };
 
   try {
-    // const res = await getSTRWithId(id);
-    // if (!res.error) {
-
-    //   //If the user tries to accept/reject an accepted/rejected request, return error
-    //   if (res.STR.approved !== null) return { status: 400, error: "Thesis request already accepted/rejected" }
-
-
-    //   //If accepted, update the acceptanceDate field with the current date, otherwise leave it null
-    //   if (accept) {
-    //     res.STR.approvalDate = await getVirtualDate();
-    //   } else {
-    //     res.STR.approvalDate = null;
-    //   }
-
-    //   res.STR.approved = accept;
-
-    //   console.log('STR is ' + id)
-
-      //const STRSnapshot = await getSnapshotSTR(id);
-      //update the document with the acceptance/rejection
-      
-      // TODO clean this 
-
       const docRef = doc(db, "thesisRequests", id);
       const newData = { 
         "approved": accept,
