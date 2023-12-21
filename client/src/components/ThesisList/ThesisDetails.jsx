@@ -170,7 +170,7 @@ function ThesisDetails(props) {
             }
         }
 
-        checkApplyTwice();
+        if (user.role == 'student') checkApplyTwice();
     }, []);
 
     return <Container>

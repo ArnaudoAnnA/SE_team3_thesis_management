@@ -1,19 +1,17 @@
-import React, { useEffect } from 'react';
+
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 /*npm install dayjs @mui/x-date-pickers @mui/material @emotion/styled @emotion/react    --save */
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { useState, useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form, Button,Alert, Container, Row, Col } from 'react-bootstrap';
+import { Form, Button,Alert, Container } from 'react-bootstrap';
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2'
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import API from '../API'
-import context from 'react-bootstrap/esm/AccordionContext';
 import { userContext } from './Utils';
 
 
@@ -141,13 +139,13 @@ function CopyProposal(props) {
   const [inputErrorKnowledge, setInputErrorKnowledge] = useState(false);
   const [inputErrorLevel, setInputErrorLevel] = useState(false);
   const [inputErrorProgrammes, setInputErrorProgrammes] = useState(false);
-  const [note, setNot] = useState('');
+  const [note, setNote] = useState('');
   const [pname, setpName] = useState('');
   const [level, setLevel] = useState('');
   const [knowledge, setKnowledge] = useState('')
   const [email, setEmail] = useState([])
   const [degree, setDegree] = useState('')
-  const [description, setDesc] = useState('')
+  const [description, setDescription] = useState('')
   const [title, setTitle] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const [selectedDate, setSelectedDate] = useState(new dayjs());
@@ -176,14 +174,14 @@ function CopyProposal(props) {
         console.log(res.thesis);
         setTitle(res.thesis.title);
         setDegree(res.thesis.type);
-        setDesc(res.thesis.description);
+        setDescription(res.thesis.description);
         setKnowledge(res.thesis.requiredKnowledge);
         setLevel(res.thesis.level);
         setTags(res.thesis.keywords);
         setEmailTags(res.thesis.coSupervisors);
         setpName(res.thesis.programmes);
         setSelectedDate(dayjs(res.thesis.expirationDate));
-        setNot(res.thesis.notes);
+        setNote(res.thesis.notes);
       } else {
         console.log("Error in CopyProposal/getThesisWithId:" + res.error);
       }})
@@ -381,7 +379,7 @@ function CopyProposal(props) {
                           style={{fontSize: "15px", width: "100%", marginLeft: "auto", marginRight: "auto", borderRadius: "3px", fontStyle: "italic", paddingLeft:"5px", borderColor:inputErrorDescription ? "red": "rgba(165, 165, 165, 0.42)"}}
                           value={description}
                           required
-                          onChange={(e) => setDesc(e.target.value)}
+                          onChange={(e) => setDescription(e.target.value)}
                           onClick={()=> {setInputErrorDescription(false)}}
                           rows="4"
                           cols="50"
@@ -500,7 +498,7 @@ function CopyProposal(props) {
                         <textarea
                           style={{fontSize: "15px", width: "100%", marginLeft: "auto", marginRight: "auto", borderRadius: "3px", fontStyle: "italic", paddingLeft:"5px", borderColor: "rgba(165, 165, 165, 0.42)"}}
                           value={note}
-                          onChange={(e) => setNot(e.target.value)}
+                          onChange={(e) => setNote(e.target.value)}
                           rows="4"
                           cols="50"
                           placeholder="Insert your notes here.."

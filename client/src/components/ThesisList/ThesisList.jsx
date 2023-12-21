@@ -1,4 +1,4 @@
-import { Pagination } from "react-bootstrap";
+import PropTypes from 'prop-types';
 import { useEffect, useState } from "react";
 import {Alert, Container, Row, Col, Button} from 'react-bootstrap';
 import API from '../../API';
@@ -48,15 +48,9 @@ function ThesisList(props)
     /*--------------- STATES ------------------*/
     const [thesis, setThesis] = useState([]);
     const [filters, setFilters] = useState(DEFAULT_FILTERS);
-    //const [old_filters, setOld_filters] = useState();
     const [orderBy, setOrderBy] = useState(DEFAULT_ORDERBY);
-    //const [old_orderBy, setOld_orderBy] = useState();
 
     const [state, setState] = useState(STATES.loading);
-    //const [page, setPage] = useState(0); //ATTENTION: pages numeration starts from 1
-    //const [old_page, setOld_page] = useState();
-    //const [entry_per_page, setEntry_per_page] = useState(0);
-    //const [nPages, setNPages] = useState(0);
     const [thesisNumber, setThesisNumber] = useState(0);
 
     /*--------------- FUNCTIONS ------------------*/
@@ -166,18 +160,6 @@ function ThesisList(props)
         if(state != STATES.loading) setState(STATES.loading); 
     }, [props.date, orderBy, filters]);
 
-    /*
-    useEffect(() =>
-    {
-        let new_epp = window.innerHeight / 100;
-        setEntry_per_page( new_epp ) ;
-
-        API.getThesisNumber()
-        .then(n => setNPages(n/new_epp + (n%new_epp == 0 ? 0 : 1)))
-        .catch(e => {console.log(e); setState(STATES.error);})
-    
-    });*/
-
     return (
         <contextState.Provider value={{state: state, setState: setState, states: STATES}}>
             <Container>
@@ -189,7 +171,7 @@ function ThesisList(props)
                         <hr />
                         <TableWithOrderBy columns={COLUMNS} data={thesis} orderBy={orderBy} orderByField={orderByField} detailsPageURL={"/thesis/"}/>
                         {
-                            <Row className="justify-content-center"><Col className="col-2 justify-content-center" style={{display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column"}}>
+                            <Row className="justify-content-center mb-3"><Col className="col-2 justify-content-center" style={{display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column"}}>
                             {
                                 state == STATES.show_more ? 
                                     <ClipLoader />
@@ -207,30 +189,10 @@ function ThesisList(props)
     )
 }
 
-function TablePagination(props)
-{
-    let [active, setActive] = props.active;
-    let nPages = props.nPages;
-    let items = [];
+ThesisList.propTypes = {
+    date: PropTypes.string.isRequired
+};
 
-    for (let number = 1; number <= nPages; number++) {
-        items.push(
-            <Pagination.Item key={number} active={number === active} onClick={event => setActive(event.target.innerText)}>
-                {number}
-            </Pagination.Item>,
-        );
-    }
-
-    return <Pagination size="sm">{items}</Pagination>;
-
-}
-
-
-/* ---------- UTILITY FUNCTIONS -------- */
-function get_index_range_of_page(page, entry_per_page)
-{
-    return [(page)*entry_per_page, (page+1)*entry_per_page -1];
-}
 
 export { ThesisList };
 

@@ -130,7 +130,7 @@ function STRlist(props) {
                     <hr />
                     <p className="text-info">Number of items: {STRlistLength}</p>
                     <TableWithOrderBy columns={COLUMNS} data={STRlist} orderBy={orderBy} orderByField={orderByField} detailsPageURL={"/STRlist/"} />
-                    <Row className="justify-content-center"><Col className="col-2 justify-content-center" style={{ display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
+                    <Row className="justify-content-center mb-3"><Col className="col-2 justify-content-center" style={{ display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
                         {
                             state == STATES.show_more ?
                                 <ClipLoader />
@@ -147,7 +147,7 @@ function STRlist(props) {
     </Container>
 }
 
-STRlist.PropTypes = {
+STRlist.propTypes = {
     date: PropTypes.string.isRequired
 };
 
