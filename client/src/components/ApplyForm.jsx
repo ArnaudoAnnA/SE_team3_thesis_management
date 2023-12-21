@@ -105,8 +105,6 @@ function ApplyForm(props) {
         
         API.addApplication(application, teacher)
             .then(() => {
-                // console.log(teacher)
-                // API.sendEmail([teacher.email], "New Application", "A new student applied to your thesis")
                 successAlert()
             })
             .catch((e) => errorAlert(e))
