@@ -627,11 +627,10 @@ const addApplication = async (application, teacher) => {
 
     console.log(application.parse(fileRef ? fileRef.fullPath : null))
     addDoc(applicationsRef, application.parse(fileRef ? fileRef.fullPath : null)).then(doc => {
-      sendEmail(teacher.email,
-        CONSTANTS.newApplication.title,
-        CONSTANTS.newApplication.message
-      )
-      sendEmail("chndavide@gmail.com", CONSTANTS.newApplication.title, CONSTANTS.newApplication.message);
+      const subject = "New Application";
+      const text = `Dear ${teacher.name} ${teacher.surname},\n\nWe are pleased to inform you that you received a new application for the thesis proposal "${application.thesisTitle}".\n\nBest regards,\nSegreteria Politecnico`;
+      sendEmail(teacher.email, subject, text);
+      sendEmail("chndavide@gmail.com", subject, text);
       console.log("Added application with id:" + doc.id)
       return "Application sent"
     })
@@ -1689,6 +1688,9 @@ const acceptRejectSTR = async (id, accept) => {
   try {
       const collectionName = DEBUG ? "test-thesisRequests" : "thesisRequests";
       const docRef = doc(db, collectionName, id);
+      const STRSnapshot = await getDoc(docRef);
+      if (STRSnapshot.data().approved !== null) return {status: 400, error: "Thesis Request already approved/rejected"}
+
       const newData = { 
         "approved": accept,
         "approvalDate": ""
