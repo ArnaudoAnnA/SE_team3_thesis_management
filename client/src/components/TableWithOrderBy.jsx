@@ -7,25 +7,6 @@ import {useState} from 'react';
 
 
 /*--------- UTILITY FUNCTIONS ------------- */
-function data_obj_to_array(obj, columns)
-{
-    let ret = [];
-
-    for (let prop in obj)
-    {
-        let found = false;
-        for (let i = 0; i<columns.length && !found; i++)
-        {
-            if(columns[i].DBfield == prop) 
-            {
-                ret[i] = obj[prop];
-                found = true;
-            }
-        }
-    }
-
-    return ret;
-}
 
 /**
  * 

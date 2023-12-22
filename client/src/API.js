@@ -433,12 +433,14 @@ let FILTER_FORM_VALUES;
   * 
   * @param {int} lastThesisID undefined in case this is a new query
   * 
+  * @param {bool} archive true in case the request is for archived thesis
+  * 
   * @returns an object with two properties:
   * - status, contains the status code of the request;
   * - err, contains some details in case of error, otherwise null;
   * - thesis, contains the array of thesis in case of success, otherwise null.
  */
-const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page) => {
+const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page, archive) => {
   try {
     if (!auth.currentUser) {
       return CONSTANTS.notLogged;
@@ -1437,6 +1439,7 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) => {
         console.log(doc.id)
         let reqData = doc.data();
         let proposal = new ThesisRequest(reqData.title, reqData.description,reqData.teacherId,reqData.studentId, reqData.requestDate,reqData.approvalDate,reqData.approved, reqData.type, reqData.programmes, reqData.notes );  
+        proposal.id = doc.id;
         console.log(proposal)
 
         let teacher = teachers.find(
