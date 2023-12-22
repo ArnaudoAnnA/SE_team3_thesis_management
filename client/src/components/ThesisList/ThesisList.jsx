@@ -129,9 +129,15 @@ function ThesisList(props)
                 {
                     if (ret.status == 200)
                     {
-                        thesis.push(...ret.thesis);
-                        setThesis([...thesis]);
-                        setState(STATES.ready);
+                        let count = 0; //counter necessary to avoid the next lambda to be called twice
+                        setThesis(t =>
+                            {
+                                count = count+1;
+                                if (count==1) t.push(...ret.thesis);
+                                setState(STATES.ready);
+                                return [...t];
+                            });
+                        
                     } else
                     {
                         setState(STATES.error);

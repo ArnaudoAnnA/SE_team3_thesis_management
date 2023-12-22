@@ -36,7 +36,7 @@ function STRlist(props) {
     const [STRlistLength, setSTRListLength] = useState(0);
 
     /*------------VARIABLES----------------*/
-    let entry_per_page = Math.floor(window.innerHeight / 100);
+    let entry_per_page = Math.floor(window.innerHeight / 130);
 
     /*------------FUNCTIONS----------------*/
     async function load_from_start() {
@@ -69,37 +69,21 @@ function STRlist(props) {
     }
 
     function load_more() {
+        
         console.log(STRlist)
         API.getSTRlist(orderBy, false, entry_per_page)
             .then((ret) => {
                 if (ret.status == 200) {
-                    console.log(ret)
-                    // setSTRlist(ret.STRlist);
-                    // ret.STRlist.forEach(e => {
-                    //     console.log(e);
-                    //     if (!STRlist.some(item => item === e)) {
-                    //         setSTRlist();
-                    //     }
-                    // });
-                    // const newList = [STRlist, ...ret.STRlist];
-                    // let newList = []
-                    // newList = [...STRlist];
-                    // newList = [...newList, ...ret.STRlist];
-                    // console.log(newList);
-                    // console.log(newList);
-                    // const l = [...new Set(newList)];
-                    // setSTRlist(newList)
-                    // console.log(STRlist)
-                    // setSTRlist(newList);
-                    STRlist.push(...ret.STRlist);
-                    // setSTRlist([...STRlist]);
-                    // setSTRlist(l 
-                        
-                    //     // l.push(...ret.STRlist);
-                    //     // return Object.assign({}, l);
-                    // );
-                    // console.log(STRlist)
-                    setState(STATES.ready);
+                    let count = 0; //counter necessary to avoid the next lambda to be called twice
+                    setSTRlist(l =>
+                        {
+                            count= count+1;
+                            if (count==1) l.push(...ret.STRlist);
+                            setState(STATES.ready);
+                            return [...l];
+                        }
+                    );
+                    
                 } else {
                     setState(STATES.error);
                 }
@@ -135,7 +119,7 @@ function STRlist(props) {
                             state == STATES.show_more ?
                                 <ClipLoader />
                                 : (STRlist.length < STRlistLength ?
-                                    <Button onClick={() => { setState(STATES.show_more); load_more(); }}>Show More</Button>
+                                    <Button onClick={() => { setState(STATES.show_more); load_more(); } }>Show More</Button>
                                     : "")
                         }
                     </Col></Row>
