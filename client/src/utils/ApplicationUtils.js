@@ -1,16 +1,16 @@
 
 const createApplicationsListGroupByThesis = (applications, studentsInfo) => {
-    console.log("createApplicationsListGroupByThesis")
-    console.log(applications)
-    console.log(studentsInfo)
+    // console.log("createApplicationsListGroupByThesis")
+    // console.log(applications)
+    // console.log(studentsInfo)
     // studentsInfo.forEach(student => { console.log(student) })    
     let applicationsListGroupByThesis = []
     applications.forEach(application => {
-        console.log(application) 
+        // console.log(application) 
         let thesisId = application.thesisId
         let thesisTitle = application.thesisTitle
         let thesisGroupExistsIndex = applicationsListGroupByThesis.findIndex(application => application.thesisId === thesisId);
-        console.log(thesisGroupExistsIndex)
+        // console.log(thesisGroupExistsIndex)
         if (thesisGroupExistsIndex !== -1) {
             let app = {
                 id: application.applicationId,
@@ -19,7 +19,7 @@ const createApplicationsListGroupByThesis = (applications, studentsInfo) => {
             }
             applicationsListGroupByThesis[thesisGroupExistsIndex].applications.push(app)
         } else {
-            console.log("else")
+            // console.log("else")
             let thesisGroup = {
                 thesisId: thesisId,
                 thesisTitle: thesisTitle,
@@ -29,12 +29,12 @@ const createApplicationsListGroupByThesis = (applications, studentsInfo) => {
                     student: studentsInfo.find(student => student.id == application.studentId),
                 }]
             }
-            console.log(thesisGroup)
+            // console.log(thesisGroup)
             applicationsListGroupByThesis.push(thesisGroup)
         }
         
     })
-    console.log(applicationsListGroupByThesis)
+    // console.log(applicationsListGroupByThesis)
     return applicationsListGroupByThesis
 }
 

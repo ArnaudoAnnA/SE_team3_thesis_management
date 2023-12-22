@@ -157,21 +157,21 @@ function CopyProposal(props) {
     setSelectedDate(sixMonthsLater)
     API.getDegree()
     .then((d) => {
-      console.log("Result:", d);
+      // console.log("Result:", d);
       setDeg(d);
     })
     .catch((e) => {
-      console.error("Error API:", e);
+      console.error("Error in getDegree API:", e);
 
     });
   
   
-    console.log(deg)
+    // console.log(deg)
 
     API.getThesisWithId(id)
     .then((res) => {
       if (!res.error) {
-        console.log(res.thesis);
+        // console.log(res.thesis);
         setTitle(res.thesis.title);
         setDegree(res.thesis.type);
         setDescription(res.thesis.description);
@@ -256,19 +256,19 @@ function CopyProposal(props) {
    
   // if everything is ok return true but in out case we send the data, console log to check everything is ok
 
-    console.log(`
-      note: ${note}
-      pname: ${pname}
-      keywords: ${tags}
-      level: ${level}
-      knowledge: ${knowledge}
-      email: ${emailTags}
-      degree: ${degree}
-      description: ${description}
-      title: ${title}
-      errorMsg: ${errorMsg} 
-      userID: ${user.id}
-      selectedDate: ${selectedDate} `);
+    // console.log(`
+    //   note: ${note}
+    //   pname: ${pname}
+    //   keywords: ${tags}
+    //   level: ${level}
+    //   knowledge: ${knowledge}
+    //   email: ${emailTags}
+    //   degree: ${degree}
+    //   description: ${description}
+    //   title: ${title}
+    //   errorMsg: ${errorMsg} 
+    //   userID: ${user.id}
+    //   selectedDate: ${selectedDate} `);
 
       const predefinedProposalStructure = {   
 
@@ -364,11 +364,11 @@ function CopyProposal(props) {
                       required
                       onChange={(ev) => {
                         setDegree(ev.target.value);
-                        console.log(ev.target.value);
+                        // console.log(ev.target.value);
                       }}
                       onBlur={(ev) => {
                         setDegree(ev.target.value);
-                        console.log(ev.target.value);
+                        // console.log(ev.target.value);
                       }}
                       renderInput={(params) => <TextField {...params} placeholder="Insert the Type *" variant="standard" style={{ paddingLeft: "2px", borderRadius: "6px", width: '100%', fontSize: "12px"}} onClick={()=> {setInputErrorType(false)}}/>}
                     />
@@ -488,7 +488,7 @@ function CopyProposal(props) {
                         <DatePicker value={selectedDate}
                           onChange={(newDate) => {
                             setSelectedDate(newDate);
-                            console.log('Nuova data:', newDate);
+                            // console.log('Nuova data:', newDate);
                           }} />
                       </LocalizationProvider>
                     </div>

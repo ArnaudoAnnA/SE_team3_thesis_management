@@ -52,7 +52,7 @@ function Main() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      console.log(currentUser)
+      // console.log(currentUser)
       if (currentUser) {
         try {
 
@@ -60,6 +60,7 @@ function Main() {
           // console.log(userInfo)
           setUser(userInfo)
           if (user) {
+            console.log('Current user information:')
             console.log(user.email)
             console.log(user.role)
           }

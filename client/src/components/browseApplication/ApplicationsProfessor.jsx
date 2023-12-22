@@ -46,7 +46,7 @@ function ApplicationsProfessor(props) {
             if(user.id){
                 API.getApplicationsForProfessor(state)
                 .then((res) => {
-                    console.log(res);
+                    // console.log(res);
                     if (!res || !res.applications) {
                         setState(STATES.EMPTY);
                     } else if (res.error) {
@@ -56,7 +56,7 @@ function ApplicationsProfessor(props) {
                         setApplications(res.applications);
                     }
                    
-                    console.log(applications);
+                    // console.log(applications);
                 })
                 .catch(e => {console.log("Error in ApplicationsProfessor/getApplications:" + e); setState(STATES.ERROR);});
             }
@@ -77,7 +77,7 @@ function ApplicationsProfessor(props) {
           
         }
 
-        console.log("activeKey from ThesisDetail: " + activeKey);
+        // console.log("activeKey from ThesisDetail: " + activeKey);
         
     },[key]);
   
@@ -100,7 +100,7 @@ function ApplicationsProfessor(props) {
                                     <td colSpan="3"> {state ? <Alert style={{textAlign: "center", width: "50%", marginLeft: "auto", marginRight: "auto"}}>{state}</Alert>: ""}</td>
                                 </tr>
                             ) : (
-                                console.log(applications),
+                                // console.log(applications),
                                 applications.map((app) => <tr key={app.thesisId}><AppTable app={app} activeKey={key} /></tr>)
                             )}
                         </tbody>
