@@ -22,6 +22,7 @@ import { CopyProposal } from './components/CopyProposal.jsx';
 import { InsertStudentProposal } from './components/startRequests/InsertStudentProposal.jsx';
 import { STRlist } from './components/startRequests/STRlist.jsx';
 import { STRManagement } from './components/startRequests/STRManagement.jsx';
+import { ProfSTRlist } from './components/STRsByProf/ProfSTRlist.jsx';
 
 
 
@@ -121,7 +122,7 @@ function Main() {
             {user.email ? <Route path='' element={<Home date={date}/>} /> :
               <Route path='' element={<Login />} />}
             {/** Add here other routes */}
-            <Route path='/STRlist' element={user.email ? (user.role === "secretary" ? <STRlist date={date}/> : <NotFoundPage />) : <Login />} />
+            {/*<Route path='/STRlist' element={user.email ? (user.role === "secretary" ? <STRlist date={date}/> : <NotFoundPage />) : <Login />} />*/}
             <Route path='/STRlist/:id' element={user.email ? (user.role === "secretary" ? <STRManagement /> : <NotFoundPage />) : <Login />} />
             <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm date={date}/> : ( user.role == "student" ? <InsertStudentProposal date={date}/> : <NotFoundPage />)) : <Login />} />
             <Route path='/upproposal/:id' element={user.email ? (user.role === "teacher" ? <UpdateProposal date = {date}/> : <NotFoundPage />) : <Login />} />
@@ -132,7 +133,8 @@ function Main() {
             <Route path='/applications/:id/:state' element={user.email ? (user.role === "teacher" ? <BrowseForm /> : <NotFoundPage />) : <Login />} />
             <Route path='/browse' element={user.email ? (user.role === "teacher" ? <BrowseForm /> : <NotFoundPage />) : <Login />} />
             <Route path='/archive' element={user.email ? (user.role === "teacher" ? <ThesisList date={date} archive={true}/> : <NotFoundPage />) : <Login />} />
-            
+            <Route path='/Professor_STRlist' element={user.email ? (user.role === "teacher" ? <ProfSTRlist /> : <NotFoundPage />) : <Login />} />
+
           </Route>
           <Route path='*' element={<NotFoundPage />} />
         </Routes>
