@@ -410,6 +410,50 @@ const setValuesForField = (thesis, DBfield) => {
   return values;
 }
 
+const getCurrentStudentDegree = async () => {
+  let studentCodDegree = await getDocs(
+    query(studentsRef, where("email", "==", auth.currentUser.email))
+  ).then((snap) => snap.docs[0].data().cod_degree);
+  let titleDegree = await getDocs(
+    query(degreesRef, where("codDegree", "==", studentCodDegree))
+  ).then((snap) => snap.docs[0].data().titleDegree);
+
+  return titleDegree;
+}
+
+const fillFilterFormValues = (filters, thesis) => {
+  let formValues = {};
+  Object.keys(filters).forEach((key) => {
+    if (key === 'teacherName')
+      formValues['supervisor'] = setValuesForField(thesis, 'supervisor');
+    else if (key !== 'expirationDate' && key !== 'title')
+      formValues['' + key] = setValuesForField(thesis, key)
+  });
+  return formValues;
+} 
+
+const filterProposalsWithExpirationDate = (thesis, filters) => {
+  let from = filters.expirationDate.from;
+  let to = filters.expirationDate.to;
+  return thesis.filter( proposal => { 
+    let expirationDate = proposal.expirationDate;
+    if (from !== '' && to !== '') {
+      return dayjs(expirationDate).isBetween(from, to, null, '[]');
+    } else if (from !== '') {
+      return dayjs(expirationDate).isAfter(from);
+    } else if (to !== '') {
+      return dayjs(expirationDate).isBefore(to);
+    }
+  });
+}
+
+const getCurrentTeacherId = async () => {
+  let thisTeacherId = await getDocs(
+    query(teachersRef, where("email", "==", auth.currentUser.email))
+  ).then((snap) => snap.docs[0].data().id);
+  return thisTeacherId;
+}
+
 let THESIS_CACHE = [];
 let FILTER_FORM_VALUES;
 
@@ -452,21 +496,13 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page, ar
     if (lastThesisID === undefined) {
       // add filters to the query
       let whereConditions = await buildWhereConditions(filters);
-      // if the user is a teacher, show only his thesis
+      
+      // show thesis of current user
       if (await isTeacher(auth.currentUser.email)) {
-        let thisTeacherId = await getDocs(
-          query(teachersRef, where("email", "==", auth.currentUser.email))
-        ).then((snap) => snap.docs[0].data().id);
-        whereConditions.push(where("teacherId", "==", thisTeacherId));
-      } else if (await isStudent(auth.currentUser.email)) {
-        // if the user is a student, show only thesis of his degree
-        let studentCodDegree = await getDocs(
-          query(studentsRef, where("email", "==", auth.currentUser.email))
-        ).then((snap) => snap.docs[0].data().cod_degree);
-        let titleDegree = await getDocs(
-          query(degreesRef, where("codDegree", "==", studentCodDegree))
-        ).then((snap) => snap.docs[0].data().titleDegree);
-        whereConditions.push(where("programmes", "==", titleDegree));
+        whereConditions.push(where("teacherId", "==", await getCurrentTeacherId()));
+      } 
+      else if (await isStudent(auth.currentUser.email)) {
+        whereConditions.push(where("programmes", "==", await getCurrentStudentDegree()));
       }
 
       // show only active thesis
@@ -478,7 +514,7 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page, ar
       // compose the query
       let q = query(thesisProposalsRef, ...whereConditions);
 
-      // prepare teacher array for name and surname
+      // prepare teacher array for name and surname substitution
       let teachersSnap = await getDocs(teachersRef);
       let teachers = teachersSnap.docs.map((doc) => doc.data());
 
@@ -497,46 +533,23 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page, ar
       });
 
       // order the thesis
-      if (thesis.length != 0) {
-        if (orderByArray[0] === 'title')
-          thesis.orderThesis(thesis, orderByArray[0])
-        else
-          orderByArray.slice().reverse()
-            .forEach((orderBy) => { thesis = orderThesis(thesis, orderBy); });
+      if (!orderByArray[0] === 'title' && thesis.length > 0)
+        orderByArray.slice().reverse().forEach((orderBy) => { thesis = orderThesis(thesis, orderBy); });
+      else 
+        thesis = orderThesis(thesis, orderByArray[0])
+  
+      // filter the thesis on title and expiration date
+      if (!isFiltersEmpty(filters) && filters.title !== undefined && filters.title !== '') {
+        thesis = thesis.filter((proposal) => proposal.title.toLowerCase().includes(filters.title.toLowerCase()));
       }
 
-      if (isFiltersEmpty(filters)) {
+      if (!isFiltersEmpty(filters) && filters.expirationDate !== undefined && (filters.expirationDate.from !== '' || filters.expirationDate.to !== '')) {
+        thesis = filterProposalsWithExpirationDate(thesis, filters);
+      }
+
+      else {
         // save the values of the attributes for the filter form
-        let formValues = {};
-        Object.keys(filters).forEach((key) => {
-          if (key === 'teacherName')
-            formValues['supervisor'] = setValuesForField(thesis, 'supervisor');
-          else if (key !== 'expirationDate' && key !== 'title')
-            formValues['' + key] = setValuesForField(thesis, key)
-        });
-        FILTER_FORM_VALUES = formValues;
-      } else {
-        // filter the thesis on title and expiration date
-        if (filters.title !== undefined && filters.title !== '') {
-
-          thesis = thesis.filter((proposal) => proposal.title.toLowerCase().includes(filters.title.toLowerCase()));
-        }
-
-        if (filters.expirationDate !== undefined && (filters.expirationDate.from !== '' || filters.expirationDate.to !== '')) {
-
-          thesis = thesis.filter((proposal) => {
-            let from = filters.expirationDate.from;
-            let to = filters.expirationDate.to;
-            let expirationDate = proposal.expirationDate;
-            if (from !== '' && to !== '') {
-              return dayjs(expirationDate).isBetween(from, to, null, '[]');
-            } else if (from !== '') {
-              return dayjs(expirationDate).isAfter(from);
-            } else if (to !== '') {
-              return dayjs(expirationDate).isBefore(to);
-            }
-          });
-        }
+        FILTER_FORM_VALUES = fillFilterFormValues(filters, thesis);
       }
 
       // update the current snapshot
