@@ -134,7 +134,7 @@ function STRManagement(props) {
         });
 }, []);
 
-  return ( <Container fluid className="vh-100" >
+  return ( <Container fluid className="vh-100" style={{padding: "40px"}}>
               {
                 state === STATES.READY ? <> 
                   <Row style={{ marginTop: "1rem", marginBottom: "1rem" }}>

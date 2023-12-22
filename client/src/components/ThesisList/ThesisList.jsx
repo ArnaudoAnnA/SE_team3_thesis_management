@@ -99,7 +99,7 @@ function ThesisList(props)
         //changing the format of filters object:
         let nf = Object.assign({}, filters, {coSupervisors: filters.coSupervisors ? [filters.coSupervisors] : [], groups: filters.groups ? [filters.groups] : []});
 
-        API.getThesis(nf, orderBy, undefined, ENTRIES_PER_PAGE)
+        API.getThesis(nf, orderBy, undefined, ENTRIES_PER_PAGE, (props.archive == true))
             .then(ret => 
                 {
                     if (ret.status == 200)
@@ -124,7 +124,7 @@ function ThesisList(props)
         //changing the format of filters object:
         let nf = Object.assign({}, filters, {coSupervisors: filters.coSupervisors ? [filters.coSupervisors] : [], groups: filters.groups ? [filters.groups] : []});
 
-        API.getThesis(nf, orderBy, thesis[thesis.length -1].id, ENTRIES_PER_PAGE)
+        API.getThesis(nf, orderBy, thesis[thesis.length -1].id, ENTRIES_PER_PAGE, (props.archive == true))
             .then(ret => 
                 {
                     if (ret.status == 200)
@@ -169,6 +169,7 @@ function ThesisList(props)
     return (
         <contextState.Provider value={{state: state, setState: setState, states: STATES}}>
             <Container>
+                {props.archive ? <><hr size={10}/><h1>Archive 📁</h1><hr /><Alert dismissible><b>ⓘ</b> You are in the archive: information inside the archive cannot be seen by others</Alert></> : "" }
             <FiltersForm filters={[filters, setFilters, resetFilters, isFiltered]}/>
                 { (state == STATES.ready || state == STATES.show_more) ? 
                     <>
