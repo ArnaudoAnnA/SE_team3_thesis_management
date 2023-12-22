@@ -57,7 +57,7 @@ function BrowseForm(props) {
         Swal.fire({
           title: 'Declined!',
           text: 'You have declined the application!',
-          icon: 'error'
+          icon: 'success'
         });
 
         navigate("/");

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { Button, Col, Row, Form, Navbar, Nav, NavDropdown } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import "../navbar_sidebar.css";
 import { IoMenuOutline as MenuIcon, IoClose as CloseIcon } from "react-icons/io5"
@@ -18,6 +18,8 @@ const userContext = createContext();
 
 function CustomNavbar(props) {
     const user = useContext(userContext);
+    const navigate = useNavigate();
+
     const [date, setDate] = useState(props.date);
     const [isOpen, setIsOpen] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
@@ -58,7 +60,7 @@ function CustomNavbar(props) {
                         </div>
 
                         <div className="links">
-                                <Nav.Link as={Link} to={"/"} className="customLink" href='/'>Home</Nav.Link>
+                                <Nav.Link as={Link} to={"/"} className="customLink" href='/' onClick={() => {navigate('/'); window.location.reload(true)}}>Home</Nav.Link>
                                 {user.role == 'teacher' || user.role == 'student' ? <Nav.Link as={Link} to={"/applications"} className="customLink" href='/applications'>Applications</Nav.Link> : null }
                                 {user.role == 'teacher' ?
                                     <>
@@ -142,7 +144,7 @@ function Sidebar(props) {
             </span>
 
             <div className="mt-5">
-                <Nav.Link as={Link} to={"/"} className="customSidebarLink" href='/' onClick={() => props.closeSidebar()}>Home</Nav.Link>
+                <Nav.Link as={Link} to={"/"} className="customSidebarLink" href='/' onClick={() => {navigate('/'); window.location.reload(true); props.closeSidebar()}}>Home</Nav.Link>
                 {props.user.role == 'teacher' || props.user.role == 'student' ? <Nav.Link as={Link} to={"/applications"} className="customSidebarLink" href='/applications' onClick={() => props.closeSidebar()}>Applications</Nav.Link> : null }
                 {props.user.role == 'teacher' ?
                     <>
