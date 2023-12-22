@@ -470,7 +470,10 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page, ar
       }
 
       // show only active thesis
-      whereConditions.push(where("archiveDate", ">", await getVirtualDate()));
+      if(!archive)
+        whereConditions.push(where("archiveDate", ">", await getVirtualDate()));
+      else
+        whereConditions.push(where("archiveDate", "<=", await getVirtualDate()));
 
       // compose the query
       let q = query(thesisProposalsRef, ...whereConditions);
@@ -696,7 +699,7 @@ const getApplicationsForProfessor = async (status) => {
   })
   const studentsInfo = await getUsers(studentsIds)
   // console.log(studentsInfo)
-  studentsInfo.forEach(e => { console.log(e) })
+  // studentsInfo.forEach(e => { console.log(e) })
   const groupedApplications = ApplicationUtils.createApplicationsListGroupByThesis(applications, studentsInfo)
   // console.log(groupedApplications)
   if (applications.length == 0) {
@@ -757,7 +760,7 @@ const getApplication = async (studentId, thesisId) => {
       // console.log(qApplication)
       try {
         const applicationSnapshot = await getDocs(qApplication)
-        //applicationSnapshot.forEach(e => { console.log(e) })
+        // applicationSnapshot.forEach(e => { console.log(e) })
         if (applicationSnapshot.docs.length > 0) {
           // console.log("there is already a record")
           const app = applicationSnapshot.docs[0].data()
@@ -768,7 +771,7 @@ const getApplication = async (studentId, thesisId) => {
         // console.log("No records")
         return MessageUtils.createMessage(404, "error", "No records found")
       } catch (error) {
-        console.log(e)
+        console.log(error)
       }
     } else {
       return MessageUtils.createMessage(401, "error", "Unauthorized")
@@ -1078,7 +1081,7 @@ const getNextThesisId = async () => {
     const thesisSnapshot = await getDocs(qThesis);
     const thesisArray = thesisSnapshot.docs.map((t) => t.data().id);
 
-    //thesisArray.forEach((id) => console.log("thesisArray[i]: " + id));
+    // thesisArray.forEach((id) => console.log("thesisArray[i]: " + id));
 
     return (Math.max(...thesisArray)) + 1;
   } catch (error) {
