@@ -1359,7 +1359,7 @@ const getApplicationsByStateByThesis = async (state, id) => {
 let lastSTRdoc;
 let lastSTRqueryWhereConditions;
 
-const getSTRlist = async (orderByArray, reload, entry_per_page) => {
+const getSTRlist = async (orderByArray, reload, entry_per_page, byProf) => {
   // console.log(lastSTRdoc)
   // console.log(orderByArray)
   if (!auth.currentUser) {
@@ -1398,8 +1398,15 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) => {
       whereConditions.push(where("requestDate", "<=", await getVirtualDate())); 
       */
 
-      //show only pending STR
-      whereConditions.push(where("approved", "==", null));
+      if (!byProf) {
+        //show only pending STR
+        whereConditions.push(where("approved", "==", null));
+      } else {
+        //show only approved STR of the professor
+        whereConditions.push(where("approved", "==", true));
+        const thisTeacher = await getUser(auth.currentUser.email);
+        whereConditions.push(where("teacherId", "==", thisTeacher.id));
+      }
 
       //sorting
       for (let f of orderByArray) {
@@ -1453,7 +1460,7 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) => {
   }
 }
 
-const getSTRlistLength = async () => {
+const getSTRlistLength = async (byProf) => {
 
   if (!auth.currentUser) {
     return { status: CONSTANTS.notLogged };
@@ -1479,8 +1486,16 @@ const getSTRlistLength = async () => {
   */
 
 
-  //show only pending STR
-  whereConditions.push(where("approved", "==", null));
+  if (!byProf) {
+    //show only pending STR
+    whereConditions.push(where("approved", "==", null));
+  } else {
+    //show only approved STR of the professor
+    whereConditions.push(where("approved", "==", true));
+    const thisTeacher = await getUser(auth.currentUser.email);
+    whereConditions.push(where("teacherId", "==", thisTeacher.id));
+  }
+  
 
   /*------------QUERY EXECUTION----------*/
   let q = query(thesisRequestsRef, ...whereConditions);
