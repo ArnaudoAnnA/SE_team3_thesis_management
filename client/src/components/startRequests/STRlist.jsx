@@ -41,7 +41,7 @@ function STRlist(props) {
     /*------------FUNCTIONS----------------*/
     async function load_from_start() {
         let temp = 0;
-        await API.getSTRlistLength(props.str)
+        await API.getSTRlistLength(props.byProf)
             .then(ret => {
                 if (ret.status == 200) {
                     temp = ret.length;
@@ -53,7 +53,7 @@ function STRlist(props) {
             .catch(e => { console.log(e); setState(STATES.error) });
 
         if (state != STATES.error && temp != 0)
-            API.getSTRlist(orderBy, true, entry_per_page, props.str)
+            API.getSTRlist(orderBy, true, entry_per_page, props.byProf)
                 .then((ret) => {
                     if (ret.status == 200) {
                         setSTRlist(ret.STRlist);
@@ -71,7 +71,7 @@ function STRlist(props) {
     function load_more() {
         
         console.log(STRlist)
-        API.getSTRlist(orderBy, false, entry_per_page, props.str)
+        API.getSTRlist(orderBy, false, entry_per_page, props.byProf)
             .then((ret) => {
                 if (ret.status == 200) {
                     let count = 0; //counter necessary to avoid the next lambda to be called twice
@@ -108,7 +108,7 @@ function STRlist(props) {
 
 
     return <Container>
-        {props.str ? <><hr size={10}/><h1>Thesis Requests ⏳ <i className="bi bi-hourglass-split"></i><i className="bi bi-easel-fill"></i></h1><hr /><Alert dismissible><b>ⓘ</b> You are in the Thesis Requests: here you find all the thesis requests that have been accepted by secretary</Alert></> : "" }
+        {props.byProf ? <><hr size={10}/><h1>Thesis Requests ⏳ <i className="bi bi-hourglass-split"></i><i className="bi bi-easel-fill"></i></h1><hr /><Alert dismissible><b>ⓘ</b> You are in the Thesis Requests: here you find all the thesis requests that have been accepted by secretary</Alert></> : <><hr size={10}/><h1>Home 🎓 <i className="bi bi-mortarboard-fill"></i></h1></> }
         {
             state == STATES.ready || state == STATES.show_more ?
                 <>

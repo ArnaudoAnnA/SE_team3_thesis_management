@@ -132,7 +132,7 @@ function Main() {
             <Route path='/applications/:id/:state' element={user.email ? (user.role === "teacher" ? <BrowseForm /> : <NotFoundPage />) : <Login />} />
             <Route path='/browse' element={user.email ? (user.role === "teacher" ? <BrowseForm /> : <NotFoundPage />) : <Login />} />
             <Route path='/archive' element={user.email ? (user.role === "teacher" ? <ThesisList date={date} archive={true}/> : <NotFoundPage />) : <Login />} />
-            <Route path='/Professor_STRlist' element={user.email ? (user.role === "teacher" ? <STRlist date={date} str={true}/> : <NotFoundPage />) : <Login />} />
+            <Route path='/Professor_STRlist' element={user.email ? (user.role === "teacher" ? <STRlist date={date} byProf={true}/> : <NotFoundPage />) : <Login />} />
 
           </Route>
           <Route path='*' element={<NotFoundPage />} />
