@@ -152,7 +152,7 @@ const loginWithSaml = () => {
 const logOut = async () => {
   email = auth.currentUser.email;
   signOut(auth).then(() => {
-    if (!DEBUG) console.log(email + " signed out")
+    if (!DEBUG) console.log(email = " signed out")
   }).catch((error) => {
     console.log(error)
   })
@@ -461,6 +461,11 @@ const getCurrentTeacherId = async () => {
   return thisTeacherId;
 }
 
+const calculateIndex = (lastThesisID) => {
+  if (lastThesisID === undefined) return -1;
+  return THESIS_CACHE.findIndex((proposal) => proposal.id === lastThesisID);
+}
+
 let THESIS_CACHE = [];
 let FILTER_FORM_VALUES;
 
@@ -497,8 +502,7 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page, ar
       return CONSTANTS.notLogged;
     }
 
-    let index;
-    lastThesisID === undefined ? index = -1 : index = THESIS_CACHE.findIndex((proposal) => proposal.id === lastThesisID);
+    let index = calculateIndex(lastThesisID);
 
     // load of the first page
     if (index === -1) {
