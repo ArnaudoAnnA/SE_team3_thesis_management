@@ -42,7 +42,7 @@ function ThesisList(props)
 
     const DEFAULT_ORDERBY = COLUMNS.map(c => {return {DBfield: c.DBfield, mode: "ASC"}; });
 
-    const ENTRIES_PER_PAGE = Math.floor(window.innerHeight /100);
+    const ENTRIES_PER_PAGE = Math.floor(window.innerHeight /130);
     
 
     /*--------------- STATES ------------------*/
