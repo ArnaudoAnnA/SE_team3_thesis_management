@@ -545,7 +545,6 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page, ar
     // when a new page is requested
     else {
       index = THESIS_CACHE.findIndex((proposal) => proposal.id === lastThesisID);
-      // console.log("Index:", index); //torna -1
     }
 
 
@@ -893,8 +892,6 @@ const getApplicationDetails = async (id) => {
     curriculum: application.curriculum ? application.curriculum : null,
     career: career,
   };
-  // console.log("applicationDetails");
-  // console.log(applicationDetails);
 
   return MessageUtils.createMessage(200, "application", applicationDetails);
 }
@@ -944,7 +941,6 @@ const removeAllProposals = async () => {
       deleteDoc(docRef);
     })
 
-    // console.log(len);
     return len;
   } catch (e) {
     console.log(e)
@@ -1059,13 +1055,10 @@ const insertProposal = async (thesisProposalData) => {
         if (g) { groupsAux.push(g) };
       }
 
-      // console.log("Found groups: " + groupsAux);
-
       //We update the thesisProposalData with the obtained groups and calculated id
       thesisProposalData.groups = groupsAux;
       thesisProposalData.id = await getNextThesisId();
       const docRef = await addDoc(thesisProposalsRef, thesisProposalData);
-      // console.log("Thesis proposal added with ID: ", docRef.id);
       return { status: 200, id: docRef.id };
     }
   } catch (error) {
@@ -1457,7 +1450,6 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) => {
       return { status: 200, STRlist: proposals };
     })
       .catch(e => { console.log(e); return { status: 500 } });
-    // console.log(ret);
     return ret;
   } catch (error) {
     console.log(error);
@@ -1576,7 +1568,6 @@ function validateSTRData(STRData) {
  */
 const insertSTR = async (STRData) => {
   if (!auth.currentUser) return { status: 401, err: "User not logged in" };
-  //console.log("Logged user = " + auth.currentUser.email);
 
   if (!(await isStudent(auth.currentUser.email))) return { status: 401, err: "User is not a student" };
 
@@ -1596,12 +1587,10 @@ const insertSTR = async (STRData) => {
     return { status: 400, err: "The proposed teacher is not present in our database" };
   }
   const student = await getUserById(STRData.studentId);
-  // console.log(student);
   const degree_title = await getDegreeById(student.cod_degree);
   STRData.programmes = degree_title;
   try {
     const docRef = await addDoc(thesisRequestsRef, STRData);
-    // console.log("Thesis request added with ID: ", docRef.id);
     return { status: 200, id: docRef.id };
   } catch (error) {
     console.error("Error adding thesis request: ", error);
@@ -1613,7 +1602,6 @@ const getDegreeById = async (id) => {
   try {
     const q = query(degreesRef, where("codDegree", "==", id));
     const snapshot = await getDocs(q);
-    // console.log(snapshot);
     const title = snapshot.docs[0].data().titleDegree;
     return title;
   } catch (error) {
@@ -1639,19 +1627,14 @@ const getSTRWithId = async (id) => {
   if (!(await isSecretary(auth.currentUser.email) || await isTeacher(auth.currentUser.email))) return { status: 401, error: "User is not a secretary" };
 
   //QUERY CONDITIONS
-  // const whereCond1 = where("id", "==", Number(id))
-  // const qSTR = query(thesisRequestsRef, whereCond1)
   const collectionName = DEBUG ? "test-thesisRequests" : "thesisRequests";
   const STRdocRef = doc(db, collectionName, id);
 
   try {
-    // const STRSnapshot = await getDocs(qSTR);
     const STRSnapshot = await getDoc(STRdocRef);
     if (STRSnapshot.exists()) {
-      // console.log(STRSnapshot)
       const data = STRSnapshot.data();
       const STR = new ThesisRequest(data.title, data.description, data.teacherId, data.studentId, data.requestDate, data.approvalDate, data.approved, data.type, data.programmes, data.notes);
-      // console.log(STR)
       //find the supervisor's name and surname
       let teachersSnap = await getDocs(teachersRef);
       let teachers = teachersSnap.docs.map(doc => doc.data());
