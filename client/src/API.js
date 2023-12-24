@@ -1359,7 +1359,20 @@ const getApplicationsByStateByThesis = async (state, id) => {
 let lastSTRdoc;
 let lastSTRqueryWhereConditions;
 
-const getSTRlist = async (orderByArray, reload, entry_per_page, byProf) => {
+/**
+ * Returns different items based on the logged user:
+ * - professor: only accepted STR directed to him
+ * - secretary: only pending STR
+ * Returns error in case the logged user is a student.
+ * 
+ * @param { Array<{DBfield: string, mode: "ASC"|"DESC"}> } orderByArray the order of the objects in this array reflects 
+ * the prority of the fields in the ordering.
+ * 
+ * @param {bool} reload true if the new request has different conditions than the previous performed one
+ * @param {*} entry_per_page to avoid overload, only a subset of entries can be required (the remaining ones can be obtained
+ * by calling this API with reload = false)  
+ */
+const getSTRlist = async (orderByArray, reload, entry_per_page) => {
   // console.log(lastSTRdoc)
   // console.log(orderByArray)
   if (!auth.currentUser) {
@@ -1382,31 +1395,23 @@ const getSTRlist = async (orderByArray, reload, entry_per_page, byProf) => {
 
     // load of the first page
     if (reload || !lastSTRdoc || !lastSTRqueryWhereConditions) {
-      /* TO DO: uncomment when the story for the teacher is done
 
-      // if the user is a teacher, show only the STR directed to him
-      if (await isTeacher(auth.currentUser.email)) {
-        let thisTeacherId = await getDocs(
-          query(teachersRef, where("email", "==", auth.currentUser.email))
-        ).then((snap) => snap.docs[0].data().id);
-        whereConditions.push(where("teacherId", "==", thisTeacherId));
-      }*/
+      
+      if (!await isTeacher(auth.currentUser.email)) {
+        //show only pending STR
+        whereConditions.push(where("approved", "==", null));
+      } else {
+        // if the user is a teacher, show only the STR directed to him
+        whereConditions.push(where("approved", "==", true));
+        const thisTeacher = await getUser(auth.currentUser.email);
+        whereConditions.push(where("teacherId", "==", thisTeacher.id));
+      }
 
       /* ATTENTION: this code has been commented out because of it makes uneffective the ordering
       // show only STR from the past
       whereConditions.push(orderBy("requestDate"));
       whereConditions.push(where("requestDate", "<=", await getVirtualDate())); 
       */
-
-      if (!byProf) {
-        //show only pending STR
-        whereConditions.push(where("approved", "==", null));
-      } else {
-        //show only approved STR of the professor
-        whereConditions.push(where("approved", "==", true));
-        const thisTeacher = await getUser(auth.currentUser.email);
-        whereConditions.push(where("teacherId", "==", thisTeacher.id));
-      }
 
       //sorting
       for (let f of orderByArray) {
@@ -1460,7 +1465,13 @@ const getSTRlist = async (orderByArray, reload, entry_per_page, byProf) => {
   }
 }
 
-const getSTRlistLength = async (byProf) => {
+/**
+ * Returns a different value based on the logged user:
+ * - professor: only accepted STR directed to him are considered in the counting;
+ * - secretary: only pending STR are considered in the counting.
+ * - student: error
+ */
+const getSTRlistLength = async () => {
 
   if (!auth.currentUser) {
     return { status: CONSTANTS.notLogged };
@@ -1471,22 +1482,12 @@ const getSTRlistLength = async (byProf) => {
   /*------------QUERY PREPARATION ----------*/
   let whereConditions = [];
 
-  /* TO DO: uncomment when the story for the teacher is done
-
-  if (await isTeacher(auth.currentUser.email)) {
-    let thisTeacherId = await getDocs(
-      query(teachersRef, where("email", "==", auth.currentUser.email))
-    ).then((snap) => snap.docs[0].data().id);
-    whereConditions.push(where("teacherId", "==", thisTeacherId));
-  }*/
-
   /* ATTENTION: this code has been commented out because of it makes uneffective the ordering
   // show only STR from the past
   whereConditions.push(where("requestDate", "<=", await getVirtualDate()));      //TO DO: check if the field name is correct
   */
 
-
-  if (!byProf) {
+  if (!await isTeacher(auth.currentUser.email)) {
     //show only pending STR
     whereConditions.push(where("approved", "==", null));
   } else {

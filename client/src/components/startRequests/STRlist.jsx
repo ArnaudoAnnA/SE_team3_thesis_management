@@ -41,7 +41,7 @@ function STRlist(props) {
     /*------------FUNCTIONS----------------*/
     async function load_from_start() {
         let temp = 0;
-        await API.getSTRlistLength(props.byProf)
+        await API.getSTRlistLength()
             .then(ret => {
                 if (ret.status == 200) {
                     temp = ret.length;
@@ -53,7 +53,7 @@ function STRlist(props) {
             .catch(e => { console.log(e); setState(STATES.error) });
 
         if (state != STATES.error && temp != 0)
-            API.getSTRlist(orderBy, true, entry_per_page, props.byProf)
+            API.getSTRlist(orderBy, true, entry_per_page)
                 .then((ret) => {
                     if (ret.status == 200) {
                         setSTRlist(ret.STRlist);
