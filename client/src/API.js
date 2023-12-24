@@ -1769,10 +1769,8 @@ const sendEmail = async (to, subject, text) => {
     return MessageUtils.createMessage(401, "error", "User not logged in")
   }
   const email = MessageUtils.createEmail(to, subject, text);
-  // console.log(email);
   try {
     const docRef = await addDoc(mailRef, email);
-    // console.log("Email added with ID: ", docRef.id);
     return MessageUtils.createMessage(200, "id", docRef.id);
   } catch (error) {
     console.error("Error adding email: ", error);

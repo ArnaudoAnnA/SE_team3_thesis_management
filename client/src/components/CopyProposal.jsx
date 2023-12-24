@@ -13,6 +13,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import API from '../API'
 import { userContext } from './Utils';
+import PropTypes from 'prop-types';
 
 
 
@@ -142,13 +143,12 @@ function CopyProposal(props) {
   const [note, setNote] = useState('');
   const [pname, setpName] = useState('');
   const [level, setLevel] = useState('');
-  const [knowledge, setKnowledge] = useState('')
-  const [email, setEmail] = useState([])
-  const [degree, setDegree] = useState('')
-  const [description, setDescription] = useState('')
-  const [title, setTitle] = useState('')
-  const [errorMsg, setErrorMsg] = useState('')
-  const [selectedDate, setSelectedDate] = useState(new dayjs());
+  const [knowledge, setKnowledge] = useState('');
+  const [degree, setDegree] = useState('');
+  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const [selectedDate, setSelectedDate] = useState(dayjs());
   const [deg, setDeg] = useState()
 
   useEffect(() => {
@@ -157,7 +157,6 @@ function CopyProposal(props) {
     setSelectedDate(sixMonthsLater)
     API.getDegree()
     .then((d) => {
-      // console.log("Result:", d);
       setDeg(d);
     })
     .catch((e) => {
@@ -166,12 +165,10 @@ function CopyProposal(props) {
     });
   
   
-    // console.log(deg)
 
     API.getThesisWithId(id)
     .then((res) => {
       if (!res.error) {
-        // console.log(res.thesis);
         setTitle(res.thesis.title);
         setDegree(res.thesis.type);
         setDescription(res.thesis.description);
@@ -194,7 +191,6 @@ function CopyProposal(props) {
   const handleSubmit = (event) => {
 
     event.preventDefault();
-    let nomeRegex = /^[A-Za-z]+$/; // The word must contains words
    
     if (title === '') {
 
@@ -249,28 +245,11 @@ function CopyProposal(props) {
     if (new dayjs(props.date) > selectedDate) {
       setErrorMsg("Date cannot be before today!")
       window.scrollTo(0, 0);
-      setSelectedDate(new dayjs())
+      setSelectedDate(dayjs())
       return false;
     }
-  
-   
-  // if everything is ok return true but in out case we send the data, console log to check everything is ok
 
-    // console.log(`
-    //   note: ${note}
-    //   pname: ${pname}
-    //   keywords: ${tags}
-    //   level: ${level}
-    //   knowledge: ${knowledge}
-    //   email: ${emailTags}
-    //   degree: ${degree}
-    //   description: ${description}
-    //   title: ${title}
-    //   errorMsg: ${errorMsg} 
-    //   userID: ${user.id}
-    //   selectedDate: ${selectedDate} `);
-
-      const predefinedProposalStructure = {   
+      const sendingProposal = {   
 
         archiveDate: dayjs(selectedDate).toISOString(),   
         coSupervisors: emailTags,   
@@ -293,7 +272,7 @@ function CopyProposal(props) {
     if (title !== '' && degree !== '' && description !== '' && knowledge !== '' && level !== '' && pname !== '' &&
       title !== null && degree !== null && description !== null && knowledge !== null && level !== null && pname !== null) {
 
-        API.insertProposal(predefinedProposalStructure)
+        API.insertProposal(sendingProposal)
         .then((res) => {
           if(!res.error) {
             successAlert();
@@ -364,11 +343,9 @@ function CopyProposal(props) {
                       required
                       onChange={(ev) => {
                         setDegree(ev.target.value);
-                        // console.log(ev.target.value);
                       }}
                       onBlur={(ev) => {
                         setDegree(ev.target.value);
-                        // console.log(ev.target.value);
                       }}
                       renderInput={(params) => <TextField {...params} placeholder="Insert the Type *" variant="standard" style={{ paddingLeft: "2px", borderRadius: "6px", width: '100%', fontSize: "12px"}} onClick={()=> {setInputErrorType(false)}}/>}
                     />
@@ -414,7 +391,7 @@ function CopyProposal(props) {
                       <div style={{ display: 'flex', flexDirection: "column", flex: 1 }}>
                         <div className="tags-input-container" style={{ display: 'flex', flexDirection: "row", flexWrap: "wrap" }}>
                           {tags.map((tag, index) => (
-                            <div className="tag-item" key={index} style={{ cursor: "pointer", marginBottom: "2px", marginRight: "5px", borderBlockColor: "black" }}>
+                            <div className="tag-item" key={tag} style={{ cursor: "pointer", marginBottom: "2px", marginRight: "5px", borderBlockColor: "black" }}>
                               <span className="text">{tag}</span>
                               <span className="close" onClick={() => removeTag(index)} >&times;</span>
                             </div>
@@ -522,7 +499,9 @@ function CopyProposal(props) {
   )
   };
   
-  
+  CopyProposal.propTypes = {
+    date: PropTypes.string.isRequired
+  };
 
 
 export {CopyProposal};
