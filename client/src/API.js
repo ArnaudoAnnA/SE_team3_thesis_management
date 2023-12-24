@@ -422,6 +422,7 @@ const getCurrentStudentDegree = async () => {
 }
 
 const fillFilterFormValues = (filters, thesis) => {
+  if (isFiltersEmpty(filters)) return null;
   let formValues = {};
   Object.keys(filters).forEach((key) => {
     if (key === 'teacherName')
@@ -433,6 +434,7 @@ const fillFilterFormValues = (filters, thesis) => {
 } 
 
 const filterProposalsWithExpirationDate = (thesis, filters) => {
+  if (isFiltersEmpty(filters) || filters.expirationDate === undefined || (filters.expirationDate.from === '' && filters.expirationDate.to === '')) return thesis;
   let from = filters.expirationDate.from;
   let to = filters.expirationDate.to;
   return thesis.filter( proposal => { 
@@ -445,6 +447,11 @@ const filterProposalsWithExpirationDate = (thesis, filters) => {
       return dayjs(expirationDate).isBefore(to);
     }
   });
+}
+
+const filterProposalsWithTitle = (thesis, filters) => {
+  if(isFiltersEmpty(filters) || filters.title === undefined || filters.title === '') return thesis;
+  return thesis.filter((proposal) => proposal.title.toLowerCase().includes(filters.title.toLowerCase()));
 }
 
 const getCurrentTeacherId = async () => {
@@ -490,26 +497,25 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page, ar
       return CONSTANTS.notLogged;
     }
 
-    let index = -1;
+    let index;
+    lastThesisID === undefined ? index = -1 : index = THESIS_CACHE.findIndex((proposal) => proposal.id === lastThesisID);
 
     // load of the first page
-    if (lastThesisID === undefined) {
+    if (index === -1) {
+      
       // add filters to the query
       let whereConditions = await buildWhereConditions(filters);
       
       // show thesis of current user
       if (await isTeacher(auth.currentUser.email)) {
         whereConditions.push(where("teacherId", "==", await getCurrentTeacherId()));
-      } 
+      }
       else if (await isStudent(auth.currentUser.email)) {
         whereConditions.push(where("programmes", "==", await getCurrentStudentDegree()));
       }
 
-      // show only active thesis
-      if(!archive)
-        whereConditions.push(where("archiveDate", ">", await getVirtualDate()));
-      else
-        whereConditions.push(where("archiveDate", "<=", await getVirtualDate()));
+      // show active or archived thesis
+      whereConditions.push(where("archiveDate", archive ? "<=" : ">", await getVirtualDate()));
 
       // compose the query
       let q = query(thesisProposalsRef, ...whereConditions);
@@ -533,33 +539,20 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page, ar
       });
 
       // order the thesis
-      if (!orderByArray[0] === 'title' && thesis.length > 0)
+      if (!orderByArray[0] == 'title' && thesis.length > 0)
         orderByArray.slice().reverse().forEach((orderBy) => { thesis = orderThesis(thesis, orderBy); });
       else 
         thesis = orderThesis(thesis, orderByArray[0])
-  
-      // filter the thesis on title and expiration date
-      if (!isFiltersEmpty(filters) && filters.title !== undefined && filters.title !== '') {
-        thesis = thesis.filter((proposal) => proposal.title.toLowerCase().includes(filters.title.toLowerCase()));
-      }
 
-      if (!isFiltersEmpty(filters) && filters.expirationDate !== undefined && (filters.expirationDate.from !== '' || filters.expirationDate.to !== '')) {
-        thesis = filterProposalsWithExpirationDate(thesis, filters);
-      }
+      thesis = filterProposalsWithTitle(thesis, filters);
+      thesis = filterProposalsWithExpirationDate(thesis, filters);
 
-      else {
-        // save the values of the attributes for the filter form
-        FILTER_FORM_VALUES = fillFilterFormValues(filters, thesis);
-      }
+      // save the values of the attributes for the filter form
+      FILTER_FORM_VALUES = fillFilterFormValues(filters, thesis);
 
       // update the current snapshot
       THESIS_CACHE = thesis;
     }
-    // when a new page is requested
-    else {
-      index = THESIS_CACHE.findIndex((proposal) => proposal.id === lastThesisID);
-    }
-
 
     // If the ID is not found, index will be -1
     let page = [];
