@@ -150,7 +150,7 @@ const loginWithSaml = () => {
 }
 
 const logOut = async () => {
-  email = auth.currentUser.email;
+  let email = auth.currentUser.email;
   signOut(auth).then(() => {
     if (!DEBUG) console.log(email + " signed out")
   }).catch((error) => {
