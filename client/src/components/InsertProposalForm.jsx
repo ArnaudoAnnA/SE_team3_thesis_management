@@ -155,8 +155,8 @@ function InsertProposalForm(props) {
   const [deg, setDeg] = useState()
 
   useEffect(() => {
-    console.log(props.date)
-    console.log(dayjs(props.date))
+    // console.log(props.date)
+    // console.log(dayjs(props.date))
     const now = dayjs(props.date);
     const sixMonthsLater = now.add(6, 'month');
     setSelectedDate(sixMonthsLater)
@@ -170,7 +170,7 @@ function InsertProposalForm(props) {
     });
   
   
-    console.log(deg)
+    // console.log(deg)
 
   }, []);
  
@@ -240,18 +240,18 @@ function InsertProposalForm(props) {
    
   // if everything is ok return true but in out case we send the data, console log to check everything is ok
 
-    console.log(`
-      note: ${note}
-      pname: ${pname}
-      keywords: ${tags}
-      level: ${level}
-      knowledge: ${knowledge}
-      email: ${emailTags}
-      degree: ${degree}
-      description: ${description}
-      title: ${title}
-      errorMsg: ${errorMsg} 
-      selectedDate: ${selectedDate} `);
+    // console.log(`
+    //   note: ${note}
+    //   pname: ${pname}
+    //   keywords: ${tags}
+    //   level: ${level}
+    //   knowledge: ${knowledge}
+    //   email: ${emailTags}
+    //   degree: ${degree}
+    //   description: ${description}
+    //   title: ${title}
+    //   errorMsg: ${errorMsg} 
+    //   selectedDate: ${selectedDate} `);
 
       const predefinedProposalStructure = {   
 
@@ -352,11 +352,11 @@ function InsertProposalForm(props) {
                       required
                       onChange={(ev) => {
                         setDegree(ev.target.value);
-                        console.log(ev.target.value);
+                        // console.log(ev.target.value);
                       }}
                       onBlur={(ev) => {
                         setDegree(ev.target.value);
-                        console.log(ev.target.value);
+                        // console.log(ev.target.value);
                       }}
                       renderInput={(params) => <TextField {...params} placeholder="Insert the Type *" variant="standard" style={{ paddingLeft: "2px", borderRadius: "6px", width: '100%', fontSize: "12px", borderWidth: "300px"}} onClick={()=> setInputErrorType(false)} />}
                     />
@@ -476,7 +476,7 @@ function InsertProposalForm(props) {
                         <DatePicker value={selectedDate}
                           onChange={(newDate) => {
                             setSelectedDate(newDate);
-                            console.log('Nuova data:', newDate);
+                            // console.log('Nuova data:', newDate);
                           }} />
                       </LocalizationProvider>
                     </div>

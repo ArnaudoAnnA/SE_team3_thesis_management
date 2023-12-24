@@ -28,7 +28,8 @@ To add other users, go in firebase -> authentication -> users -> add user
 
 The emails are received only by these two accounts
 
-| email | password | type | 
+| email | password | type |
+| :--- | :--- | :--- | 
 | studente.team3@gmail.com | Team3Rocks! | student |
 | professore.team3@gmail.com | Team3Rocks! | teacher |
 

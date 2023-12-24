@@ -78,7 +78,7 @@ function BrowseForm(props) {
 
       API.getApplicationDetails(id)
         .then((res) => {
-          console.log(res);
+          // console.log(res);
 
           setCareer(res.application.career);
           setTitle(res.application.title);
@@ -133,7 +133,7 @@ function BrowseForm(props) {
   const downloadCv = async () => {
     const msg = API.getCVOfApplication(cvPath).then((res) => {
 
-      console.log(res)
+      // console.log(res)
       if(res.status != 200){
         Swal.fire({
           title: 'Error',

@@ -24,7 +24,6 @@ import { STRlist } from './components/startRequests/STRlist.jsx';
 import { STRManagement } from './components/startRequests/STRManagement.jsx';
 
 
-
 function App() {
   // DO NOT WRITE HERE, use Main instead
   return (
@@ -52,7 +51,7 @@ function Main() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      console.log(currentUser)
+      // console.log(currentUser)
       if (currentUser) {
         try {
 
@@ -60,6 +59,7 @@ function Main() {
           // console.log(userInfo)
           setUser(userInfo)
           if (user) {
+            console.log('Current user information:')
             console.log(user.email)
             console.log(user.role)
           }
@@ -121,7 +121,7 @@ function Main() {
             {user.email ? <Route path='' element={<Home date={date}/>} /> :
               <Route path='' element={<Login />} />}
             {/** Add here other routes */}
-            <Route path='/STRlist' element={user.email ? (user.role === "secretary" ? <STRlist date={date}/> : <NotFoundPage />) : <Login />} />
+            {/*<Route path='/STRlist' element={user.email ? (user.role === "secretary" ? <STRlist date={date}/> : <NotFoundPage />) : <Login />} />*/}
             <Route path='/STRlist/:id' element={user.email ? (user.role === "secretary" ? <STRManagement /> : <NotFoundPage />) : <Login />} />
             <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm date={date}/> : ( user.role == "student" ? <InsertStudentProposal date={date}/> : <NotFoundPage />)) : <Login />} />
             <Route path='/upproposal/:id' element={user.email ? (user.role === "teacher" ? <UpdateProposal date = {date}/> : <NotFoundPage />) : <Login />} />
@@ -132,7 +132,8 @@ function Main() {
             <Route path='/applications/:id/:state' element={user.email ? (user.role === "teacher" ? <BrowseForm /> : <NotFoundPage />) : <Login />} />
             <Route path='/browse' element={user.email ? (user.role === "teacher" ? <BrowseForm /> : <NotFoundPage />) : <Login />} />
             <Route path='/archive' element={user.email ? (user.role === "teacher" ? <ThesisList date={date} archive={true}/> : <NotFoundPage />) : <Login />} />
-            
+            <Route path='/Professor_STRlist' element={user.email ? (user.role === "teacher" ? <STRlist date={date} byProf={true}/> : <NotFoundPage />) : <Login />} />
+
           </Route>
           <Route path='*' element={<NotFoundPage />} />
         </Routes>

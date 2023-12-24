@@ -60,13 +60,10 @@ function CustomNavbar(props) {
                         </div>
 
                         <div className="links">
-                                <Nav.Link as={Link} to={"/"} className="customLink" href='/' onClick={() => {navigate('/'); window.location.reload(true)}}>Home</Nav.Link>
+                                <Nav.Link as={Link} to={"/"} className="customLink" href='/'>Home</Nav.Link>
                                 {user.role == 'teacher' || user.role == 'student' ? <Nav.Link as={Link} to={"/applications"} className="customLink" href='/applications'>Applications</Nav.Link> : null }
-                                {user.role == 'teacher' ?
-                                    <>
-                                        <Nav.Link as={Link} to={"/archive"} className="customLink" href='/archive'>Archive</Nav.Link>
-                                    </>
-                                    : null}
+                                {user.role == 'teacher' ? <Nav.Link as={Link} to={"/archive"} className="customLink" href='/archive'>Archive</Nav.Link> : null}
+                                {user.role == 'teacher' ? <Nav.Link as={Link} to={"/Professor_STRlist"} className="customLink" href='/Professor_STRlist'>Thesis Requests</Nav.Link> : null}
                                 {user.role == 'teacher' || user.role == 'student' ? <Nav.Link as={Link} to={"/notifications"} className="customLink" href='/notifications'>Notifications</Nav.Link> : null }
                         </div>
 
@@ -144,13 +141,10 @@ function Sidebar(props) {
             </span>
 
             <div className="mt-5">
-                <Nav.Link as={Link} to={"/"} className="customSidebarLink" href='/' onClick={() => {navigate('/'); window.location.reload(true); props.closeSidebar()}}>Home</Nav.Link>
+                <Nav.Link as={Link} to={"/"} className="customSidebarLink" href='/' onClick={() => props.closeSidebar()}>Home</Nav.Link>
                 {props.user.role == 'teacher' || props.user.role == 'student' ? <Nav.Link as={Link} to={"/applications"} className="customSidebarLink" href='/applications' onClick={() => props.closeSidebar()}>Applications</Nav.Link> : null }
-                {props.user.role == 'teacher' ?
-                    <>
-                        <Nav.Link as={Link} to={"/archive"} className="customSidebarLink" href='/archive' onClick={() => props.closeSidebar()}>Archive</Nav.Link>
-                    </>
-                    : null}
+                {props.user.role == 'teacher' ? <Nav.Link as={Link} to={"/archive"} className="customSidebarLink" href='/archive' onClick={() => props.closeSidebar()}>Archive</Nav.Link> : null}
+                {props.user.role == 'teacher' ? <Nav.Link as={Link} to={"/Professor_STRlist"} className="customSidebarLink" href='/Professor_STRlist' onClick={() => props.closeSidebar()}>Thesis Requests</Nav.Link> : null}
                 {props.user.role == 'teacher' || props.user.role == 'student' ? <Nav.Link as={Link} to={"/notifications"} className="customSidebarLink" href='/notifications' onClick={() => props.closeSidebar()}>Notifications</Nav.Link> : null }
             </div>
         </div>

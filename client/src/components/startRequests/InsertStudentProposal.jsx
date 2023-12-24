@@ -117,17 +117,17 @@ function InsertStudentProposal(props) {
    
   // if everything is ok return true but in out case we send the data, console log to check everything is ok
 
-    console.log(`
-      note: ${note}
-      pname: ${profname.name + ' ' + profname.surname}
-      type: ${type}
-      teacherId: ${profname.id}
-      userId: ${user.id}
-      description: ${description}
-      title: ${title}
-      requestDate: ${date}
-      errorMsg: ${errorMsg} 
-       `);
+    // console.log(`
+    //   note: ${note}
+    //   pname: ${profname.name + ' ' + profname.surname}
+    //   type: ${type}
+    //   teacherId: ${profname.id}
+    //   userId: ${user.id}
+    //   description: ${description}
+    //   title: ${title}
+    //   requestDate: ${date}
+    //   errorMsg: ${errorMsg} 
+    //    `);
 
 
        const predefinedSTRStructure = {   
@@ -147,7 +147,7 @@ function InsertStudentProposal(props) {
 
       if (title !== ''  && description !== '' && profname !== '' && type !== '' && 
       title !== null  && description !== null && profname !== null && type !== null) {
-      console.log(user)
+      //console.log(user)
       API.insertSTR(predefinedSTRStructure)
         .then(successAlert)
         .catch((e)=> errorAlert(e.err));
@@ -218,11 +218,11 @@ function InsertStudentProposal(props) {
                       required
                       onChange={(ev) => {
                         setType(ev.target.value);
-                        console.log(ev.target.value);
+                        // console.log(ev.target.value);
                       }}
                       onBlur={(ev) => {
                         setType(ev.target.value);
-                        console.log(ev.target.value);
+                        // console.log(ev.target.value);
                       }}
                       renderInput={(params) => <TextField {...params} placeholder="Insert the Type *" variant="standard" style={{ paddingLeft: "2px", borderRadius: "6px", width: '100%', fontSize: "12px", borderWidth: "300px"}} onClick={()=> setInputErrorType(false)} />}
                     />

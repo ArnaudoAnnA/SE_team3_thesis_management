@@ -73,7 +73,7 @@ function ApplyForm(props) {
         // console.log("fetching thesis details")
         API.getTitleAndTeacher(id)
         .then((result) => {
-            console.log(result)
+            // console.log(result)
             // console.log(result.teacher)
             setTitle(result.title);
             setTeacher(result.teacher);
@@ -95,13 +95,13 @@ function ApplyForm(props) {
         errorAlert(app);
         return;
     }
-    console.log(app)
+    // console.log(app)
 
     if (app.status != 404) {
         errorAlert("You can't apply at the same thesis twice");
     } else {
         const application = new Application(null, user.id, Number(id), null, file, props.virtualDate, teacher.id, title);
-        console.log(application)
+        // console.log(application)
         
         API.addApplication(application, teacher)
             .then(() => {
