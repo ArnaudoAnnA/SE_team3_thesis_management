@@ -319,7 +319,7 @@ const buildWhereConditions = async (filters) => {
     whereConditions.push(where("type", "==", type));
   }
 
-  if (filters.groups && filters.groups.length > 0) {
+  if (filters.groups) {
     let group = filters.groups;
     whereConditions.push(where("groups", "array-contains-any", [group]));
   }

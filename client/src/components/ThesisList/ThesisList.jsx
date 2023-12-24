@@ -97,7 +97,7 @@ function ThesisList(props)
     function reloadThesisFromBeginning()
     {
         //changing the format of filters object:
-        let nf = Object.assign({}, filters, {coSupervisors: filters.coSupervisors ? [filters.coSupervisors] : [], groups: filters.groups ? [filters.groups] : []});
+        let nf = Object.assign({}, filters, {coSupervisors: filters.coSupervisors ? [filters.coSupervisors] : []});
 
         API.getThesis(nf, orderBy, undefined, ENTRIES_PER_PAGE, (props.archive == true))
             .then(ret => 
