@@ -1,11 +1,12 @@
 
 import { Alert, Container, Row, Col, Button } from 'react-bootstrap';
 import { TableWithOrderBy } from '../TableWithOrderBy';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import API from '../../API';
 import dayjs from 'dayjs';
 import ClipLoader from "react-spinners/ClipLoader";
 import PropTypes from 'prop-types';
+import { userContext } from '../Utils';
 
 /**
  * 
@@ -27,6 +28,8 @@ function STRlist(props) {
     ];
 
     const STATES = { loading: "Loading...", show_more: "Fetching...", error: "An error occoured", ready: "Ready" };
+
+    const user = useContext(userContext);
 
 
     /*------------STATES----------------*/
@@ -108,6 +111,7 @@ function STRlist(props) {
 
 
     return <Container>
+        { user.role == 'teacher' ? <><hr size={10}/><h1>Thesis Requests <i className="bi bi-hourglass-split"></i></h1><hr /><Alert dismissible><b>ⓘ</b> You are in the Thesis Requests: here you find all the thesis requests that have been accepted by secretary</Alert></> : "" /*<><hr size={10}/><h1>Home 🎓 <i className="bi bi-mortarboard-fill"></i></h1></>*/ }
         {
             state == STATES.ready || state == STATES.show_more ?
                 <>

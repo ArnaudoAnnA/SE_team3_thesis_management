@@ -319,7 +319,7 @@ const buildWhereConditions = async (filters) => {
     whereConditions.push(where("type", "==", type));
   }
 
-  if (filters.groups && filters.groups.length > 0) {
+  if (filters.groups) {
     let group = filters.groups;
     whereConditions.push(where("groups", "array-contains-any", [group]));
   }
@@ -558,7 +558,6 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page, ar
     // when a new page is requested
     else {
       index = THESIS_CACHE.findIndex((proposal) => proposal.id === lastThesisID);
-      // console.log("Index:", index); //torna -1
     }
 
 
@@ -906,8 +905,6 @@ const getApplicationDetails = async (id) => {
     curriculum: application.curriculum ? application.curriculum : null,
     career: career,
   };
-  // console.log("applicationDetails");
-  // console.log(applicationDetails);
 
   return MessageUtils.createMessage(200, "application", applicationDetails);
 }
@@ -957,7 +954,6 @@ const removeAllProposals = async () => {
       deleteDoc(docRef);
     })
 
-    // console.log(len);
     return len;
   } catch (e) {
     console.log(e)
@@ -1072,13 +1068,10 @@ const insertProposal = async (thesisProposalData) => {
         if (g) { groupsAux.push(g) };
       }
 
-      // console.log("Found groups: " + groupsAux);
-
       //We update the thesisProposalData with the obtained groups and calculated id
       thesisProposalData.groups = groupsAux;
       thesisProposalData.id = await getNextThesisId();
       const docRef = await addDoc(thesisProposalsRef, thesisProposalData);
-      // console.log("Thesis proposal added with ID: ", docRef.id);
       return { status: 200, id: docRef.id };
     }
   } catch (error) {
@@ -1372,6 +1365,19 @@ const getApplicationsByStateByThesis = async (state, id) => {
 let lastSTRdoc;
 let lastSTRqueryWhereConditions;
 
+/**
+ * Returns different items based on the logged user:
+ * - professor: only accepted STR directed to him
+ * - secretary: only pending STR
+ * Returns error in case the logged user is a student.
+ * 
+ * @param { Array<{DBfield: string, mode: "ASC"|"DESC"}> } orderByArray the order of the objects in this array reflects 
+ * the prority of the fields in the ordering.
+ * 
+ * @param {bool} reload true if the new request has different conditions than the previous performed one
+ * @param {*} entry_per_page to avoid overload, only a subset of entries can be required (the remaining ones can be obtained
+ * by calling this API with reload = false)  
+ */
 const getSTRlist = async (orderByArray, reload, entry_per_page) => {
   // console.log(lastSTRdoc)
   // console.log(orderByArray)
@@ -1395,24 +1401,23 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) => {
 
     // load of the first page
     if (reload || !lastSTRdoc || !lastSTRqueryWhereConditions) {
-      /* TO DO: uncomment when the story for the teacher is done
 
-      // if the user is a teacher, show only the STR directed to him
-      if (await isTeacher(auth.currentUser.email)) {
-        let thisTeacherId = await getDocs(
-          query(teachersRef, where("email", "==", auth.currentUser.email))
-        ).then((snap) => snap.docs[0].data().id);
-        whereConditions.push(where("teacherId", "==", thisTeacherId));
-      }*/
+      
+      if (!await isTeacher(auth.currentUser.email)) {
+        //show only pending STR
+        whereConditions.push(where("approved", "==", null));
+      } else {
+        // if the user is a teacher, show only the STR directed to him
+        whereConditions.push(where("approved", "==", true));
+        const thisTeacher = await getUser(auth.currentUser.email);
+        whereConditions.push(where("teacherId", "==", thisTeacher.id));
+      }
 
       /* ATTENTION: this code has been commented out because of it makes uneffective the ordering
       // show only STR from the past
       whereConditions.push(orderBy("requestDate"));
       whereConditions.push(where("requestDate", "<=", await getVirtualDate())); 
       */
-
-      //show only pending STR
-      whereConditions.push(where("approved", "==", null));
 
       //sorting
       for (let f of orderByArray) {
@@ -1458,7 +1463,6 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) => {
       return { status: 200, STRlist: proposals };
     })
       .catch(e => { console.log(e); return { status: 500 } });
-    // console.log(ret);
     return ret;
   } catch (error) {
     console.log(error);
@@ -1466,6 +1470,12 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) => {
   }
 }
 
+/**
+ * Returns a different value based on the logged user:
+ * - professor: only accepted STR directed to him are considered in the counting;
+ * - secretary: only pending STR are considered in the counting.
+ * - student: error
+ */
 const getSTRlistLength = async () => {
 
   if (!auth.currentUser) {
@@ -1477,23 +1487,21 @@ const getSTRlistLength = async () => {
   /*------------QUERY PREPARATION ----------*/
   let whereConditions = [];
 
-  /* TO DO: uncomment when the story for the teacher is done
-
-  if (await isTeacher(auth.currentUser.email)) {
-    let thisTeacherId = await getDocs(
-      query(teachersRef, where("email", "==", auth.currentUser.email))
-    ).then((snap) => snap.docs[0].data().id);
-    whereConditions.push(where("teacherId", "==", thisTeacherId));
-  }*/
-
   /* ATTENTION: this code has been commented out because of it makes uneffective the ordering
   // show only STR from the past
   whereConditions.push(where("requestDate", "<=", await getVirtualDate()));      //TO DO: check if the field name is correct
   */
 
-
-  //show only pending STR
-  whereConditions.push(where("approved", "==", null));
+  if (!await isTeacher(auth.currentUser.email)) {
+    //show only pending STR
+    whereConditions.push(where("approved", "==", null));
+  } else {
+    //show only approved STR of the professor
+    whereConditions.push(where("approved", "==", true));
+    const thisTeacher = await getUser(auth.currentUser.email);
+    whereConditions.push(where("teacherId", "==", thisTeacher.id));
+  }
+  
 
   /*------------QUERY EXECUTION----------*/
   let q = query(thesisRequestsRef, ...whereConditions);
@@ -1573,7 +1581,6 @@ function validateSTRData(STRData) {
  */
 const insertSTR = async (STRData) => {
   if (!auth.currentUser) return { status: 401, err: "User not logged in" };
-  //console.log("Logged user = " + auth.currentUser.email);
 
   if (!(await isStudent(auth.currentUser.email))) return { status: 401, err: "User is not a student" };
 
@@ -1593,12 +1600,10 @@ const insertSTR = async (STRData) => {
     return { status: 400, err: "The proposed teacher is not present in our database" };
   }
   const student = await getUserById(STRData.studentId);
-  // console.log(student);
   const degree_title = await getDegreeById(student.cod_degree);
   STRData.programmes = degree_title;
   try {
     const docRef = await addDoc(thesisRequestsRef, STRData);
-    // console.log("Thesis request added with ID: ", docRef.id);
     return { status: 200, id: docRef.id };
   } catch (error) {
     console.error("Error adding thesis request: ", error);
@@ -1610,7 +1615,6 @@ const getDegreeById = async (id) => {
   try {
     const q = query(degreesRef, where("codDegree", "==", id));
     const snapshot = await getDocs(q);
-    // console.log(snapshot);
     const title = snapshot.docs[0].data().titleDegree;
     return title;
   } catch (error) {
@@ -1636,19 +1640,14 @@ const getSTRWithId = async (id) => {
   if (!(await isSecretary(auth.currentUser.email) || await isTeacher(auth.currentUser.email))) return { status: 401, error: "User is not a secretary" };
 
   //QUERY CONDITIONS
-  // const whereCond1 = where("id", "==", Number(id))
-  // const qSTR = query(thesisRequestsRef, whereCond1)
   const collectionName = DEBUG ? "test-thesisRequests" : "thesisRequests";
   const STRdocRef = doc(db, collectionName, id);
 
   try {
-    // const STRSnapshot = await getDocs(qSTR);
     const STRSnapshot = await getDoc(STRdocRef);
     if (STRSnapshot.exists()) {
-      // console.log(STRSnapshot)
       const data = STRSnapshot.data();
       const STR = new ThesisRequest(data.title, data.description, data.teacherId, data.studentId, data.requestDate, data.approvalDate, data.approved, data.type, data.programmes, data.notes);
-      // console.log(STR)
       //find the supervisor's name and surname
       let teachersSnap = await getDocs(teachersRef);
       let teachers = teachersSnap.docs.map(doc => doc.data());

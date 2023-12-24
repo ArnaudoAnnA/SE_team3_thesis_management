@@ -87,7 +87,6 @@ function InteractiveTh(props)
 function TableWithOrderBy(props)
 {
     const columns = props.columns;
-    const [data, setData] = useState(props.data);
     let key = 0;
 
 
@@ -97,10 +96,7 @@ function TableWithOrderBy(props)
             <thead>
                 <tr>
                     {
-                        // (data)
-                    }
-                    {
-                        columns.map( col => <InteractiveTh key={col.title} col={col} orderBy={props.orderBy} orderByField={props.orderByField} isArray={data && data[0] ? Array.isArray(data[0][col.DBfield]) : false}/>)
+                        columns.map( col => <InteractiveTh key={col.title} col={col} orderBy={props.orderBy} orderByField={props.orderByField} isArray={props.data && props.data[0] ? Array.isArray(props.data[0][col.DBfield]) : false}/>)
                     }
                 <th style={{width: "1px"}}></th><th style={{width: "1px"}}></th>
                 </tr>
@@ -108,7 +104,7 @@ function TableWithOrderBy(props)
 
             <tbody>
                 {
-                    data.map(r => <TableWithOrderByRow key={key++} row={r} columns={columns} linkURL={props.detailsPageURL+r.id}/>)
+                    props.data.map(r => <TableWithOrderByRow key={key++} row={r} columns={columns} linkURL={props.detailsPageURL+r.id}/>)
                 }
             </tbody>
         </Table>
