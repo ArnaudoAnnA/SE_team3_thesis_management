@@ -1674,8 +1674,8 @@ const getSTRWithId = async (id) => {
  * API to accept/reject a new thesis request, Used only for secretaries users.
  * @param {string} id id of the thesis to accept/reject
  * @param {boolean} accept true to accept, false to reject
- * @returns {{ status: code }} //return of the API if no errors occur
- * @returns {{ status: code, error: err}} //return of the API if errors occur
+ * @returns {Promise<{ status: code }>} //return of the API if no errors occur
+ * @returns {Promise<{ status: code, error: err}>} //return of the API if errors occur
  * Possible values for status: [200 (ok),400 (already approved/rejected), 401 (unauthorized), 404 (non found), 500 (server error)]
  */
 

@@ -74,13 +74,13 @@ function ThesisList(props)
             {
                 return true;
             }
-            if (filters[prop] && typeof(filters[prop]) == "string"  && filters[prop] != "")
+            if (typeof(filters[prop]) == "string"  && filters[prop] != "")
             {
                 return true;
             }
-            if (filters[prop] && Array.isArray(filters[prop]))
+            if (Array.isArray(filters[prop]))
             {
-                if(filters[prop].find(v => {if(v && v!="") return true})) return true;
+                return filters[prop].find(v => (v && v!="") );
             }
         }
 
