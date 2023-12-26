@@ -422,7 +422,7 @@ const getCurrentStudentDegree = async () => {
 }
 
 const fillFilterFormValues = (filters, thesis) => {
-  if (isFiltersEmpty(filters)) return null;
+  if (!isFiltersEmpty(filters)) return FILTER_FORM_VALUES;
   let formValues = {};
   Object.keys(filters).forEach((key) => {
     if (key === 'teacherName')
