@@ -153,7 +153,7 @@ function FiltersForm(props)
     return (
         <Form onSubmit={(e) => {e.preventDefault(); ctxState.setState(ctxState.states.loading); }}>
         <Row className="mb-3 justify-content-around">
-            <Col className="col-7" ><Form.Control value={props.filters.title} id='title' type="text" placeholder="Search title..." onChange={(event) => onChangeFiltersForm("title", event.target.value)} /></Col>
+            <Col className="col-7" ><Form.Control value={filters.title} id='title' type="text" placeholder="Search title..." onChange={(event) => onChangeFiltersForm("title", event.target.value)} /></Col>
             <Col  style={{backgroundColor: "#fff0"}}><Search className="flexible_icons icons change-bg-on-hover" onClick={() => ctxState.setState(ctxState.states.loading)}/></Col>
             <Col style={{backgroundColor: "#fff0"}}>
                 {
