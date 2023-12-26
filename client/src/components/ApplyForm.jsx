@@ -230,6 +230,11 @@ function ApplyForm(props) {
 
 }
 
+ApplyForm.propTypes = {
+    virtualDate: PropTypes.string.isRequired,
+    exams: PropTypes.array.isRequired
+}
+
 function StudentCareer(props) {
     // console.log(props.id)
     if (props.exams.length === 0)
@@ -255,6 +260,10 @@ function StudentCareer(props) {
         </Table>
 }
 
+StudentCareer.propTypes = {
+    exams: PropTypes.array.isRequired
+  }
+
 function ExamRow(props) {
 
     const formatWatchDate = (dayJsDate, format) => {
@@ -273,9 +282,10 @@ function ExamRow(props) {
     );
 }
 
-ApplyForm.propTypes = {
-    virtualDate: PropTypes.string.isRequired,
-    exams: PropTypes.array.isRequired
-}
+ExamRow.propTypes = {
+    exam: PropTypes.object.isRequired
+  }
+
+
 
 export {ApplyForm};

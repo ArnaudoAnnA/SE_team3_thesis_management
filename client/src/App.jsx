@@ -159,6 +159,12 @@ function Header(props) {
   </>
 }
 
+Header.propTypes = {
+  date: PropTypes.string.isRequired,
+  logoutCbk : PropTypes.func.isRequired,
+  changeDateCbk: PropTypes.func.isRequired
+}
+
 /**
  * Search bar 
  */
