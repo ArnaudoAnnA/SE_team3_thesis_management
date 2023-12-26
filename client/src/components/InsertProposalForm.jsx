@@ -14,7 +14,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import API from '../API'
 import { userContext } from './Utils';
-import PropTyes from 'prop-types';
+import PropTypes from 'prop-types';
 
 
 function InsertProposalForm(props) {
