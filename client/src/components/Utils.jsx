@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { Button, Col, Row, Form, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import PropTypes from 'prop-types';
 import dayjs from "dayjs";
 import "../navbar_sidebar.css";
 import { IoMenuOutline as MenuIcon, IoClose as CloseIcon } from "react-icons/io5"
@@ -112,6 +113,12 @@ function CustomNavbar(props) {
         </>
     );
 }
+
+CustomNavbar.propTypes = {
+    logoutCbk: PropTypes.func.isRequired,
+    date: PropTypes.string.isRequired,
+    changeDateCbk: PropTypes.func.isRequired
+};
 
 /**
  * Informs the user that the route is not valid

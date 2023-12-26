@@ -13,7 +13,6 @@ import Swal from 'sweetalert2'
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import API from '../API'
-import context from 'react-bootstrap/esm/AccordionContext';
 import { userContext } from './Utils';
 
 
@@ -48,7 +47,7 @@ function InsertProposalForm(props) {
   };
  
 
-  const [tags, setTags] = useState([])
+  const [tags, setTags] = useState([]);
   const [emailTags, setEmailTags] = useState([]);
 
   function handleKeyDown(e){
@@ -253,7 +252,7 @@ function InsertProposalForm(props) {
     //   errorMsg: ${errorMsg} 
     //   selectedDate: ${selectedDate} `);
 
-      const predefinedProposalStructure = {   
+      const sendingProposal = {   
 
         archiveDate: dayjs(selectedDate).toISOString(),   
         coSupervisors: emailTags,   
@@ -276,7 +275,7 @@ function InsertProposalForm(props) {
       if (title !== '' && degree !== '' && description !== '' && knowledge !== '' && level !== '' && pname !== '' &&
       title !== null && degree !== null && description !== null && knowledge !== null && level !== null && pname !== null) {
 
-      API.insertProposal(predefinedProposalStructure)
+      API.insertProposal(sendingProposal)
         .then((res) => {
           if(!res.error) {
             successAlert();

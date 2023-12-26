@@ -37,6 +37,7 @@ function ThesisDetails(props) {
         { DBfield: "type", title: "Type" },
         { DBfield: "level", title: "Level" },
         { DBfield: "requiredKnowledge", title: "Required knowledges" },
+        { DBfield: "keywords", title: "Keywords"}
     ];
 
     const handleCloseModal = () => setShowModal(false);

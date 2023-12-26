@@ -37,7 +37,8 @@ function ThesisList(props)
         type: "",
         groups: "",
         level: "",
-        programmes: ""
+        programmes: "",
+        keywords: []
     };
 
     const DEFAULT_ORDERBY = COLUMNS.map(c => {return {DBfield: c.DBfield, mode: "ASC"}; });

@@ -5,6 +5,7 @@ import { BrowserRouter, Link, Routes, Route, Outlet } from 'react-router-dom';
 import dayjs from 'dayjs';
 import API from './API.js';
 import API_TEST from './API_TEST.js';
+import PropTypes from 'prop-types';
 import { CustomNavbar, NotFoundPage, userContext } from './components/Utils';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Button } from 'react-bootstrap';
@@ -180,6 +181,10 @@ function Home(props) {
     
   </>);
 
+}
+
+Home.propTypes = {
+  date: PropTypes.string.isRequired
 }
 
 export default App

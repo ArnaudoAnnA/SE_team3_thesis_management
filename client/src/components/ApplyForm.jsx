@@ -4,6 +4,7 @@ import { Alert, Card, Button, Badge, Form, Col, Container, Row, Table } from 're
 import { useState, useEffect, useCallback, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useDropzone} from 'react-dropzone';
+import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2'
 
@@ -140,7 +141,7 @@ function ApplyForm(props) {
         ) : null}
 
         <Row className="text-center mt-3">
-            <h3> {title ? title : "Loading..."} </h3>
+            <h3> {title || "Loading..."} </h3>
         </Row>
         <Row>
             <Col md={4}>
@@ -270,6 +271,11 @@ function ExamRow(props) {
         </td>
       </tr>
     );
+}
+
+ApplyForm.propTypes = {
+    virtualDate: PropTypes.string.isRequired,
+    exams: PropTypes.array.isRequired
 }
 
 export {ApplyForm};
