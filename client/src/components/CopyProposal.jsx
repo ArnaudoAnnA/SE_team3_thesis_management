@@ -242,7 +242,7 @@ function CopyProposal(props) {
 
     }  
 
-    if (new dayjs(props.date) > selectedDate) {
+    if (dayjs(props.date) > selectedDate) {
       setErrorMsg("Date cannot be before today!")
       window.scrollTo(0, 0);
       setSelectedDate(dayjs())
@@ -413,7 +413,7 @@ function CopyProposal(props) {
                       <div style={{ display: 'flex', flexDirection: "column", flex: 1 }}>
                         <div className="tags-input-container" style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
                           {emailTags.map((tag, index) => (
-                            <div className="tag-item" key={index} style={{ cursor: 'pointer', marginBottom: '2px', marginRight: '5px', borderBlockColor: 'black' }}>
+                            <div className="tag-item" key={tag} style={{ cursor: 'pointer', marginBottom: '2px', marginRight: '5px', borderBlockColor: 'black' }}>
                               <span className="text">{tag}</span>
                               <span className="close" onClick={() => removeTagMail(index)}>
                                 &times;
@@ -465,7 +465,6 @@ function CopyProposal(props) {
                         <DatePicker value={selectedDate}
                           onChange={(newDate) => {
                             setSelectedDate(newDate);
-                            // console.log('Nuova data:', newDate);
                           }} />
                       </LocalizationProvider>
                     </div>
