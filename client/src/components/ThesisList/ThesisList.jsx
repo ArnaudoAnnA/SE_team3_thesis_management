@@ -183,7 +183,7 @@ function ThesisList(props)
                             {
                                 state == STATES.show_more ? 
                                     <ClipLoader />
-                                : (thesis.length < thesisNumber ? <Button onClick={() => setState(STATES.show_more)}>Show More</Button> : "")
+                                : (thesis.length < thesisNumber ? <Button className='blueButton' onClick={() => setState(STATES.show_more)}>Show More</Button> : "")
                             }
                             </Col></Row>
                             
