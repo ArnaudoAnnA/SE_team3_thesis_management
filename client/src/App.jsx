@@ -127,7 +127,7 @@ function Main() {
             <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm date={date}/> : ( user.role == "student" ? <InsertStudentProposal date={date}/> : <NotFoundPage />)) : <Login />} />
             <Route path='/upproposal/:id' element={user.email ? (user.role === "teacher" ? <UpdateProposal date = {date}/> : <NotFoundPage />) : <Login />} />
             <Route path='/cpproposal/:id' element={user.email ? (user.role === "teacher" ? <CopyProposal date = {date}/> : <NotFoundPage />) : <Login />} />
-            <Route path='/thesis/:id' element={user.email ? (user.role === "teacher" || user.role == "student" ? <ThesisDetails /> : <NotFoundPage /> ) : <Login />} />
+            <Route path='/thesis/:id' element={user.email ? (user.role === "teacher" || user.role == "student" ? <ThesisDetails date = {date}/> : <NotFoundPage /> ) : <Login />} />
             <Route path='/thesis/:id/apply' element={user.email ? (user.role === "student" ? <ApplyForm virtualDate={date} /> : <NotFoundPage />) : <Login />} />
             <Route path='/applications' element={user.email ? (user.role === "teacher" ? <ApplicationsProfessor /> : (user.role === "student" ? <ApplicationsStudent /> : <NotFoundPage />)) : <Login />} />
             <Route path='/applications/:id/:state' element={user.email ? (user.role === "teacher" ? <BrowseForm /> : <NotFoundPage />) : <Login />} />

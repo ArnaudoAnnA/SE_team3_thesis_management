@@ -98,8 +98,8 @@ function ChangeRequest() {
               <div>
                 <div style={{fontSize: "20px"}}> <span style={{fontWeight: "bold"}}>Student: </span> <span> {student} </span> </div>
                 <div style={{marginTop: "5rem", fontSize: "20px"}}> <span style={{fontWeight: "bold"}}>Supervisor: </span> <span> {supervisor} </span> </div>
-                <div style={{marginTop: "5rem", fontSize: "20px"}}> <span style={{fontWeight: "bold"}}>Request Date: </span> <span> {reqDate} </span> </div>
-                <div style={{marginTop: "5rem", fontSize: "20px"}}> <span style={{fontWeight: "bold"}}>Approval Date: </span> <span> {approvalDate} </span> </div>
+                <div style={{marginTop: "5rem", fontSize: "20px"}}> <span style={{fontWeight: "bold"}}>Request Date: </span> <span> {dayjs(reqDate).format("YYYY/MM/DD")} </span> </div>
+                <div style={{marginTop: "5rem", fontSize: "20px"}}> <span style={{fontWeight: "bold"}}>Approval Date: </span> <span> {dayjs(approvalDate).format("YYYY/MM/DD")} </span> </div>
               </div>
             </Col>
 
