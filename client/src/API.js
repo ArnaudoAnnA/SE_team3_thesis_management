@@ -1154,6 +1154,7 @@ async function getSnapshotThesis(id) {
 /**
  * Accept an application and decline all the others for the same thesis
  * @param {string} applicationId id of the accepted application
+ * @returns {{ status: code, err: err} }
  * Possible values for status: [200 (ok), 400 (bad request), 401 (unauthorized), 404 (not found), 500 (server error)]
  */
 
@@ -1200,6 +1201,7 @@ const acceptApplication = async (applicationId) => {
 /**
  * Decline an application
  * @param {string} applicationId id of the declined application
+ * @returns {{ status: code, err: err} }
  * Possible values for status: [200 (ok), 400 (bad request), 401 (unauthorized), 404 (not found), 500 (server error)]
  */
 const declineApplication = async (applicationId) => {
@@ -1231,7 +1233,7 @@ const declineApplication = async (applicationId) => {
  * Archive a thesis
  * @param {string} thesisId id of the thesis to archive
  * 
- * returns {{ status: code }}
+ * @returns {{ status: code, err: err} }
  * 
  * Possible values for status: [200 (ok), 401 (unauthorized), 404 (not found) 500 (server error)]
  */
@@ -1278,26 +1280,22 @@ const deleteProposal = async (id) => {
     //check if the thesis is already archived
     const thesis = await getThesisWithId(id);
     const today = await getVirtualDate();
-    //console.log("archiveDate: " + thesis.archiveDate);
-    //console.log("today: " + today);
     if (thesis.error) return MessageUtils.createMessage(thesis.status, "error", thesis.error);
     if (thesis.thesis.archiveDate <= today) return { status: 400, error: `You can not delete a thesis that is already archived` };
 
 
-    //All the pending and rejected applications must become cancelled + email
+    // All the pending and rejected applications must be deleted + email to pending applications
     const pendingApplications = await getApplicationsByStateByThesis("Pending", id);
     const rejectedApplications = await getApplicationsByStateByThesis("Rejected", id);
 
     pendingApplications.forEach(async (snap) => {
-      await updateDoc(snap.ref, { accepted: "Cancelled" });
-
-      // send an email to the user to notify the application has been cancelled
+      await deleteDoc(snap.ref);
+      // send an email to the user to notify the application has been deleted
       const student = await getUserById(snap.data().studentId);
       const subject = "Thesis proposal cancelled";
       const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;
       sendEmail(student.email, subject, text);
     })
-    //console.log(pendingApplications.length + " pending fatte");
 
     // debug_purpose
       // if (pendingApplications.length > 0) {
@@ -1306,9 +1304,8 @@ const deleteProposal = async (id) => {
 
 
     rejectedApplications.forEach(async (snap) => {
-      await updateDoc(snap.ref, { accepted: "Cancelled" });
+      await deleteDoc(snap.ref);
     })
-    //console.log(rejectedApplications.length + " rejected fatte");
 
 
     //delete thesis
@@ -1337,8 +1334,6 @@ const getApplicationsByStateByThesis = async (state, id) => {
     stateValue = true;
   } else if (state === "Rejected") {
     stateValue = false;
-  } else if (state === "Cancelled") {
-    stateValue = "Cancelled";
   }
 
   //SELECT snapshot(A)
