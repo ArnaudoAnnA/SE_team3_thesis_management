@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Navbar, Spinner } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap';
 import API from '../API';
 
 const Login = () => {
@@ -10,10 +10,6 @@ const Login = () => {
       setShowSpinner(false); 
 
       API.loginWithSaml()
-        .then(response => {
-
-          // console.log(response);
-        })
         .catch(error => {
 
           console.error(error);

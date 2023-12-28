@@ -147,7 +147,6 @@ function UpdateProposal(props) {
   const [pname, setpName] = useState('');
   const [level, setLevel] = useState('');
   const [knowledge, setKnowledge] = useState('')
-  const [email, setEmail] = useState([])
   const [degree, setDegree] = useState('')
   const [description, setDesc] = useState('')
   const [title, setTitle] = useState('')
@@ -161,7 +160,6 @@ function UpdateProposal(props) {
     setSelectedDate(sixMonthsLater)
     API.getDegree()
     .then((d) => {
-      // console.log("Result:", d);
       setDeg(d);
     })
     .catch((e) => {
@@ -173,7 +171,6 @@ function UpdateProposal(props) {
     API.getThesisWithId(id)
     .then((res) => {
       if (!res.error) {
-        // console.log(res.thesis);
         setTitle(res.thesis.title);
         setDegree(res.thesis.type);
         setDesc(res.thesis.description);
@@ -197,7 +194,6 @@ function UpdateProposal(props) {
   const handleSubmit = (event) => {
 
     event.preventDefault();
-    let nomeRegex = /^[A-Za-z]+$/; // The word must contains words
    
     if (title === '') {
 
