@@ -206,10 +206,10 @@ function InsertProposalForm(props) {
       setInputErrorProgrammes(true);
     }
 
-    if (new dayjs(props.date) > selectedDate) {
+    if (dayjs(props.date) > selectedDate) {
       setErrorMsg("Date cannot be before today!")
       window.scrollTo(0, 0);
-      setSelectedDate(new dayjs())
+      setSelectedDate(dayjs())
       return false;
     }
 

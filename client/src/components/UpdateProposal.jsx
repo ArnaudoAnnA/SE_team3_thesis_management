@@ -151,7 +151,7 @@ function UpdateProposal(props) {
   const [description, setDesc] = useState('')
   const [title, setTitle] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
-  const [selectedDate, setSelectedDate] = useState(new dayjs());
+  const [selectedDate, setSelectedDate] = useState(dayjs());
   const [deg, setDeg] = useState()
 
   useEffect(() => {
@@ -245,10 +245,10 @@ function UpdateProposal(props) {
 
     }  
 
-    if (new dayjs(props.date) > selectedDate) {
+    if (dayjs(props.date) > selectedDate) {
       setErrorMsg("Date cannot be before today!")
       window.scrollTo(0, 0);
-      setSelectedDate(new dayjs())
+      setSelectedDate(dayjs())
       return false;
     }
   

@@ -7,7 +7,7 @@ import API  from '../../API';
 import { userContext } from "../Utils";
 import dayjs from 'dayjs';
 
-let date = new dayjs();
+let date = dayjs();
 
 const formatWatchDate = (dayJsDate, format) => {
     return dayJsDate ? dayJsDate.format(format) : '';
@@ -21,7 +21,7 @@ const formatWatchDate = (dayJsDate, format) => {
 //     "thesisDescription": "ciao",
 //     "teacherName": "ciao",
 //     "teacherSurname": "Leonardo",
-//     "students": [{name: "Anna", surname: "Salvatore", date: date},{name: "Emilio", surname: "David", date: date}, {name: "Vincenzo", surname: "Davide", date: new dayjs()}],
+//     "students": [{name: "Anna", surname: "Salvatore", date: date},{name: "Emilio", surname: "David", date: date}, {name: "Vincenzo", surname: "Davide", date: dayjs()}],
 
 // }
 

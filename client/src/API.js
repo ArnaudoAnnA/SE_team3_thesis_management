@@ -1665,7 +1665,6 @@ const getSTRWithId = async (id) => {
 
       return { status: 200, STR: STR }
     } else {
-      // console.log("STR not found");
       return { status: 404, error: "STR not found" }
     }
   } catch (e) {
