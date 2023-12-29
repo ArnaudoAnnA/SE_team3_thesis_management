@@ -1,6 +1,6 @@
 
 import {Table, Row, Col} from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import dayjs from 'dayjs';
 import {useState} from 'react';
 
@@ -38,13 +38,15 @@ function row_field_to_td(data_id, field_name, field_content)
 function TableWithOrderByRow(props)
 {
     const navigate = useNavigate();
+    const location = useLocation();
+    const state = { nextpage: location.pathname };
 
     return (
-        <tr key={props.row.id} onClick={() => navigate(props.linkURL)}>
+        <tr key={props.row.id} onClick={() => navigate(props.linkURL, { state: state})}>
             {
                 props.columns.map((c,i) => <td style={{paddingLeft: "3vw"}} key={c.DBfield}>{row_field_to_td(props.row.id, c.DBfield, props.row[c.DBfield] || " ")}</td>)
             }
-            <td><Link to={props.linkURL} className='text-info' style={{width: "1px"}}>Details</Link></td>
+            <td><Link to={props.linkURL} className='text-info' style={{width: "1px"}} state={{nextpage: location.pathname}}>Details</Link></td>
             <td className='text-info' style={{width: "1px"}}>▷</td>
         </tr>
     )

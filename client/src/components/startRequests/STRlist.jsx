@@ -123,7 +123,7 @@ function STRlist(props) {
                             state == STATES.show_more ?
                                 <ClipLoader />
                                 : (STRlist.length < STRlistLength ?
-                                    <Button onClick={() => { setState(STATES.show_more); load_more(); } }>Show More</Button>
+                                    <Button className='blueButton' onClick={() => { setState(STATES.show_more); load_more(); } }>Show More</Button>
                                     : "")
                         }
                     </Col></Row>

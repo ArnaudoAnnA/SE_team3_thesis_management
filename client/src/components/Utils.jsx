@@ -19,7 +19,6 @@ const userContext = createContext();
 
 function CustomNavbar(props) {
     const user = useContext(userContext);
-    const navigate = useNavigate();
 
     const [date, setDate] = useState(props.date);
     const [isOpen, setIsOpen] = useState(false);

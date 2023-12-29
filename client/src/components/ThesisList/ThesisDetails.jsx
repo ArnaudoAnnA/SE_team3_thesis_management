@@ -123,6 +123,7 @@ function ThesisDetails(props) {
     /* ------ STATES ----------------- */
     const [thesis, setThesis] = useState(props.thesis);
     const [appliedTwice, setAppliedTwice] = useState(false);
+    const [isArchived, setIsArchived] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [showArchiveModal, setShowArchiveModal] = useState(false);
     const [state, setState] = useState(STATES.LOADING);
@@ -144,6 +145,11 @@ function ThesisDetails(props) {
             .then(t => {
                             if (!t.error) {
                                 setThesis(t.thesis);
+                                if (t.thesis.archiveDate <= props.date) {
+                                    setIsArchived(true);
+                                } else {
+                                    setIsArchived(false);
+                                }
                                 setState(STATES.READY);  
                             } else {
                                 console.log("Error in ThesisDetail/getThesisWithId:" + t.error);
@@ -230,7 +236,7 @@ function ThesisDetails(props) {
                 <hr size={10} />
                 <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                     <h3>{thesis.title}</h3>
-                    {user.role == 'teacher' && (
+                    {user.role == 'teacher' && !isArchived && (
                         <>
                             <DropdownButton id="dropdown-basic-button" title="Edit ▼" variant="warning">
                                 <Dropdown.Item className="py-2" onClick={() => handleShowModal()}> Delete <svg style={{ marginLeft: "1px" }} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
