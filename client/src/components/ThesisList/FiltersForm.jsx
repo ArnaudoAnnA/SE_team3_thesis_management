@@ -158,7 +158,7 @@ function FiltersForm(props)
             <Col style={{backgroundColor: "#fff0"}}>
                 {
                     mediaLarge ?
-                    <Button onClick={() => setShowAdvancedFilters(s => !s)} className="blueButton" >More filters...</Button>
+                    <Button onClick={() => setShowAdvancedFilters(s => !s)} className="blueButton" >{showAdvancedFilters ? "Less filters" : "More filters..."}</Button>
                     : <Filter className="flexible_icons icons change-bg-on-hover" onClick={() => setShowAdvancedFilters(s => !s)} />
                 }
             </Col>

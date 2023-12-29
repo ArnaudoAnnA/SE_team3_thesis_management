@@ -2,7 +2,7 @@
 
 import { initializeApp } from 'firebase/app';
 import { collection, addDoc, getFirestore, doc, query, getDocs, updateDoc, where, setDoc, deleteDoc, getDoc, limit, startAfter, orderBy } from 'firebase/firestore';
-import { signInWithRedirect, SAMLAuthProvider, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "firebase/auth";
+import { signInWithRedirect, SAMLAuthProvider, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 import dayjs from 'dayjs';
@@ -92,8 +92,7 @@ const isStudent = async (email) => {
   return snapshot.docs[0] ? true : false
 }
 
-const getStudent = async (email) =>
-{
+const getStudent = async (email) => {
   const whereCond = where("email", "==", email)
   const q = query(studentsRef, whereCond)
   const snapshot = await getDocs(q);
@@ -431,13 +430,13 @@ const fillFilterFormValues = (filters, thesis) => {
       formValues['' + key] = setValuesForField(thesis, key)
   });
   return formValues;
-} 
+}
 
 const filterProposalsWithExpirationDate = (thesis, filters) => {
   if (isFiltersEmpty(filters) || filters.expirationDate === undefined || (filters.expirationDate.from === '' && filters.expirationDate.to === '')) return thesis;
   let from = filters.expirationDate.from;
   let to = filters.expirationDate.to;
-  return thesis.filter( proposal => { 
+  return thesis.filter(proposal => {
     let expirationDate = proposal.expirationDate;
     if (from !== '' && to !== '') {
       return dayjs(expirationDate).isBetween(from, to, null, '[]');
@@ -450,7 +449,7 @@ const filterProposalsWithExpirationDate = (thesis, filters) => {
 }
 
 const filterProposalsWithTitle = (thesis, filters) => {
-  if(isFiltersEmpty(filters) || filters.title === undefined || filters.title === '') return thesis;
+  if (isFiltersEmpty(filters) || filters.title === undefined || filters.title === '') return thesis;
   return thesis.filter((proposal) => proposal.title.toLowerCase().includes(filters.title.toLowerCase()));
 }
 
@@ -506,10 +505,10 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page, ar
 
     // load of the first page
     if (index === -1) {
-      
+
       // add filters to the query
       let whereConditions = await buildWhereConditions(filters);
-      
+
       // show thesis of current user
       if (await isTeacher(auth.currentUser.email)) {
         whereConditions.push(where("teacherId", "==", await getCurrentTeacherId()));
@@ -545,7 +544,7 @@ const getThesis = async (filters, orderByArray, lastThesisID, entry_per_page, ar
       // order the thesis
       if (!orderByArray[0] == 'title' && thesis.length > 0)
         orderByArray.slice().reverse().forEach((orderBy) => { thesis = orderThesis(thesis, orderBy); });
-      else 
+      else
         thesis = orderThesis(thesis, orderByArray[0])
 
       thesis = filterProposalsWithTitle(thesis, filters);
@@ -617,9 +616,9 @@ const getThesisWithId = async (ID) => {
  */
 const addApplication = async (application, teacher) => {
 
-  if (!auth.currentUser){
+  if (!auth.currentUser) {
     throw MessageUtils.createMessage(401, "error", "Not logged in");
-  } 
+  }
 
   if (!await isStudent(auth.currentUser.email)) {
     throw MessageUtils.createMessage(401, "error", "Unauthorized");
@@ -1300,9 +1299,9 @@ const deleteProposal = async (id) => {
     //console.log(pendingApplications.length + " pending fatte");
 
     // debug_purpose
-      // if (pendingApplications.length > 0) {
-      //   sendEmail("chndavide@gmail.com", "Thesis proposal cancelled", `Dear Davide Chen,\n\n We regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`)
-      // }
+    // if (pendingApplications.length > 0) {
+    //   sendEmail("chndavide@gmail.com", "Thesis proposal cancelled", `Dear Davide Chen,\n\n We regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`)
+    // }
 
 
     rejectedApplications.forEach(async (snap) => {
@@ -1399,7 +1398,7 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) => {
     // load of the first page
     if (reload || !lastSTRdoc || !lastSTRqueryWhereConditions) {
 
-      
+
       if (!await isTeacher(auth.currentUser.email)) {
         //show only pending STR
         whereConditions.push(where("approved", "==", null));
@@ -1445,7 +1444,7 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) => {
       snapshot.docs.forEach((doc) => {
         // console.log(doc.id)
         let reqData = doc.data();
-        let proposal = new ThesisRequest(reqData.title, reqData.description,reqData.teacherId,reqData.studentId, reqData.requestDate,reqData.approvalDate,reqData.approved, reqData.type, reqData.programmes, reqData.notes );  
+        let proposal = new ThesisRequest(reqData.title, reqData.description, reqData.teacherId, reqData.studentId, reqData.requestDate, reqData.approvalDate, reqData.approved, reqData.type, reqData.programmes, reqData.notes);
         proposal.id = doc.id;
         // console.log(proposal)
 
@@ -1498,7 +1497,7 @@ const getSTRlistLength = async () => {
     const thisTeacher = await getUser(auth.currentUser.email);
     whereConditions.push(where("teacherId", "==", thisTeacher.id));
   }
-  
+
 
   /*------------QUERY EXECUTION----------*/
   let q = query(thesisRequestsRef, ...whereConditions);
@@ -1513,13 +1512,13 @@ const getSTRlistLength = async () => {
 
 const predefinedSTRStructure = {
 
-  approvalDate: "",     
-  description: "descr",           
-  notes: "notes",  
+  approvalDate: "",
+  description: "descr",
+  notes: "notes",
   type: "stage",
   // profName: "Mario Rossi",
   studentId: "s123456",
-  teacherId: "d345678",   
+  teacherId: "d345678",
   title: "title",
   requestDate: "YYYY/MM/DD",
   approved: null,
@@ -1539,29 +1538,34 @@ function validateSTRData(STRData) {
   }
 
   // Check if all keys in obj1 exist in obj2 and have the same type
-  // for (const key of keys1) {
-  //   if (!(key in predefinedSTRStructure) || typeof STRData[key] !== typeof predefinedSTRStructure[key]) {
-  //     console.log("part2")
-  //     console.log(typeof STRData[key])
-  //     console.log(typeof predefinedSTRStructure[key])
-  //     console.log(key)
-  //     return false;
-  //   }
-  // }
+  for (const key of keys1) {
+    if (!(key in predefinedSTRStructure) || typeof STRData[key] != typeof predefinedSTRStructure[key]) {
+      console.log("part2")
+      console.log(typeof STRData[key])
+      console.log(typeof predefinedSTRStructure[key])
+      console.log(key)
+      return false;
+    }
+  }
 
   //null values validation
   const keys = Object.keys(STRData);
-  // for (const key of keys) {
-  //   if ((key !== 'notes' || key != 'approvalDate') && (key != 'approved' || STRData[key] === null)) {
-  //     console.log("part3")
-  //     console.log(key)
-  //     return false;
-  //   }
-  // }
+  for (const key of keys) {
+    if ((key == 'approved' && STRData[key] != null) ||
+      (key == 'approvalDate' && STRData[key]) ||
+      (key != 'approved' && key != 'notes' && key != 'approvalDate' && !STRData[key])) {
+      console.log("part3")
+      console.log(key)
+      return false;
+    }
+  }
   return true;
 }
 
 /**
+ * This method fills the STRdata object with all the missing fields, then checks if the object is well formed
+ * and finally adds it to the db.
+ * 
  * @param {{approvalDate: string,     
  * description: string,           
  * notes: string,  
@@ -1574,34 +1578,39 @@ function validateSTRData(STRData) {
  * approved: boolean
  * programmes: string
  * }} STRData 
- * @returns
  */
 const insertSTR = async (STRData) => {
-  if (!auth.currentUser) return { status: 401, err: "User not logged in" };
+  if (!auth.currentUser) return { status: 401, err: "User not logged in." };
 
-  if (!(await isStudent(auth.currentUser.email))) return { status: 401, err: "User is not a student" };
+  if (!(await isStudent(auth.currentUser.email))) return { status: 401, err: "User is not a student." };
 
-  STRData.studentId = (await getStudent(auth.currentUser.email)).data().id;
+  let student = (await getStudent(auth.currentUser.email)).data();
+  const degree_title = await getDegreeById(student.cod_degree);
+
+  if (await titleAlreadyExist(STRData, "insert", null)) {
+    return { status: 400, err: "A thesis with this title already exists." };
+  }
+
+  STRData.programmes = degree_title;
+  STRData.studentId = student.id;
   STRData.approvalDate = "";
   STRData.requestDate = dayjs(STRData.requestDate).toISOString();
   STRData.approved = null;
-
-
-  if (!validateSTRData(STRData)) {
-    console.log("Validation failed: proposal data doesnt comply with required structure");
-    return { status: 400, err: "Proposal data doesnt comply with required structure" };
-  }
 
   //Check that the teachers id is an id inside the teachers table
   if (!await isTeacherById(STRData.teacherId)) {
     return { status: 400, err: "The proposed teacher is not present in our database" };
   }
-  const student = await getUserById(STRData.studentId);
-  const degree_title = await getDegreeById(student.cod_degree);
-  STRData.programmes = degree_title;
+
   try {
+    if (!validateSTRData(STRData)) {
+      console.log("Validation failed: proposal data doesnt comply with required structure");
+      return { status: 400, err: "Proposal data doesnt comply with required structure" };
+    }
+
     const docRef = await addDoc(thesisRequestsRef, STRData);
     return { status: 200, id: docRef.id };
+
   } catch (error) {
     console.error("Error adding thesis request: ", error);
     return { status: 500 }; // or handle the error accordingly
@@ -1688,24 +1697,24 @@ const acceptRejectSTR = async (id, accept) => {
   if (!await isSecretary(auth.currentUser.email)) return { status: 401, error: "User is not a secretary" };
 
   try {
-      const collectionName = DEBUG ? "test-thesisRequests" : "thesisRequests";
-      const docRef = doc(db, collectionName, id);
-      const STRSnapshot = await getDoc(docRef);
-      if (STRSnapshot.data().approved !== null) return {status: 400, error: "Thesis Request already approved/rejected"}
+    const collectionName = DEBUG ? "test-thesisRequests" : "thesisRequests";
+    const docRef = doc(db, collectionName, id);
+    const STRSnapshot = await getDoc(docRef);
+    if (STRSnapshot.data().approved !== null) return { status: 400, error: "Thesis Request already approved/rejected" }
 
-      const newData = { 
-        "approved": accept,
-        "approvalDate": ""
-      };
+    const newData = {
+      "approved": accept,
+      "approvalDate": ""
+    };
 
-      if (accept) {
-        newData.approvalDate = await getVirtualDate();
-      } else {
-        newData.approvalDate = null;
-      }
+    if (accept) {
+      newData.approvalDate = await getVirtualDate();
+    } else {
+      newData.approvalDate = null;
+    }
 
-      await updateDoc(docRef, newData);
-      return { status: 200 } //OK
+    await updateDoc(docRef, newData);
+    return { status: 200 } //OK
     // } else {
     //   console.log("Thesis request not found");
     //   return { status: 404, error: "Thesis request not found" }
@@ -1764,7 +1773,7 @@ const updateProposal = async (id, thesisProposalData) => {
 
 
 const sendEmail = async (to, subject, text) => {
-  if (!auth.currentUser)  {
+  if (!auth.currentUser) {
     console.log("User not logged in");
     return MessageUtils.createMessage(401, "error", "User not logged in")
   }

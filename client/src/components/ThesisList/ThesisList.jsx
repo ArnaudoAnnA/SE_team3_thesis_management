@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import {Alert, Container, Row, Col, Button} from 'react-bootstrap';
 import API from '../../API';
 import { FiltersForm } from "./FiltersForm";
 import { TableWithOrderBy } from "../TableWithOrderBy";
 import ClipLoader from "react-spinners/ClipLoader";
-
+import { userContext } from "../Utils";
 import contextState from "./contextState";
 
 
@@ -15,17 +15,19 @@ import contextState from "./contextState";
 function ThesisList(props)
 {
     /* ------ COSTANTS ------------ */
-    const COLUMNS = [   //TO DO: dynamic width of columns
-        { DBfield: "title", title: "Title",  },
-        { DBfield: "supervisor", title: "Supervisor",  },
-        //{ DBfield: "coSupervisors", title: "Co-Supervisors",  }, //array
-        //{ DBfield: "type", title: "Type",  },
-        //{ DBfield: "groups", title: "Groups",  }, //array
-        { DBfield: "expirationDate", title: "Expiration",  },
-        //{ DBfield: "level", title: "Level",  },
-        //{ DBfield: "programmes", title: "Programmes",  }
-        //further info in the thesis dedicated page
-    ];
+    const user = useContext(userContext);
+
+    const COLUMNS = user.role == 'student' ? [  
+                                                { DBfield: "title", title: "Title",  },
+                                                { DBfield: "supervisor", title: "Supervisor",  },
+                                                { DBfield: "expirationDate", title: "Expiration",  },
+                                            ] 
+                                            : [  
+                                                { DBfield: "title", title: "Title",  },
+                                                { DBfield: "programmes", title: "programmes",  },
+                                                { DBfield: "expirationDate", title: "Expiration",  },
+                                            ] ;
+
 
     const STATES = {loading: "Loading...", ready: "", error: "Error", show_more: "Fetching..."};
 

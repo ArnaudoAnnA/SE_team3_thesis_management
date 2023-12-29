@@ -53,7 +53,6 @@ function ApplyForm(props) {
         if(user.id){
             await API.retrieveCareer(user.id)
             .then((career) => {
-                // console.log(career)
                 career.sort((a,b) => {
                     if(a.date && b.date){
                         return a.date.isAfter(b.date);
@@ -71,11 +70,8 @@ function ApplyForm(props) {
         
     }
     async function fetchThesisDetails(){
-        // console.log("fetching thesis details")
         API.getTitleAndTeacher(id)
         .then((result) => {
-            // console.log(result)
-            // console.log(result.teacher)
             setTitle(result.title);
             setTeacher(result.teacher);
         })
@@ -96,14 +92,12 @@ function ApplyForm(props) {
         errorAlert(app);
         return;
     }
-    // console.log(app)
-
+    
     if (app.status != 404) {
         errorAlert("You can't apply at the same thesis twice");
     } else {
         const application = new Application(null, user.id, Number(id), null, file, props.virtualDate, teacher.id, title);
-        // console.log(application)
-        
+                
         API.addApplication(application, teacher)
             .then(() => {
                 successAlert()
@@ -117,8 +111,7 @@ function ApplyForm(props) {
   const handleOnChangeFile = (files) => {
     if (files.length===1) {
         if (files[0].name.endsWith("pdf") || files[0].name.endsWith("doc") || files[0].name.endsWith("docx")){
-            // console.log(files[0])
-            setFile(files[0]);
+                        setFile(files[0]);
         }
         
         else
@@ -236,8 +229,7 @@ ApplyForm.propTypes = {
 }
 
 function StudentCareer(props) {
-    // console.log(props.id)
-    if (props.exams.length === 0)
+        if (props.exams.length === 0)
         return <p> There are no exams yet :( </p>
     else
         return <Table striped>

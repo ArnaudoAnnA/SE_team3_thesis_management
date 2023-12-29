@@ -157,7 +157,7 @@ function ThesisDetails(props) {
 
         async function checkApplyTwice() {
             const app = await API.getApplication(user.id, id);
-            console.log(app)
+            
             if (app.status == 401) {
                 //unauthorized or notLogged
                 errorAlert(app.error);
