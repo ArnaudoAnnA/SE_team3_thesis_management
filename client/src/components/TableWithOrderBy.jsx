@@ -64,6 +64,13 @@ function ToggleArrow(props) {
         : <th className='text-center icons change-bg-on-hover text-info' onClick={() => { props.orderByField(props.col.DBfield, true); }}>{"▵"}</th>;
 }
 
+ToggleArrow.propTypes = 
+{
+    orderBy: PropTypes.array.isRequired,
+    col: PropTypes.object.isRequired,
+    orderByField: PropTypes.func.isRequired
+}
+
 function InteractiveTh(props) {
 
     return <th key={props.col.DBfield}><Table borderless>
@@ -105,7 +112,7 @@ function TableWithOrderBy(props) {
             <thead>
                 <tr>
                     {
-                        columns.map(col => <InteractiveTh key={col.title} col={col} orderBy={props.orderBy} orderByField={props.orderByField} isArray={props.data && props.data[0] ? Array.isArray(props.data[0][col.DBfield]) : false} />)
+                        columns.map(col => <InteractiveTh key={col.title} col={col} orderBy={props.orderBy} orderByField={props.orderByField} isArray={props.data?.[0] ? Array.isArray(props.data[0][col.DBfield]) : false} />)
                     }
                     <th style={{ width: "1px" }}></th><th style={{ width: "1px" }}></th>
                 </tr>

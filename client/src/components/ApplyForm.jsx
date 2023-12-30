@@ -225,7 +225,7 @@ function ApplyForm(props) {
 
 ApplyForm.propTypes = {
     virtualDate: PropTypes.string.isRequired,
-    exams: PropTypes.array.isRequired
+    exams: PropTypes.array
 }
 
 function StudentCareer(props) {
@@ -253,7 +253,7 @@ function StudentCareer(props) {
 }
 
 StudentCareer.propTypes = {
-    exams: PropTypes.array.isRequired
+    exams: PropTypes.array
   }
 
 function ExamRow(props) {
@@ -275,7 +275,7 @@ function ExamRow(props) {
 }
 
 ExamRow.propTypes = {
-    exam: PropTypes.object.isRequired
+    exam: PropTypes.object
   }
 
 

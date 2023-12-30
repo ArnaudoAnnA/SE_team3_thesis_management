@@ -1,5 +1,5 @@
 
-import {Row, Col, Button, Form, Table} from "react-bootstrap";
+import {Row, Col, Button, Form} from "react-bootstrap";
 import { Search, Filter, BootstrapReboot } from "react-bootstrap-icons";
 import { useState, useContext, useEffect } from "react";
 import { userContext } from "../Utils";
@@ -7,6 +7,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import API from "../../API";
 import contextState from "./contextState";
+import PropTypes from 'prop-types';
 
 function KeywordsFiltersForm(props)
 {
@@ -49,6 +50,13 @@ function KeywordsFiltersForm(props)
 
 }
 
+KeywordsFiltersForm.propTypes = 
+{
+    onChangeFiltersForm: PropTypes.func.isRequired,
+    filters: PropTypes.array.isRequired,
+
+}
+
 
 function ThesisFieldFilterForm(props)
 {
@@ -76,10 +84,15 @@ function ThesisFieldFilterForm(props)
                 props.onChangeFiltersForm(props.DBfield, event.target.outerText);
             }}
             renderInput={(params) => <TextField {...params} variant="standard"   style={{ paddingLeft: "2px", borderRadius: "6px", width: '100%', fontSize: "12px"}}/>}
-          />//<Form.Control defaultValue={props.filters[props.DBfield]} id={props.DBfield} type="text" onChange={(event) => props.onChangeFiltersForm(event)}/>;
+          />
     }
 }
 
+ThesisFieldFilterForm.propTypes = {
+    DBfield: PropTypes.string.isRequired,
+    filters: PropTypes.array.isRequired,
+    onChangeFiltersForm: PropTypes.func.isRequired
+}
 
 function AdvancedFiltersTable(props)
 {
@@ -139,9 +152,8 @@ function FiltersForm(props)
                             {
                                 f[id] = value;
                             }
-                            
-                            //setFiltersActive(isFiltered(f));
-                            return Object.assign({}, f);
+                        
+                            return {...f};
         });
     }
       
