@@ -1105,7 +1105,7 @@ const getDegree = async () => {
   }
 };
 
-const getTecher = async () => {
+const getTeacher = async () => {
   try {
     const q = query(teachersRef);
     const snapshot = await getDocs(q);
@@ -1765,6 +1765,44 @@ const updateProposal = async (id, thesisProposalData) => {
   }
 };
 
+/**
+ * Get all active thesis
+ * @returns {Promise<{ status: code, thesis: {}}}
+ */
+const getActiveThesis = async () => {
+  const today = await getVirtualDate();
+  const whereArchiveDate = where("archiveDate", ">", today);
+  const qThesis = query(thesisProposalsRef, whereArchiveDate);
+  try {
+    const thesisSnapshot = await getDocs(qThesis);
+    const thesis = thesisSnapshot.docs.map((doc) => doc.data());
+    return thesis.length > 0 ? thesis : null;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+/**
+ * Notify the teacher with an email when the expiration date of his thesis is approaching (1 week before)
+ * @param {string} today today's virtual date
+ */
+const notifyThesisExpiration = async (today) => {
+  if (!auth.currentUser) return { status: 401, error: "User not logged in" };
+  getActiveThesis()
+    .then((thesisList) => {
+      const oneWeek = dayjs(today).add(1, 'week');
+      const notManuallyArchivedThesis = thesisList.filter((thesis) => dayjs(thesis.archiveDate).isSame(thesis.expirationDate, 'day'));
+      const oneWeekThesis = notManuallyArchivedThesis.filter((thesis) => dayjs(thesis.expirationDate).isSame(oneWeek, 'day'));
+      oneWeekThesis.forEach(async (thesis) => {
+        const teacher = await getUserById(thesis.teacherId)
+        const subject = "Thesis proposal expiration";
+        const text = `Dear Professor ${teacher.name} ${teacher.surname},\n\nWe are writing you to inform you that the thesis proposal with title ${thesis.title} is about to expire.\n\nBest regards,\nStudent Secretariat`;
+        sendEmail(teacher.email, subject, text);
+      });
+    })
+}
+
 
 const sendEmail = async (to, subject, text) => {
   if (!auth.currentUser) {
@@ -1784,13 +1822,14 @@ const sendEmail = async (to, subject, text) => {
 
 
 const API = {
-  getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField, getTecher,
+  getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField, getTeacher,
   changeVirtualDate, getVirtualDate,
   signUp, logIn, logOut, getUser, loginWithSaml,
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplicationsForProfessor, getApplicationDetails, getCVOfApplication, acceptApplication, declineApplication, getApplicationsByStateByThesis,
   removeAllProposals, insertProposal, archiveThesis, deleteProposal, updateProposal,
   getApplicationsForStudent, getDegree,
   getSTRlist, getSTRlistLength, insertSTR, predefinedSTRStructure, getSTRWithId, acceptRejectSTR,
+  notifyThesisExpiration,
   sendEmail
 };
 

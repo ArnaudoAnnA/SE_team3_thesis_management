@@ -64,7 +64,7 @@ function InsertStudentProposal(props) {
   useEffect(() => {
     const now = dayjs(props.date);
 
-    API.getTecher().then((e) => setValues(e))
+    API.getTeacher().then((e) => setValues(e))
 
 
   }, []);
