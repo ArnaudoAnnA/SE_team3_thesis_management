@@ -1708,6 +1708,21 @@ const acceptRejectSTR = async (id, accept) => {
     }
 
     await updateDoc(docRef, newData);
+    
+    //send email to student or professor
+    if(accept){
+      //to professor
+      const professor = await getUserById(STRSnapshot.data().teacherId);
+      sendEmail(professor.email, "Thesis request accepted", `Dear Professor ${professor.name} ${professor.surname},\n\nWe are pleased to inform you that a new thesis request "${STRSnapshot.data().title}" has been accepted.\n\nBest regards,\nStudent Secretariat`);
+      sendEmail("chndavide@gmail.com", "Thesis request accepted", `Dear Professor ${professor.name} ${professor.surname},\n\nWe are pleased to inform you that a new thesis request "${STRSnapshot.data().title}" has been accepted.\n\nBest regards,\nStudent Secretariat`); //TODO: remove this line
+    } else{
+      //to student
+      const student = await getUserById(STRSnapshot.data().studentId);
+      sendEmail(student.email, "Thesis request rejected", `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that your thesis request "${STRSnapshot.data().title}" has been rejected.\n\nBest regards,\nStudent Secretariat`);
+      sendEmail("chndavide@gmail.com", "Thesis request rejected", `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that your thesis request "${STRSnapshot.data().title}" has been rejected.\n\nBest regards,\nStudent Secretariat`); //TODO: remove this line
+    }
+    
+
     return { status: 200 } //OK
     // } else {
     //   console.log("Thesis request not found");
