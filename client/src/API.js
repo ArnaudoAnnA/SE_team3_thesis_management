@@ -1153,7 +1153,7 @@ async function getSnapshotThesis(id) {
 /**
  * Accept an application and decline all the others for the same thesis
  * @param {string} applicationId id of the accepted application
- * @returns {{ status: code, err: err} }
+ * @returns {Promise<{ status: code, err: err}> }
  * Possible values for status: [200 (ok), 400 (bad request), 401 (unauthorized), 404 (not found), 500 (server error)]
  */
 

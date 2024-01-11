@@ -46,7 +46,7 @@ function CustomNavbar(props) {
             {/* Top banner with logo and app name */}
             <Navbar expand="lg" className='bluePoli' variant="dark">
                 <Navbar.Brand>
-                    <img src="https://drive.google.com/uc?export=download&id=1HTuSShZT0omPheSlNEMBWKPypY8OeaOY" width="55" height="55" style={{ marginRight: '5px' }} alt="" />
+                    <img src="https://drive.google.com/uc?export=download&id=1HTuSShZT0omPheSlNEMBWKPypY8OeaOY/view?usp=drive_link" width="55" height="55" style={{ marginRight: '5px' }} alt="" />
                     Thesis Management
                 </Navbar.Brand>
             </Navbar>
