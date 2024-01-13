@@ -46,7 +46,7 @@ function CustomNavbar(props) {
             {/* Top banner with logo and app name */}
             <Navbar expand="lg" className='bluePoli' variant="dark">
                 <Navbar.Brand>
-                    <img src="https://drive.google.com/uc?export=download&id=1HTuSShZT0omPheSlNEMBWKPypY8OeaOY/view?usp=drive_link" width="55" height="55" style={{ marginRight: '5px' }} alt="" />
+                    <img src="https://svgshare.com/i/11vY.svg" width="55" height="55" style={{ marginRight: '5px' }} alt="" />
                     Thesis Management
                 </Navbar.Brand>
             </Navbar>
@@ -99,7 +99,7 @@ function CustomNavbar(props) {
                             <Form.Group as={Col}>
                                 <Button className="blueButton" type="submit" >
                                     Time travel
-                                    <img src="https://drive.google.com/uc?export=download&id=1EMkvkiqkf9EoBiiKBo0kv4xgJEMtmytf" width="40" style={{ marginLeft: '5px' }} />
+                                    <img src='https://svgshare.com/i/11ua.svg' width="40" style={{ marginLeft: '5px' }} />
                                 </Button>
                             </Form.Group>
                         </Row>
