@@ -1835,6 +1835,24 @@ const sendEmail = async (to, subject, text) => {
 
 }
 
+const getNotifications = async () => {
+  const notifications = [
+    {
+      id: 1,
+      date: "2021-06-01",
+      subject: "Thesis proposal accepted",
+      text: "Dear student, your thesis proposal has been accepted",
+    },
+    {
+      id: 2,
+      date: "2021-06-01",
+      subject: "Thesis proposal refused",
+      text: "Dear student, your thesis proposal has been rejected",
+    }
+  ]
+  return notifications;
+}
+
 
 const API = {
   getThesis, /*getAllThesis,*/ getThesisWithId, getThesisNumber, getValuesForField, getTeacher,
@@ -1845,7 +1863,8 @@ const API = {
   getApplicationsForStudent, getDegree,
   getSTRlist, getSTRlistLength, insertSTR, predefinedSTRStructure, getSTRWithId, acceptRejectSTR,
   notifyThesisExpiration,
-  sendEmail
+  sendEmail,
+  getNotifications
 };
 
 

@@ -25,6 +25,7 @@ import { STRlist } from './components/startRequests/STRlist.jsx';
 import { STRManagement } from './components/startRequests/STRManagement.jsx';
 import { ChangeRequest } from './components/startRequests/ChangeRequest.jsx';
 import STRDetails from './components/startRequests/STRDetails/STRDetails.jsx';
+import NotificationList from './components/notifications/NotificationList.jsx';
 
 
 function App() {
@@ -130,7 +131,7 @@ function Main() {
             <Route path='/STRlist' element={user.email ? ((user.role === "teacher" || user.role == "secretary") ? <STRlist date={date} /> : <NotFoundPage />) : <Login />} />
             <Route path='/STRlist/:id' element={user.email ? (user.role === "secretary" ? <STRManagement /> : (user.role == "teacher" ? <STRDetails /> : <NotFoundPage/>)) : <Login />} />
             <Route path='/STRlist/:id/changeRequest' element={user.email ? (user.role === "teacher" ? <ChangeRequest /> : <NotFoundPage />) : <Login />} />
-
+            <Route path='/notifications' element={<NotificationList/>}/>
           </Route>
           <Route path='*' element={<NotFoundPage />} />
         </Routes>
