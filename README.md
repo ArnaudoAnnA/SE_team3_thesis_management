@@ -35,6 +35,8 @@ To prevent sending emails to real accounts, the emails are received only by thes
 | studente.team3@gmail.com | Team3Rocks! | student |
 | professore.team3@gmail.com | Team3Rocks! | professor |
 
+## Front-end mockups
+Front-end mockups can be found on [Figma](https://www.figma.com/file/MeeoGtJIzVourXVYfm2Yn0/ThesisManagement?type=design&node-id=0%3A1&mode=design&t=9N2yFZs1i90W0aVH-1).
 
 ## Docker
 The project can be run in a docker container. To do so, first make sure the docker daemon is running, then run the following commands in the client folder:

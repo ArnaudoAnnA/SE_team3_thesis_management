@@ -675,7 +675,7 @@ const retrieveCareer = async (studentId) => {
  * 
  * @param {bool} status possible values: [null (pending), true (accepted), false (rejected)]
  * 
- * @returns {{status: code, applications: [[{id: , applicationDate: , student: {...}},{},...],[], ...]}}
+ * @returns {Promise<{status: code, applications: [[{id: , applicationDate: , student: {...}},{},...],[], ...]}>}
  * Possible values for status: [200 (ok), 500 (internal server error), 404 (not found)].
  * Possible values for applications [array (in case of success), null (in case of error)]
  */
@@ -865,7 +865,7 @@ const getApplicationsForStudent = async (state) => {
  * 
  * @param {int} id 
  * 
- * @returns {{status: code, 
+ * @returns {Promise<{status: code, 
  *            curriculum: , path do cv if present, null otherwise 
  *            application: {studentName: , 
  *                          carreer: [{codCourse: , 
@@ -873,7 +873,7 @@ const getApplicationsForStudent = async (state) => {
  *                                    grade: , 
  *                                    date: , 
  *                                    cfu: }, ...]
- *          }}}
+ *          }}>}
  * 
  * Possible values for status: [200 (ok), 500 (internal server error), 404 (not found)].
  * Application is null in case of error.
@@ -909,7 +909,7 @@ const getApplicationDetails = async (id) => {
  * 
  * @param {int} id of the application.
  * 
- * @returns {{status: code, url: }} (which will trigger the download of the cv file)
+ * @returns {Promise<{status: code, url: }>} (which will trigger the download of the cv file)
  */
 const getCVOfApplication = async (path) => {
   // console.log(path)
@@ -1153,7 +1153,7 @@ async function getSnapshotThesis(id) {
 /**
  * Accept an application and decline all the others for the same thesis
  * @param {string} applicationId id of the accepted application
- * @returns {{ status: code, err: err} }
+ * @returns {Promise<{ status: code, err: err}> }
  * Possible values for status: [200 (ok), 400 (bad request), 401 (unauthorized), 404 (not found), 500 (server error)]
  */
 
@@ -1200,7 +1200,7 @@ const acceptApplication = async (applicationId) => {
 /**
  * Decline an application
  * @param {string} applicationId id of the declined application
- * @returns {{ status: code, err: err} }
+ * @returns {Promise<{ status: code, err: err}>}
  * Possible values for status: [200 (ok), 400 (bad request), 401 (unauthorized), 404 (not found), 500 (server error)]
  */
 const declineApplication = async (applicationId) => {
@@ -1232,7 +1232,7 @@ const declineApplication = async (applicationId) => {
  * Archive a thesis
  * @param {string} thesisId id of the thesis to archive
  * 
- * @returns {{ status: code, err: err} }
+ * @returns {Promise<{ status: code, err: err}>}
  * 
  * Possible values for status: [200 (ok), 401 (unauthorized), 404 (not found) 500 (server error)]
  */
@@ -1267,8 +1267,8 @@ const archiveThesis = async (id) => {
 /**
  * Delete a thesis
  * @param {string} id id of the thesis to delete
- * @returns {{ status: code }} //if no errors occur
- * @returns {{ status: code, error: err}} //if errors occur
+ * @returns {Promise<{ status: code }>} //if no errors occur
+ * @returns {Promise<{ status: code, error: err}>} //if errors occur
  * Possible values for status: [200 (ok), 400 (bad request), 401 (unauthorized), 500 (server error)]
  */
 const deleteProposal = async (id) => {
@@ -1782,7 +1782,7 @@ const updateProposal = async (id, thesisProposalData) => {
 
 /**
  * Get all active thesis
- * @returns {Promise<{ status: code, thesis: {}}}
+ * @returns {Promise<{ status: code, thesis: {}}>}
  */
 const getActiveThesis = async () => {
   const today = await getVirtualDate();
