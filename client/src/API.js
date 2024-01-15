@@ -1718,7 +1718,7 @@ const teacherAcceptRejectChangeRequestSTR = async (id, accept, changeRequest) =>
     } else if (accept==="changeRequested") {
       //if changeRequested, just update the approved field and notify the student
       newData.approvalDate = null;
-      const professor = await getUserById(STRSnapshot.data().teacherId);
+      const professor = await getUser(auth.currentUser.email);
       await updateDoc(docRef, newData);
       sendEmail(student.email, "A change in your Thesis request has been requested", 
 `Dear ${student.name} ${student.surname},\n\nWe inform you that your thesis request "${STRSnapshot.data().title}" has received a change request from the professor ${professor.name} ${professor.surname}. More details below:\n
