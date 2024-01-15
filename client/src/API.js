@@ -28,7 +28,7 @@ const firebaseConfig = {
   appId: "1:30091770849:web:ba560e3f3a2a0769c2b0a0"
 };
 
-const DEBUG = false;
+const DEBUG = true;
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -1517,7 +1517,8 @@ const predefinedSTRStructure = {
   title: "title",
   requestDate: "YYYY/MM/DD",
   approved: null,
-  programmes: "programmes"
+  programmes: "programmes",
+  coSupervisors: [],
 };
 
 
@@ -1572,6 +1573,7 @@ function validateSTRData(STRData) {
  * requestDate: dayjs.format("YYYY/MM/DD"),
  * approved: boolean
  * programmes: string
+ * coSupervisors: array of strings
  * }} STRData 
  */
 const insertSTR = async (STRData) => {

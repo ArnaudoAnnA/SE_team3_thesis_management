@@ -20,7 +20,7 @@ import { userContext } from '../Utils';
 
 function InsertStudentProposal(props) {
 
-
+  let mailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/; // Verify email
   const date = props.date;
   const user = useContext(userContext);
   const navigate = useNavigate();
@@ -60,6 +60,7 @@ function InsertStudentProposal(props) {
   const [errorMsg, setErrorMsg] = useState('')
   const [values, setValues] = useState([])
   const [deg, setDeg] = useState()
+  const [emailTags, setEmailTags] = useState([]);
 
   useEffect(() => {
     const now = dayjs(props.date);
@@ -68,6 +69,57 @@ function InsertStudentProposal(props) {
 
 
   }, []);
+
+  const removeTagMail = (index) => {
+    setEmailTags(emailTags.filter((_, i) => i !== index));
+  };
+
+  function handleMailBlur(e) {
+    const value = e.target.value.trim();
+
+    if (!value) return;
+
+    if (!value.match(mailRegex)) {
+      setErrorMsg('Not a valid email address.');
+      window.scrollTo(0, 0);
+      return false;
+    }
+
+    if (!emailTags.includes(value)) {
+      setEmailTags([...emailTags, value]);
+    } else {
+      setErrorMsg('Co-Supervisor already exists.');
+      window.scrollTo(0, 0);
+    }
+
+    e.target.value = '';
+  }
+
+  function handleMailKeyDown(e) {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    const value = e.target.value.trim();
+
+    if (!value.trim()) return;
+
+    if (!value.match(mailRegex)) {
+      setErrorMsg('Not a valid email address.');
+      window.scrollTo(0, 0);
+      return false;
+    }
+
+    if (!emailTags.includes(value)) {
+      setEmailTags([...emailTags, value]);
+
+    } else {
+      setErrorMsg('Co-Supervisor already exists.');
+      window.scrollTo(0, 0);
+
+    }
+
+    e.target.value = '';
+  }
+
 
   //Performs the controlls and if it's true the sendig part of the form
 
@@ -113,13 +165,12 @@ function InsertStudentProposal(props) {
       programmes: "",
       requestDate: date,
       approved: null,
+      coSupervisors: emailTags
     };
-
 
     if (title !== '' && description !== '' && profname !== '' && type !== '' &&
       title !== null && description !== null && profname !== null && type !== null) {
 
-      //console.log(user)
       let ret = await API.insertSTR(sendingStructure);
       if (ret.status == 200) {
         successAlert();
@@ -232,6 +283,32 @@ return (
 
               </select>
             </div>
+            
+            {/* co-supervisor field */}
+            <div className="form-group input-group" style={{ marginTop: "2px", marginBottom: "2px", display: 'flex', alignItems: 'center' }}>
+                <div style={{ display: 'flex', flexDirection: "column", flex: 1 }}>
+                  <div className="tags-input-container" style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
+                    {emailTags.map((tag, index) => (
+                      <div className="tag-item" key={tag} style={{ cursor: 'pointer', marginBottom: '2px', marginRight: '5px', borderBlockColor: 'black' }}>
+                        <span className="text">{tag}</span>
+                        <span className="close" onClick={() => removeTagMail(index)}>
+                          &times;
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'row', marginTop: '2px', alignItems: 'center' }}>
+                    <div data-bs-toggle="tooltip" data-bs-placement="left" title="Co-Supervisors' mails">
+                      <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight: "1vw" }} width="16" height="16" fill="currentColor" className="bi bi-envelope-at-fill" viewBox="0 0 16 16">
+                        <path d="M2 2A2 2 0 0 0 .05 3.555L8 8.414l7.95-4.859A2 2 0 0 0 14 2H2Zm-2 9.8V4.698l5.803 3.546L0 11.801Zm6.761-2.97-6.57 4.026A2 2 0 0 0 2 14h6.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.606-3.446l-.367-.225L8 9.586l-1.239-.757ZM16 9.671V4.697l-5.803 3.546.338.208A4.482 4.482 0 0 1 12.5 8c1.414 0 2.675.652 3.5 1.671Z" />
+                        <path d="M15.834 12.244c0 1.168-.577 2.025-1.587 2.025-.503 0-1.002-.228-1.12-.648h-.043c-.118.416-.543.643-1.015.643-.77 0-1.259-.542-1.259-1.434v-.529c0-.844.481-1.4 1.26-1.4.585 0 .87.333.953.63h.03v-.568h.905v2.19c0 .272.18.42.411.42.315 0 .639-.415.639-1.39v-.118c0-1.277-.95-2.326-2.484-2.326h-.04c-1.582 0-2.64 1.067-2.64 2.724v.157c0 1.867 1.237 2.654 2.57 2.654h.045c.507 0 .935-.07 1.18-.18v.731c-.219.1-.643.175-1.237.175h-.044C10.438 16 9 14.82 9 12.646v-.214C9 10.36 10.421 9 12.485 9h.035c2.12 0 3.314 1.43 3.314 3.034v.21Zm-4.04.21v.227c0 .586.227.8.581.8.31 0 .564-.17.564-.743v-.367c0-.516-.275-.708-.572-.708-.346 0-.573.245-.573.791Z" />
+                      </svg>
+                    </div>
+                    <input style={{ borderRadius: '6px', flex: 1 }} name="" className="form-control" placeholder="Insert Co-Supervisors' mails and press Enter.." type="text" onKeyDown={handleMailKeyDown} onBlur={handleMailBlur} />
+                  </div>
+                </div>
+              </div>
+
             <div className="form-group input-group" style={{ display: "flex", marginBottom: "2px", flexDirection: "column", flexWrap: "wrap" }}>
               <p style={{ paddingTop: "2px", marginBottom: "1px", marginLeft: "auto", marginRight: "auto", fontWeight: "300" }}>Notes</p>
               <textarea

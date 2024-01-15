@@ -375,7 +375,7 @@ function InsertProposalForm(props) {
                 </div>
               </div>
 
-
+              {/* co-supervisor field */}
               <div className="form-group input-group" style={{ marginTop: "2px", marginBottom: "2px", display: 'flex', alignItems: 'center' }}>
                 <div style={{ display: 'flex', flexDirection: "column", flex: 1 }}>
                   <div className="tags-input-container" style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
