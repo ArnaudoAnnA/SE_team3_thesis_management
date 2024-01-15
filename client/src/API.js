@@ -1439,7 +1439,7 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) => {
       snapshot.docs.forEach((doc) => {
         // console.log(doc.id)
         let reqData = doc.data();
-        let proposal = new ThesisRequest(reqData.title, reqData.description, reqData.teacherId, reqData.studentId, reqData.requestDate, reqData.approvalDate, reqData.approved, reqData.type, reqData.programmes, reqData.notes);
+        let proposal = new ThesisRequest(reqData.title, reqData.description, reqData.teacherId, reqData.studentId, reqData.requestDate, reqData.approvalDate, reqData.approved, reqData.type, reqData.programmes, reqData.notes, reqData.coSupervisors);
         proposal.id = doc.id;
         // console.log(proposal)
 
