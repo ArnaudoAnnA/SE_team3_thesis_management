@@ -1,7 +1,7 @@
 "use strict;"
 
 import { initializeApp } from 'firebase/app';
-import { collection, addDoc, getFirestore, doc, query, getDocs, updateDoc, where, setDoc, deleteDoc, getDoc, limit, startAfter, orderBy } from 'firebase/firestore';
+import { collection, addDoc, getFirestore, doc, query, getDocs, updateDoc, where, or, and, setDoc, deleteDoc, getDoc, limit, startAfter, orderBy } from 'firebase/firestore';
 import { signInWithRedirect, SAMLAuthProvider, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
@@ -1398,10 +1398,9 @@ const getSTRlist = async (orderByArray, reload, entry_per_page) => {
         //show only pending STR
         whereConditions.push(where("approved", "==", null));
       } else {
-        // if the user is a teacher, show only the STR directed to him
-        whereConditions.push(where("approved", "==", true));
+        // if the user is a teacher, show only the STR directed to him or where he is co-supervisor
         const thisTeacher = await getUser(auth.currentUser.email);
-        whereConditions.push(where("teacherId", "==", thisTeacher.id));
+        whereConditions.push(and(where("approved", "==", true), or(where("coSupervisors", "array-contains", thisTeacher.email), where("teacherId", "==", thisTeacher.id))));
       }
 
       /* ATTENTION: this code has been commented out because of it makes uneffective the ordering
