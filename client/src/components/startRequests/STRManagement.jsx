@@ -33,6 +33,7 @@ function STRManagement(props) {
     { DBfield: "requestDate", title: "Request date" },
     { DBfield: "type", title: "Type" },
     { DBfield: "programmes", title: "Programmes" },
+    { DBfield: "coSupervisors", title: "Co-supervisors" },
   ];
 
   const { id } = useParams();

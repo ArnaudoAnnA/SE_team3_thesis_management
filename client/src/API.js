@@ -1650,7 +1650,8 @@ const getSTRWithId = async (id) => {
     const STRSnapshot = await getDoc(STRdocRef);
     if (STRSnapshot.exists()) {
       const data = STRSnapshot.data();
-      const STR = new ThesisRequest(data.title, data.description, data.teacherId, data.studentId, data.requestDate, data.approvalDate, data.approved, data.type, data.programmes, data.notes);
+      if (!data.coSupervisors) data.coSupervisors = [];
+      const STR = new ThesisRequest(data.title, data.description, data.teacherId, data.studentId, data.requestDate, data.approvalDate, data.approved, data.type, data.programmes, data.notes, data.coSupervisors);
       //find the supervisor's name and surname
       let teachersSnap = await getDocs(teachersRef);
       let teachers = teachersSnap.docs.map(doc => doc.data());
