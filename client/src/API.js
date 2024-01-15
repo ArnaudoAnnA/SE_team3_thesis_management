@@ -1673,6 +1673,62 @@ const getSTRWithId = async (id) => {
   }
 }
 
+
+/**
+ * API to accept/reject a new thesis request, Used only for teacher users.
+ * If accepted, the str gets deleted from db and the student gets notified
+ * @param {string} id id of the thesis to accept/reject
+ * @param {boolean} accept true to accept, false to reject
+ * @returns {Promise<{ status: code }>} //return of the API if no errors occur
+ * @returns {Promise<{ status: code, error: err}>} //return of the API if errors occur
+ * Possible values for status: [200 (ok),400 (already approved/rejected), 401 (unauthorized), 404 (non found), 500 (server error)]
+ */
+
+
+const teacherAcceptRejectSTR = async (id, accept) => {
+
+  //check if the if the user is logged
+  if (!auth.currentUser) return { status: 401, error: "User not logged in" };
+
+  //check if the user is a secretary
+  if (!await isTeacher(auth.currentUser.email)) return { status: 401, error: "User is not a teacher" };
+
+  try {
+    const collectionName = DEBUG ? "test-thesisRequests" : "thesisRequests";
+    const docRef = doc(db, collectionName, id);
+    const STRSnapshot = await getDoc(docRef);
+    if (STRSnapshot.data().approved !== null) return { status: 400, error: "Thesis Request already approved/rejected" }
+
+    const newData = {
+      "approved": accept,
+      "approvalDate": ""
+    };
+
+    //if accepted, delete the str from db
+    //if rejected, just update the approved field and notify the student
+
+    const student = await getUserById(STRSnapshot.data().studentId);
+    if (accept) {
+      await deleteDoc(docRef);
+      sendEmail(STRSnapshot.data().studentId + "@studenti.polito.it", "Thesis request accepted", `Dear ${student.name} ${student.surname},\n\nWe are pleased to inform you that your thesis request "${STRSnapshot.data().title}" has been accepted by the assigned teacher.\n\nBest regards,\nStudent Secretariat`);
+    } else {
+      newData.approvalDate = null;
+      newData.approved = false;
+      await updateDoc(docRef, newData);
+      sendEmail(STRSnapshot.data().studentId + "@studenti.polito.it", "Thesis request rejected", `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that your thesis request "${STRSnapshot.data().title}" has been rejected by the assigned teacher.\n\nBest regards,\nStudent Secretariat`);
+    }
+
+    return { status: 200 } //OK
+    // } else {
+    //   console.log("Thesis request not found");
+    //   return { status: 404, error: "Thesis request not found" }
+    // }
+  } catch (e) {
+    console.log("Error:", e);
+    return { status: 500, error: "Error in calling Firebase:" + e }
+  }
+};
+
 /**
  * API to accept/reject a new thesis request, Used only for secretaries users.
  * @param {string} id id of the thesis to accept/reject
@@ -1861,7 +1917,7 @@ const API = {
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplicationsForProfessor, getApplicationDetails, getCVOfApplication, acceptApplication, declineApplication, getApplicationsByStateByThesis,
   removeAllProposals, insertProposal, archiveThesis, deleteProposal, updateProposal,
   getApplicationsForStudent, getDegree,
-  getSTRlist, getSTRlistLength, insertSTR, predefinedSTRStructure, getSTRWithId, acceptRejectSTR,
+  getSTRlist, getSTRlistLength, insertSTR, predefinedSTRStructure, getSTRWithId, acceptRejectSTR, teacherAcceptRejectSTR,
   notifyThesisExpiration,
   sendEmail,
   getNotifications
