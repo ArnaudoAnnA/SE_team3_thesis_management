@@ -8,8 +8,8 @@ function NotificationDetail(props){
         {props.modalOpen && 
             <Modal.Dialog style={{borderRadius: "20px", border:"solid", borderColor:"black", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)"}}>
                 <Modal.Header>
-                    <Modal.Title style={{color: "#003576"}}>{props.notification.subject}</Modal.Title>
-                    <i className="bi bi-x" onClick={() => props.setModalOpen(false)} style={{color:'black', cursor: "pointer"}} ></i>
+                    <Modal.Title style={{color: "#e65c00"}}>{props.notification.subject}</Modal.Title>
+                    <i className="bi bi-x h1 orangeClose" style={{cursor:"pointer"}} onClick={() => props.setModalOpen(false)} ></i>
                 </Modal.Header>
 
                 <hr></hr>
@@ -21,8 +21,8 @@ function NotificationDetail(props){
                 <hr></hr>
 
                 <Modal.Footer className='d-flex justify-content-between'>
+                    <p>From: {props.notification.from && `${props.notification.from.name} ${props.notification.from.surname}, ${props.notification.from.id}`}</p>
                     <p>Date: {dayjs(props.notification.date).format("YYYY/MM/DD")} </p>
-                    <p>From: {props.notification.from && props.notification.from.name} {props.notification.from && props.notification.from.surname}</p>
                 </Modal.Footer>
             </Modal.Dialog>}
         </div>

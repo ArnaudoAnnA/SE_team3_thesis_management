@@ -33,6 +33,14 @@ body {
   color: white;
 }
 
+.orangeClose {
+  color: #fc7a08;
+}
+
+.orangeClose:hover {
+  color: #e65c00;
+}
+
 .white {
   color: #ffffff;
 }
