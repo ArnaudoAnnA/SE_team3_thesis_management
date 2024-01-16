@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import NotificationTable from "./NotificationTable";
+import { Container } from 'react-bootstrap';
 import API from "../../API";
 
 
@@ -19,18 +20,12 @@ function NotificationList(props){
     }, []);
 
     return (
-        <div style={
-            {
-                paddingLeft: "2em",
-                paddingRight: "2em",
-                paddingTop: "1em",
-                paddingBottom: "1em"
-            }
-        }>
+        <Container>
+            <><hr size={10}/><h1>Notifications <i class="bi bi-bell-fill"></i></h1><hr /></>
             <div className="text-info">Number of notifications: {notifications.length}</div>
             <hr />
             <NotificationTable notifications={notifications}/>
-        </div>
+        </Container>
     );
 }
 

@@ -8,6 +8,8 @@ function NotificationTable(props){
                 <tr>
                     <th>Subject</th>
                     <th>Date</th>
+                    <th style={{ width: "1px" }}></th>
+                    <th style={{ width: "1px" }}></th>
                 </tr>
             </thead>
             <tbody>
