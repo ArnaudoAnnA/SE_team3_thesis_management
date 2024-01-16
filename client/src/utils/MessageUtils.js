@@ -5,14 +5,15 @@ const createMessage = (status, fieldName, obj) => {
     }
 }
 
-const createEmail = (receivers, subject, body, from, thesisTitle) => {
+const createEmail = (receivers, subject, body, from, thesisTitle, date) => {
     return {
         "to": receivers,
         "message": {
             "subject": subject,
             "text": body,
             "from": from,
-            "thesisTitle": thesisTitle
+            "thesisTitle": thesisTitle,
+            "date": date
         },
     }
 }
