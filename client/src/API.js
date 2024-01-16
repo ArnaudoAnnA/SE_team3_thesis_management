@@ -1332,6 +1332,13 @@ const deleteProposal = async (id) => {
     if (thesis.error) return MessageUtils.createMessage(thesis.status, "error", thesis.error);
     if (thesis.thesis.archiveDate <= today) return { status: 400, error: `You can not delete a thesis that is already archived` };
 
+    const teacher = await getUserById(thesis.thesis.teacherId);
+    const from = {
+      "name": teacher.name,
+      "surname": teacher.surname,
+      "id": teacher.id,
+      "email": teacher.email
+    }
 
     // All the pending and rejected applications must be deleted + email to pending applications
     const pendingApplications = await getApplicationsByStateByThesis("Pending", id);
@@ -1343,7 +1350,7 @@ const deleteProposal = async (id) => {
       const student = await getUserById(snap.data().studentId);
       const subject = "Thesis proposal cancelled";
       const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;
-      await sendEmail(student.email, subject, text);
+      await sendEmail(student.email, subject, text, from, thesis.thesis.title);
     })
 
     // debug_purpose
