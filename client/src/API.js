@@ -28,7 +28,7 @@ const firebaseConfig = {
   appId: "1:30091770849:web:ba560e3f3a2a0769c2b0a0"
 };
 
-const DEBUG = false;
+const DEBUG = true;
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -1787,18 +1787,37 @@ const acceptRejectSTR = async (id, accept) => {
     }
 
     await updateDoc(docRef, newData);
-    
+
+    const professor = await getUserById(STRSnapshot.data().teacherId);
+    const student = await getUserById(STRSnapshot.data().studentId);
+    thesisTitle = STRSnapshot.data().title;
+    let email, subject, text, from;
     //send email to student or professor
-    if(accept){
+    if (accept) {
       //to professor
-      const professor = await getUserById(STRSnapshot.data().teacherId);
-      sendEmail(professor.email, "Thesis request accepted", `Dear Professor ${professor.name} ${professor.surname},\n\nWe are pleased to inform you that a new thesis request "${STRSnapshot.data().title}" has been accepted.\n\nBest regards,\nStudent Secretariat`);
-    } else{
+      email = professor.email;
+      subject = "Thesis request accepted";
+      text = `Dear Professor ${professor.name} ${professor.surname},\n\nWe are pleased to inform you that a new thesis request "${thesisTitle}" has been accepted.\n\nBest regards,\nStudent Secretariat`;
+      from = {
+        name: student.name,
+        surname: student.surname,
+        email: student.email,
+        id: student.id,
+      };
+    } else {
       //to student
-      const student = await getUserById(STRSnapshot.data().studentId);
-      sendEmail(student.email, "Thesis request rejected", `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that your thesis request "${STRSnapshot.data().title}" has been rejected.\n\nBest regards,\nStudent Secretariat`);
+      email = student.email;
+      subject = "Thesis request rejected";
+      text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that your thesis request "${thesisTitle}" has been rejected.\n\nBest regards,\nStudent Secretariat`;
+      from = {
+        name: professor.name,
+        surname: professor.surname,
+        email: professor.email,
+        id: professor.id,
+      };
     }
     
+    sendEmail(email, subject, text, from, thesisTitle); 
 
     return { status: 200 } //OK
     // } else {
