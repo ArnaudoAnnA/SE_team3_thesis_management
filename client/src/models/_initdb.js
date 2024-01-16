@@ -87,9 +87,6 @@ async function deleteQueryBatch(q, resolve) {
 const test = process.argv[2] === 'test' ? true : false;
 console.log('test', test);
 
-if (test) {}
-else {}
-
 /* ---------------------------------------------------------------------- */
 if (test) {
   console.log('Populating database with test data...')

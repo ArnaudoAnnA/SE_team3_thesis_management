@@ -9,15 +9,15 @@ import Swal from 'sweetalert2';
 
 
 function object_prop_to_td(key, value) {
-    let ret;
     switch (key) {
         case "expirationDate":
             return dayjs(value).format("YYYY/MM/DD");
 
         case "coSupervisors":
-        case "groups":
+        case "groups": {
             let key = 0;
             return value.map(e => <div key={key++}>{e}</div>);
+        }
 
         default:
             return value;

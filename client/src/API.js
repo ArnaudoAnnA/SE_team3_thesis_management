@@ -1296,12 +1296,6 @@ const deleteProposal = async (id) => {
       sendEmail(student.email, subject, text);
     })
 
-    // debug_purpose
-    // if (pendingApplications.length > 0) {
-    //   sendEmail("chndavide@gmail.com", "Thesis proposal cancelled", `Dear Davide Chen,\n\n We regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`)
-    // }
-
-
     rejectedApplications.forEach(async (snap) => {
       await deleteDoc(snap.ref);
     })
@@ -1772,12 +1766,10 @@ const acceptRejectSTR = async (id, accept) => {
       //to professor
       const professor = await getUserById(STRSnapshot.data().teacherId);
       sendEmail(professor.email, "Thesis request accepted", `Dear Professor ${professor.name} ${professor.surname},\n\nWe are pleased to inform you that a new thesis request "${STRSnapshot.data().title}" has been accepted.\n\nBest regards,\nStudent Secretariat`);
-      sendEmail("chndavide@gmail.com", "Thesis request accepted", `Dear Professor ${professor.name} ${professor.surname},\n\nWe are pleased to inform you that a new thesis request "${STRSnapshot.data().title}" has been accepted.\n\nBest regards,\nStudent Secretariat`); //TODO: remove this line
     } else{
       //to student
       const student = await getUserById(STRSnapshot.data().studentId);
       sendEmail(student.email, "Thesis request rejected", `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that your thesis request "${STRSnapshot.data().title}" has been rejected.\n\nBest regards,\nStudent Secretariat`);
-      sendEmail("chndavide@gmail.com", "Thesis request rejected", `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that your thesis request "${STRSnapshot.data().title}" has been rejected.\n\nBest regards,\nStudent Secretariat`); //TODO: remove this line
     }
     
 
@@ -1805,15 +1797,8 @@ const acceptRejectSTR = async (id, accept) => {
  */
 
 const updateProposal = async (id, thesisProposalData) => {
-
   if (!auth.currentUser) return { status: 401, error: "User not logged in" };
   if (!(await isTeacher(auth.currentUser.email))) return { status: 401, error: "User is not a teacher" };
-  /*
-  if (!validateThesisProposalData(thesisProposalData)) {
-    console.log("Validation failed: proposal data doesnt comply with required structure");
-    return { status: 400, err: "Proposal data doesnt comply with required structure" };
-  }
-  */
   try {
     //Retrieve the thesis object with the given id using a query to firebase
     const whereId = where("id", "==", Number(id));
