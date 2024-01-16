@@ -1944,11 +1944,19 @@ const notifyThesisExpiration = async (today) => {
       const oneWeek = dayjs(today).add(1, 'week');
       const notManuallyArchivedThesis = thesisList.filter((thesis) => dayjs(thesis.archiveDate).isSame(thesis.expirationDate, 'day'));
       const oneWeekThesis = notManuallyArchivedThesis.filter((thesis) => dayjs(thesis.expirationDate).isSame(oneWeek, 'day'));
+
+      const from = {
+        name: "",
+        surname: "",
+        email: "Student Secretariat",
+        id: "",
+      }
+
       oneWeekThesis.forEach(async (thesis) => {
         const teacher = await getUserById(thesis.teacherId)
         const subject = "Thesis proposal expiration";
         const text = `Dear Professor ${teacher.name} ${teacher.surname},\n\nWe are writing you to inform you that the thesis proposal with title ${thesis.title} is about to expire.\n\nBest regards,\nStudent Secretariat`;
-        await sendEmail(teacher.email, subject, text);
+        await sendEmail(teacher.email, subject, text, from, thesis.title);
       });
     })
 }
