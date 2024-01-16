@@ -624,6 +624,17 @@ const addApplication = async (application, teacher) => {
     throw MessageUtils.createMessage(401, "error", "Unauthorized");
   }
 
+  // get student name surname from the database using application.studentId
+  const studentSnap = await getDocs(query(studentsRef, where("id", "==", application.studentId)));
+  const studentData = studentSnap.docs[0].data();
+  if (!studentData) 
+    throw new Error("Student not found ");
+
+  // get thesisTitle from the database using application.thesisId
+  const thesisSnap = await getDocs(query(thesisProposalsRef, where("id", "==", application.thesisId)));
+  const thesisData = thesisSnap.docs[0].data();
+  if (!thesisData) 
+    throw new Error("Thesis not found");
 
   try {
     let fileRef
@@ -637,7 +648,14 @@ const addApplication = async (application, teacher) => {
     addDoc(applicationsRef, application.parse(fileRef ? fileRef.fullPath : null)).then(doc => {
       const subject = "New Application";
       const text = `Dear ${teacher.name} ${teacher.surname},\n\nWe are pleased to inform you that you received a new application for the thesis proposal "${application.thesisTitle}".\n\nBest regards,\nSegreteria Politecnico`;
-      sendEmail(teacher.email, subject, text);
+      const from = {
+        "name": studentData.name,
+        "surname": studentData.surname,
+        "id": application.studentId,
+        "email": studentData.email
+      }
+      
+      sendEmail(teacher.email, subject, text, from, thesisData.title);
       // console.log("Added application with id:" + doc.id)
       return "Application sent"
     })
@@ -1890,8 +1908,8 @@ const sendEmail = async (to, subject, text, from, thesisTitle) => {
       console.log(email);
     } 
     else {
-    const docRef = await addDoc(mailRef, email);
-    return MessageUtils.createMessage(200, "id", docRef.id);
+      const docRef = await addDoc(mailRef, email);
+      return MessageUtils.createMessage(200, "id", docRef.id);
     }
     
   } catch (error) {
@@ -1953,7 +1971,7 @@ const sendEmail = async (to, subject, text, from, thesisTitle) => {
       console.log("Notifications from getNotifications:");
       console.log(notifications);
      }
-}
+    }
 
 
 const API = {
