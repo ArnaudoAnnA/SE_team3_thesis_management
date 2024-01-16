@@ -1702,6 +1702,13 @@ const teacherAcceptRejectChangeRequestSTR = async (id, accept, changeRequest) =>
     const student = await getUserById(STRSnapshot.data().studentId);
     if (accept===true) {
       //if accepted, delete the str from db and notify the student
+      
+      //--------------------DAVID TO DO--------------------------
+      //const newThesis = {STRSnapshot.data()....}
+      //create a new thesis (use the API: insertProposal(newThesis))
+      //const newApplication = {}
+      //use the API: addApplicationByProf(newApplication)
+      //use the API: acceptApplication(applicationId) (this will archive the thesis automatically)
       await deleteDoc(docRef);
       sendEmail(student.email, "Thesis request accepted", `Dear ${student.name} ${student.surname},\n\nWe are pleased to inform you that your thesis request "${STRSnapshot.data().title}" has been accepted.\n\nBest regards,\nStudent Secretariat`);
     } else if (accept===false) {
@@ -1897,6 +1904,32 @@ const getNotifications = async () => {
     }
   ]
   return notifications;
+}
+
+const addApplicationByProf = async (application) => {
+
+  if (!auth.currentUser) {
+    throw MessageUtils.createMessage(401, "error", "Not logged in");
+  }
+
+  if (!await isTeacher(auth.currentUser.email)) {
+    throw MessageUtils.createMessage(401, "error", "Unauthorized");
+  }
+
+  try {
+    let fileRef
+    if (application.curriculum) {
+      fileRef = ref(storage, StringUtils.createApplicationPath(storageCurriculums, application.studentId, application.thesisId, application.curriculum.name))
+      // console.log(application.file)
+      await uploadBytes(fileRef, application.curriculum)
+    }
+
+    addDoc(applicationsRef, application.parse(fileRef ? fileRef.fullPath : null))
+  } catch (e) {
+    console.log(e)
+    throw (e)
+  }
+
 }
 
 
