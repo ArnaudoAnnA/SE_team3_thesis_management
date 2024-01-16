@@ -1671,54 +1671,57 @@ const getSTRWithId = async (id) => {
 
 
 /**
- * API to accept/reject a new thesis request, Used only for teacher users.
- * If accepted, the str gets deleted from db and the student gets notified
+ * API to accept/reject/change request a new thesis request, Used only for teacher users.
  * @param {string} id id of the thesis to accept/reject
- * @param {boolean} accept true to accept, false to reject
+ * @param {boolean} accept true to accept, false to reject, "changeRequested" to request a change
  * @returns {Promise<{ status: code }>} //return of the API if no errors occur
  * @returns {Promise<{ status: code, error: err}>} //return of the API if errors occur
  * Possible values for status: [200 (ok),400 (already approved/rejected), 401 (unauthorized), 404 (non found), 500 (server error)]
  */
 
 
-const teacherAcceptRejectSTR = async (id, accept) => {
+const teacherAcceptRejectChangeRequestSTR = async (id, accept, changeRequest) => {
 
   //check if the if the user is logged
   if (!auth.currentUser) return { status: 401, error: "User not logged in" };
 
-  //check if the user is a secretary
+  //check if the user is a teacher
   if (!await isTeacher(auth.currentUser.email)) return { status: 401, error: "User is not a teacher" };
 
   try {
     const collectionName = DEBUG ? "test-thesisRequests" : "thesisRequests";
     const docRef = doc(db, collectionName, id);
     const STRSnapshot = await getDoc(docRef);
-    if (STRSnapshot.data().approved !== null) return { status: 400, error: "Thesis Request already approved/rejected" }
+    if (STRSnapshot.data().approved !== true) return { status: 400, error: "Thesis Request already approved/rejected/changeRequested by prof" }
 
     const newData = {
       "approved": accept,
       "approvalDate": ""
     };
 
-    //if accepted, delete the str from db
-    //if rejected, just update the approved field and notify the student
-
     const student = await getUserById(STRSnapshot.data().studentId);
-    if (accept) {
+    if (accept===true) {
+      //if accepted, delete the str from db and notify the student
       await deleteDoc(docRef);
-      sendEmail(STRSnapshot.data().studentId + "@studenti.polito.it", "Thesis request accepted", `Dear ${student.name} ${student.surname},\n\nWe are pleased to inform you that your thesis request "${STRSnapshot.data().title}" has been accepted by the assigned teacher.\n\nBest regards,\nStudent Secretariat`);
-    } else {
+      sendEmail(student.email, "Thesis request accepted", `Dear ${student.name} ${student.surname},\n\nWe are pleased to inform you that your thesis request "${STRSnapshot.data().title}" has been accepted.\n\nBest regards,\nStudent Secretariat`);
+    } else if (accept===false) {
+      //if rejected, just update the approved field and notify the student
       newData.approvalDate = null;
-      newData.approved = false;
       await updateDoc(docRef, newData);
-      sendEmail(STRSnapshot.data().studentId + "@studenti.polito.it", "Thesis request rejected", `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that your thesis request "${STRSnapshot.data().title}" has been rejected by the assigned teacher.\n\nBest regards,\nStudent Secretariat`);
+      sendEmail(student.email, "Thesis request rejected", `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that your thesis request "${STRSnapshot.data().title}" has been rejected.\n\nBest regards,\nStudent Secretariat`);
+    } else if (accept==="changeRequested") {
+      //if changeRequested, just update the approved field and notify the student
+      newData.approvalDate = null;
+      const professor = await getUser(auth.currentUser.email);
+      await updateDoc(docRef, newData);
+      sendEmail(student.email, "A change in your Thesis request has been requested", 
+`Dear ${student.name} ${student.surname},\n\nWe inform you that your thesis request "${STRSnapshot.data().title}" has received a change request from the professor ${professor.name} ${professor.surname}. More details below:\n
+${changeRequest.titleSignal || changeRequest.typeSignal || changeRequest.descriptionSignal || changeRequest.cosupervisorsSignal ? "Fields that need to be fixed are:" : ""} 
+${changeRequest.titleSignal ? "* title\n" : ""}${changeRequest.typeSignal ? "* type\n" : ""}${changeRequest.descriptionSignal ? "* description\n" : ""}${changeRequest.cosupervisorsSignal ? "* Co-Supervisors" : ""}
+\nProfessor suggestion:\n"${changeRequest.advice}"\n\nBest Regards,\nStudent Secretariat`);
     }
 
     return { status: 200 } //OK
-    // } else {
-    //   console.log("Thesis request not found");
-    //   return { status: 404, error: "Thesis request not found" }
-    // }
   } catch (e) {
     console.log("Error:", e);
     return { status: 500, error: "Error in calling Firebase:" + e }
@@ -1904,7 +1907,7 @@ const API = {
   addApplication, retrieveCareer, getTitleAndTeacher, getApplication, getApplicationsForProfessor, getApplicationDetails, getCVOfApplication, acceptApplication, declineApplication, getApplicationsByStateByThesis,
   removeAllProposals, insertProposal, archiveThesis, deleteProposal, updateProposal,
   getApplicationsForStudent, getDegree,
-  getSTRlist, getSTRlistLength, insertSTR, predefinedSTRStructure, getSTRWithId, acceptRejectSTR, teacherAcceptRejectSTR,
+  getSTRlist, getSTRlistLength, insertSTR, predefinedSTRStructure, getSTRWithId, acceptRejectSTR, teacherAcceptRejectChangeRequestSTR,
   notifyThesisExpiration,
   sendEmail,
   getNotifications

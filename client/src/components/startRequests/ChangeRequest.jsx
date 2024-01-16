@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-import { useParams } from 'react-router';
-import { Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Form, Alert, Container, Row, Col, Spinner } from 'react-bootstrap';
 import dayjs from 'dayjs';
@@ -15,6 +14,7 @@ function ChangeRequest() {
   const STATES = {LOADING: "Loading...", ERROR: "Some error occoured...", READY: "ready"};
 
   const {id} = useParams();
+  const navigate = useNavigate();
 
   const [state, setState] = useState(STATES.LOADING);
   const [advice, setAdvice] = useState('');
@@ -27,10 +27,12 @@ function ChangeRequest() {
   const [programme, setProgramme] = useState('');
   const [student, setStudent] = useState('');
   const [supervisor, setSupervisor] = useState('');
+  const [cosupervisors, setCosupervisors] = useState([]);
 
   const [titleSignal, setTitleSignal] = useState(false);
   const [typeSignal, setTypeSignal] = useState(false);
   const [descriptionSignal, setDescriptionSignal] = useState(false);
+  const [cosupervisorsSignal, setCosupervisorsSignal] = useState(false);
 
   const successAlert = () => {
     Swal.fire({  
@@ -38,22 +40,49 @@ function ChangeRequest() {
       text: 'Your change request was sent',
       icon: 'success'
     });
-    navigate(`/STRlist/${id}`);
+    navigate(`/STRlist`);
   };
   
-  const errorAlert = (e) => {
+  const errorAlert = () => {
     Swal.fire({  
       title: 'Error!',  
-      text: e,
+      text: "An error occurred while sending the Change Request. Please try again later.",
       icon: 'error'
     });
     return false;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async (event) => {
 
+    event.preventDefault();
+
+    const changeRequest = {
+      titleSignal: titleSignal,
+      typeSignal: typeSignal,
+      descriptionSignal: descriptionSignal,
+      cosupervisorsSignal: cosupervisorsSignal,
+      advice: advice
+    }
+
+    API.teacherAcceptRejectChangeRequestSTR(id, "changeRequested", changeRequest)
+      .then((res) => {
+          if (!res.error) {
+            successAlert();
+          } else {
+            console.error("Error in ChangeRequest/teacherAcceptRejectSTR_API:", res.error);
+            errorAlert();
+          }
+      })
+      .catch((error) => {
+        console.error("Error in ChangeRequest/teacherAcceptRejectSTR_API:", error);
+        errorAlert();
+      });
   }
 
+  const renderCosupervisors = (cosupervisors) => {
+    let key = 0;
+    return cosupervisors.map(e => <span key={key++}>{e}{cosupervisors.length !== key+1 && ","} </span>);
+  }
 
   useEffect(() => {
 
@@ -68,6 +97,7 @@ function ChangeRequest() {
           setProgramme(res.STR.programmes);
           setStudent(res.STR.student);
           setSupervisor(res.STR.supervisor);
+          setCosupervisors(res.STR.coSupervisors);
 
           setState(STATES.READY);
         } else {
@@ -81,7 +111,6 @@ function ChangeRequest() {
       })
 
   }, []);
-
   
   return ( 
     <Container fluid className="vh-100" style={{padding: "40px"}}>
@@ -89,7 +118,7 @@ function ChangeRequest() {
         state === STATES.READY ? <>
           <Row className="my-3">
             <Col md={5} className="ml-2">
-              <Link to={`/STRlist`} className="btn blueButton btn-lg"> <i className="bi bi-arrow-90deg-left white"></i> </Link>
+              <Link to={`/STRlist/${id}`} className="btn blueButton btn-lg"> <i className="bi bi-arrow-90deg-left white"></i> </Link>
             </Col>
             <Col md={8}>
             </Col>
@@ -128,7 +157,7 @@ function ChangeRequest() {
                             </Col>
                             <Col md={1} className="d-flex align-items-center">
                               <Button style={{borderRadius: '30px'}} className={"py-2 " + (titleSignal ? "orangeButton" : "blueButton")} onClick={() => setTitleSignal(titleSignal ? false : true)}>
-                                <i className="bi bi-send-exclamation"></i>
+                                <i className="bi bi-arrow-repeat"></i>
                               </Button>
                             </Col>
                           </div>
@@ -146,7 +175,7 @@ function ChangeRequest() {
                             </Col>
                             <Col md={1} className="d-flex align-items-center">
                               <Button style={{borderRadius: '30px'}} className={"py-2 " + (typeSignal ? "orangeButton" : "blueButton")} onClick={() => setTypeSignal(typeSignal ? false : true)}>
-                                <i className="bi bi-send-exclamation"></i>
+                                <i className="bi bi-arrow-repeat"></i>
                               </Button>
                             </Col>
                           </div>
@@ -166,7 +195,26 @@ function ChangeRequest() {
                             </Col>
                             <Col md={1} className="d-flex align-items-center">
                               <Button style={{borderRadius: '30px'}} className={"py-2 " + (descriptionSignal ? "orangeButton" : "blueButton")} onClick={() => setDescriptionSignal(descriptionSignal ? false : true)}>
-                                <i className="bi bi-send-exclamation"></i>
+                                <i className="bi bi-arrow-repeat"></i>
+                              </Button>
+                            </Col>
+                          </div>
+
+                          <hr/>
+
+                          <div className="form-group input-group" style={{ marginTop: "2px"}}>
+                            <Col md={11}>
+                              <span className="input-group-prepend" data-bs-toggle="tooltip" data-bs-placement="left" title="Thesis Co-Supervisors">
+                              <svg xmlns="http://www.w3.org/2000/svg" style={{ marginRight: "1vw" }} width="16" height="16" fill="currentColor" className="bi bi-envelope-at-fill" viewBox="0 0 16 16">
+                                <path d="M2 2A2 2 0 0 0 .05 3.555L8 8.414l7.95-4.859A2 2 0 0 0 14 2H2Zm-2 9.8V4.698l5.803 3.546L0 11.801Zm6.761-2.97-6.57 4.026A2 2 0 0 0 2 14h6.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.606-3.446l-.367-.225L8 9.586l-1.239-.757ZM16 9.671V4.697l-5.803 3.546.338.208A4.482 4.482 0 0 1 12.5 8c1.414 0 2.675.652 3.5 1.671Z" />
+                                <path d="M15.834 12.244c0 1.168-.577 2.025-1.587 2.025-.503 0-1.002-.228-1.12-.648h-.043c-.118.416-.543.643-1.015.643-.77 0-1.259-.542-1.259-1.434v-.529c0-.844.481-1.4 1.26-1.4.585 0 .87.333.953.63h.03v-.568h.905v2.19c0 .272.18.42.411.42.315 0 .639-.415.639-1.39v-.118c0-1.277-.95-2.326-2.484-2.326h-.04c-1.582 0-2.64 1.067-2.64 2.724v.157c0 1.867 1.237 2.654 2.57 2.654h.045c.507 0 .935-.07 1.18-.18v.731c-.219.1-.643.175-1.237.175h-.044C10.438 16 9 14.82 9 12.646v-.214C9 10.36 10.421 9 12.485 9h.035c2.12 0 3.314 1.43 3.314 3.034v.21Zm-4.04.21v.227c0 .586.227.8.581.8.31 0 .564-.17.564-.743v-.367c0-.516-.275-.708-.572-.708-.346 0-.573.245-.573.791Z" />
+                              </svg> <b>Co-Supervisors: </b> &nbsp;
+                              </span>
+                              <span>{renderCosupervisors(cosupervisors)}</span>
+                            </Col>
+                            <Col md={1} className="d-flex align-items-center">
+                              <Button style={{borderRadius: '30px'}} className={"py-2 " + (cosupervisorsSignal ? "orangeButton" : "blueButton")} onClick={() => setCosupervisorsSignal(cosupervisorsSignal ? false : true)}>
+                                <i className="bi bi-arrow-repeat"></i>
                               </Button>
                             </Col>
                           </div>
@@ -200,7 +248,7 @@ function ChangeRequest() {
                           </div> 
 
                           <div className="form-group" style={{marginTop: "2vh", display: 'flex'}}>
-                              <Button style={{marginLeft: "auto", marginRight:"auto",  width: "150px", marginBottom: '10px'}} type="submit" className="blueButton" onClick={() => handleSubmit()}> Send Request </Button>
+                              <Button style={{marginLeft: "auto", marginRight:"auto",  width: "150px", marginBottom: '10px'}} type="submit" className="blueButton" onClick={handleSubmit}> Send Request </Button>
                           </div> 
 
                         </article>
@@ -220,101 +268,3 @@ function ChangeRequest() {
 };
 
 export { ChangeRequest };
-
-/*const date = props.date;
-  const user = useContext(userContext);
-  const navigate = useNavigate();
-  const types = [
-    { value: 'Academic Research', label: 'Academic Research' },
-    { value: 'Stage', label: 'Stage' },
-  ];
- 
-  //Performs the controlls and if it's true the sendig part of the form
-
-  const handleSubmit = (event) => {
-
-    event.preventDefault();
-
-    if (title === '') {
-
-      setErrorMsg('Check required fields!');
-      setInputErrorTitle(true);
-      window.scrollTo(0, 0);
-
-
-    } 
-
-    if (profname === '') {
-
-        setErrorMsg('Check required fields!');
-        setInputErrorName(true);
-        window.scrollTo(0, 0);
-  
-  
-  
-      } 
-    if (description === '') {
-
-      setErrorMsg('Check required fields!');
-      setInputErrorDescription(true);
-      window.scrollTo(0, 0);
-
-
-    } 
-
-    if (type === '') {
-
-      setErrorMsg('Check required fields!');
-      setInputErrorType(true);
-      window.scrollTo(0, 0);
-
-
-    }  
-
-  
-   
-  // if everything is ok return true but in out case we send the data, console log to check everything is ok
-
-    // console.log(`
-    //   note: ${note}
-    //   pname: ${profname.name + ' ' + profname.surname}
-    //   type: ${type}
-    //   teacherId: ${profname.id}
-    //   userId: ${user.id}
-    //   description: ${description}
-    //   title: ${title}
-    //   requestDate: ${date}
-    //   errorMsg: ${errorMsg} 
-    //    `);
-
-
-       const predefinedSTRStructure = {   
-
-        approvalDate: "",     
-        description: description,           
-        notes: note,  
-        type: type, 
-        studentId: user.id,
-        teacherId: profname.id,   
-        title: title,
-        programmes: "",
-        requestDate: date,
-        approved: null,
-      };
-      
-
-      if (title !== ''  && description !== '' && profname !== '' && type !== '' && 
-      title !== null  && description !== null && profname !== null && type !== null) {
-      //console.log(user)
-      API.insertSTR(predefinedSTRStructure)
-        .then(successAlert)
-        .catch((e)=> errorAlert(e.err));
-
-    }
-  
-    
-    
-
-      return true;
-
-  }; */
