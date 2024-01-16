@@ -1878,15 +1878,22 @@ const notifyThesisExpiration = async (today) => {
 }
 
 
-const sendEmail = async (to, subject, text) => {
+const sendEmail = async (to, subject, text, from, thesisTitle) => {
   if (!auth.currentUser) {
     console.log("User not logged in");
     return MessageUtils.createMessage(401, "error", "User not logged in")
   }
-  const email = MessageUtils.createEmail(to, subject, text);
+  const email = MessageUtils.createEmail(to, subject, text, from, thesisTitle);
   try {
+    if (DEBUG) {
+      console.log("Email sent");
+      console.log(email);
+    } 
+    else {
     const docRef = await addDoc(mailRef, email);
     return MessageUtils.createMessage(200, "id", docRef.id);
+    }
+    
   } catch (error) {
     console.error("Error adding email: ", error);
     return MessageUtils.createMessage(500, "error", error);
@@ -1894,22 +1901,58 @@ const sendEmail = async (to, subject, text) => {
 
 }
 
-const getNotifications = async () => {
-  const notifications = [
-    {
+/**
+ * Get all the notifications for the logged user
+ * 
+ * @param {string} thesisTitle is an optional field if the notification is related to a specific thesis
+ * @param {Object} from is the object that contains the information about the trigger of the notification. 
+  *        It could be the teacher related to the thesisTitle or a student that has sent an application.
+ * {
       id: 1,
       date: "2021-06-01",
       subject: "Thesis proposal accepted",
       text: "Dear student, your thesis proposal has been accepted",
+      thesisTitle: "Title",
+      from: {
+        name: "Mario",
+        surname: "Rossi",
+        id: "d123456"
+      }
     },
-    {
-      id: 2,
-      date: "2021-06-01",
-      subject: "Thesis proposal refused",
-      text: "Dear student, your thesis proposal has been rejected",
-    }
-  ]
-  return notifications;
+ * 
+ * @returns { Array<{
+    *  id: number,
+    *  date: string,
+    *  subject: string,
+    *  text: string
+    *  thesisTitle: string,
+    *  from: Object<{ name: string, surname: string, id: string }>
+    * }> 
+    * }
+    */
+   const getNotifications = async () => {
+     if (!auth.currentUser) return { status: 401, error: "User not logged in" };
+
+     const qMail = query(mailRef, where("to", "==", auth.currentUser.email));
+     const mailSnapshot = await getDocs(qMail);
+     
+     const notifications = [];
+     mailSnapshot.forEach((doc) => {
+       const mail = doc.data();
+       notifications.push({
+         id: doc.id,
+         date: mail.delivery.startTime,
+         subject: mail.message.subject,
+         text: mail.message.text,
+         thesisTitle: mail.thesisTitle,
+         from: mail.from
+       });
+     });
+
+     if (DEBUG) { 
+      console.log("Notifications from getNotifications:");
+      console.log(notifications);
+     }
 }
 
 
