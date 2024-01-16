@@ -19,7 +19,16 @@ function NotificationList(props){
     }, []);
 
     return (
-        <div>
+        <div style={
+            {
+                paddingLeft: "2em",
+                paddingRight: "2em",
+                paddingTop: "1em",
+                paddingBottom: "1em"
+            }
+        }>
+            <div className="text-info">Number of notifications: {notifications.length}</div>
+            <hr />
             <NotificationTable notifications={notifications}/>
         </div>
     );

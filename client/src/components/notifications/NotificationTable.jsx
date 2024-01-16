@@ -3,7 +3,7 @@ import NotificationTableRow from "./NotificationTableRow";
 
 function NotificationTable(props){
     return (
-        <Table>
+        <Table responsive hover>
             <thead>
                 <tr>
                     <th>Subject</th>
