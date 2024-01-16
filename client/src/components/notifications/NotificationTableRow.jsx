@@ -1,9 +1,22 @@
+import { useState } from 'react';
+import NotificationDetail from './NotificationDetail';
+import { Link } from 'react-router-dom';
+
+
 function NotificationTableRow(props){
+
+    const [modalOpen, setModalOpen] = useState(false);
+
     return (
-        <tr>
-            <td>{props.notification.subject}</td>
-            <td>{props.notification.date}</td>
-        </tr>
+        <>
+            <tr key={props.notification.id} onClick={() => setModalOpen(modalOpen ? false : true)}>
+                <td>{props.notification.subject}</td>
+                <td>{props.notification.date}</td>
+                <td><Link className='text-info' style={{ width: "1px" }}>Details</Link></td>
+                <td className='text-info' style={{ width: "1px" }}>▷</td>
+            </tr>
+            {modalOpen && <NotificationDetail notification={props.notification} modalOpen={modalOpen} setModalOpen={setModalOpen}/>}
+        </>
     );
 }
 
