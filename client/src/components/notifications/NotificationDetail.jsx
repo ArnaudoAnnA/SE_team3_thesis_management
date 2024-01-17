@@ -19,7 +19,7 @@ function NotificationDetail(props) {
             </Modal.Body>
             <Modal.Footer className='d-flex justify-content-between'>
                 <p>From: {props.notification.from && `${props.notification.from.name} ${props.notification.from.surname}, ${props.notification.from.id}`}</p>
-                <p>Date: {dayjs(props.notification.date).format("MMMM DD, YYYY")} </p>
+                <p>Date: {props.notification.date && dayjs(props.notification.date).format("MMMM DD, YYYY")} </p>
             </Modal.Footer>
         </Modal>
     );
