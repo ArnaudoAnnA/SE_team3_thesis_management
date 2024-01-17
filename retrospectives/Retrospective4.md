@@ -13,15 +13,15 @@ sections:
 ### Macro statistics
 
 - Number of stories committed vs done 
+ / 5
 
 
 
 - Total points committed vs done 
-
+ / 25
 
 
 - Nr of hours planned vs spent (as a team)
-
 
 
 **Remember**  a story is done ONLY if it fits the Definition of Done:
@@ -32,7 +32,6 @@ sections:
 - Code present on VCS
 - End-to-End tests performed
 
-> Please refine your DoD 
 
 ### Detailed statistics
 
@@ -40,25 +39,25 @@ sections:
 |--------|---------|--------|------------|--------------|
 | _#0_   |         |    -   |              |              |
 | _#16_  |         |    5   |    5h 30m    |              |
-| _#93_  |         |    5   |    9h 15m    |              |    
-| _#94_  |         |    2   |     30m      |              |    
+| _#28_  |         |    5   |    9h 15m    |              |    
+| _#29_  |         |    2   |     30m      |              |    
 | _#17_  |         |   ??   |      0m      |              |    
 | _#18_  |         |    5   |      4h      |              |
 | _#120_ |         |    8   |     15h      |              |    
-| _#98_  |         |   ??   |      6h      |              |        
+| _#30_  |         |   ??   |      6h      |              |        
    
 - _#0_ : ...
 - _#16_ : Search Archive
-- _#93_ : Professor Approve Student requests
-- _#94_ : Notify Professor Thesis Request
+- _#28_ : Professor Approve Student requests
+- _#29_ : Notify Professor Thesis Request
 - _#17_ : Add Academic Co-Supervisor
 - _#18_ : Notify Expiration
 - _#120_ : Browse notifications
-- _#98_ : See thesis request
+- _#30_ : See thesis request
 
 > place technical tasks corresponding to story `#0` and leave out story points (not applicable in this case)
 
-- Estimated Hours per task average: 
+- Estimated Hours per task average: 100h 10m / 40 tasks = 2h45m
 - Actual Hours per task average: 
 - Estimated Hours Standard deviation:
 - Actual Hours Standard deviation:
