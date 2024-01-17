@@ -171,7 +171,7 @@ function ThesisList(props)
 
     return (
         <contextState.Provider value={{state: state, setState: setState, states: STATES}}>
-            <Container>
+            <Container style={{marginTop: "20px"}}>
                 {props.archive ? <><hr size={10}/><h1>Archive 📁</h1><hr /><Alert dismissible><b>ⓘ</b> You are in the archive: information inside the archive cannot be seen by others</Alert></> : ""/*<><hr size={10}/><h1>Home 🎓 <i className="bi bi-mortarboard-fill"></i></h1><hr/></>*/ }
             <FiltersForm filters={[filters, setFilters, resetFilters, isFiltered]}/>
                 { (state == STATES.ready || state == STATES.show_more) ? 
