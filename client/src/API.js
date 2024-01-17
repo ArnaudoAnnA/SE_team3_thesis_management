@@ -655,7 +655,7 @@ const addApplication = async (application, teacher) => {
         "email": studentData.email
       }
 
-      sendEmail(teacher.email, subject, text, from, thesisData.title).then();
+      sendEmail(teacher.email, subject, text, from, thesisData.title, thesisData.id).then();
       // console.log("Added application with id:" + doc.id)
       return "Application sent"
     })
@@ -1201,6 +1201,7 @@ const acceptApplication = async (applicationId) => {
     // send mail to inform the student
     const thesisSnapshot = await getSnapshotThesis(application.thesisId);
     const thesisTitle = thesisSnapshot.snapshot.data().title;
+    const thesisId = thesisSnapshot.snapshot.data().id;
 
     const student = await getUserById(application.studentId);
     const subject = "Thesis proposal accepted";
@@ -1214,7 +1215,7 @@ const acceptApplication = async (applicationId) => {
       "id": teacher.id,
       "email": teacher.email
     }
-    await sendEmail(student.email, subject, text, from, thesisTitle);
+    await sendEmail(student.email, subject, text, from, thesisTitle, thesisId);
 
     // decline all the other applications for the same thesis
     const otherApplications = await getDocs(query(applicationsRef, where("thesisId", "==", application.thesisId)));
@@ -1225,7 +1226,7 @@ const acceptApplication = async (applicationId) => {
         const student = await getUserById(doc.data().studentId);
         const subject = "Thesis proposal rejected";
         const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that your application for the thesis proposal "${thesisTitle}" has been rejected.\n\nBest regards,\nStudent Secretariat`;
-        await sendEmail(student.email, subject, text, from, thesisTitle);
+        await sendEmail(student.email, subject, text, from, thesisTitle, thesisId);
       }
     });
     // archive the thesis
@@ -1256,6 +1257,7 @@ const declineApplication = async (applicationId) => {
     if (application.accepted === false) return { status: 400, err: "Application already declined" };
     const thesisSnapshot = await getSnapshotThesis(application.thesisId);
     const thesisTitle = thesisSnapshot.snapshot.data().title;
+    const thesisId = thesisSnapshot.snapshot.data().id;
 
     await updateDoc(applicationRef, { accepted: false });
     // send mail to inform the student
@@ -1270,7 +1272,7 @@ const declineApplication = async (applicationId) => {
       "id": teacher.id,
       "email": teacher.email
     }
-    await sendEmail(student.email, subject, text, from, thesisTitle);
+    await sendEmail(student.email, subject, text, from, thesisTitle, thesisId);
 
     return { status: 200 };
   } catch (error) {
@@ -1301,6 +1303,7 @@ const archiveThesis = async (id) => {
 
     const teacher = await getUserById(thesisSnapshot.snapshot.data().teacherId);
     const thesisTitle = thesisSnapshot.snapshot.data().title;
+    const thesisId = thesisSnapshot.snapshot.data().id;
     const from = {
       "name": teacher.name,
       "surname": teacher.surname,
@@ -1316,7 +1319,7 @@ const archiveThesis = async (id) => {
       const student = await getUserById(snap.data().studentId);
       const subject = "Thesis proposal archived";
       const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesisTitle}" has been archived and therefore your application rejected.\n\nBest regards,\nStudent Secretariat`;
-      await sendEmail(student.email, subject, text, from, thesisTitle);
+      await sendEmail(student.email, subject, text, from, thesisTitle, thesisId);
     });
     return { status: 200 };
   } catch (error) {
@@ -1361,7 +1364,7 @@ const deleteProposal = async (id) => {
       const student = await getUserById(snap.data().studentId);
       const subject = "Thesis proposal cancelled";
       const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;
-      await sendEmail(student.email, subject, text, from, thesis.thesis.title);
+      await sendEmail(student.email, subject, text, from, thesis.thesis.title, null);
     })
 
     rejectedApplications.forEach(async (snap) => {
@@ -1783,7 +1786,7 @@ const teacherAcceptRejectChangeRequestSTR = async (id, accept, changeRequest) =>
       // then create a new thesis and a new application and accept it automatically
 
       await deleteDoc(docRef);
-      await sendEmail(student.email, "Thesis request accepted", `Dear ${student.name} ${student.surname},\n\nWe are pleased to inform you that your thesis request "${thesisTitle}" has been accepted.\n\nBest regards,\nStudent Secretariat`, from, thesisTitle);
+      await sendEmail(student.email, "Thesis request accepted", `Dear ${student.name} ${student.surname},\n\nWe are pleased to inform you that your thesis request "${thesisTitle}" has been accepted.\n\nBest regards,\nStudent Secretariat`, from, thesisTitle, null);
 
       const date = await getVirtualDate();
 
@@ -1816,7 +1819,7 @@ const teacherAcceptRejectChangeRequestSTR = async (id, accept, changeRequest) =>
       //if rejected, just update the approved field and notify the student
       newData.approvalDate = null;
       await updateDoc(docRef, newData);
-      await sendEmail(student.email, "Thesis request rejected", `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that your thesis request "${thesisTitle}" has been rejected.\n\nBest regards,\nStudent Secretariat`, from, thesisTitle);
+      await sendEmail(student.email, "Thesis request rejected", `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that your thesis request "${thesisTitle}" has been rejected.\n\nBest regards,\nStudent Secretariat`, from, thesisTitle, null);
 
     } else if (accept === "changeRequested") {
       //if changeRequested, just update the approved field and notify the student
@@ -1827,7 +1830,7 @@ const teacherAcceptRejectChangeRequestSTR = async (id, accept, changeRequest) =>
         `Dear ${student.name} ${student.surname},\n\nWe inform you that your thesis request "${STRSnapshot.data().title}" has received a change request from the professor ${professor.name} ${professor.surname}. More details below:\n
 ${changeRequest.titleSignal || changeRequest.typeSignal || changeRequest.descriptionSignal || changeRequest.cosupervisorsSignal ? "Fields that need to be fixed are:" : ""} 
 ${changeRequest.titleSignal ? "* title\n" : ""}${changeRequest.typeSignal ? "* type\n" : ""}${changeRequest.descriptionSignal ? "* description\n" : ""}${changeRequest.cosupervisorsSignal ? "* Co-Supervisors" : ""}
-\nProfessor suggestion:\n"${changeRequest.advice}"\n\nBest Regards,\nStudent Secretariat`, from, thesisTitle);
+\nProfessor suggestion:\n"${changeRequest.advice}"\n\nBest Regards,\nStudent Secretariat`, from, thesisTitle, null);
     }
 
     return { status: 200 } //OK
@@ -1889,6 +1892,7 @@ const acceptRejectSTR = async (id, accept) => {
         email: student.email,
         id: student.id,
       };
+      await sendEmail(email, subject, text, from, thesisTitle, null);
     } else {
       //to student
       email = student.email;
@@ -1900,9 +1904,8 @@ const acceptRejectSTR = async (id, accept) => {
         email: professor.email,
         id: professor.id,
       };
+      await sendEmail(email, subject, text, from, thesisTitle, null);
     }
-
-    await sendEmail(email, subject, text, from, thesisTitle);
 
     return { status: 200 } //OK
     // } else {
@@ -2001,12 +2004,12 @@ const notifyThesisExpiration = async (today) => {
 }
 
 
-const sendEmail = async (to, subject, text, from, thesisTitle) => {
+const sendEmail = async (to, subject, text, from, thesisTitle, thesisId) => {
   if (!auth.currentUser) {
     console.log("User not logged in");
     return MessageUtils.createMessage(401, "error", "User not logged in")
   }
-  const email = MessageUtils.createEmail(to, subject, text, from, thesisTitle, dayjs(await getVirtualDate()).toISOString());
+  const email = MessageUtils.createEmail(to, subject, text, from, thesisTitle, thesisId, dayjs(await getVirtualDate()).toISOString());
   try {
     if (DEBUG) {
       console.log("Email sent");
@@ -2071,6 +2074,7 @@ const getNotifications = async () => {
         subject: mail.message.subject,
         text: mail.message.text,
         thesisTitle: mail.message.thesisTitle,
+        thesisId: mail.message.thesisId,
         from: mail.message.from,
       });
     });

@@ -1,7 +1,10 @@
 import dayjs from 'dayjs';
-import { Modal } from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap';
+import { Link, useLocation } from "react-router-dom";
 
 function NotificationDetail(props) {
+
+    const location = useLocation();
 
     return (
         <Modal
@@ -16,6 +19,7 @@ function NotificationDetail(props) {
             </Modal.Header>
             <Modal.Body>
                 <p>{props.notification.text}</p>
+                {props.notification.thesisId && <div className='d-flex justify-content-center'><br/><Link to={`/thesis/${props.notification.thesisId}`} className="btn blueButton" state={{nextpage: location.pathname}}> <span className='white'> See thesis details &nbsp; </span> <i className="bi bi-search white"></i> </Link></div>}
             </Modal.Body>
             <Modal.Footer className='d-flex justify-content-between'>
                 <p>From: {props.notification.from && `${props.notification.from.name} ${props.notification.from.surname}, ${props.notification.from.id}`}</p>
