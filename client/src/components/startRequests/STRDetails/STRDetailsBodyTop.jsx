@@ -18,7 +18,7 @@ function STRDetailsBodyTop(props) {
                 }
             }>
                 <Col>
-                    <h1>{props.req.title}</h1>
+                    <h3>{props.req.title}</h3>
                 </Col>
                 <Col style={
                     {

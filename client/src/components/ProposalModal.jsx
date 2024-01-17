@@ -21,7 +21,7 @@ function ProposalModal(props) {
         </p>
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={props.onHide}>Understood</Button>
+        <Button className='blueButton' onClick={props.onHide}>Understood</Button>
       </Modal.Footer>
     </Modal>
   );
