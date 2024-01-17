@@ -169,6 +169,7 @@ function STRManagement(props) {
                       className='brwbtt blueButton'
                       style={{
                         marginRight: "3px",
+                        marginBottom: "2%",
                         fontSize: "16px",
                         padding: "0.5% 2%"
                       }}
@@ -181,6 +182,7 @@ function STRManagement(props) {
                       className='brwbtt orangeButton'
                       style={{
                         fontSize: "16px",
+                        marginBottom: "2%",
                         padding: "0.5% 2%"
                       }}
                       onClick={() => declineProposal()}
