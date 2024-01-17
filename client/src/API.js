@@ -1769,15 +1769,44 @@ const teacherAcceptRejectChangeRequestSTR = async (id, accept, changeRequest) =>
 
     if (accept===true) {
       //if accepted, delete the str from db and notify the student
-      
-      //--------------------DAVID TO DO--------------------------
-      //const newThesis = {STRSnapshot.data()....}
-      //create a new thesis (use the API: insertProposal(newThesis))
-      //const newApplication = {}
-      //use the API: addApplicationByProf(newApplication)
-      //use the API: acceptApplication(applicationId) (this will archive the thesis automatically)
+      // then create a new thesis and a new application and accept it automatically
+  
       await deleteDoc(docRef);
       await sendEmail(student.email, "Thesis request accepted", `Dear ${student.name} ${student.surname},\n\nWe are pleased to inform you that your thesis request "${thesisTitle}" has been accepted.\n\nBest regards,\nStudent Secretariat`, from, thesisTitle);
+      
+      //we build the thesis proposal with the request info and add it to the db
+      const newThesis = {
+        "title": STRSnapshot.data().title,
+        "description": STRSnapshot.data().description,
+        "teacherId": STRSnapshot.data().teacherId,
+        "requiredKnowledge": "",
+        "level": "Accepted request",
+        "keywords": "",
+        "groups": await getGroupsById(STRSnapshot.data().teacherId),
+        "id": await getNextThesisId(),
+        "approvalDate": STRSnapshot.data().approvalDate,
+        "approved": STRSnapshot.data().approved,
+        "type": STRSnapshot.data().type,
+        "programmes": STRSnapshot.data().programmes,
+        "notes": STRSnapshot.data().notes,
+        "coSupervisors": STRSnapshot.data().coSupervisors,
+        "id": STRSnapshot.data().id,
+        "archiveDate": null
+      };
+      await insertProposal(newThesis);
+
+      //We create the application and accept it automatically
+      const newApplication = {
+        "accepted": false,
+        "curriculum": "",
+        "date": await getVirtualDate(),
+        "studentId": STRSnapshot.data().studentId,
+        "teacherId": STRSnapshot.data().teacherId,
+        "thesisId": newThesis.id,
+        "thesisTitle": newThesis.title,
+      }
+      const applicationId = await addApplicationByProf(newApplication);
+      await acceptApplication(applicationId);
 
     } else if (accept===false) {
       //if rejected, just update the approved field and notify the student
