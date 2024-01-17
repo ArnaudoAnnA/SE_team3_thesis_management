@@ -13,7 +13,7 @@ function STRDetailsHeader(props) {
     return (
         <div>
             <Col className="col-1">
-                <Button className="blueButton" onClick={navigateToList}>
+                <Button className="blueButton" onClick={navigateToList} style={{marginTop: "8px"}}>
                     <Arrow90degLeft />
                 </Button>
             </Col>
