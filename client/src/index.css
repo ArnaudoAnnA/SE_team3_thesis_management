@@ -2,6 +2,9 @@ body {
   background-color: #fafafa;
 }
 
+.warningText {
+  color: red;
+}
 
 .bluePoli {
   background-color: #003576;
@@ -283,6 +286,13 @@ body {
 
 }
 
+.modalNot{
+  
+  font-size: 8px !important;
+  margin-left: 15vw !important;
+
+}
+
   .brwbtt{
 
     font-size: 13px !important;
@@ -511,6 +521,15 @@ body {
 
 @media only screen and (max-width: 576px) {
 
+  .modalNot{
+
+    font-size: 6px !important;
+    margin-left: 11vw !important;
+    width: 100% !important;
+
+  }
+
+
   .bi-exclamation-triangle{
 
     width: 10px;
@@ -583,7 +602,29 @@ body {
 
 }
 
+@media only screen and (max-width: 400px) {
+
+
+  .modalNot{
+
+    font-size: 5px !important;
+    margin-left: 16vw !important;
+    width: 100% !important;
+
+  }
+
+
+}
+
 @media only screen and (max-width: 280px) {
+
+  .modalNot{
+
+    font-size: 4px !important;
+    margin-left: 20vw !important;
+    width: 100% !important;
+
+  }
 
   .browseProf{
 
