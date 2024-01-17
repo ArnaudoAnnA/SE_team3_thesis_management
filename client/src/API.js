@@ -28,7 +28,7 @@ const firebaseConfig = {
   appId: "1:30091770849:web:ba560e3f3a2a0769c2b0a0"
 };
 
-const DEBUG = true;
+const DEBUG = false;
   
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -1016,13 +1016,13 @@ const validateThesisProposalData = (thesisProposalData) => {
 
   // Check if both objects have the same number of keys
   if (keys1.length !== keys2.length) {
-    // console.log("part1")
+     //console.log("part1")
     return false;
   }
   // Check if all keys in obj1 exist in obj2 and have the same type
   for (const key of keys1) {
     if (!(key in predefinedProposalStructure) || typeof thesisProposalData[key] !== typeof predefinedProposalStructure[key]) {
-      // console.log("part2")
+       //console.log("part2")
       // console.log(key)
       return false;
     }
@@ -1032,7 +1032,7 @@ const validateThesisProposalData = (thesisProposalData) => {
   const keys = Object.keys(thesisProposalData);
   for (const key of keys) {
     if (key !== 'notes' && thesisProposalData[key] === null) {
-      // console.log("part3")
+       //console.log("part3")
       return false;
     }
   }
@@ -1773,40 +1773,32 @@ const teacherAcceptRejectChangeRequestSTR = async (id, accept, changeRequest) =>
   
       await deleteDoc(docRef);
       await sendEmail(student.email, "Thesis request accepted", `Dear ${student.name} ${student.surname},\n\nWe are pleased to inform you that your thesis request "${thesisTitle}" has been accepted.\n\nBest regards,\nStudent Secretariat`, from, thesisTitle);
+
+      const date = await getVirtualDate();
       
       //we build the thesis proposal with the request info and add it to the db
       const newThesis = {
-        "title": STRSnapshot.data().title,
-        "description": STRSnapshot.data().description,
-        "teacherId": STRSnapshot.data().teacherId,
-        "requiredKnowledge": "",
-        "level": "Accepted request",
-        "keywords": "",
-        "groups": await getGroupsById(STRSnapshot.data().teacherId),
-        "id": await getNextThesisId(),
-        "approvalDate": STRSnapshot.data().approvalDate,
-        "approved": STRSnapshot.data().approved,
-        "type": STRSnapshot.data().type,
-        "programmes": STRSnapshot.data().programmes,
-        "notes": STRSnapshot.data().notes,
-        "coSupervisors": STRSnapshot.data().coSupervisors,
-        "id": STRSnapshot.data().id,
-        "archiveDate": null
+        archiveDate: dayjs(date).add(1, 'day').toISOString(),
+        coSupervisors: STRSnapshot.data().coSupervisors,
+        description: STRSnapshot.data().description,
+        expirationDate: dayjs(date).add(1, 'day').toISOString(),
+        groups: [],
+        id: 0,
+        keywords: [],
+        level: "Accepted request",
+        notes: STRSnapshot.data().notes,
+        programmes: STRSnapshot.data().programmes,
+        requiredKnowledge: "",
+        teacherId: STRSnapshot.data().teacherId,
+        title: STRSnapshot.data().title,
+        type: STRSnapshot.data().type
       };
-      await insertProposal(newThesis);
+      const thesis = await insertProposal(newThesis);
 
-      //We create the application and accept it automatically
-      const newApplication = {
-        "accepted": false,
-        "curriculum": "",
-        "date": await getVirtualDate(),
-        "studentId": STRSnapshot.data().studentId,
-        "teacherId": STRSnapshot.data().teacherId,
-        "thesisId": newThesis.id,
-        "thesisTitle": newThesis.title,
-      }
-      const applicationId = await addApplicationByProf(newApplication);
-      await acceptApplication(applicationId);
+      //We create an accepted application and accept it automatically
+      const newApplication = new Application(null, STRSnapshot.data().studentId, Number(thesis.id), null, null, date, STRSnapshot.data().teacherId, STRSnapshot.data().title);
+      const result = await addApplicationByProf(newApplication);
+      await acceptApplication(result.id);
 
     } else if (accept===false) {
       //if rejected, just update the approved field and notify the student
@@ -2101,7 +2093,8 @@ const addApplicationByProf = async (application) => {
       await uploadBytes(fileRef, application.curriculum)
     }
 
-    addDoc(applicationsRef, application.parse(fileRef ? fileRef.fullPath : null))
+    const docRef = await addDoc(applicationsRef, application.parse(fileRef ? fileRef.fullPath : null))
+    return {status: 200, id: docRef.id}
   } catch (e) {
     console.log(e)
     throw (e)
