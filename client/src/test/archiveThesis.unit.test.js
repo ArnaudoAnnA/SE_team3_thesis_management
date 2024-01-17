@@ -1,6 +1,6 @@
 'use strict';
 
-import { describe, expect, test, beforeEach, afterEach, afterAll } from '@jest/globals';
+import { describe, expect, test, beforeEach, afterEach } from '@jest/globals';
 import API from '../API.js';
 
 beforeEach(async () => {

@@ -1,7 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { collection, addDoc, getFirestore, query, limit, getDocs, deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { applications, degrees, students, careers, teachers, thesisProposals, date, thesisRequests, secretaries } from './initial_data/_initialData.js';
-import dayjs from 'dayjs';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCu5cRTSa5Ezg4DNIiKDfLQfQ-kDTHo4iI",
@@ -53,7 +52,6 @@ async function insertData(db, jsonData, collectionName, resolve) {
 
 async function insertDataWithCustomId(db, jsonData, collectionName, resolve) {
   console.log('importing data to firestore...');
-  const collectionRef = collection(db, collectionName);
   for (const item of jsonData) {
     console.log(item)
     const newDoc = doc(db, collectionName, item.id)

@@ -15,9 +15,10 @@ function object_prop_to_td(key, value) {
       case "requestDate":
           return dayjs(value).format("YYYY/MM/DD");
 
-      case "coSupervisors":
+      case "coSupervisors": {
           let key = 0;
           return value.map(e => <div key={key++}>{e}</div>);
+      }
 
       default:
           return value;
@@ -168,6 +169,7 @@ function STRManagement(props) {
                       className='brwbtt blueButton'
                       style={{
                         marginRight: "3px",
+                        marginBottom: "2%",
                         fontSize: "16px",
                         padding: "0.5% 2%"
                       }}
@@ -180,6 +182,7 @@ function STRManagement(props) {
                       className='brwbtt orangeButton'
                       style={{
                         fontSize: "16px",
+                        marginBottom: "2%",
                         padding: "0.5% 2%"
                       }}
                       onClick={() => declineProposal()}

@@ -11,7 +11,7 @@ export class Application {
     //     this.thesisTitle = thesisTitle;
     // }
     constructor(applicationId = null, studentId, thesisId, accepted, curriculum, date = dayjs.now(), teacherId, thesisTitle){
-        this.applicationId = applicationId,
+        this.applicationId = applicationId
         this.studentId = studentId
         this.thesisId = thesisId
         this.accepted = accepted

@@ -16,36 +16,6 @@ describe('1: Testing the updateProposal API', () => {
         await API.logOut();
     });
 
-    const predefinedProposalStructure = {
-        archiveDate: 'dayjs(selectedDate).toISOString()',
-        coSupervisors: 'emailTags',
-        description: 'description',
-        expirationDate: 'dayjs(selectedDate).toISOString()',
-        keywords: 'tags',
-        level: 'level',
-        notes: 'note',
-        programmes: 'pname',
-        requiredKnowledge: 'knowledge',
-        teacherId: 'user.id',
-        title: 'title',
-        type: 'degree',
-    };
-
-    const originalProposal = {
-        title: "Instrumenting Kubernetes 5G services with eBPF probes",
-        coSupervisors: ["david@example.com", "d567890@polito.it"],
-        description: "Description for Thesis Proposal 1",
-        programmes: "Design in Graphic Design",
-        keywords: ["keyword1", "tag1"],
-        level: "master",
-        archiveDate: "2025-08-24T14:15:06.473Z",
-        teacherId: "d123456",
-        notes: "Additional notes for Thesis Proposal 1",
-        expirationDate: "2025-09-24T14:15:06.473Z",
-        requiredKnowledge: "Required knowledge for Thesis Proposal 1",
-        type: "academic research"
-    }
-
     const updateProposal = {
         title: "UPDATED Instrumenting Kubernetes 5G services with eBPF probes",
         coSupervisors: ["david@example.com", "d567890@polito.it"],

@@ -1,5 +1,5 @@
 import { Col, Button } from "react-bootstrap";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Arrow90degLeft } from "react-bootstrap-icons";
 
 function STRDetailsHeader(props) {

@@ -14,9 +14,9 @@ function NotificationList(props){
     useEffect(()=> {
         const fetchNotifications = async () => {
             try {
-                const notifications = await API.getNotifications();
-                console.log(notifications);
-                setNotifications(notifications);
+                const notificationsData = await API.getNotifications();
+                console.log(notificationsData);
+                setNotifications(notificationsData);
             } catch (err) {
                 console.log(err);
             }
