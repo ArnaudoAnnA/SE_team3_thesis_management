@@ -4,15 +4,12 @@ import { Arrow90degLeft } from "react-bootstrap-icons";
 
 function STRDetailsHeader(props) {
     const navigate = useNavigate();
-    const location = useLocation();
+    
 
     const navigateToList = () => {
         navigate("/STRList");
     }
-    const navigateToChange = () => {
-        console.log(location);
-        navigate(location.pathname + "/ChangeRequest")
-    }
+    
     return (
         <div>
             <Col className="col-1">
@@ -20,11 +17,8 @@ function STRDetailsHeader(props) {
                     <Arrow90degLeft />
                 </Button>
             </Col>
-            <Col>
-                <Button className="blueButton" onClick={navigateToChange}>
-                    <div>Change Request</div>
-                </Button>
-            </Col>
+            <hr />
+            
         </div>
     );
 }

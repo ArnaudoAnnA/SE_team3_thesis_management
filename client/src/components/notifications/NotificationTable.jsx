@@ -3,11 +3,13 @@ import NotificationTableRow from "./NotificationTableRow";
 
 function NotificationTable(props){
     return (
-        <Table>
+        <Table responsive hover>
             <thead>
                 <tr>
                     <th>Subject</th>
                     <th>Date</th>
+                    <th style={{ width: "1px" }}></th>
+                    <th style={{ width: "1px" }}></th>
                 </tr>
             </thead>
             <tbody>

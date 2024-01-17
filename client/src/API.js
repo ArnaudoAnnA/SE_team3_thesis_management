@@ -1349,20 +1349,13 @@ const deleteProposal = async (id) => {
       // send an email to the user to notify the application has been deleted
       const student = await getUserById(snap.data().studentId);
       const subject = "Thesis proposal cancelled";
-      const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;
+      const text = `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`;      
       await sendEmail(student.email, subject, text, from, thesis.thesis.title);
     })
-
-    // debug_purpose
-    // if (pendingApplications.length > 0) {
-    //   sendEmail("chndavide@gmail.com", "Thesis proposal cancelled", `Dear Davide Chen,\n\n We regret to inform you that the thesis proposal "${thesis.thesis.title}" has been removed and therefore your application deleted.\n\nBest regards,\nStudent Secretariat`)
-    // }
-
 
     rejectedApplications.forEach(async (snap) => {
       await deleteDoc(snap.ref);
     })
-
 
     //delete thesis
     const snapshotThesis = await getSnapshotThesis(id);
@@ -1765,6 +1758,13 @@ const teacherAcceptRejectChangeRequestSTR = async (id, accept, changeRequest) =>
     const student = await getUserById(STRSnapshot.data().studentId);
     if (accept===true) {
       //if accepted, delete the str from db and notify the student
+      
+      //--------------------DAVID TO DO--------------------------
+      //const newThesis = {STRSnapshot.data()....}
+      //create a new thesis (use the API: insertProposal(newThesis))
+      //const newApplication = {}
+      //use the API: addApplicationByProf(newApplication)
+      //use the API: acceptApplication(applicationId) (this will archive the thesis automatically)
       await deleteDoc(docRef);
       await sendEmail(student.email, "Thesis request accepted", `Dear ${student.name} ${student.surname},\n\nWe are pleased to inform you that your thesis request "${STRSnapshot.data().title}" has been accepted.\n\nBest regards,\nStudent Secretariat`);
     } else if (accept===false) {
@@ -1882,15 +1882,8 @@ const acceptRejectSTR = async (id, accept) => {
  */
 
 const updateProposal = async (id, thesisProposalData) => {
-
   if (!auth.currentUser) return { status: 401, error: "User not logged in" };
   if (!(await isTeacher(auth.currentUser.email))) return { status: 401, error: "User is not a teacher" };
-  /*
-  if (!validateThesisProposalData(thesisProposalData)) {
-    console.log("Validation failed: proposal data doesnt comply with required structure");
-    return { status: 400, err: "Proposal data doesnt comply with required structure" };
-  }
-  */
   try {
     //Retrieve the thesis object with the given id using a query to firebase
     const whereId = where("id", "==", Number(id));
@@ -2046,6 +2039,32 @@ const sendEmail = async (to, subject, text, from, thesisTitle) => {
       throw e;
     }
   };
+
+const addApplicationByProf = async (application) => {
+
+  if (!auth.currentUser) {
+    throw MessageUtils.createMessage(401, "error", "Not logged in");
+  }
+
+  if (!await isTeacher(auth.currentUser.email)) {
+    throw MessageUtils.createMessage(401, "error", "Unauthorized");
+  }
+
+  try {
+    let fileRef
+    if (application.curriculum) {
+      fileRef = ref(storage, StringUtils.createApplicationPath(storageCurriculums, application.studentId, application.thesisId, application.curriculum.name))
+      // console.log(application.file)
+      await uploadBytes(fileRef, application.curriculum)
+    }
+
+    addDoc(applicationsRef, application.parse(fileRef ? fileRef.fullPath : null))
+  } catch (e) {
+    console.log(e)
+    throw (e)
+  }
+
+}
 
 
 const API = {
