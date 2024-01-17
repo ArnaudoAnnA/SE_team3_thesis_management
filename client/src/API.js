@@ -1755,7 +1755,18 @@ const teacherAcceptRejectChangeRequestSTR = async (id, accept, changeRequest) =>
       "approvalDate": ""
     };
 
+    const thesisTitle = STRSnapshot.data().title;
+
     const student = await getUserById(STRSnapshot.data().studentId);
+    const professor = await getUser(auth.currentUser.email);
+
+    const from = {
+      "name": professor.name,
+      "surname": professor.surname,
+      "id": professor.id,
+      "email": professor.email
+    }
+
     if (accept===true) {
       //if accepted, delete the str from db and notify the student
       
@@ -1766,22 +1777,24 @@ const teacherAcceptRejectChangeRequestSTR = async (id, accept, changeRequest) =>
       //use the API: addApplicationByProf(newApplication)
       //use the API: acceptApplication(applicationId) (this will archive the thesis automatically)
       await deleteDoc(docRef);
-      await sendEmail(student.email, "Thesis request accepted", `Dear ${student.name} ${student.surname},\n\nWe are pleased to inform you that your thesis request "${STRSnapshot.data().title}" has been accepted.\n\nBest regards,\nStudent Secretariat`);
+      await sendEmail(student.email, "Thesis request accepted", `Dear ${student.name} ${student.surname},\n\nWe are pleased to inform you that your thesis request "${thesisTitle}" has been accepted.\n\nBest regards,\nStudent Secretariat`, from, thesisTitle);
+
     } else if (accept===false) {
       //if rejected, just update the approved field and notify the student
       newData.approvalDate = null;
       await updateDoc(docRef, newData);
-      await sendEmail(student.email, "Thesis request rejected", `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that your thesis request "${STRSnapshot.data().title}" has been rejected.\n\nBest regards,\nStudent Secretariat`);
+      await sendEmail(student.email, "Thesis request rejected", `Dear ${student.name} ${student.surname},\n\nWe regret to inform you that your thesis request "${thesisTitle}" has been rejected.\n\nBest regards,\nStudent Secretariat`, from, thesisTitle);
+
     } else if (accept==="changeRequested") {
       //if changeRequested, just update the approved field and notify the student
       newData.approvalDate = null;
-      const professor = await getUser(auth.currentUser.email);
+      
       await updateDoc(docRef, newData);
       await sendEmail(student.email, "A change in your Thesis request has been requested", 
 `Dear ${student.name} ${student.surname},\n\nWe inform you that your thesis request "${STRSnapshot.data().title}" has received a change request from the professor ${professor.name} ${professor.surname}. More details below:\n
 ${changeRequest.titleSignal || changeRequest.typeSignal || changeRequest.descriptionSignal || changeRequest.cosupervisorsSignal ? "Fields that need to be fixed are:" : ""} 
 ${changeRequest.titleSignal ? "* title\n" : ""}${changeRequest.typeSignal ? "* type\n" : ""}${changeRequest.descriptionSignal ? "* description\n" : ""}${changeRequest.cosupervisorsSignal ? "* Co-Supervisors" : ""}
-\nProfessor suggestion:\n"${changeRequest.advice}"\n\nBest Regards,\nStudent Secretariat`);
+\nProfessor suggestion:\n"${changeRequest.advice}"\n\nBest Regards,\nStudent Secretariat`, from, thesisTitle);
     }
 
     return { status: 200 } //OK
