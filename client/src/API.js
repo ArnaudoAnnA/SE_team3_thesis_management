@@ -1829,7 +1829,7 @@ const acceptRejectSTR = async (id, accept) => {
 
     const professor = await getUserById(STRSnapshot.data().teacherId);
     const student = await getUserById(STRSnapshot.data().studentId);
-    thesisTitle = STRSnapshot.data().title;
+    const thesisTitle = STRSnapshot.data().title;
     let email, subject, text, from;
     //send email to student or professor
     if (accept) {
@@ -1960,15 +1960,15 @@ const sendEmail = async (to, subject, text, from, thesisTitle) => {
     console.log("User not logged in");
     return MessageUtils.createMessage(401, "error", "User not logged in")
   }
-  const email = MessageUtils.createEmail(to, subject, text, from, thesisTitle, await getVirtualDate());
+  const email = MessageUtils.createEmail(to, subject, text, from, thesisTitle, dayjs(await getVirtualDate()).toISOString());
   try {
     if (DEBUG) {
       console.log("Email sent");
       console.log(email);
     }
-
     const docRef = await addDoc(mailRef, email);
     return MessageUtils.createMessage(200, "id", docRef.id);
+
   } catch (error) {
     console.error("Error adding email: ", error);
     return MessageUtils.createMessage(500, "error", error);
@@ -2011,8 +2011,8 @@ const sendEmail = async (to, subject, text, from, thesisTitle) => {
     try {
       const qMail = query(
         mailRef,
-        where("to", "==", auth.currentUser.email),
-        // where("date", ">=", await getVirtualDate())
+        where("to", "==", auth.currentUser.email)
+        //where("date", "<=", dayjs(await getVirtualDate()).toISOString())
       );
       const mailSnapshot = await getDocs(qMail);
 
@@ -2024,8 +2024,8 @@ const sendEmail = async (to, subject, text, from, thesisTitle) => {
           date: mail.message.date,
           subject: mail.message.subject,
           text: mail.message.text,
-          thesisTitle: mail.thesisTitle,
-          from: mail.from,
+          thesisTitle: mail.message.thesisTitle,
+          from: mail.message.from,
         });
       });
 
