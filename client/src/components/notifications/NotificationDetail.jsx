@@ -12,7 +12,7 @@ function NotificationDetail(props) {
         >
             <Modal.Header>
                 <Modal.Title style={{ color: "#e65c00" }}>{props.notification.subject}</Modal.Title>
-                <i className="bi bi-x h1 orangeClose" style={{ cursor: "pointer" }} onClick={() => props.setModalOpen(false)} ></i>
+                <i className="bi bi-x h1 orangeClose" role="button" style={{ cursor: "pointer" }} onClick={() => props.setModalOpen(false)} ></i>
             </Modal.Header>
             <Modal.Body>
                 <p>{props.notification.text}</p>

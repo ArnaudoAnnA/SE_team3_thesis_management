@@ -37,7 +37,7 @@ function KeywordsFiltersForm(props)
                     {props.filters.keywords.map((tag, index) => (
                         <div className="tag-item" key={tag} style={{ cursor: "pointer", marginBottom: "2px", marginRight: "5px", borderBlockColor: "black" }}>
                             <span className="text">{tag}</span>
-                            <span className="close" onClick={() => removeTag(index)} onKeyDown={(e) => handleKeyDown(e)}>&times;</span>
+                            <span className="close" role="button" onClick={() => removeTag(index)} onKeyDown={(e) => handleKeyDown(e)}>&times;</span>
                         </div>
                     ))}
                 </div>

@@ -10,7 +10,6 @@ import API from "../../API";
 
 
 function object_prop_to_td(key, value) {
-  let ret;
   switch (key) {
       case "requestDate":
           return dayjs(value).format("YYYY/MM/DD");

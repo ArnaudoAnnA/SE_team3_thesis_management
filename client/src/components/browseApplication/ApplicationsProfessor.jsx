@@ -23,9 +23,9 @@ function ApplicationsProfessor(props) {
             if (user.id) {
                 API.getApplicationsForProfessor(state)
                     .then((res) => {
-                        if (!res || !res.applications) {
+                        if (!res?.applications) {
                             setState(STATES.EMPTY);
-                        } else if (res.error) {
+                        } else if (res?.error) {
                             console.log("Error in ApplicationsStudent/getApplicationsByState:" + res.error);
                             setState(STATES.ERROR);
                         } else {
