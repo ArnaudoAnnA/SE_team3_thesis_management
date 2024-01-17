@@ -11,7 +11,7 @@ function NotificationTableRow(props){
         <>
             <tr key={props.notification.id} onClick={() => setModalOpen(modalOpen ? false : true)}>
                 <td>{props.notification.subject}</td>
-                <td>{dayjs(props.notification.date).format("YYYY/MM/DD")}</td>
+                <td>{props.notification.date && dayjs(props.notification.date).format("YYYY/MM/DD")}</td>
                 <td><Link className='text-info' style={{ width: "1px" }}>Details</Link></td>
                 <td className='text-info' style={{ width: "1px" }}>▷</td>
             </tr>
