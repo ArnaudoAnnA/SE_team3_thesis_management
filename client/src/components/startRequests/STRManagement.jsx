@@ -15,9 +15,10 @@ function object_prop_to_td(key, value) {
       case "requestDate":
           return dayjs(value).format("YYYY/MM/DD");
 
-      case "coSupervisors":
+      case "coSupervisors": {
           let key = 0;
           return value.map(e => <div key={key++}>{e}</div>);
+      }
 
       default:
           return value;

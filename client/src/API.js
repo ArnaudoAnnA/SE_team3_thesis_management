@@ -1994,7 +1994,7 @@ const sendEmail = async (to, subject, text, from, thesisTitle) => {
  * 
  * @param {string} thesisTitle is an optional field if the notification is related to a specific thesis
  * @param {Object} from is the object that contains the information about the trigger of the notification. 
-  *        It could be the teacher related to the thesisTitle or a student that has sent an application.
+ *        It could be the teacher related to the thesisTitle or a student that has sent an application.
  * {
       id: 1,
       date: "2021-06-01",
@@ -2008,14 +2008,14 @@ const sendEmail = async (to, subject, text, from, thesisTitle) => {
       }
     },
  * 
- * @returns { Array<{
+ * @returns { Promise<Array<{
     *  id: number,
     *  date: string,
     *  subject: string,
     *  text: string
     *  thesisTitle: string,
     *  from: Object<{ name: string, surname: string, id: string }>
-    * }> 
+    * }>>
     * }
     */
   const getNotifications = async () => {
@@ -2049,6 +2049,7 @@ const sendEmail = async (to, subject, text, from, thesisTitle) => {
 
       return notifications;
     } catch (e) {
+      console.err(e);
       throw e;
     }
   };

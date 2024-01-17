@@ -3,7 +3,6 @@
 import { describe, expect, test } from '@jest/globals';
 import API from '../API.js';
 import dayjs from 'dayjs';
-import { thesis } from '../MOCKS.js';
 
 const studentCredentials = {
     email: "s234567@studenti.polito.it",

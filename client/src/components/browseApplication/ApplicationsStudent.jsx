@@ -1,9 +1,3 @@
-/*
-import { useDropzone} from 'react-dropzone';
-
-import Application from '../models/Application';
-import { userContext } from "./Utils";
-*/
 import { Alert, Spinner, Card, Tabs, Tab } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
 import 'bootstrap-icons/font/bootstrap-icons.css';

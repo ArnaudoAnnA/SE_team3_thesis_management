@@ -1,19 +1,13 @@
-import React, { useEffect } from 'react';
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { useEffect, useState, useContext } from 'react';
 /*npm install dayjs @mui/x-date-pickers @mui/material @emotion/styled @emotion/react    --save */
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { useState, useContext } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button, Alert, Container, Row, Col } from 'react-bootstrap';
-import dayjs from 'dayjs';
 import Swal from 'sweetalert2'
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import API from '../../API'
-import context from 'react-bootstrap/esm/AccordionContext';
 import { userContext } from '../Utils';
 import { ProposalModal } from '../ProposalModal';
 
@@ -54,22 +48,17 @@ function InsertStudentProposal(props) {
   const [inputErrorType, setInputErrorType] = useState(false);
   const [inputErrorDescription, setInputErrorDescription] = useState(false);
   const [inputErrorName, setInputErrorName] = useState(false);
-  const [note, setNot] = useState('');
-  const [profname, setprofname] = useState('');
+  const [note, setNote] = useState('');
+  const [profname, setProfname] = useState('');
   const [type, setType] = useState('');
-  const [description, setDesc] = useState('')
-  const [title, setTitle] = useState('')
-  const [errorMsg, setErrorMsg] = useState('')
-  const [values, setValues] = useState([])
-  const [deg, setDeg] = useState()
+  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const [values, setValues] = useState([]);
   const [emailTags, setEmailTags] = useState([]);
 
   useEffect(() => {
-    const now = dayjs(props.date);
-
     API.getTeacher().then((e) => setValues(e))
-
-
   }, []);
 
   const removeTagMail = (index) => {
@@ -240,11 +229,9 @@ function InsertStudentProposal(props) {
                   required
                   onChange={(ev) => {
                     setType(ev.target.value);
-                    // console.log(ev.target.value);
                   }}
                   onBlur={(ev) => {
                     setType(ev.target.value);
-                    // console.log(ev.target.value);
                   }}
                   renderInput={(params) => <TextField {...params} placeholder="Insert the Type *" variant="standard" style={{ paddingLeft: "2px", borderRadius: "6px", width: '100%', fontSize: "12px", borderWidth: "300px" }} onClick={() => setInputErrorType(false)} />}
                 />
@@ -256,7 +243,7 @@ function InsertStudentProposal(props) {
                   value={description}
                   required
                   onClick={() => { setInputErrorDescription(false) }}
-                  onChange={(e) => setDesc(e.target.value)}
+                  onChange={(e) => setDescription(e.target.value)}
                   rows="4"
                   cols="50"
                   placeholder="Insert your thesis description *"
@@ -275,7 +262,7 @@ function InsertStudentProposal(props) {
                   style={{ borderRadius: "6px", borderColor: inputErrorName ? "red" : undefined }}
                   className="form-control"
                   value={profname.id || ''}
-                  onChange={(ev) => setprofname(values.find(teacher => teacher.id === ev.target.value) || {})}
+                  onChange={(ev) => setProfname(values.find(teacher => teacher.id === ev.target.value) || {})}
                   onClick={() => {
                     setInputErrorName(false);
                   }}
@@ -320,7 +307,7 @@ function InsertStudentProposal(props) {
                 <textarea
                   style={{ fontSize: "15px", width: "100%", marginLeft: "auto", marginRight: "auto", borderRadius: "3px", fontStyle: "italic", paddingLeft: "5px", borderColor: "rgba(165, 165, 165, 0.42)" }}
                   value={note}
-                  onChange={(e) => setNot(e.target.value)}
+                  onChange={(e) => setNote(e.target.value)}
                   rows="4"
                   cols="50"
                   placeholder="Insert your notes here.."

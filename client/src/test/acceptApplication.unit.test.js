@@ -16,11 +16,11 @@ describe('testing the acceptApplication function', () => {
     });
 
     //We try to accept all the aplications that have already been accepted
-    for (let i = 0; i < acceptedApplications.length; i++) {
+    for (let application of acceptedApplications) {
         test('Should retrieve an error if the application has already been accepted', async () => {
             await API.logOut();
             await API.logIn("d123456@polito.it", "test123");
-            const response = await API.acceptApplication(acceptedApplications[i]);
+            const response = await API.acceptApplication(application);
             expect(response.status).toEqual(400);
 
         });
@@ -51,11 +51,11 @@ describe('testing the acceptApplication function', () => {
     });
 
     //We try to decline all the aplications that have already been declined
-    for (let i = 0; i < declinedApplications.length; i++) {
+    for (let application of declinedApplications) {
         test('Should retrieve an error if the application has already been declined', async () => {
             await API.logOut();
             await API.logIn("d123456@polito.it", "test123");
-            const response = await API.declineApplication(declinedApplications[i]);
+            const response = await API.declineApplication(application);
             expect(response.status).toEqual(400);
         }
         );

@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { useState } from 'react';
+import{ useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Form, Alert, Container, Row, Col, Spinner } from 'react-bootstrap';
