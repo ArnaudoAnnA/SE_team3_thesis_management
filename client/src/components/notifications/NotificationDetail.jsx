@@ -4,7 +4,7 @@ import {Modal, Button} from 'react-bootstrap';
 function NotificationDetail(props){
 
     return (
-        <div className="d-flex align-items-center" style={{margin: "16px 0px"}}>
+        <div className="d-flex align-items-center modalNot" style={{flexWrap: "wrap", margin: "16px 0px", marginLeft: "12vw"}}>
         {props.modalOpen && 
             <Modal.Dialog style={{borderRadius: "20px", border:"solid", borderColor:"black", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)"}}>
                 <Modal.Header>
