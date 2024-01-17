@@ -15,6 +15,7 @@ import TextField from '@mui/material/TextField';
 import API from '../../API'
 import context from 'react-bootstrap/esm/AccordionContext';
 import { userContext } from '../Utils';
+import { ProposalModal } from '../ProposalModal';
 
 
 
@@ -49,6 +50,7 @@ function InsertStudentProposal(props) {
   };
 
   const [inputErrorTitle, setInputErrorTitle] = useState(false);
+  const [isShow, setIsShow] = useState(true);
   const [inputErrorType, setInputErrorType] = useState(false);
   const [inputErrorDescription, setInputErrorDescription] = useState(false);
   const [inputErrorName, setInputErrorName] = useState(false);
@@ -182,6 +184,10 @@ function InsertStudentProposal(props) {
 
   return (
     <Container>
+      <ProposalModal
+        show={isShow}
+        onHide={() => setIsShow(false)}
+      />
       <Row className="my-3">
         <Col md={5} className="ml-2">
           <Link to={`/`} className="btn blueButton btn-lg"> <i className="bi bi-arrow-90deg-left white"></i> </Link>
