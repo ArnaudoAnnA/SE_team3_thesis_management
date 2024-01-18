@@ -5,7 +5,7 @@ import API from '../API.js';
 
 
 import { initializeApp } from 'firebase/app';
-import { collection, addDoc, getFirestore, doc, query, getDocs, where, setDoc, deleteDoc} from 'firebase/firestore';
+import { collection, getFirestore, doc, query, getDocs, where } from 'firebase/firestore';
 
 //DO NOT CANCEL
 const firebaseConfig = {
@@ -36,14 +36,14 @@ const db = getFirestore(app);
  */
 
 describe('Testing teacherAcceptRejectChangeRequestSTR function', () => {
-    test ('Should retrieve an error if a teacher is not logged in', async () => {
+    test('Should retrieve an error if a teacher is not logged in', async () => {
         const response = await API.teacherAcceptRejectChangeRequestSTR("", "test", "test");
         expect(response.status).toEqual(401);
     });
 
-    test ('STR approved: should return 200', async () => {
+    test('STR approved: should return 200', async () => {
         await API.logIn("d123456@polito.it", "test123");
-        
+
         let applicationId;
         try {
             const appsColl = collection(db, "test-applications")
@@ -54,7 +54,7 @@ describe('Testing teacherAcceptRejectChangeRequestSTR function', () => {
             ]
             const querySnapshot = await getDocs(query(appsColl, whereCond));
             if (querySnapshot.empty) throw new Error("No matching documents");
-            querySnapshot.forEach(function(doc) {
+            querySnapshot.forEach(function (doc) {
                 applicationId = doc.id;
             });
         } catch (err) {
@@ -85,7 +85,7 @@ describe('Testing teacherAcceptRejectChangeRequestSTR function', () => {
 
     test('STR rejected: should return 200', async () => {
         await API.logIn("d123456@polito.it", "test123");
-        
+
         let applicationId;
         try {
             const appsColl = collection(db, "test-applications")
@@ -96,7 +96,7 @@ describe('Testing teacherAcceptRejectChangeRequestSTR function', () => {
             ]
             const querySnapshot = await getDocs(query(appsColl, whereCond));
             if (querySnapshot.empty) throw new Error("No matching documents");
-            querySnapshot.forEach(function(doc) {
+            querySnapshot.forEach(function (doc) {
                 applicationId = doc.id;
             });
         } catch (err) {
@@ -127,7 +127,7 @@ describe('Testing teacherAcceptRejectChangeRequestSTR function', () => {
 
     test('STR request change: should return 200', async () => {
         await API.logIn("d123456@polito.it", "test123");
-        
+
         let applicationId;
         try {
             const appsColl = collection(db, "test-applications")
@@ -138,7 +138,7 @@ describe('Testing teacherAcceptRejectChangeRequestSTR function', () => {
             ]
             const querySnapshot = await getDocs(query(appsColl, whereCond));
             if (querySnapshot.empty) throw new Error("No matching documents");
-            querySnapshot.forEach(function(doc) {
+            querySnapshot.forEach(function (doc) {
                 applicationId = doc.id;
             });
         } catch (err) {
@@ -173,10 +173,10 @@ describe('Testing teacherAcceptRejectChangeRequestSTR function', () => {
         expect(response.status).toEqual(200);
     });
 
-    test ('Should retrieve an error if the application does not exist', async () => {
-        await API.logIn("d123456@polito.it", "test123");    
+    test('Should retrieve an error if the application does not exist', async () => {
+        await API.logIn("d123456@polito.it", "test123");
         const response = await API.teacherAcceptRejectChangeRequestSTR("asdfasdfasdfasd", false, {});
-        expect(response.status).toEqual(401);    
+        expect(response.status).toEqual(401);
     });
 
 });
