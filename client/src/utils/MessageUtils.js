@@ -5,7 +5,7 @@ const createMessage = (status, fieldName, obj) => {
     }
 }
 
-const createEmail = (receivers, subject, body, from, thesisTitle, thesisId, applicationsFlag, strId, date) => {
+const createEmail = (receivers, subject, body, from, thesisTitle, thesisId, applicationId, strId, date) => {
     return {
         "to": receivers,
         "message": {
@@ -14,7 +14,7 @@ const createEmail = (receivers, subject, body, from, thesisTitle, thesisId, appl
             "from": from,
             "thesisTitle": thesisTitle,
             "thesisId": thesisId,
-            "applicationsFlag": applicationsFlag,
+            "applicationId": applicationId,
             "strId": strId,
             "date": date
         },

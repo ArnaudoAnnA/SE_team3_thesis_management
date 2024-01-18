@@ -655,7 +655,7 @@ const addApplication = async (application, teacher) => {
         "email": studentData.email
       }
 
-      sendEmail(teacher.email, subject, text, from, thesisData.title, null, true, null).then();
+      sendEmail(teacher.email, subject, text, from, thesisData.title, null, doc.id, null).then();
       // console.log("Added application with id:" + doc.id)
       return "Application sent"
     })
@@ -2004,12 +2004,12 @@ const notifyThesisExpiration = async (today) => {
 }
 
 
-const sendEmail = async (to, subject, text, from, thesisTitle, thesisId, applicationsFlag, strId) => {
+const sendEmail = async (to, subject, text, from, thesisTitle, thesisId, applicationId, strId) => {
   if (!auth.currentUser) {
     console.log("User not logged in");
     return MessageUtils.createMessage(401, "error", "User not logged in")
   }
-  const email = MessageUtils.createEmail(to, subject, text, from, thesisTitle, thesisId, applicationsFlag, strId, dayjs(await getVirtualDate()).toISOString());
+  const email = MessageUtils.createEmail(to, subject, text, from, thesisTitle, thesisId, applicationId, strId, dayjs(await getVirtualDate()).toISOString());
   try {
     if (DEBUG) {
       console.log("Email sent");
@@ -2075,7 +2075,7 @@ const getNotifications = async () => {
         text: mail.message.text,
         thesisTitle: mail.message.thesisTitle,
         thesisId: mail.message.thesisId,
-        applicationsFlag: mail.message.applicationsFlag,
+        applicationId: mail.message.applicationId,
         strId: mail.message.strId,
         from: mail.message.from,
       });
