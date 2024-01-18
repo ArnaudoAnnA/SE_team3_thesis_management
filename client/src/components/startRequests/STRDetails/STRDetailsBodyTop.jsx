@@ -27,9 +27,9 @@ function STRDetailsBodyTop(props) {
                         alignItems: "center"
                     }
                 }>
-                    <Button className="blueButton" onClick={navigateToChange}>
+                    {props.req.approved===true && <Button className="blueButton" onClick={navigateToChange}>
                         <div>Change Request</div>
-                    </Button>
+                    </Button>}
                 </Col>
             </Row>
         </>

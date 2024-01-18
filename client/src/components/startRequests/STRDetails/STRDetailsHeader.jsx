@@ -1,19 +1,21 @@
 import { Col, Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Arrow90degLeft } from "react-bootstrap-icons";
 
 function STRDetailsHeader(props) {
     const navigate = useNavigate();
+    const location = useLocation();
+    const nextpage = location.state?.nextpage || '/STRList';
     
 
-    const navigateToList = () => {
-        navigate("/STRList");
+    const navigateBack = () => {
+        navigate(nextpage);
     }
     
     return (
         <div>
             <Col className="col-1">
-                <Button className="blueButton" onClick={navigateToList} style={{marginTop: "8px"}}>
+                <Button className="blueButton" onClick={navigateBack} style={{marginTop: "8px"}}>
                     <Arrow90degLeft />
                 </Button>
             </Col>

@@ -36,7 +36,7 @@ function STRDetails(props) {
                 (<div>
                     <STRDetailsHeader req={req} />
                     <STRDetailsBody req={req} />
-                    <STRDetailsBottom reqId={id} />
+                    <STRDetailsBottom reqId={id} req={req}/>
                 </div>)
                 :
                 (<div>
