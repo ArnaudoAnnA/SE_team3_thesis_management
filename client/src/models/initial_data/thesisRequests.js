@@ -1,7 +1,7 @@
 const thesisRequests = [
   {
     requestDate: "2021-05-06",
-    approvalDate: "",
+    approvalDate: "2021-05-07",
     approved: true,
     title:
       "T1",
@@ -29,7 +29,7 @@ const thesisRequests = [
   },
   {
     requestDate: "2020-11-06",
-    approvalDate: "",
+    approvalDate: "2020-11-07",
     approved: true,
     description: "Description for Thesis Request 1",
     studentId: "s123456",
