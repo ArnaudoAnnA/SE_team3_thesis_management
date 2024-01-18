@@ -136,16 +136,17 @@ function ChangeRequest() {
                     <article className="proposal-article" style={{ maxWidth: "85vw", paddingLeft: "30px", paddingRight: "30px" }}>
 
                       <h4 className="card-title mt-3 text-center">Change Request</h4>
-                      <p className="text-center" style={{ fontStyle: "italic" }}>Select what you want to be modified by the student</p>
 
                       <div style={{ fontSize: "20px" }}> <span style={{ fontWeight: "bold" }}>Student: </span> <span> {student} </span> </div>
                       <div style={{ fontSize: "20px" }}> <span style={{ fontWeight: "bold" }}>Supervisor: </span> <span> {supervisor} </span> </div>
                       <div style={{ fontSize: "20px" }}> <span style={{ fontWeight: "bold" }}>Request Date: </span> <span> {dayjs(reqDate).format("YYYY/MM/DD")} </span> </div>
                       <div style={{ fontSize: "20px"}}> <span style={{ fontWeight: "bold" }}>Secretary approval Date: </span> <span> {dayjs(approvalDate).format("YYYY/MM/DD")} </span> </div>
-                      <div style={{ fontSize: "20px", marginBottom: "1rem" }}> <span style={{ fontWeight: "bold" }}>Programmes: </span> <span> {programme} </span> </div>
+                      <div style={{ fontSize: "20px", marginBottom: "3rem" }}> <span style={{ fontWeight: "bold" }}>Programmes: </span> <span> {programme} </span> </div>
 
+                      <hr />
+                      <p className="text-center" style={{ fontStyle: "italic" }}>Select what you want to be modified by the student:</p>
 
-                      <div className="form-group input-group" style={{ marginTop: "2px" }}>
+                      <div className="form-group input-group" style={{ marginTop: "2rem" }}>
 
                         <Col md={1} sm={2} xs={2} className="d-flex align-items-center">
                           <Form.Check type='switch' value={titleSignal} onClick={() => setTitleSignal(t => !t)} />
