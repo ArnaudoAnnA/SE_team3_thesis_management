@@ -137,11 +137,11 @@ function ChangeRequest() {
 
                       <h4 className="card-title mt-3 text-center">Change Request</h4>
 
-                      <div style={{ fontSize: "20px" }}> <span style={{ fontWeight: "bold" }}>Student: </span> <span> {student} </span> </div>
-                      <div style={{ fontSize: "20px" }}> <span style={{ fontWeight: "bold" }}>Supervisor: </span> <span> {supervisor} </span> </div>
-                      <div style={{ fontSize: "20px" }}> <span style={{ fontWeight: "bold" }}>Request Date: </span> <span> {dayjs(reqDate).format("YYYY/MM/DD")} </span> </div>
-                      <div style={{ fontSize: "20px"}}> <span style={{ fontWeight: "bold" }}>Secretary approval Date: </span> <span> {dayjs(approvalDate).format("YYYY/MM/DD")} </span> </div>
-                      <div style={{ fontSize: "20px", marginBottom: "3rem" }}> <span style={{ fontWeight: "bold" }}>Programmes: </span> <span> {programme} </span> </div>
+                      <div style={{ marginTop:"1rem" }}> <span style={{ fontWeight: "bold" }}>Student: </span> <span> {student} </span> </div>
+                      <div style={{ marginTop:"1rem" }}> <span style={{ fontWeight: "bold" }}>Supervisor: </span> <span> {supervisor} </span> </div>
+                      <div style={{ marginTop:"1rem" }}> <span style={{ fontWeight: "bold" }}>Request Date: </span> <span> {dayjs(reqDate).format("YYYY/MM/DD")} </span> </div>
+                      <div style={{ marginTop:"1rem"}}> <span style={{ fontWeight: "bold" }}>Secretary approval Date: </span> <span> {dayjs(approvalDate).format("YYYY/MM/DD")} </span> </div>
+                      <div style={{ marginTop:"1rem", marginBottom: "3rem" }}> <span style={{ fontWeight: "bold" }}>Programmes: </span> <span> {programme} </span> </div>
 
                       <hr />
                       <p className="text-center" style={{ fontStyle: "italic" }}>Select what you want to be modified by the student:</p>

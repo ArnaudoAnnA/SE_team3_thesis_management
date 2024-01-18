@@ -35,9 +35,15 @@ We can see as the thesis request is no more in the list.
 ## REQUEST SOME UPDATES
 
 In the top right corner, we click on "Change request" button.
-We are then displayed a form were we can try to perform some modifications to the request's data:
+We are then displayed a form were we can:
+- Select the fields we want the student to change, by toggling the switches on the right;
+- Add an additional comment, by writing in the textinput at the bottom;
 
 ![Screenshot](./screenshots_profManageSTR/change_request.png)
+
+Then, we click on "Send request" button: we are displayed a success alert.
+
+![Screenshot](./screenshots_profManageSTR/change_success.png)
 
 
 
@@ -48,10 +54,10 @@ The CSS is responsive and it adapts in the different dimensions of the devices:
 ![Screenshot](./screenshots_profManageSTR/galaxyS8_STRlist.png)
 ![Screenshot](./screenshots_profManageSTR/galaxyS8_STRdetails.png)
 ![Screenshot](./screenshots_profManageSTR/galaxyS8_done.png)
-![Screenshot](./screenshots_profManageSTR/galaxyS8_changeRequest.png)  //TO DO
+![Screenshot](./screenshots_profManageSTR/galaxyS8_change_request.png)
 ### iPad Air
 ![Screenshot](./screenshots_profManageSTR/ipadAir_STRlist.png)
 ![Screenshot](./screenshots_profManageSTR/ipadAir_STRdetails.png)
 ![Screenshot](./screenshots_profManageSTR/ipadAir_done.png)
-![Screenshot](./screenshots_profManageSTR/ipadAir_changeRequest.png)
+![Screenshot](./screenshots_profManageSTR/ipadAir_change_request.png)
 
