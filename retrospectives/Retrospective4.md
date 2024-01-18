@@ -22,7 +22,7 @@ sections:
 
 - Nr of hours planned vs spent (as a team)
 
-113h 30m / 112h 5m
+114h 50m / 112h 15m
 
 
 **Remember**  a story is done ONLY if it fits the Definition of Done:
@@ -38,14 +38,14 @@ sections:
 
 | Story  | # Tasks | Points | Hours est. | Hours actual |
 |--------|---------|--------|------------|--------------|
-| _#0_   |    21   |    -   |   75h 15m    |     71h    |
+| _#0_   |    21   |    -   |   75h 35m    |  71h 20m   |
 | _#16_  |    4    |    5   |    5h        |   2h 25m   |
 | _#28_  |    9    |    5   |  10h 45m     |   13h 45m  |   
 | _#29_  |    1    |    2   |     30m      |     15m    | 
 | _#17_  |    0    |    3   |      0m      |     0m     |
 | _#18_  |    2    |    5   |    3h 30m    |     3h     |
 | _#120_ |    7    |    8   |    13h 30m   |   15h 30m  |
-| _#33_  |    4    |    5   |      6h      |    6h     |      
+| _#33_  |    4    |    5   |      6h      |    6h      |      
    
 - _#0_ : Meetings, Technical debt, Docker, GitHub issues
 - _#16_ : Search Archive
@@ -58,12 +58,12 @@ sections:
 
 > place technical tasks corresponding to story `#0` and leave out story points (not applicable in this case)
 
-- Estimated Hours per task average: 2h 21m
+- Estimated Hours per task average: 2h 23m
 - Actual Hours per task average: 2h 20m
-- Estimated Hours Standard deviation: 3.56
-- Actual Hours Standard deviation: 3.45
+- Estimated Hours Standard deviation: 3h 31m
+- Actual Hours Standard deviation: 3h 27m
 
-- Total task estimation error ratio [(sum of total hours estimation / sum of total hours spent) - 1]:  |(6810/6725)-1|  = |0,012| = 1,2%
+- Total task estimation error ratio [(sum of total hours estimation / sum of total hours spent) - 1]:  |(6890/6735)-1|  = |0,023| = 2,3%
 
   
 ## QUALITY MEASURES 
@@ -107,7 +107,7 @@ reimplemented.
 
   1. It's really important to have an interactive work inside the team, so that errors can be discovered promptly;
 
-  2. We have experienced the feeling of having to manage our woriking time when having a lot of free time;
+  2. We have experienced the feeling of having to manage our working time when having a lot of free time;
 
   3. We need to estimate more time to manage technical debt.
 
