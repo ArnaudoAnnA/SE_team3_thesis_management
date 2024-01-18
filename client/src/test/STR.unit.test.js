@@ -17,24 +17,24 @@ const secretaryUser = "u123456@polito.it";
 const password = "test123"
 
 describe('1: Testing the acceptRejectSTR API', () => {
-    test('T1.1: Should retrive an error if a user is not logged in', async () => {
+    test('T1.1: Should retrieve an error if a user is not logged in', async () => {
         const response = await API.acceptRejectSTR(-1, true);
         expect(response.status).toBe(401);
     });
 
-    test('T1.2: Should retrive an error if a user is not a secretary', async () => {
+    test('T1.2: Should retrieve an error if a user is not a secretary', async () => {
         await API.logIn(studentUser, password);
         const response = await API.acceptRejectSTR(-1, true);
         expect(response.status).toBe(401);
     });
 
-    test('T1.3: Should retrive an error if already accepted/rejected', async () => {
+    test('T1.3: Should retrieve an error if already accepted/rejected', async () => {
         await API.logIn(secretaryUser, password);
         const response = await API.acceptRejectSTR(1, true);
         expect(response.status).toBe(400);
     });
 
-    test('T1.4: Should retrive an error if str is not found', async () => {
+    test('T1.4: Should retrieve an error if str is not found', async () => {
         await API.logIn(secretaryUser, password);
         const response = await API.acceptRejectSTR(-1, true);
         expect(response.status).toBe(404);
@@ -50,12 +50,12 @@ describe('1: Testing the acceptRejectSTR API', () => {
 
 describe('2: Testing the getSnapshotSTR API', () => {
 
-    test('T2.1: Should retrive an error if a user is not logged in', async () => {
+    test('T2.1: Should retrieve an error if a user is not logged in', async () => {
         const response = await API.getSnapshotSTR(-1);
         expect(response.status).toBe(401);
     });
 
-    test('T2.2: Should retrive an error if STR is not found', async () => {
+    test('T2.2: Should retrieve an error if STR is not found', async () => {
         await API.logIn(secretaryUser, password);
         const response = await API.getSnapshotSTR(-1);
         expect(response.status).toBe(404);
@@ -97,18 +97,18 @@ describe('3: Testing the insertSTR API', () => {
     }
 
 
-    test('T3.1: Should retrive an error if a user is not logged in', async () => {
+    test('T3.1: Should retrieve an error if a user is not logged in', async () => {
         const response = await API.insertSTR(str);
         expect(response.status).toBe(401);
     });
 
-    test('T3.2: Should retrive an error if a user is not a student', async () => {
+    test('T3.2: Should retrieve an error if a user is not a student', async () => {
         await API.logIn(teacherUser, password);
         const response = await API.insertSTR(str);
         expect(response.status).toBe(401);
     });
 
-    test('T3.3: Should retrive an error if str is missing data', async () => {
+    test('T3.3: Should retrieve an error if str is missing data', async () => {
         await API.logIn(studentUser, password);
         const response = await API.insertSTR(strMissingData);
         expect(response.status).toBe(400);

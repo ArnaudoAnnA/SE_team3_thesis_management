@@ -34,8 +34,6 @@ function ChangeRequest() {
   const [descriptionSignal, setDescriptionSignal] = useState(false);
   const [cosupervisorsSignal, setCosupervisorsSignal] = useState(false);
 
-  let media_large = window.matchMedia("(min-width: 767px)").matches;
-
   const successAlert = () => {
     Swal.fire({
       title: 'Request sent!',
