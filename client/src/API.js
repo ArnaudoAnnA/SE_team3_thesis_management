@@ -1885,7 +1885,7 @@ const acceptRejectSTR = async (id, accept) => {
       //to professor
       email = professor.email;
       subject = "Thesis request accepted";
-      text = `Dear Professor ${professor.name} ${professor.surname},\n\nWe are pleased to inform you that a new thesis request "${thesisTitle}" has been accepted.\n\nBest regards,\nStudent Secretariat`;
+      text = `Dear Professor ${professor.name} ${professor.surname},\n\nWe are pleased to inform you that a new thesis request "${thesisTitle}" with you involved has been accepted by secretary.\n\nBest regards,\nStudent Secretariat`;
       from = {
         name: student.name,
         surname: student.surname,

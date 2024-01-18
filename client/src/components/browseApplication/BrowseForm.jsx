@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Alert, Button, Col, Container, Row, Table, Spinner } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2'
 import API from "../../API";
@@ -17,7 +17,10 @@ function BrowseForm(props) {
   const [student, setStudent] = useState();
   const [showSpinner, setShowSpinner] = useState(true);
   const { id, state } = useParams();
+
   const navigate = useNavigate();
+  const location = useLocation();
+  const nextpage = location.state?.nextpage || '/applications';
 
 
   const successAlert = () => {
@@ -140,7 +143,7 @@ function BrowseForm(props) {
       </Row>
       <Row>
         <Col md={4}>
-          <Link to={`/applications`} className="btn blueButton" style={{ marginLeft: "4%" }}> <i className="bi bi-arrow-90deg-left white"></i> </Link>
+          <Link to={nextpage} className="btn blueButton" style={{ marginLeft: "4%" }}> <i className="bi bi-arrow-90deg-left white"></i> </Link>
         </Col>
         <Col md={4}>
         </Col>
