@@ -4,7 +4,7 @@ const thesisRequests = [
     approvalDate: "2021-05-07",
     approved: true,
     title:
-      "T1",
+      "Caratterizzazione Microstrutturale di Componenti per un Infrastruttura Lunare",
     description: "Description for Thesis Request 1",
     programmes: "Design in Graphic Design",
     studentId: "s345678",
@@ -24,7 +24,7 @@ const thesisRequests = [
     description: "Description for Thesis Request 2",
     programmes: "Engineering in Civil Engineering",
     title:
-      "T2",
+      "Studio, sviluppo e caratterizzazione di materiali magnetici compositi per la sostenibilità e transazione energetica",
     coSupervisors: ["david@example.com", "d567890@polito.it"],
   },
   {
@@ -35,7 +35,7 @@ const thesisRequests = [
     studentId: "s123456",
     teacherId: "d345678",
     title:
-      "T3",
+      "Produzione e applicazione dei nuovi magneti permanenti, con RE e RE-free",
     type: "academic research",
     programmes: "Engineering in Electrical Engineering",
     notes: "Additional notes for Thesis Request 1",
@@ -51,7 +51,7 @@ const thesisRequests = [
     studentId: "s890123",
     teacherId: "d345678",
     title:
-      "T4",
+      "Preparazione di ionogel tramite fotopolimerizzazione come elettroliti innovativi per nuove generazioni di batterie al litio",
     programmes: "Architecture",
     coSupervisors: [],
   },
@@ -65,7 +65,7 @@ const thesisRequests = [
     type: "stage",
     notes: "Additional notes for Thesis Request 1",
     title:
-      "Automatic and Optimal Configuration of Secure Communications in Virtualized Networks",
+      "Oggetti per una matematica tangibile e laboratorio didattico mobile",
     programmes: "Design in Graphic Design",
     coSupervisors: ["marco@company.com", "alice@example.com"],
   },
@@ -77,7 +77,7 @@ const thesisRequests = [
     programmes: "Engineering in Civil Engineering",
     notes: "Additional notes for Thesis Request 2",
     title:
-      "Utilizing Machine Learning Techniques for Predictive Maintenance of Metallurgical Equipment",
+      "Riorientazione cellulare sotto sforzo: modelli discreti",
     studentId: "s345678",
     teacherId: "d456789",
     type: "academic research",
@@ -91,7 +91,7 @@ const thesisRequests = [
     teacherId: "d456789",
     description: "Description for Thesis Request 1",
     title:
-      "Enhancing Software Quality Through Automated Testing and Continuous Integration",
+      "Modellizzazione e controllo di micronuotatori elastici",
     notes: "Additional notes for Thesis Request 1",
     programmes: "Engineering in Electrical Engineering",
     type: "academic research",
@@ -106,7 +106,7 @@ const thesisRequests = [
     studentId: "s789012",
     teacherId: "d456789",
     title:
-      "Definizione dell’infrastruttura di comunicazione e computing per l’operatività di droni/rover su Marte (POLITO/PIC4SER)",
+      "Domain expert-inspired segmentation deep learning algorithms on medical images",
     type: "academic research",
     notes: "Additional notes for Thesis Request 2",
     coSupervisors: [],
@@ -117,7 +117,7 @@ const thesisRequests = [
     approved: null,
     type: "academic research",
     title:
-      "Evaluation of Sustainable Construction Materials for Eco-Friendly Building Design",
+      "Theory enhanced traffic prediction using Graph Neural Networks",
     studentId: "s789012",
     teacherId: "d567890",
     description: "Description for Thesis Request 1",
@@ -134,7 +134,7 @@ const thesisRequests = [
     notes: "Additional notes for Thesis Request 2",
     programmes: "Engineering in Electrical Engineering",
     title:
-      "Formal Methods for Software Specification and Verification: Ensuring System Correctness and Reliability",
+      "Configurazione automatica e ottimizzata di comunicazioni sicure in reti virtualizzate",
     studentId: "s012345",
     teacherId: "d567890",
     coSupervisors: ["d234567@polito.it", "d345678@polito.it"],
@@ -144,7 +144,7 @@ const thesisRequests = [
     approvalDate: "",
     approved: null,
     title:
-      "Reply: Investigation of AI-Powered Robotics for Automated Manufacturing Processes",
+      "Progetto ed implementazione di un verificatore per la compilazione di codice eBPF",
     notes: "",
     description: "Tesi in azienda",
     type: "Stage",
@@ -160,7 +160,7 @@ const thesisRequests = [
     description: "Description for Thesis Request 2",
     studentId: "s567890",
     teacherId: "d567890",
-    title: "Optimizing Deep Learning Models for Edge Devices",
+    title: "Vulnerability Assessment di Sistemi Automotive",
     type: "academic research",
     programmes: "Engineering in Electrical Engineering",
     notes: "Additional notes for Thesis Request 2",
@@ -173,7 +173,7 @@ const thesisRequests = [
     description: "Description for Thesis Request 3",
     studentId: "s567890",
     teacherId: "d345678",
-    title: "Autonomous Robot Navigation using Machine Learning",
+    title: "ARMADA: A Framework for Automatic Hardware Design Debugging and Repair",
     type: "academic research",
     programmes: "Engineering in Electrical Engineering",
     notes: "Additional notes for Thesis Request 3",
@@ -186,7 +186,7 @@ const thesisRequests = [
     description: "Description for Thesis Request 4",
     studentId: "s234567",
     teacherId: "d234567",
-    title: "Enhancing Network Security with Blockchain",
+    title: "Stress testing chatbots: evaluating factuality, reasoning, abstraction, and other safety challenges",
     type: "academic research",
     programmes: "Engineering in Electrical Engineering",
     notes: "Additional notes for Thesis Request 4",
@@ -199,7 +199,7 @@ const thesisRequests = [
     description: "Description for Thesis Request 5",
     studentId: "s234567",
     teacherId: "d456789",
-    title: "Scalable Cloud Solutions for Web Applications",
+    title: "Data-centric AI: Dataset augmentation techniques for bias and data quality improvement",
     type: "academic research",
     programmes: "Engineering in Electrical Engineering",
     notes: "Additional notes for Thesis Request 5",

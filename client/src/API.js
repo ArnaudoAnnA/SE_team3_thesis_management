@@ -1959,7 +1959,7 @@ const updateProposal = async (id, thesisProposalData) => {
 
 /**
  * Get all active thesis
- * @returns {Promise<{ status: code, thesis: {}}>}
+ * @returns {Promise<{ thesis: {}}>}
  */
 const getActiveThesis = async () => {
   const today = await getVirtualDate();
@@ -1997,7 +1997,7 @@ const notifyThesisExpiration = async (today) => {
       oneWeekThesis.forEach(async (thesis) => {
         const teacher = await getUserById(thesis.teacherId)
         const subject = "Thesis proposal expiration";
-        const text = `Dear Professor ${teacher.name} ${teacher.surname},\n\nWe are writing you to inform you that the thesis proposal with title ${thesis.title} is about to expire.\n\nBest regards,\nStudent Secretariat`;
+        const text = `Dear Professor ${teacher.name} ${teacher.surname},\n\nWe are writing you to inform you that the thesis proposal with title ${thesis.title} is about to expire.\n\nBest regards,\nStudent Secretariat.`;
         await sendEmail(teacher.email, subject, text, from, thesis.title, thesis.id, null, null);
       });
     })

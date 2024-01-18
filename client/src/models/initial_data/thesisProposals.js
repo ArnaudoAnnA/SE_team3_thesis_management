@@ -7,7 +7,7 @@ const thesisProposals = [
     keywords: ["keyword1", "tag1"],
     level: "master",
     id: 0,
-    archiveDate: "2025-08-24T14:15:06.473Z",
+    archiveDate: "2025-09-24T14:15:06.473Z",
     teacherId: "d123456",
     notes: "Additional notes for Thesis Proposal 1",
     expirationDate: "2025-09-24T14:15:06.473Z",
@@ -46,7 +46,7 @@ const thesisProposals = [
     programmes: "Engineering in Electrical Engineering",
     notes: "Additional notes for Thesis Proposal 1",
     expirationDate: "2024-08-04T14:15:06.474Z",
-    archiveDate: "2024-02-04T15:15:06.474Z",
+    archiveDate: "2024-08-04T14:15:06.474Z",
     id: 2,
   },
   {
@@ -64,7 +64,7 @@ const thesisProposals = [
     title:
       "Formal Verification of Safety-Critical Software Systems Using Model Checking Techniques",
     programmes: "Architecture",
-    archiveDate: "2023-08-28T14:15:06.474Z",
+    archiveDate: "2024-01-28T15:15:06.474Z",
   },
   {
     level: "master",
@@ -81,7 +81,7 @@ const thesisProposals = [
       "Automatic and Optimal Configuration of Secure Communications in Virtualized Networks",
     archiveDate: "2019-12-05T15:15:06.474Z",
     programmes: "Design in Graphic Design",
-    expirationDate: "2020-06-05T14:15:06.474Z",
+    expirationDate: "2019-12-05T15:15:06.474Z",
   },
   {
     description: "Description for Thesis Proposal 2",
@@ -94,7 +94,7 @@ const thesisProposals = [
       "Utilizing Machine Learning Techniques for Predictive Maintenance of Metallurgical Equipment",
     requiredKnowledge: "Required knowledge for Thesis Proposal 2",
     level: "master",
-    archiveDate: "2025-06-28T14:15:06.474Z",
+    archiveDate: "2025-09-28T14:15:06.474Z",
     id: 5,
     teacherId: "d345678",
     groups: ["METENG", "FM"],
@@ -105,7 +105,7 @@ const thesisProposals = [
     requiredKnowledge: "Required knowledge for Thesis Proposal 1",
     description: "Description for Thesis Proposal 1",
     groups: ["SOFTENG"],
-    archiveDate: "2025-04-19T14:15:06.474Z",
+    archiveDate: "2025-07-19T14:15:06.474Z",
     expirationDate: "2025-07-19T14:15:06.474Z",
     keywords: ["keyword1", "tag1"],
     level: "bachelor",
@@ -131,7 +131,7 @@ const thesisProposals = [
     keywords: ["keyword2", "tag2"],
     notes: "Additional notes for Thesis Proposal 2",
     level: "bachelor",
-    expirationDate: "2022-11-29T15:15:06.474Z",
+    expirationDate: "2022-10-29T14:15:06.474Z",
     coSupervisors: ["d345678@polito.it", "laura@polito.it"],
   },
   {
@@ -141,7 +141,7 @@ const thesisProposals = [
     expirationDate: "2022-11-26T15:15:06.474Z",
     id: 8,
     teacherId: "d567890",
-    archiveDate: "2022-07-26T14:15:06.474Z",
+    archiveDate: "2022-11-26T15:15:06.474Z",
     coSupervisors: ["d234567@polito.it", "d345678@polito.it"],
     level: "bachelor",
     keywords: ["keyword1", "tag1"],
@@ -152,7 +152,7 @@ const thesisProposals = [
     requiredKnowledge: "Required knowledge for Thesis Proposal 1",
   },
   {
-    expirationDate: "2025-10-08T14:15:06.475Z",
+    expirationDate: "2025-09-08T14:15:06.475Z",
     keywords: ["keyword2", "tag2"],
     level: "bachelor",
     description: "Description for Thesis Proposal 2",
@@ -198,7 +198,7 @@ const thesisProposals = [
     programmes: "Engineering in Electrical Engineering",
     notes: "Additional notes for Thesis Proposal 2",
     expirationDate: "2024-09-15T12:30:00.000Z",
-    archiveDate: "2024-03-15T12:30:00.000Z",
+    archiveDate: "2024-09-15T12:30:00.000Z",
     id: 26,
   },
   {
@@ -214,7 +214,7 @@ const thesisProposals = [
     programmes: "Engineering in Electrical Engineering",
     notes: "Additional notes for Thesis Proposal 3",
     expirationDate: "2024-10-20T10:45:00.000Z",
-    archiveDate: "2024-04-20T10:45:00.000Z",
+    archiveDate: "2024-10-20T10:45:00.000Z",
     id: 27,
   },
   {
@@ -230,7 +230,7 @@ const thesisProposals = [
     programmes: "Engineering in Electrical Engineering",
     notes: "Additional notes for Thesis Proposal 4",
     expirationDate: "2024-11-25T15:30:00.000Z",
-    archiveDate: "2024-05-25T15:30:00.000Z",
+    archiveDate: "2024-11-25T15:30:00.000Z",
     id: 28,
   },
   {
@@ -246,7 +246,7 @@ const thesisProposals = [
     programmes: "Engineering in Electrical Engineering",
     notes: "Additional notes for Thesis Proposal 5",
     expirationDate: "2024-12-10T09:00:00.000Z",
-    archiveDate: "2024-06-10T09:00:00.000Z",
+    archiveDate: "2024-12-10T09:00:00.000Z",
     id: 29,
   },
   {
@@ -262,7 +262,7 @@ const thesisProposals = [
     programmes: "Engineering in Electrical Engineering",
     notes: "Additional notes for Thesis Proposal 30",
     expirationDate: "2024-12-10T09:00:00.000Z",
-    archiveDate: "2024-06-10T09:00:00.000Z",
+    archiveDate: "2024-12-10T09:00:00.000Z",
     id: 30,
   },
 ];
