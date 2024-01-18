@@ -81,7 +81,7 @@ sections:
 - Technical Debt management:
   - Total hours estimated: 8h
   - Total hours spent: 10h50m 
-  - Hours estimated for remediation by SonarQube: 1d7h 
+  - Hours estimated for remediation by SonarQube: 1d5h 
   - Hours estimated for remediation by SonarQube only for the selected and planned issues: 8h 
   - Hours spent on remediation: 10h50m
   - debt ratio (as reported by SonarQube under "Measures-Maintainability"): 0.3%
