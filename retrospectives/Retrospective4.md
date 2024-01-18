@@ -50,7 +50,7 @@ sections:
 - _#16_ : Search Archive
 - _#28_ : Professor Approve Student requests
 - _#29_ : Notify Professor Thesis Request
-- _#17_ : Add Academic Co-Supervisor
+- _#17_ : Add Academic Co-Supervisor (<i> NOTE: this story has an est. time equal to 0 since, at the beginning of the sprint, we discovered that was already implemented, inherited from provious sprints</i>)
 - _#18_ : Notify Expiration
 - _#120_ : Browse notifications
 - _#30_ : See thesis request
@@ -93,17 +93,37 @@ sections:
 
 - What caused your errors in estimation (if any)?
 
+  1. There were some bugs that were scared about not finding a solution in few time, so that we overstimated some tasks. 
+By the way, we reinvested the extra-time by managing some technical debt.
+
+  2. There were some misunderstanding inside the team about how to design features, so that some of them had to been
+reimplemented. 
+
+  3. The sprint was covering an holiday period, so that the dynamics related to working hours have been different than we used to (since we never had sprints covering long holiday before this one).
+
 
 - What lessons did you learn (both positive and negative) in this sprint?
 
+  1. It's really important to have an interactive work inside the team, so that errors can be discovered promptly;
+
+  2. We have experienced the feeling of having to manage our woriking time when having a lot of free time;
 
 - Which improvement goals set in the previous retrospective were you able to achieve? 
+
+  1. We managed to take some time to prepare the demo and the presentation.
   
+  2. We REALLY improved our estimation a lot.
 
 - Which ones you were not able to achieve? Why?
+
+Everything was achieved.
 
 
 - Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)
 
+Make the sprint planning reunion faster.
+Give more importance to story points.
 
 - One thing you are proud of as a Team!!
+
+We feel as we can keep working toghether to the point that we could also become officially work colleagues.
