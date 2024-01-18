@@ -77,21 +77,21 @@ function STRDetailsBottom(props) {
             }
 
         }>
-            <Button className='brwbtt blueButton'
+            {props.req.approved===true && <Button className='brwbtt blueButton'
                 style={{ margin: "1rem" }}
                 onClick={() => {
                     updateRequest(true)
                 }}>
                 Accept
-            </Button>
+            </Button>}
 
-            <Button className='brwbtt orangeButton'
+            {props.req.approved===true && <Button className='brwbtt orangeButton'
                 style={{ margin: "1rem" }}
                 onClick={() => {
                     updateRequest(false)
                 }}>
                 Decline
-            </Button>
+            </Button>}
         </Col>
     );
 }

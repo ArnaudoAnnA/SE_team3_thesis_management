@@ -10,7 +10,7 @@ const createEmail = (receivers, subject, body, from, thesisTitle, thesisId, appl
         "to": receivers,
         "message": {
             "subject": subject,
-            "text": body,
+            "html": body,
             "from": from,
             "thesisTitle": thesisTitle,
             "thesisId": thesisId,
