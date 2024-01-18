@@ -1988,10 +1988,10 @@ const notifyThesisExpiration = async (today) => {
       const oneWeekThesis = notManuallyArchivedThesis.filter((thesis) => dayjs(thesis.expirationDate).isSame(oneWeek, 'day'));
 
       const from = {
-        name: "",
+        name: "Student Secretariat",
         surname: "",
-        email: "Student Secretariat",
-        id: "",
+        email: "",
+        id: "PoliTo",
       }
 
       oneWeekThesis.forEach(async (thesis) => {
