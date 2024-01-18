@@ -2,6 +2,12 @@
 
 import { describe, expect, test, beforeEach, afterEach } from '@jest/globals';
 import API from '../API.js';
+import TEST from '../models/_initdb.js';
+
+beforeAll(async () => {
+    // launch script to populate the database with test data
+    await TEST.initTestData();
+});
 
 const teacherUser = "d123456@polito.it";
 const studentUser = "s234567@studenti.polito.it";

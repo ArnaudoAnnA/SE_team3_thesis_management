@@ -1,4 +1,4 @@
-import { initializeApp } from 'firebase/app';
+import { initializeApp, deleteApp } from 'firebase/app';
 import { collection, addDoc, getFirestore, query, limit, getDocs, deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { applications, degrees, students, careers, teachers, thesisProposals, date, thesisRequests, secretaries } from './initial_data/_initialData.js';
 
@@ -24,25 +24,21 @@ async function deleteCollection(db, collectionName) {
 }
 
 async function populateCollection(db, jsonData, collectionName) {
-  console.log('Populating collection', collectionName)
   return new Promise((resolve, reject) => {
     insertData(db, jsonData, collectionName, resolve).catch(reject);
   });
 }
 
 async function populateCollectionWithCustomId(db, jsonData, collectionName) {
-  console.log('Populating collection', collectionName)
   return new Promise((resolve, reject) => {
     insertDataWithCustomId(db, jsonData, collectionName, resolve).catch(reject);
   });
 }
 
 async function insertData(db, jsonData, collectionName, resolve) {
-  console.log('importing data to firestore...');
   const collectionRef = collection(db, collectionName);
   for (const item of jsonData) {
     addDoc(collectionRef, item).then((docRef) => {
-      console.log(`Document written with ID: ${docRef.id}`);
       resolve();
     }).catch((error) => {
       console.error(`Error adding document: ${error}`);
@@ -51,12 +47,9 @@ async function insertData(db, jsonData, collectionName, resolve) {
 }
 
 async function insertDataWithCustomId(db, jsonData, collectionName, resolve) {
-  console.log('importing data to firestore...');
   for (const item of jsonData) {
-    console.log(item)
     const newDoc = doc(db, collectionName, item.id)
     setDoc(newDoc, item).then((docRef) => {
-      console.log(`Document written with ID: ${docRef}`);
       resolve();
     }).catch((error) => {
       console.error(`Error adding document: ${error}`);
@@ -67,11 +60,9 @@ async function insertDataWithCustomId(db, jsonData, collectionName, resolve) {
 async function deleteQueryBatch(q, resolve) {
   const snapshot = await getDocs(q);
   if (snapshot.size === 0) {
-    console.log('Emtpy collection nothing to delete');
     resolve();
   }
   snapshot.forEach((doc) => {
-    console.log(`Deleting doc: ${doc.id}`);
     deleteDoc(doc.ref).then(() => {
       resolve();
     }
@@ -81,12 +72,7 @@ async function deleteQueryBatch(q, resolve) {
   });
 }
 
-// ask user if they want to populate the database with test data or not (y or n)
-const test = process.argv[2] === 'test' ? true : false;
-console.log('test', test);
-
-/* ---------------------------------------------------------------------- */
-if (test) {
+async function initTestData() {
   console.log('Populating database with test data...')
   // Delete all collections
   await deleteCollection(db, "test-students");
@@ -107,31 +93,44 @@ if (test) {
   await populateCollection(db, thesisProposals, 'test-thesisProposals');
   await populateCollection(db, thesisRequests, 'test-thesisRequests');
   await populateCollectionWithCustomId(db, secretaries, 'test-secretaries');
+  await deleteApp(app);
+  console.log('Done!')
 }
-else { 
-  console.log('Populating database with real data...')
+
+// ask user if they want to populate the database with test data or not (y or n)
+const test = process.argv[2] === 'test' ? true : false;
+console.log('test', test);
+
+/* ---------------------------------------------------------------------- */
+if (test) {
+  initTestData();
+}
+// else { 
+//   console.log('Populating database with real data...')
   
-  // Delete all collections
-  await deleteCollection(db, "date");
-  await deleteCollection(db, "students");
-  await deleteCollection(db, "applications");
-  await deleteCollection(db, "career");
-  await deleteCollection(db, "degrees");
-  await deleteCollection(db, "teachers");
-  await deleteCollection(db, "thesisProposals");
-  await deleteCollection(db, "thesisRequests");
-  await deleteCollection(db, "secretaries");
+//   // Delete all collections
+//   await deleteCollection(db, "date");
+//   await deleteCollection(db, "students");
+//   await deleteCollection(db, "applications");
+//   await deleteCollection(db, "career");
+//   await deleteCollection(db, "degrees");
+//   await deleteCollection(db, "teachers");
+//   await deleteCollection(db, "thesisProposals");
+//   await deleteCollection(db, "thesisRequests");
+//   await deleteCollection(db, "secretaries");
 
-  // Import data to firestore
-  await populateCollection(db, date, 'date');
-  await populateCollection(db, students, 'students');
-  await populateCollection(db, teachers, 'teachers');
-  await populateCollection(db, degrees, 'degrees');
-  await populateCollection(db, careers, 'career');
-  await populateCollection(db, applications, 'applications');
-  await populateCollection(db, thesisProposals, 'thesisProposals');
-  await populateCollection(db, thesisRequests, 'thesisRequests');
-  await populateCollectionWithCustomId(db, secretaries, 'secretaries');
+//   // Import data to firestore
+//   await populateCollection(db, date, 'date');
+//   await populateCollection(db, students, 'students');
+//   await populateCollection(db, teachers, 'teachers');
+//   await populateCollection(db, degrees, 'degrees');
+//   await populateCollection(db, careers, 'career');
+//   await populateCollection(db, applications, 'applications');
+//   await populateCollection(db, thesisProposals, 'thesisProposals');
+//   await populateCollection(db, thesisRequests, 'thesisRequests');
+//   await populateCollectionWithCustomId(db, secretaries, 'secretaries');
 
-}
+// }
 
+const TEST = {initTestData}
+export default TEST;

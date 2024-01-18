@@ -15,8 +15,7 @@ function NotificationList(props){
         const fetchNotifications = async () => {
             try {
                 const notificationsData = await API.getNotifications();
-                console.log(notificationsData);
-                setNotifications(notificationsData);
+                setNotifications(notificationsData.notifications);
             } catch (err) {
                 console.log(err);
             }

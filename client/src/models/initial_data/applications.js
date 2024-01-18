@@ -49,7 +49,7 @@ const applications = [
   {
     thesisId: 6,
     curriculum: null,
-    accepted: false,
+    accepted: null,
     date: "2023-03-28T11:25:00.000Z",
     studentId: "s901234",
     thesisTitle:
@@ -68,7 +68,7 @@ const applications = [
   },
   {
     studentId: "s901234",
-    accepted: true,
+    accepted: null,
     thesisId: 9,
     curriculum: null,
     date: "2022-07-12T13:15:00.000Z",
@@ -77,7 +77,7 @@ const applications = [
     teacherId: "d567890",
   },
   {
-    accepted: true,
+    accepted: null,
     curriculum: null,
     studentId: "s678901",
     date: "2022-09-30T14:05:00.000Z",

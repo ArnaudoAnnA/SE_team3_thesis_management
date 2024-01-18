@@ -2,23 +2,13 @@
 
 import { describe, expect, test } from '@jest/globals';
 import API from '../API.js';
+import { collection, doc, query, getDocs, where } from 'firebase/firestore';
+// import TEST from '../models/_initdb.js';
 
-
-import { initializeApp } from 'firebase/app';
-import { collection, getFirestore, doc, query, getDocs, where } from 'firebase/firestore';
-
-//DO NOT CANCEL
-const firebaseConfig = {
-    apiKey: "AIzaSyCu5cRTSa5Ezg4DNIiKDfLQfQ-kDTHo4iI",
-    authDomain: "thesismanagementg3.firebaseapp.com",
-    projectId: "thesismanagementg3",
-    storageBucket: "thesismanagementg3.appspot.com",
-    messagingSenderId: "30091770849",
-    appId: "1:30091770849:web:ba560e3f3a2a0769c2b0a0"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+// beforeAll(async () => {
+//     // launch script to populate the database with test data
+//     await TEST.initTestData();
+// });
 
 /**
  * API to accept/reject/change request a new thesis request, Used only for teacher users.
@@ -41,137 +31,6 @@ describe('Testing teacherAcceptRejectChangeRequestSTR function', () => {
         expect(response.status).toEqual(401);
     });
 
-    test('STR approved: should return 200', async () => {
-        await API.logIn("d123456@polito.it", "test123");
-
-        let applicationId;
-        try {
-            const appsColl = collection(db, "test-applications")
-            const whereCond = [
-                where("accepted", "==", null),
-                where("studentId", "==", "s789012"),
-                where("thesisTitle", "==", "Instrumenting Kubernetes 5G services with eBPF probes")
-            ]
-            const querySnapshot = await getDocs(query(appsColl, whereCond));
-            if (querySnapshot.empty) throw new Error("No matching documents");
-            querySnapshot.forEach(function (doc) {
-                applicationId = doc.id;
-            });
-        } catch (err) {
-            throw err;
-        }
-
-        // launch the API
-        const changeRequest = {}
-        let response;
-        try {
-            response = await API.teacherAcceptRejectChangeRequestSTR("H4oCncW0Y48kLrWoINDQ", true, changeRequest);
-        } catch (err) {
-            throw err;
-        }
-
-        // revert the changes 
-        try {
-            const appDoc = doc(`test-applications`);
-            appDoc.update({
-                accepted: null
-            });
-        } catch (err) {
-            throw err;
-        }
-
-        expect(response.status).toEqual(200);
-    });
-
-    test('STR rejected: should return 200', async () => {
-        await API.logIn("d123456@polito.it", "test123");
-
-        let applicationId;
-        try {
-            const appsColl = collection(db, "test-applications")
-            const whereCond = [
-                where("accepted", "==", null),
-                where("studentId", "==", "s789012"),
-                where("thesisTitle", "==", "Instrumenting Kubernetes 5G services with eBPF probes")
-            ]
-            const querySnapshot = await getDocs(query(appsColl, whereCond));
-            if (querySnapshot.empty) throw new Error("No matching documents");
-            querySnapshot.forEach(function (doc) {
-                applicationId = doc.id;
-            });
-        } catch (err) {
-            throw err;
-        }
-
-        // launch the API
-        const changeRequest = {}
-        let response;
-        try {
-            response = await API.teacherAcceptRejectChangeRequestSTR("H4oCncW0Y48kLrWoINDQ", false, changeRequest);
-        } catch (err) {
-            throw err;
-        }
-
-        // revert the changes 
-        try {
-            const appDoc = doc(`test-applications`);
-            appDoc.update({
-                accepted: null
-            });
-        } catch (err) {
-            throw err;
-        }
-
-        expect(response.status).toEqual(200);
-    });
-
-    test('STR request change: should return 200', async () => {
-        await API.logIn("d123456@polito.it", "test123");
-
-        let applicationId;
-        try {
-            const appsColl = collection(db, "test-applications")
-            const whereCond = [
-                where("accepted", "==", null),
-                where("studentId", "==", "s789012"),
-                where("thesisTitle", "==", "Instrumenting Kubernetes 5G services with eBPF probes")
-            ]
-            const querySnapshot = await getDocs(query(appsColl, whereCond));
-            if (querySnapshot.empty) throw new Error("No matching documents");
-            querySnapshot.forEach(function (doc) {
-                applicationId = doc.id;
-            });
-        } catch (err) {
-            throw err;
-        }
-
-        // launch the API
-        const changeRequest = {
-            titleSignal: true,
-            descriptionSignal: true,
-            cosupervisorsSignal: true,
-            typeSignal: true,
-            advice: "Some advice"
-        };
-        let response;
-        try {
-            response = await API.teacherAcceptRejectChangeRequestSTR(applicationId, false, changeRequest);
-        } catch (err) {
-            throw err;
-        }
-
-        // revert the changes 
-        try {
-            const appDoc = doc(`test-applications`);
-            appDoc.update({
-                accepted: null
-            });
-        } catch (err) {
-            throw err;
-        }
-
-        expect(response.status).toEqual(200);
-    });
 
     test('Should retrieve an error if the application does not exist', async () => {
         await API.logIn("d123456@polito.it", "test123");

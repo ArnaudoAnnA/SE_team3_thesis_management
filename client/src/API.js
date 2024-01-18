@@ -149,10 +149,7 @@ const loginWithSaml = () => {
 }
 
 const logOut = async () => {
-  let email = auth.currentUser.email;
-  signOut(auth).then(() => {
-    if (!DEBUG) console.log(email + " signed out")
-  }).catch((error) => {
+  signOut(auth).catch((error) => {
     console.log(error)
   })
 }
@@ -617,24 +614,24 @@ const getThesisWithId = async (ID) => {
 const addApplication = async (application, teacher) => {
 
   if (!auth.currentUser) {
-    throw MessageUtils.createMessage(401, "error", "Not logged in");
+    return { status: 401, message: "Unauthorized" }
   }
 
   if (!await isStudent(auth.currentUser.email)) {
-    throw MessageUtils.createMessage(401, "error", "Unauthorized");
+    return { status: 401, message: "Not a student" }
   }
 
   // get student name surname from the database using application.studentId
   const studentSnap = await getDocs(query(studentsRef, where("id", "==", application.studentId)));
   const studentData = studentSnap.docs[0].data();
   if (!studentData)
-    throw new Error("Student not found ");
+    return { status: 404, message: "Student not found" }
 
   // get thesisTitle from the database using application.thesisId
   const thesisSnap = await getDocs(query(thesisProposalsRef, where("id", "==", application.thesisId)));
   const thesisData = thesisSnap.docs[0].data();
   if (!thesisData)
-    throw new Error("Thesis not found");
+    return { status: 404, message: "Thesis not found" }
 
   try {
     let fileRef
@@ -657,7 +654,7 @@ const addApplication = async (application, teacher) => {
 
       sendEmail(teacher.email, subject, text, from, thesisData.title, null, doc.id, null).then();
       // console.log("Added application with id:" + doc.id)
-      return "Application sent"
+      return { status: 200, message: "Application sent" }
     })
   } catch (e) {
     console.log(e)
@@ -1061,7 +1058,7 @@ const validateThesisProposalData = (thesisProposalData) => {
 /**
  * Insert a new thesis proposal into the server
  * @param thesisProposalData the data of the thesis proposal
- * @returns {Promise<{status: code, id: id, thesis: thesisProposalData, err: err}>}
+ * @returns {Promise<{status: code, id: id, thesis: thesisProposalData, error: err}>}
  * Possible values for status: [200 (ok), 400 (bad request), 401 (unauthorized), 500 (server error)]
  * Possible values for id: [id of the new thesis proposal, null (in case of error)]
  * Possible values for err: [error message, null (in case of success)]
@@ -1095,7 +1092,7 @@ const insertProposal = async (thesisProposalData) => {
       thesisProposalData.groups = groupsAux;
       thesisProposalData.id = await getNextThesisId();
       const docRef = await addDoc(thesisProposalsRef, thesisProposalData);
-      return { status: 200, id: docRef.id, thesis: thesisProposalData };
+      return { status: 200, id: docRef.id, thesis: thesisProposalData, error: null };
     }
   } catch (error) {
     console.error("Error adding thesis proposal: ", error);
@@ -1193,9 +1190,7 @@ const acceptApplication = async (applicationId) => {
     const applicationRef = doc(db, collection, applicationId);
     const applicationSnapshot = await getDoc(applicationRef);
     if (!applicationSnapshot.exists()) return { status: 404, err: "Application not found" };
-    console.log("line 1187", applicationSnapshot)
     const application = applicationSnapshot.data();
-    console.log("line 1189", applicationSnapshot.data())
     if (application.accepted) return { status: 400, err: "Application already accepted" };
     await updateDoc(applicationRef, { accepted: true });
     // send mail to inform the student
@@ -1978,10 +1973,10 @@ const getActiveThesis = async () => {
 /**
  * Notify the teacher with an email when the expiration date of his thesis is approaching (1 week before)
  * @param {string} today today's virtual date
+ * @returns {Promise<{ status: code }>} //return of the API if no errors occur
  */
 const notifyThesisExpiration = async (today) => {
-  if (!auth.currentUser) return { status: 401, error: "User not logged in" };
-  getActiveThesis()
+  return getActiveThesis()
     .then((thesisList) => {
       const oneWeek = dayjs(today).add(1, 'week');
       const notManuallyArchivedThesis = thesisList.filter((thesis) => dayjs(thesis.archiveDate).isSame(thesis.expirationDate, 'day'));
@@ -2000,7 +1995,13 @@ const notifyThesisExpiration = async (today) => {
         const text = `Dear Professor ${teacher.name} ${teacher.surname},<br /><br />We are writing you to inform you that the thesis proposal with title ${thesis.title} is about to expire.<br /><br />Best regards,<br />Student Secretariat.`;
         await sendEmail(teacher.email, subject, text, from, thesis.title, thesis.id, null, null);
       });
+
+      return { status: 200 };
     })
+    .catch((error) => {
+      console.log(error);
+      return { status: 500 };
+    });
 }
 
 
@@ -2044,16 +2045,8 @@ const sendEmail = async (to, subject, text, from, thesisTitle, thesisId, applica
       }
     },
  * 
- * @returns { Promise<Array<{
-    *  id: number,
-    *  date: string,
-    *  subject: string,
-    *  text: string
-    *  thesisTitle: string,
-    *  from: Object<{ name: string, surname: string, id: string }>
-    * }>>
-    * }
-    */
+ * @returns {Promise<{ status: code, notifications: [] }>} //return of the API if no errors occur
+ */
 const getNotifications = async () => {
   if (!auth.currentUser) return { status: 401, error: "User not logged in" };
 
@@ -2086,7 +2079,7 @@ const getNotifications = async () => {
       console.log(notifications);
     }
 
-    return notifications;
+    return { status: 200, notifications: notifications };
   } catch (e) {
     console.err(e);
     throw e;
@@ -2150,3 +2143,49 @@ await getApplicationsByState("Accepted", "s901234"); //1
 console.log("Pending:");
 await getApplicationsByState("Pending", "s901234"); //0
 */
+
+/** TEST API */
+
+// get an accepted application and return the id
+const getAcceptedApplicationId = async () => {
+  const q = query(applicationsRef, where("accepted", "==", true));
+  const snapshot = await getDocs(q);
+  return snapshot.docs[0].id;
+}
+
+// get a declined application and return the id
+const getDeclinedApplicationId = async () => {
+  const q = query(applicationsRef, where("accepted", "==", false));
+  const snapshot = await getDocs(q);
+  return snapshot.docs[0].id;
+}
+
+// get a pending application and return the id
+const getPendingApplicationId = async () => {
+  const q = query(applicationsRef, where("accepted", "==", null));
+  const snapshot = await getDocs(q);
+  return snapshot.docs[0].id;
+}
+
+// get a non archived thesis
+const getOneActiveThesis = async () => {
+  // expirationDate == archiveDate and expirationDate > today
+  const q = query(thesisProposalsRef, where("expirationDate", ">", await getVirtualDate()), where("expirationDate", "==", "archiveDate"));
+  const snapshot = await getDocs(q);
+  return snapshot.docs[0].data();
+}
+
+// get a archived thesis
+const getOneArchivedThesis = async () => {
+  const q = query(thesisProposalsRef, where("archiveDate", "<=", await getVirtualDate()));
+  const snapshot = await getDocs(q);
+  return snapshot.docs[0].data();
+}
+
+
+const TESTAPI = {
+  getAcceptedApplicationId, getDeclinedApplicationId, getPendingApplicationId,
+  getOneActiveThesis, getOneArchivedThesis,
+}
+
+export { TESTAPI };

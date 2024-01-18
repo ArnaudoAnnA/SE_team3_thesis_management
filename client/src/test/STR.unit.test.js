@@ -2,6 +2,12 @@
 
 import { describe, expect, test, beforeEach, afterEach } from '@jest/globals';
 import API from '../API.js';
+// import TEST from '../models/_initdb.js';
+
+// beforeAll(async () => {
+//     // launch script to populate the database with test data
+//     await TEST.initTestData();
+// });
 
 beforeEach(async () => {
     await API.logOut();
@@ -75,7 +81,7 @@ describe('3: Testing the insertSTR API', () => {
         "requestDate": "2021-05-06",
         "approvalDate": "",
         "approved": null,
-        "title": "Instrumenting Kubernetes 5G services with eBPF probes and other beautiful things",
+        "title": "test str title",
         "description": "Description for Thesis Request 1",
         "programmes": "Design in Graphic Design",
         "id": 123,

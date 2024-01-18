@@ -2,7 +2,13 @@
 
 import { describe, expect, test, beforeEach, afterEach } from '@jest/globals';
 import API from '../API.js';
-import { addDoc, deleteDoc } from 'firebase/firestore';
+import { TESTAPI } from '../API.js';
+// import TEST from '../models/_initdb.js';
+
+// beforeAll(async () => {
+//     // launch script to populate the database with test data
+//     await TEST.initTestData();
+// });
 
 beforeEach(async () => {
     await API.logOut();
@@ -30,20 +36,15 @@ describe('1: Testing the deleteProposal API', () => {
 
     test('T1.3: Should retrive an error if thesis is already archived', async () => {
         await API.logIn(teacherUser, password);
-        const archivedThesis = {
-            id: 20,
-            title: "Archived thesis",
-            archiveDate: '2010-01-01',
-        }
-        const ref = await addDoc("test-thesis", archivedThesis);
-        const response = await API.deleteProposal(20);
+        const archivedThesis = TESTAPI.getOneArchivedThesis();
+        const response = await API.deleteProposal(archivedThesis.id);
         expect(response.status).toBe(400);
-        await deleteDoc(ref);
     });
 
-    test('T1.5: Should return status 200s if a user is a teacher and the thesis exists', async () => {
+    test('T1.4: Should return status 200s if a user is a teacher and the thesis exists', async () => {
         await API.logIn(teacherUser, password);
-        const response = await API.deleteProposal(0);
+        const thesis = TESTAPI.getOneActiveThesis();
+        const response = await API.deleteProposal(thesis.id);
         expect(response.status).toBe(200);
     });
 });

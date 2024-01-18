@@ -1,7 +1,13 @@
 'use strict';
 
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test, beforeEach, afterEach } from '@jest/globals';
 import API from '../API.js';
+// import TEST from '../models/_initdb.js';
+
+// beforeAll(async () => {
+//     // launch script to populate the database with test data
+//     await TEST.initTestData();
+// });
 
 describe('testing the insertion of a thesis proposal in the database', () => {
 
@@ -80,7 +86,7 @@ describe('testing the insertion of a thesis proposal in the database', () => {
         await API.logIn("d123456@polito.it", "test123")
         const response = await API.insertProposal(thesisProposalShort);
         await API.logOut();
-        expect(response).toEqual(400);
+        expect(response.status).toEqual(400);
     });
 
     test('should retrive an error if the thesis proposal has a wrong field', async () => {
@@ -88,7 +94,7 @@ describe('testing the insertion of a thesis proposal in the database', () => {
         await API.logIn("d123456@polito.it", "test123")
         const response = await API.insertProposal(thesisProposalWrong);
         await API.logOut();
-        expect(response).toEqual(400);
+        expect(response.status).toEqual(400);
     });
 
     test('should retrive an error if the thesis proposal has an empty field', async () => {
@@ -96,7 +102,7 @@ describe('testing the insertion of a thesis proposal in the database', () => {
         await API.logIn("d123456@polito.it", "test123")
         const response = await API.insertProposal(thesisProposalEmpty);
         await API.logOut();
-        expect(response).toEqual(400);
+        expect(response.status).toEqual(400);
     });
 
     test('should add a thesis proposal to the database', async () => {
@@ -104,9 +110,11 @@ describe('testing the insertion of a thesis proposal in the database', () => {
         await API.logIn("d123456@polito.it", "test123")
         const response = await API.insertProposal(thesisProposal);
         await API.logOut();
+        expect(response.error).toBe(null);
         expect(response.status).toEqual(200);
+        
     });
-
+ 
 
 
 });
