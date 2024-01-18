@@ -1828,8 +1828,8 @@ const teacherAcceptRejectChangeRequestSTR = async (id, accept, changeRequest) =>
       await updateDoc(docRef, newData);
       await sendEmail(student.email, "A change in your Thesis request has been requested",
         `Dear ${student.name} ${student.surname},<br /><br />We inform you that your thesis request "${STRSnapshot.data().title}" has received a change request from the professor ${professor.name} ${professor.surname}. More details below:<br />
-${changeRequest.titleSignal || changeRequest.typeSignal || changeRequest.descriptionSignal || changeRequest.cosupervisorsSignal ? "Fields that need to be fixed are:" : ""} 
-${changeRequest.titleSignal ? "* title<br />" : ""}${changeRequest.typeSignal ? "* type<br />" : ""}${changeRequest.descriptionSignal ? "* description<br />" : ""}${changeRequest.cosupervisorsSignal ? "* Co-Supervisors" : ""}
+${changeRequest.titleSignal || changeRequest.typeSignal || changeRequest.descriptionSignal || changeRequest.cosupervisorsSignal ? "Fields that need to be fixed are:<br />" : ""} 
+${changeRequest.titleSignal ? "* title<br />" : ""}${changeRequest.typeSignal ? "* type<br />" : ""}${changeRequest.descriptionSignal ? "* description<br />" : ""}${changeRequest.cosupervisorsSignal ? "* Co-Supervisors<br />" : ""}
 <br />Professor suggestion:<br />"${changeRequest.advice}"<br /><br />Best Regards,<br />Student Secretariat`, from, thesisTitle, null, null, null);
     }
 
