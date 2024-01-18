@@ -69,26 +69,26 @@ sections:
 ## QUALITY MEASURES 
 
 - Unit Testing:
-  - Total hours estimated:
-  - Total hours spent 
-  - Nr of automated unit test cases
+  - Total hours estimated: 7h30m
+  - Total hours spent: 5h
+  - Nr of automated unit test cases: 5
 - E2E testing:
-  - Total hours estimated 
-  - Total hours spent 
+  - Total hours estimated: 17h30m
+  - Total hours spent:  17h20m
 - Code review 
-  - Total hours estimated 
-  - Total hours spent 
+  - Total hours estimated: 17h
+  - Total hours spent:  14h20m
 - Technical Debt management:
-  - Total hours estimated 
-  - Total hours spent 
-  - Hours estimated for remediation by SonarQube 
-  - Hours estimated for remediation by SonarQube only for the selected and planned issues 
-  - Hours spent on remediation 
-  - debt ratio (as reported by SonarQube under "Measures-Maintainability"): %
+  - Total hours estimated: 8h
+  - Total hours spent: 10h50m 
+  - Hours estimated for remediation by SonarQube: 1d7h 
+  - Hours estimated for remediation by SonarQube only for the selected and planned issues: 8h 
+  - Hours spent on remediation: 10h50m
+  - debt ratio (as reported by SonarQube under "Measures-Maintainability"): 0.3%
   - rating for each quality characteristic reported in SonarQube under "Measures" (namely reliability, security, maintainability )
-    - reliability: 
-    - security: 
-    - maintainability: 
+    - reliability:  A
+    - security: A
+    - maintainability: A
   
 ## ASSESSMENT
 
@@ -108,6 +108,8 @@ reimplemented.
   1. It's really important to have an interactive work inside the team, so that errors can be discovered promptly;
 
   2. We have experienced the feeling of having to manage our woriking time when having a lot of free time;
+
+  3. We need to estimate more time to manage technical debt.
 
 - Which improvement goals set in the previous retrospective were you able to achieve? 
 
