@@ -94,7 +94,7 @@ sections:
 
 - What caused your errors in estimation (if any)?
 
-  1. There were some bugs that were scared about not finding a solution in few time, so that we overstimated some tasks. 
+  1. There were some bugs that we were scared about not finding a solution in few time, so that we overstimated some tasks. 
 By the way, we reinvested the extra-time by managing some technical debt.
 
   2. There were some misunderstanding inside the team about how to design features, so that some of them had to been
@@ -126,6 +126,7 @@ Everything was achieved.
 
 Make the sprint planning reunion faster.
 Give more importance to story points.
+Allocate more time to tasks related ti code maintanability.
 
 - One thing you are proud of as a Team!!
 
