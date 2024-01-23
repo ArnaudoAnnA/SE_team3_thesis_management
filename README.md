@@ -23,6 +23,11 @@ To add other users, go in firebase -> authentication -> users -> add user
 | u000001@polito.it          | PJNkzwt7V!&N6B | secretary |
 | studente.team3@gmail.com | FYUVzFWJ0dskB | student |
 | professore.team3@gmail.com | ^E3rFGVjP6qr%u | teacher |
+| juanstefano.pauli@polito.it | da2Lt%cNgKCH&x | teacher |
+| giulia.saracco@polito.it    | P$Sgs3Z*ggP8B^ | teacher |
+| s0000001@studenti.polito.it | kbYBMKm!W*4upW | student |
+| s0000002@studenti.polito.it | MPnW3$3yjufM5X | student |
+| palm.beesly@polito.it | jMHAn#TDR5oneR | secretary |
 
 ### Gmail credentials 
 
