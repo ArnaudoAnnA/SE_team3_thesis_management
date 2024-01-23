@@ -1,19 +1,16 @@
-import React, { useEffect } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 /*npm install dayjs @mui/x-date-pickers @mui/material @emotion/styled @emotion/react    --save */
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { useState, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form, Button,Alert, Container, Row, Col } from 'react-bootstrap';
+import { Form, Button,Alert, Container } from 'react-bootstrap';
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2'
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import API from '../API'
-import context from 'react-bootstrap/esm/AccordionContext';
 import { userContext } from './Utils';
 
 
@@ -143,16 +140,15 @@ function UpdateProposal(props) {
   const [inputErrorKnowledge, setInputErrorKnowledge] = useState(false);
   const [inputErrorLevel, setInputErrorLevel] = useState(false);
   const [inputErrorProgrammes, setInputErrorProgrammes] = useState(false);
-  const [note, setNot] = useState('');
-  const [pname, setpName] = useState('');
+  const [note, setNote] = useState('');
+  const [pname, setPname] = useState('');
   const [level, setLevel] = useState('');
   const [knowledge, setKnowledge] = useState('')
-  const [email, setEmail] = useState([])
   const [degree, setDegree] = useState('')
-  const [description, setDesc] = useState('')
+  const [description, setDescription] = useState('')
   const [title, setTitle] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
-  const [selectedDate, setSelectedDate] = useState(new dayjs());
+  const [selectedDate, setSelectedDate] = useState(dayjs());
   const [deg, setDeg] = useState()
 
   useEffect(() => {
@@ -161,11 +157,10 @@ function UpdateProposal(props) {
     setSelectedDate(sixMonthsLater)
     API.getDegree()
     .then((d) => {
-      console.log("Result:", d);
       setDeg(d);
     })
     .catch((e) => {
-      console.error("Error API:", e);
+      console.error("Error in the getDegree API:", e);
 
     });
   
@@ -173,17 +168,16 @@ function UpdateProposal(props) {
     API.getThesisWithId(id)
     .then((res) => {
       if (!res.error) {
-        console.log(res.thesis);
         setTitle(res.thesis.title);
         setDegree(res.thesis.type);
-        setDesc(res.thesis.description);
+        setDescription(res.thesis.description);
         setKnowledge(res.thesis.requiredKnowledge);
         setLevel(res.thesis.level);
         setTags(res.thesis.keywords);
         setEmailTags(res.thesis.coSupervisors);
-        setpName(res.thesis.programmes);
+        setPname(res.thesis.programmes);
         setSelectedDate(dayjs(res.thesis.expirationDate));
-        setNot(res.thesis.notes);
+        setNote(res.thesis.notes);
       } else {
         console.log("Error in UpdateProposal/getThesisWithId:" + res.error);
       }
@@ -197,7 +191,6 @@ function UpdateProposal(props) {
   const handleSubmit = (event) => {
 
     event.preventDefault();
-    let nomeRegex = /^[A-Za-z]+$/; // The word must contains words
    
     if (title === '') {
 
@@ -249,28 +242,12 @@ function UpdateProposal(props) {
 
     }  
 
-    if (new dayjs(props.date) > selectedDate) {
+    if (dayjs(props.date) > selectedDate) {
       setErrorMsg("Date cannot be before today!")
       window.scrollTo(0, 0);
-      setSelectedDate(new dayjs())
+      setSelectedDate(dayjs())
       return false;
     }
-  
-   
-  // if everything is ok return true but in out case we send the data, console log to check everything is ok
-
-    console.log(`
-      note: ${note}
-      pname: ${pname}
-      keywords: ${tags}
-      level: ${level}
-      knowledge: ${knowledge}
-      email: ${emailTags}
-      degree: ${degree}
-      description: ${description}
-      title: ${title}
-      errorMsg: ${errorMsg} 
-      selectedDate: ${selectedDate} `);
 
       const predefinedProposalStructure = {   
 
@@ -362,11 +339,9 @@ function UpdateProposal(props) {
                       required
                       onChange={(ev) => {
                         setDegree(ev.target.value);
-                        console.log(ev.target.value);
                       }}
                       onBlur={(ev) => {
                         setDegree(ev.target.value);
-                        console.log(ev.target.value);
                       }}
                       renderInput={(params) => <TextField {...params} placeholder="Insert the Type *" variant="standard" style={{ paddingLeft: "2px", borderRadius: "6px", width: '100%', fontSize: "12px"}} onClick={()=> {setInputErrorType(false)}}/>}
                     />
@@ -377,7 +352,7 @@ function UpdateProposal(props) {
                           style={{fontSize: "15px", width: "100%", marginLeft: "auto", marginRight: "auto", borderRadius: "3px", fontStyle: "italic", paddingLeft:"5px", borderColor:inputErrorDescription ? "red": "rgba(165, 165, 165, 0.42)"}}
                           value={description}
                           required
-                          onChange={(e) => setDesc(e.target.value)}
+                          onChange={(e) => setDescription(e.target.value)}
                           onClick={()=> {setInputErrorDescription(false)}}
                           rows="4"
                           cols="50"
@@ -414,7 +389,7 @@ function UpdateProposal(props) {
                           {tags.map((tag, index) => (
                             <div className="tag-item" key={index} style={{ cursor: "pointer", marginBottom: "2px", marginRight: "5px", borderBlockColor: "black" }}>
                               <span className="text">{tag}</span>
-                              <span className="close" onClick={() => removeTag(index)}>&times;</span>
+                              <span className="close" role='button' onClick={() => removeTag(index)}>&times;</span>
                             </div>
                           ))}
                         </div>
@@ -468,7 +443,7 @@ function UpdateProposal(props) {
                       className="form-control"
                       value={pname}
                       onClick={()=> {setInputErrorProgrammes(false)}}
-                      onChange={ev => setpName(ev.target.value)}>
+                      onChange={ev => setPname(ev.target.value)}>
                       <option  value="" disabled>--Insert Programmes-- *</option>
                       {deg && Object.keys(deg).map((optionKey) => (
                         <option key={deg[optionKey]} value={deg[optionKey]}>
@@ -486,7 +461,6 @@ function UpdateProposal(props) {
                         <DatePicker value={selectedDate}
                           onChange={(newDate) => {
                             setSelectedDate(newDate);
-                            console.log('Nuova data:', newDate);
                           }} />
                       </LocalizationProvider>
                     </div>
@@ -496,7 +470,7 @@ function UpdateProposal(props) {
                         <textarea
                           style={{fontSize: "15px", width: "100%", marginLeft: "auto", marginRight: "auto", borderRadius: "3px", fontStyle: "italic", paddingLeft:"5px", borderColor: "rgba(165, 165, 165, 0.42)"}}
                           value={note}
-                          onChange={(e) => setNot(e.target.value)}
+                          onChange={(e) => setNote(e.target.value)}
                           rows="4"
                           cols="50"
                           placeholder="Insert your notes here.."

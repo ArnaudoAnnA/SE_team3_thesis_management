@@ -1,26 +1,26 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { Alert, Card, Button, Badge, Form, Col, Container, Row, Table, Spinner } from 'react-bootstrap';
-import { useState, useEffect, useCallback, useContext } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Alert, Button, Col, Container, Row, Table, Spinner } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2'
 import API from "../../API";
-import Application from '../../models/Application';
-import { userContext } from '../Utils';
 
 
 
 function BrowseForm(props) {
   const [errorMsg, setErrorMsg] = useState('');
   const [cvPath, setCvPath] = useState(null);
-  const [cvUrl, setCvUrl] = useState()
   const [career, setCareer] = useState([]);
   const [title, setTitle] = useState('');
   const [student, setStudent] = useState();
   const [showSpinner, setShowSpinner] = useState(true);
   const { id, state } = useParams();
+
   const navigate = useNavigate();
+  const location = useLocation();
+  const nextpage = location.state?.nextpage || '/applications';
 
 
   const successAlert = () => {
@@ -37,7 +37,7 @@ function BrowseForm(props) {
         navigate("/");
       })
       .catch((error) => {
-        // La chiamata API ha generato un errore
+        // API call generated an error
         console.error("Error accepting application:", error);
         Swal.fire({
           title: 'Error',
@@ -57,7 +57,7 @@ function BrowseForm(props) {
         Swal.fire({
           title: 'Declined!',
           text: 'You have declined the application!',
-          icon: 'error'
+          icon: 'success'
         });
 
         navigate("/");
@@ -78,8 +78,6 @@ function BrowseForm(props) {
 
       API.getApplicationDetails(id)
         .then((res) => {
-          console.log(res);
-
           setCareer(res.application.career);
           setTitle(res.application.title);
           setStudent(res.application.student);
@@ -90,41 +88,6 @@ function BrowseForm(props) {
 
 
     }
-
-    // async function fetchCareer() {
-    //   if (user.id) {
-    //     await API.retrieveCareer(id)
-    //       .then((career) => {
-    //         // console.log(career)
-    //         career.sort((a, b) => {
-    //           if (a.date && b.date) {
-    //             return a.date.isAfter(b.date);
-    //           }
-    //           else if (!b.date)
-    //             return -1;
-    //           else {
-    //             return 1;
-    //           }
-    //         });
-    //         setCareer(career);
-    //         setShowSpinner(false);
-    //       })
-    //       .catch(e => console.log("Error in ApplyForm/retrieveCareerAPI:" + e))
-    //   }
-
-    // }
-    // async function fetchThesisDetails() {
-    //   API.getTitleAndTeacher(id)
-    //     .then((result) => {
-    //       setTitle(result.title);
-    //       setTeacher(result.teacher);
-    //       setShowSpinner(false);
-    //     })
-    //     .catch(e => console.log("Error in ApplyForm/getTitleAndTeacher:" + e))
-    // }
-
-    // fetchCareer();
-    // fetchThesisDetails();
     fetchApplicationDetails(id);
   }, []);
 
@@ -133,7 +96,7 @@ function BrowseForm(props) {
   const downloadCv = async () => {
     const msg = API.getCVOfApplication(cvPath).then((res) => {
 
-      console.log(res)
+      // console.log(res)
       if(res.status != 200){
         Swal.fire({
           title: 'Error',
@@ -180,7 +143,7 @@ function BrowseForm(props) {
       </Row>
       <Row>
         <Col md={4}>
-          <Link to={`/applications`} className="btn blueButton" style={{ marginLeft: "4%" }}> <i className="bi bi-arrow-90deg-left white"></i> </Link>
+          <Link to={nextpage} className="btn blueButton" style={{ marginLeft: "4%" }}> <i className="bi bi-arrow-90deg-left white"></i> </Link>
         </Col>
         <Col md={4}>
         </Col>

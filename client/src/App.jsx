@@ -5,6 +5,7 @@ import { BrowserRouter, Link, Routes, Route, Outlet } from 'react-router-dom';
 import dayjs from 'dayjs';
 import API from './API.js';
 import API_TEST from './API_TEST.js';
+import PropTypes from 'prop-types';
 import { CustomNavbar, NotFoundPage, userContext } from './components/Utils';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Button } from 'react-bootstrap';
@@ -22,7 +23,9 @@ import { CopyProposal } from './components/CopyProposal.jsx';
 import { InsertStudentProposal } from './components/startRequests/InsertStudentProposal.jsx';
 import { STRlist } from './components/startRequests/STRlist.jsx';
 import { STRManagement } from './components/startRequests/STRManagement.jsx';
-
+import { ChangeRequest } from './components/startRequests/ChangeRequest.jsx';
+import STRDetails from './components/startRequests/STRDetails/STRDetails.jsx';
+import NotificationList from './components/notifications/NotificationList.jsx';
 
 
 function App() {
@@ -52,17 +55,10 @@ function Main() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      console.log(currentUser)
       if (currentUser) {
         try {
-
           const userInfo = await API.getUser(currentUser.email)
-          // console.log(userInfo)
           setUser(userInfo)
-          if (user) {
-            console.log(user.email)
-            console.log(user.role)
-          }
         } catch (err) {
           console.log("Not logged")
           console.log(err)
@@ -88,10 +84,11 @@ function Main() {
   const changeVirtualDate = (newDate) => {
     API.changeVirtualDate(newDate).then(() => {
       setDate(newDate);
+    }).then(() => {
+        API.notifyThesisExpiration(newDate)
     }).catch((err) => {
       console.error(err.error);
-    }
-    );
+    });
   }
 
   const logout = () => {
@@ -99,13 +96,13 @@ function Main() {
     setUser({})
   }
   // const a = async () => {
-    // const res = await API.getApplications(null);
-    // if(res.status === 200){
-    //   res.applications.forEach(e => console.log(e))
-    // } else{
-    //   console.log(res.error)
-    // }
-    // const res = await API.getApplicationDetails('nvt7M3McN9nXT5ZBZJtL');
+  // const res = await API.getApplications(null);
+  // if(res.status === 200){
+  //   res.applications.forEach(e => console.log(e))
+  // } else{
+  //   console.log(res.error)
+  // }
+  // const res = await API.getApplicationDetails('nvt7M3McN9nXT5ZBZJtL');
   //   console.log(res)
   // }
 
@@ -118,20 +115,23 @@ function Main() {
         <Routes>
           <Route path='/' element={<Header logoutCbk={logout} date={date} changeDateCbk={changeVirtualDate} />}>
 
-            {user.email ? <Route path='' element={<Home date={date}/>} /> :
+            {user.email ? <Route path='' element={<Home date={date} />} /> :
               <Route path='' element={<Login />} />}
             {/** Add here other routes */}
-            <Route path='/STRlist' element={user.email ? (user.role === "secretary" ? <STRlist date={date}/> : <NotFoundPage />) : <Login />} />
-            <Route path='/STRlist/:id' element={user.email ? (user.role === "secretary" ? <STRManagement /> : <NotFoundPage />) : <Login />} />
-            <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm date={date}/> : ( user.role == "student" ? <InsertStudentProposal date={date}/> : <NotFoundPage />)) : <Login />} />
-            <Route path='/upproposal/:id' element={user.email ? (user.role === "teacher" ? <UpdateProposal date = {date}/> : <NotFoundPage />) : <Login />} />
-            <Route path='/cpproposal/:id' element={user.email ? (user.role === "teacher" ? <CopyProposal date = {date}/> : <NotFoundPage />) : <Login />} />
-            <Route path='/thesis/:id' element={user.email ? (user.role === "teacher" || user.role == "student" ? <ThesisDetails /> : <NotFoundPage /> ) : <Login />} />
+
+            <Route path='/proposal' element={user.email ? (user.role === "teacher" ? <InsertProposalForm date={date} /> : (user.role == "student" ? <InsertStudentProposal date={date} /> : <NotFoundPage />)) : <Login />} />
+            <Route path='/upproposal/:id' element={user.email ? (user.role === "teacher" ? <UpdateProposal date={date} /> : <NotFoundPage />) : <Login />} />
+            <Route path='/cpproposal/:id' element={user.email ? (user.role === "teacher" ? <CopyProposal date={date} /> : <NotFoundPage />) : <Login />} />
+            <Route path='/thesis/:id' element={user.email ? (user.role === "teacher" || user.role == "student" ? <ThesisDetails date={date} /> : <NotFoundPage />) : <Login />} />
             <Route path='/thesis/:id/apply' element={user.email ? (user.role === "student" ? <ApplyForm virtualDate={date} /> : <NotFoundPage />) : <Login />} />
             <Route path='/applications' element={user.email ? (user.role === "teacher" ? <ApplicationsProfessor /> : (user.role === "student" ? <ApplicationsStudent /> : <NotFoundPage />)) : <Login />} />
             <Route path='/applications/:id/:state' element={user.email ? (user.role === "teacher" ? <BrowseForm /> : <NotFoundPage />) : <Login />} />
             <Route path='/browse' element={user.email ? (user.role === "teacher" ? <BrowseForm /> : <NotFoundPage />) : <Login />} />
-            
+            <Route path='/archive' element={user.email ? (user.role === "teacher" ? <ThesisList date={date} archive={true} /> : <NotFoundPage />) : <Login />} />
+            <Route path='/STRlist' element={user.email ? ((user.role === "teacher" || user.role == "secretary") ? <STRlist date={date} /> : <NotFoundPage />) : <Login />} />
+            <Route path='/STRlist/:id' element={user.email ? (user.role === "secretary" ? <STRManagement /> : (user.role == "teacher" ? <STRDetails /> : <NotFoundPage/>)) : <Login />} />
+            <Route path='/STRlist/:id/changeRequest' element={user.email ? (user.role === "teacher" ? <ChangeRequest /> : <NotFoundPage />) : <Login />} />
+            <Route path='/notifications' element={<NotificationList/>}/>
           </Route>
           <Route path='*' element={<NotFoundPage />} />
         </Routes>
@@ -157,6 +157,12 @@ function Header(props) {
   </>
 }
 
+Header.propTypes = {
+  date: PropTypes.string.isRequired,
+  logoutCbk: PropTypes.func.isRequired,
+  changeDateCbk: PropTypes.func.isRequired
+}
+
 /**
  * Search bar 
  */
@@ -164,21 +170,25 @@ function Header(props) {
 function Home(props) {
   const user = useContext(userContext);
   return (<>
-  {
-    user.role == "secretary" ?
+    {
+      user.role == "secretary" ?
         <STRlist date={props.date} />
-      : <>
-          <ThesisList date={props.date}/>
+        : <>
+          <ThesisList date={props.date} />
           {
             <Button as={Link} to='proposal' className="floating-button orangeButton">
               New Proposal
             </Button>
           }
         </>
-  }
-    
+    }
+
   </>);
 
+}
+
+Home.propTypes = {
+  date: PropTypes.string.isRequired
 }
 
 export default App

@@ -1,6 +1,5 @@
 class ThesisRequest {
-    constructor(id, title, description, teacherId, studentId, requestDate, approvalDate, approved, type, programmes, notes){
-        this.id = id;
+    constructor(title, description, teacherId, studentId, requestDate, approvalDate, approved, type, programmes, notes, coSupervisors){
         this.title = title;
         this.description = description;
         this.teacherId = teacherId;
@@ -11,6 +10,7 @@ class ThesisRequest {
         this.type = type;
         this.programmes = programmes;
         this.notes = notes;
+        this.coSupervisors = coSupervisors;
     }
 }
 

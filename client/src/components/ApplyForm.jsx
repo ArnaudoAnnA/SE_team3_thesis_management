@@ -4,6 +4,7 @@ import { Alert, Card, Button, Badge, Form, Col, Container, Row, Table } from 're
 import { useState, useEffect, useCallback, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useDropzone} from 'react-dropzone';
+import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2'
 
@@ -52,7 +53,6 @@ function ApplyForm(props) {
         if(user.id){
             await API.retrieveCareer(user.id)
             .then((career) => {
-                // console.log(career)
                 career.sort((a,b) => {
                     if(a.date && b.date){
                         return a.date.isAfter(b.date);
@@ -70,11 +70,8 @@ function ApplyForm(props) {
         
     }
     async function fetchThesisDetails(){
-        // console.log("fetching thesis details")
         API.getTitleAndTeacher(id)
         .then((result) => {
-            console.log(result)
-            // console.log(result.teacher)
             setTitle(result.title);
             setTeacher(result.teacher);
         })
@@ -95,18 +92,14 @@ function ApplyForm(props) {
         errorAlert(app);
         return;
     }
-    console.log(app)
-
+    
     if (app.status != 404) {
         errorAlert("You can't apply at the same thesis twice");
     } else {
         const application = new Application(null, user.id, Number(id), null, file, props.virtualDate, teacher.id, title);
-        console.log(application)
-        
+                
         API.addApplication(application, teacher)
             .then(() => {
-                // console.log(teacher)
-                // API.sendEmail([teacher.email], "New Application", "A new student applied to your thesis")
                 successAlert()
             })
             .catch((e) => errorAlert(e))
@@ -118,8 +111,7 @@ function ApplyForm(props) {
   const handleOnChangeFile = (files) => {
     if (files.length===1) {
         if (files[0].name.endsWith("pdf") || files[0].name.endsWith("doc") || files[0].name.endsWith("docx")){
-            // console.log(files[0])
-            setFile(files[0]);
+                        setFile(files[0]);
         }
         
         else
@@ -142,7 +134,7 @@ function ApplyForm(props) {
         ) : null}
 
         <Row className="text-center mt-3">
-            <h3> {title ? title : "Loading..."} </h3>
+            <h3> {title || "Loading..."} </h3>
         </Row>
         <Row>
             <Col md={4}>
@@ -231,9 +223,13 @@ function ApplyForm(props) {
 
 }
 
+ApplyForm.propTypes = {
+    virtualDate: PropTypes.string.isRequired,
+    exams: PropTypes.array
+}
+
 function StudentCareer(props) {
-    // console.log(props.id)
-    if (props.exams.length === 0)
+        if (props.exams.length === 0)
         return <p> There are no exams yet :( </p>
     else
         return <Table striped>
@@ -256,6 +252,10 @@ function StudentCareer(props) {
         </Table>
 }
 
+StudentCareer.propTypes = {
+    exams: PropTypes.array
+  }
+
 function ExamRow(props) {
 
     const formatWatchDate = (dayJsDate, format) => {
@@ -273,5 +273,11 @@ function ExamRow(props) {
       </tr>
     );
 }
+
+ExamRow.propTypes = {
+    exam: PropTypes.object
+  }
+
+
 
 export {ApplyForm};

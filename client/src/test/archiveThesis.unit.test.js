@@ -1,7 +1,14 @@
 'use strict';
 
-import { describe, expect, test, beforeEach, afterEach, afterAll } from '@jest/globals';
+import { describe, expect, test, beforeEach, afterEach } from '@jest/globals';
 import API from '../API.js';
+import { TESTAPI } from '../API.js';
+// import TEST from '../models/_initdb.js';
+
+// beforeAll(async () => {
+//     // launch script to populate the database with test data
+//     await TEST.initTestData();
+// });
 
 beforeEach(async () => {
     await API.logOut();
@@ -35,7 +42,8 @@ describe('1: Testing the archiveThesis API', () => {
 
     test('T1.4: Should return status 200s if a user is a teacher and the thesis exists', async () => {
         await API.logIn(teacherUser, password);
-        const response = await API.archiveThesis(0);
+        const activeThesis = await TESTAPI.getOneActiveThesis();
+        const response = await API.archiveThesis(activeThesis);
         expect(response.status).toBe(200);
     });
 });

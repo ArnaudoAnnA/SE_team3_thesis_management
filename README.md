@@ -18,25 +18,31 @@ To add other users, go in firebase -> authentication -> users -> add user
 | :--- | :--- | :--- |
 | d345678@polito.it | p6bTzUftxNHG5y | professor |
 | d234567@polito.it | SHbw&A!vXji56s | professor |
+| professore.team3@gmail.com | ^E3rFGVjP6qr%u | professor |
 | s901234@studenti.polito.it | 7eNfF7Ssxvctd7 | student |
 | s123456@studenti.polito.it | %@xm6wQf2hkHXy | student |
-| u000001@polito.it          | PJNkzwt7V!&N6B | secretary |
 | studente.team3@gmail.com | FYUVzFWJ0dskB | student |
-| professore.team3@gmail.com | ^E3rFGVjP6qr%u | teacher |
-| juanstefano.pauli@polito.it | da2Lt%cNgKCH&x | teacher |
-| giulia.saracco@polito.it    | P$Sgs3Z*ggP8B^ | teacher |
-| s0000001@studenti.polito.it | kbYBMKm!W*4upW | student |
-| s0000002@studenti.polito.it | MPnW3$3yjufM5X | student |
-| palm.beesly@polito.it | jMHAn#TDR5oneR | secretary |
+| u000001@polito.it          | PJNkzwt7V!&N6B | secretary |
+
+| email | password | type | 
+| :--- | :--- | :--- |
+| juanstefano.pauli@polito.it | da2Lt%cNgKCH&x | Professor 
+| giulia.saracco@polito.it    | P$Sgs3Z*ggP8B^ | Professor 
+| s0000001@studenti.polito.it | kbYBMKm!W*4upW  | Student Elmo Moss   
+| s0000002@studenti.polito.it | MPnW3$3yjufM5X | Student Bryan Woods 
+| palm.beesly@polito.it | jMHAn#TDR5oneR | Secretary Pam Beesly
 
 ### Gmail credentials 
 
-The emails are received only by these two accounts
+To prevent sending emails to real accounts, the emails are received only by these two accounts
 
-| email | password | type | 
+| email | password | type |
+| :--- | :--- | :--- | 
 | studente.team3@gmail.com | Team3Rocks! | student |
-| professore.team3@gmail.com | Team3Rocks! | teacher |
+| professore.team3@gmail.com | Team3Rocks! | professor |
 
+## Front-end mockups
+Front-end mockups can be found on [Figma](https://www.figma.com/file/MeeoGtJIzVourXVYfm2Yn0/ThesisManagement?type=design&node-id=0%3A1&mode=design&t=9N2yFZs1i90W0aVH-1).
 
 ## Docker
 The project can be run in a docker container. To do so, first make sure the docker daemon is running, then run the following commands in the client folder:

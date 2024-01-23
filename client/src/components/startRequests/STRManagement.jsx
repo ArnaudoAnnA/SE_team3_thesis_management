@@ -10,14 +10,14 @@ import API from "../../API";
 
 
 function object_prop_to_td(key, value) {
-  let ret;
   switch (key) {
       case "requestDate":
           return dayjs(value).format("YYYY/MM/DD");
 
-      case "coSupervisors":
+      case "coSupervisors": {
           let key = 0;
           return value.map(e => <div key={key++}>{e}</div>);
+      }
 
       default:
           return value;
@@ -33,6 +33,7 @@ function STRManagement(props) {
     { DBfield: "requestDate", title: "Request date" },
     { DBfield: "type", title: "Type" },
     { DBfield: "programmes", title: "Programmes" },
+    { DBfield: "coSupervisors", title: "Co-supervisors" },
   ];
 
   const { id } = useParams();
@@ -134,7 +135,7 @@ function STRManagement(props) {
         });
 }, []);
 
-  return ( <Container fluid className="vh-100" >
+  return ( <Container fluid className="vh-100" style={{padding: "40px"}}>
               {
                 state === STATES.READY ? <> 
                   <Row style={{ marginTop: "1rem", marginBottom: "1rem" }}>
@@ -167,6 +168,7 @@ function STRManagement(props) {
                       className='brwbtt blueButton'
                       style={{
                         marginRight: "3px",
+                        marginBottom: "2%",
                         fontSize: "16px",
                         padding: "0.5% 2%"
                       }}
@@ -179,6 +181,7 @@ function STRManagement(props) {
                       className='brwbtt orangeButton'
                       style={{
                         fontSize: "16px",
+                        marginBottom: "2%",
                         padding: "0.5% 2%"
                       }}
                       onClick={() => declineProposal()}

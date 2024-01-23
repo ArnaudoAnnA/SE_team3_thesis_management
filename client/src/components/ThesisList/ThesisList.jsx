@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import {Alert, Container, Row, Col, Button} from 'react-bootstrap';
 import API from '../../API';
 import { FiltersForm } from "./FiltersForm";
 import { TableWithOrderBy } from "../TableWithOrderBy";
 import ClipLoader from "react-spinners/ClipLoader";
-
+import { userContext } from "../Utils";
 import contextState from "./contextState";
 
 
@@ -15,17 +15,19 @@ import contextState from "./contextState";
 function ThesisList(props)
 {
     /* ------ COSTANTS ------------ */
-    const COLUMNS = [   //TO DO: dynamic width of columns
-        { DBfield: "title", title: "Title",  },
-        { DBfield: "supervisor", title: "Supervisor",  },
-        //{ DBfield: "coSupervisors", title: "Co-Supervisors",  }, //array
-        //{ DBfield: "type", title: "Type",  },
-        //{ DBfield: "groups", title: "Groups",  }, //array
-        { DBfield: "expirationDate", title: "Expiration",  },
-        //{ DBfield: "level", title: "Level",  },
-        //{ DBfield: "programmes", title: "Programmes",  }
-        //further info in the thesis dedicated page
-    ];
+    const user = useContext(userContext);
+
+    const COLUMNS = user.role == 'student' ? [  
+                                                { DBfield: "title", title: "Title",  },
+                                                { DBfield: "supervisor", title: "Supervisor",  },
+                                                { DBfield: "expirationDate", title: "Expiration",  },
+                                            ] 
+                                            : [  
+                                                { DBfield: "title", title: "Title",  },
+                                                { DBfield: "programmes", title: "programmes",  },
+                                                { DBfield: "expirationDate", title: "Expiration",  },
+                                            ] ;
+
 
     const STATES = {loading: "Loading...", ready: "", error: "Error", show_more: "Fetching..."};
 
@@ -37,12 +39,13 @@ function ThesisList(props)
         type: "",
         groups: "",
         level: "",
-        programmes: ""
+        programmes: "",
+        keywords: []
     };
 
     const DEFAULT_ORDERBY = COLUMNS.map(c => {return {DBfield: c.DBfield, mode: "ASC"}; });
 
-    const ENTRIES_PER_PAGE = Math.floor(window.innerHeight /100);
+    const ENTRIES_PER_PAGE = Math.floor(window.innerHeight /130);
     
 
     /*--------------- STATES ------------------*/
@@ -73,13 +76,13 @@ function ThesisList(props)
             {
                 return true;
             }
-            if (filters[prop] && typeof(filters[prop]) == "string"  && filters[prop] != "")
+            if (typeof(filters[prop]) == "string"  && filters[prop] != "")
             {
                 return true;
             }
-            if (filters[prop] && Array.isArray(filters[prop]))
+            if (Array.isArray(filters[prop]))
             {
-                if(filters[prop].find(v => {if(v && v!="") return true})) return true;
+                return filters[prop].find(v => (v && v!="") );
             }
         }
 
@@ -97,9 +100,9 @@ function ThesisList(props)
     function reloadThesisFromBeginning()
     {
         //changing the format of filters object:
-        let nf = Object.assign({}, filters, {coSupervisors: filters.coSupervisors ? [filters.coSupervisors] : [], groups: filters.groups ? [filters.groups] : []});
+        let nf = Object.assign({}, filters, {coSupervisors: filters.coSupervisors ? [filters.coSupervisors] : []});
 
-        API.getThesis(nf, orderBy, undefined, ENTRIES_PER_PAGE)
+        API.getThesis(nf, orderBy, undefined, ENTRIES_PER_PAGE, (props.archive == true))
             .then(ret => 
                 {
                     if (ret.status == 200)
@@ -124,14 +127,20 @@ function ThesisList(props)
         //changing the format of filters object:
         let nf = Object.assign({}, filters, {coSupervisors: filters.coSupervisors ? [filters.coSupervisors] : [], groups: filters.groups ? [filters.groups] : []});
 
-        API.getThesis(nf, orderBy, thesis[thesis.length -1].id, ENTRIES_PER_PAGE)
+        API.getThesis(nf, orderBy, thesis[thesis.length -1].id, ENTRIES_PER_PAGE, (props.archive == true))
             .then(ret => 
                 {
                     if (ret.status == 200)
                     {
-                        thesis.push(...ret.thesis);
-                        setThesis([...thesis]);
-                        setState(STATES.ready);
+                        let count = 0; //counter necessary to avoid the next lambda to be called twice
+                        setThesis(t =>
+                            {
+                                count = count+1;
+                                if (count==1) t.push(...ret.thesis);
+                                setState(STATES.ready);
+                                return [...t];
+                            });
+                        
                     } else
                     {
                         setState(STATES.error);
@@ -162,7 +171,8 @@ function ThesisList(props)
 
     return (
         <contextState.Provider value={{state: state, setState: setState, states: STATES}}>
-            <Container>
+            <Container style={{marginTop: "20px"}}>
+                {props.archive ? <><hr size={10}/><h1>Archive 📁</h1><hr /><Alert dismissible><b>ⓘ</b> You are in the archive: information inside the archive cannot be seen by others</Alert></> : ""/*<><hr size={10}/><h1>Home 🎓 <i className="bi bi-mortarboard-fill"></i></h1><hr/></>*/ }
             <FiltersForm filters={[filters, setFilters, resetFilters, isFiltered]}/>
                 { (state == STATES.ready || state == STATES.show_more) ? 
                     <>
@@ -175,7 +185,7 @@ function ThesisList(props)
                             {
                                 state == STATES.show_more ? 
                                     <ClipLoader />
-                                : (thesis.length < thesisNumber ? <Button onClick={() => setState(STATES.show_more)}>Show More</Button> : "")
+                                : (thesis.length < thesisNumber ? <Button className='blueButton' onClick={() => setState(STATES.show_more)}>Show More</Button> : "")
                             }
                             </Col></Row>
                             

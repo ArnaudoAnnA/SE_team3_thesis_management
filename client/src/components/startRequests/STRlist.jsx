@@ -1,11 +1,12 @@
 
 import { Alert, Container, Row, Col, Button } from 'react-bootstrap';
 import { TableWithOrderBy } from '../TableWithOrderBy';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import API from '../../API';
 import dayjs from 'dayjs';
 import ClipLoader from "react-spinners/ClipLoader";
 import PropTypes from 'prop-types';
+import { userContext } from '../Utils';
 
 /**
  * 
@@ -28,6 +29,8 @@ function STRlist(props) {
 
     const STATES = { loading: "Loading...", show_more: "Fetching...", error: "An error occoured", ready: "Ready" };
 
+    const user = useContext(userContext);
+
 
     /*------------STATES----------------*/
     const [state, setState] = useState(STATES.loading);
@@ -36,7 +39,7 @@ function STRlist(props) {
     const [STRlistLength, setSTRListLength] = useState(0);
 
     /*------------VARIABLES----------------*/
-    let entry_per_page = Math.floor(window.innerHeight / 100);
+    let entry_per_page = Math.floor(window.innerHeight / 130);
 
     /*------------FUNCTIONS----------------*/
     async function load_from_start() {
@@ -69,37 +72,21 @@ function STRlist(props) {
     }
 
     function load_more() {
+        
         console.log(STRlist)
         API.getSTRlist(orderBy, false, entry_per_page)
             .then((ret) => {
                 if (ret.status == 200) {
-                    console.log(ret)
-                    // setSTRlist(ret.STRlist);
-                    // ret.STRlist.forEach(e => {
-                    //     console.log(e);
-                    //     if (!STRlist.some(item => item === e)) {
-                    //         setSTRlist();
-                    //     }
-                    // });
-                    // const newList = [STRlist, ...ret.STRlist];
-                    // let newList = []
-                    // newList = [...STRlist];
-                    // newList = [...newList, ...ret.STRlist];
-                    // console.log(newList);
-                    // console.log(newList);
-                    // const l = [...new Set(newList)];
-                    // setSTRlist(newList)
-                    // console.log(STRlist)
-                    // setSTRlist(newList);
-                    STRlist.push(...ret.STRlist);
-                    // setSTRlist([...STRlist]);
-                    // setSTRlist(l 
-                        
-                    //     // l.push(...ret.STRlist);
-                    //     // return Object.assign({}, l);
-                    // );
-                    // console.log(STRlist)
-                    setState(STATES.ready);
+                    let count = 0; //counter necessary to avoid the next lambda to be called twice
+                    setSTRlist(l =>
+                        {
+                            count= count+1;
+                            if (count==1) l.push(...ret.STRlist);
+                            setState(STATES.ready);
+                            return [...l];
+                        }
+                    );
+                    
                 } else {
                     setState(STATES.error);
                 }
@@ -124,6 +111,7 @@ function STRlist(props) {
 
 
     return <Container>
+        { user.role == 'teacher' ? <><hr size={10}/><h1>Thesis Requests <i className="bi bi-hourglass-split"></i></h1><hr /><Alert dismissible><b>ⓘ</b> You are in the Thesis Requests: here you find all the thesis requests that have been accepted by secretary</Alert></> : "" /*<><hr size={10}/><h1>Home 🎓 <i className="bi bi-mortarboard-fill"></i></h1></>*/ }
         {
             state == STATES.ready || state == STATES.show_more ?
                 <>
@@ -135,7 +123,7 @@ function STRlist(props) {
                             state == STATES.show_more ?
                                 <ClipLoader />
                                 : (STRlist.length < STRlistLength ?
-                                    <Button onClick={() => { setState(STATES.show_more); load_more(); }}>Show More</Button>
+                                    <Button className='blueButton' onClick={() => { setState(STATES.show_more); load_more(); } }>Show More</Button>
                                     : "")
                         }
                     </Col></Row>
