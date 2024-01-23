@@ -109,6 +109,27 @@ const students = [
     surname: "Marino",
     enrollment_year: "2022",
   },
+  {
+    cod_degree: "UV246WZ",
+    name: "Bryan",
+    id: "s0000002",
+    gender: "male",
+    email: "s0000002@studenti.polito.it",
+    nationality: "American",
+    surname: "Woods",
+    enrollment_year: "2021",
+  },
+  {
+    cod_degree: "UV246WZ",
+    name: "Elmo",
+    id: "s0000001",
+    gender: "male",
+    email: "s0000001@studenti.polito.it",
+    nationality: "British",
+    surname: "Moss",
+    enrollment_year: "2022",
+
+  }
 ];
 
 export default students;

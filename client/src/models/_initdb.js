@@ -108,27 +108,27 @@ if (test) {
 // else { 
 //   console.log('Populating database with real data...')
   
-//   // Delete all collections
-//   await deleteCollection(db, "date");
-//   await deleteCollection(db, "students");
-//   await deleteCollection(db, "applications");
-//   await deleteCollection(db, "career");
-//   await deleteCollection(db, "degrees");
-//   await deleteCollection(db, "teachers");
-//   await deleteCollection(db, "thesisProposals");
-//   await deleteCollection(db, "thesisRequests");
-//   await deleteCollection(db, "secretaries");
+   // Delete all collections
+   await deleteCollection(db, "date");
+   await deleteCollection(db, "students");
+   await deleteCollection(db, "applications");
+   await deleteCollection(db, "career");
+   await deleteCollection(db, "degrees");
+   await deleteCollection(db, "teachers");
+   await deleteCollection(db, "thesisProposals");
+   await deleteCollection(db, "thesisRequests");
+   await deleteCollection(db, "secretaries");
 
-//   // Import data to firestore
-//   await populateCollection(db, date, 'date');
-//   await populateCollection(db, students, 'students');
-//   await populateCollection(db, teachers, 'teachers');
-//   await populateCollection(db, degrees, 'degrees');
-//   await populateCollection(db, careers, 'career');
-//   await populateCollection(db, applications, 'applications');
-//   await populateCollection(db, thesisProposals, 'thesisProposals');
-//   await populateCollection(db, thesisRequests, 'thesisRequests');
-//   await populateCollectionWithCustomId(db, secretaries, 'secretaries');
+   // Import data to firestore
+   await populateCollection(db, date, 'date');
+   await populateCollection(db, students, 'students');
+   await populateCollection(db, teachers, 'teachers');
+   await populateCollection(db, degrees, 'degrees');
+   await populateCollection(db, careers, 'career');
+   await populateCollection(db, applications, 'applications');
+   await populateCollection(db, thesisProposals, 'thesisProposals');
+   await populateCollection(db, thesisRequests, 'thesisRequests');
+   await populateCollectionWithCustomId(db, secretaries, 'secretaries');
 
 // }
 

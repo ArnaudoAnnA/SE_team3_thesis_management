@@ -47,6 +47,22 @@ const teachers = [
     name: "Marco",
     surname: "Rossi",
   },
+  {
+    cod_department: "Electronics",
+    id: "p0000001",
+    email: "juanstefano.pauli@polito.it",
+    cod_group: "METENG",
+    name: "Juan Stefano",
+    surname: "Pauli",
+  },
+  {
+    cod_department: "Applied Science",
+    id: "p0000002",
+    email: "giulia.saracco@polito.it",
+    cod_group: "SOFTENG",
+    name: "Giulia",
+    surname: "Saracco",
+  }
 ];
 
 export default teachers;

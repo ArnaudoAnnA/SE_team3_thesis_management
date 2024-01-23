@@ -24,6 +24,13 @@ To add other users, go in firebase -> authentication -> users -> add user
 | studente.team3@gmail.com | FYUVzFWJ0dskB | student |
 | u000001@polito.it          | PJNkzwt7V!&N6B | secretary |
 
+| email | password | type | 
+| :--- | :--- | :--- |
+| juanstefano.pauli@polito.it | da2Lt%cNgKCH&x | Professor 
+| giulia.saracco@polito.it    | P$Sgs3Z*ggP8B^ | Professor 
+| s0000001@studenti.polito.it | kbYBMKm!W*4upW  | Student Elmo Moss   
+| s0000002@studenti.polito.it | MPnW3$3yjufM5X | Student Bryan Woods 
+
 
 
 ### Gmail credentials 

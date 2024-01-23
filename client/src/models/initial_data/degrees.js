@@ -19,6 +19,10 @@ const degrees = [
     codDegree: "QR345ST",
     titleDegree: "Design in Graphic Design",
   },
+  {
+    codDegree: "UV246WZ",
+    titleDegree: "Computer Enginnering",
+  }
 ];
 
 export default degrees;
